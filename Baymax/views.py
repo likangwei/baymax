@@ -1,10 +1,12 @@
+# -*- coding: utf-8 -*-
 from django.shortcuts import render
 from django.http import HttpResponse, HttpResponseRedirect
 from django import forms
+from models import User
 
-class RegForm(forms.Form):
-    name = forms.CharField(max_length=100)
-
+class RegForm(forms.ModelForm):
+    class Meta: 
+        model = User
 
 def reg(request):
     if request.method == 'POST': # If the form has been submitted...
