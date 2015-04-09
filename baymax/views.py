@@ -18,7 +18,7 @@ def reg(request):
             return HttpResponseRedirect('/thanks/') # Redirect after POST
     else:
         form = RegForm() # An unbound form
-    return render(request, 'baymax/reg.html', {
+    return render(request, 'baymax /reg.html', {
         'form': form,
     })
 

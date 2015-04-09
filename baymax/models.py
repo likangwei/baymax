@@ -6,6 +6,6 @@ from django.db import models
 class User(models.Model):
     """主人"""
     name = models.CharField('名字',max_length=100)
-    age = models.IntegerField('年龄', max_length=11)
+    age = models.IntegerField('年龄')
     birthday = models.DateField('生日')
 
