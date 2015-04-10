@@ -16,8 +16,8 @@ def reg(request):
         form = RegForm(request.POST) # A form bound to the POST data
         if form.is_valid(): # All validation rules pass
             # Process the data in form.cleaned_data
-            # ...hehe
             print form.cleaned_data['name']
+            form.save()
             return HttpResponseRedirect('/thanks/') # Redirect after POST
     else:
         form = RegForm() # An unbound form
