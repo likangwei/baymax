@@ -58,7 +58,7 @@ WSGI_APPLICATION = 'healthPriceless.wsgi.application'
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.mysql',
-        'NAME': 'baymax ',
+        'NAME': 'baymax',
         'USER': 'root',
         'PASSWORD': 'root',
         'HOST': '127.0.0.1'

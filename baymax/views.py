@@ -3,10 +3,13 @@ from django.shortcuts import render
 from django.http import HttpResponse, HttpResponseRedirect
 from django import forms
 from models import User
+from django.forms import ModelForm
 
-class RegForm(forms.ModelForm):
+class RegForm(ModelForm):
+
     class Meta:
         model = User
+        fields = '__all__'
 
 def reg(request):
     if request.method == 'POST': # If the form has been submitted...
@@ -18,7 +21,7 @@ def reg(request):
             return HttpResponseRedirect('/thanks/') # Redirect after POST
     else:
         form = RegForm() # An unbound form
-    return render(request, 'baymax /reg.html', {
+    return render(request, 'baymax/reg.html', {
         'form': form,
     })
 
