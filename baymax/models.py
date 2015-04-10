@@ -9,8 +9,12 @@ class User(models.Model):
     age = models.IntegerField('年龄')
     birthday = models.DateField('生日')
 
+    def __str__(self):
+        return self.name
+
 class Cook(models.Model):
     """"""
+    user = models.ForeignKey(User)
     eat_time = models.DateTimeField("时间")
 
 class Food(models.Model):
@@ -34,17 +38,18 @@ class Stool(models.Model):
     HEALTH_10 = 'HEALTH_10'
 
     HEALTH_DEGREE_CHOICES = (
-        ('健康度1', HEALTH_1),
-        ('健康度2', HEALTH_2),
-        ('健康度3', HEALTH_3),
-        ('健康度4', HEALTH_4),
-        ('健康度5', HEALTH_5),
-        ('健康度6', HEALTH_6),
-        ('健康度7', HEALTH_7),
-        ('健康度8', HEALTH_8),
-        ('健康度9', HEALTH_9),
-        ('健康度10', HEALTH_10),
+        (HEALTH_1, '健康度1'),
+        (HEALTH_2, '健康度2'),
+        (HEALTH_3, '健康度3'),
+        (HEALTH_4, '健康度4'),
+        (HEALTH_5, '健康度5'),
+        (HEALTH_6, '健康度6'),
+        (HEALTH_7, '健康度7'),
+        (HEALTH_8, '健康度8'),
+        (HEALTH_9, '健康度9'),
+        (HEALTH_10, '健康度10'),
     )
+    user = models.ForeignKey(User)
     do_time = models.DateTimeField('时间',auto_now=True)
     health_degree = models.CharField('健康度', choices=HEALTH_DEGREE_CHOICES, max_length=10)
 
