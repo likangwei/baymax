@@ -14,8 +14,37 @@ class Cook(models.Model):
     eat_time = models.DateTimeField("时间")
 
 class Food(models.Model):
-    food_name = models.CharField("食物名称")
+    cook = models.ForeignKey(Cook)
+    food_name = models.CharField("食物名称", max_length=50)
     weight = models.FloatField("重量")
 
 class Material(models.Model):
-    material_name = models.CharField("食材名称")
+    material_name = models.CharField("食材名称", max_length=50)
+
+class Stool(models.Model):
+    HEALTH_1 = 'HEALTH_1'
+    HEALTH_2 = 'HEALTH_2'
+    HEALTH_3 = 'HEALTH_3'
+    HEALTH_4 = 'HEALTH_4'
+    HEALTH_5 = 'HEALTH_5'
+    HEALTH_6 = 'HEALTH_6'
+    HEALTH_7 = 'HEALTH_7'
+    HEALTH_8 = 'HEALTH_8'
+    HEALTH_9 = 'HEALTH_9'
+    HEALTH_10 = 'HEALTH_10'
+
+    HEALTH_DEGREE_CHOICES = (
+        ('健康度1', HEALTH_1),
+        ('健康度2', HEALTH_2),
+        ('健康度3', HEALTH_3),
+        ('健康度4', HEALTH_4),
+        ('健康度5', HEALTH_5),
+        ('健康度6', HEALTH_6),
+        ('健康度7', HEALTH_7),
+        ('健康度8', HEALTH_8),
+        ('健康度9', HEALTH_9),
+        ('健康度10', HEALTH_10),
+    )
+    do_time = models.DateTimeField('时间',auto_now=True)
+    health_degree = models.CharField('健康度', choices=HEALTH_DEGREE_CHOICES, max_length=10)
+

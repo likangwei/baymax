@@ -5,6 +5,6 @@ from django.contrib import admin
 admin.autodiscover()
 
 urlpatterns = patterns('',
-    (r'^login', 'Baymax.views.login'),
-    (r'^reg', 'Baymax.views.reg'),
+    (r'^login', 'baymax.views.login'),
+    (r'^reg', 'baymax.views.reg'),
 )
