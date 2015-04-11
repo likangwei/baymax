@@ -18,6 +18,9 @@ class Cook(models.Model):
     food_sample_name = models.CharField("食物", max_length=50)
     eat_time = models.DateTimeField("时间", auto_now=True)
 
+    def __str__(self):
+        return self.food_sample_name
+
 class Food(models.Model):
     cook = models.ForeignKey(Cook)
     food_name = models.CharField("食物名称", max_length=50)
@@ -51,6 +54,9 @@ class Stool(models.Model):
         (HEALTH_10, '健康度10'),
     )
     user = models.ForeignKey(User)
-    do_time = models.DateTimeField('时间',auto_now=True)
+    do_time = models.DateTimeField('时间')
     health_degree = models.CharField('健康度', choices=HEALTH_DEGREE_CHOICES, max_length=10)
+
+    def __str__(self):
+        return self.health_degree
 

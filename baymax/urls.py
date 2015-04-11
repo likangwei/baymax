@@ -9,7 +9,7 @@ urlpatterns = patterns('',
     (r'^login', 'baymax.views.login', 'login'),
     url(r'^reg', 'baymax.views.reg', name='reg'),
     url(r'^eat', 'baymax.views.eat', name='eat'),
-    (r'^stool', 'baymax.views.stool'),
+    url(r'^stool', 'baymax.views.stool', name='stool'),
 )
 
 print urlpatterns
