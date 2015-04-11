@@ -2,9 +2,8 @@
 #!/usr/bin/env python
 # coding: utf-8
 import os
-import sys
-reload(sys)
-sys.setdefaultencoding('utf8')
-import django.core.handlers.wsgi
+
+from django.core.wsgi import get_wsgi_application
+
 os.environ['DJANGO_SETTINGS_MODULE'] = 'healthPriceless.settings'
-application = django.core.handlers.wsgi.WSGIHandler()
+application = get_wsgi_application()
