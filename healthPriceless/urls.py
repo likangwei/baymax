@@ -7,6 +7,6 @@ urlpatterns = patterns('',
     # url(r'^$', 'healthPriceless.views.home', name='home'),
     # url(r'^blog/', include('blog.urls')),
 
-    url(r'^admin/', include(admin.site.urls), name='admin'),
-    url(r'^', include('baymax.urls', namespace='baymax'), name='xxx'),
+    url(r'^admin/', include(admin.site.urls)),
+    url(r'^', include('baymax.urls', namespace='baymax')),
 )

@@ -15,7 +15,7 @@ class User(models.Model):
 class Cook(models.Model):
     """"""
     choices = []
-    for i in range(12):
+    for i in range(11):
         choices.append((i, '%s成饱' %i))
     user = models.ForeignKey(User)
     food_sample_name = models.CharField("食物", max_length=50)
