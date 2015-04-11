@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <title>注册</title>
 </head>
-<form action="/baymax/reg" method="post">{% csrf_token %}
+<form action="/reg" method="post">{% csrf_token %}
 {{ form.as_p }}
 <input type="submit" value="Submit" />
 </form>

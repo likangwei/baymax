@@ -26,7 +26,6 @@ def reg(request):
         form = RegForm(request.POST) # A form bound to the POST data
         if form.is_valid(): # All validation rules pass
             # Process the data in form.cleaned_data
-            print form.cleaned_data['name']
             form.save()
             return HttpResponseRedirect('/thanks/') # Redirect after POST
     else:
@@ -50,8 +49,7 @@ def eat(request):
         if form.is_valid():
             form.save()
             return HttpResponse(success_response)
-        else:
-            return HttpResponse(invalid_form_post)
+
     else:
         form = CookForm()
 
@@ -63,8 +61,6 @@ def stool(request):
         if form.is_valid():
             form.save()
             return HttpResponse(success_response)
-        else:
-            return HttpResponse(invalid_form_post)
     else:
         form = StoolForm()
 

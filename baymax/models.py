@@ -15,7 +15,8 @@ class User(models.Model):
 class Cook(models.Model):
     """"""
     user = models.ForeignKey(User)
-    eat_time = models.DateTimeField("时间")
+    food_sample_name = models.CharField("食物", max_length=50)
+    eat_time = models.DateTimeField("时间", auto_now=True)
 
 class Food(models.Model):
     cook = models.ForeignKey(Cook)
