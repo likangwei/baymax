@@ -3,7 +3,8 @@ import os
 import sys
 
 if __name__ == "__main__":
-    import django
+    reload(sys)
+    sys.setdefaultencoding('utf8')
 
 
     os.environ.setdefault("DJANGO_SETTINGS_MODULE", "healthPriceless.settings")
