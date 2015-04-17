@@ -7,7 +7,7 @@ admin.autodiscover()
 
 urlpatterns = patterns('',
     (r'^$', 'wordRecall.views.index'),
-    (r'^call', 'wordRecall.views.call'),
+    (r'^call/?', 'wordRecall.views.call'),
 )
 
 print urlpatterns
