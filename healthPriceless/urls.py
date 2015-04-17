@@ -9,5 +9,5 @@ urlpatterns = patterns('',
 
     url(r'^admin/', include(admin.site.urls)),
     url(r'^', include('baymax.urls', namespace='baymax')),
-    url(r'^', include('wordRecall.urls', namespace='word')),
+    url(r'^word/', include('wordRecall.urls', namespace='word')),
 )
