@@ -66,3 +66,4 @@ def stool(request):
 
     return render(request, 'baymax/stool.html', { 'form': form, })
 
+
