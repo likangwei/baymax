@@ -49,3 +49,7 @@ class WordRememberInfos(models.Model):
     remember = models.IntegerField("记住程序", default=4, choices=CHOICES_REMEMBER);
     recall_counts = models.IntegerField("记忆次数", default=0);
 
+
+    def get_repeated(self):
+        return self.word.repeated
+

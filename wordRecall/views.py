@@ -17,23 +17,26 @@ def call(request):
         return HttpResponse(callMethod)
 
 
-
 def init():
 
+    Word.objects.all().delete()
     resultFile = r'/Users/lxzMac/pycharmProjects/mycode/python/wordRemember/result.txt'
 
     lines = open(resultFile).readlines()
+    need2create = []
     for line in lines:
         line = line.strip()
         strs = line.split(' ')
         w = Word()
         w.spelling = strs[0]
         w.repeated = strs[1]
-        w.save()
+        need2create.append(w)
+        # w.save()
+    Word.objects.bulk_create(need2create)
 
 
 def init2():
-
+    need2create = []
     WordRememberInfos.objects.all().delete()
     user = User.objects.all()[0]
 
@@ -41,5 +44,7 @@ def init2():
         info = WordRememberInfos()
         info.user = user
         info.word = word
-        info.save()
-        print info.pk
+        need2create.append(info)
+        # info.save()
+        # print info.pk
+    WordRememberInfos.objects.bulk_create(need2create)
