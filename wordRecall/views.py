@@ -1,10 +1,19 @@
+# -*- coding: utf-8 -*-
 from django.shortcuts import render
 
 # Create your views here.
 
 from django.http import HttpResponse
 from models import Word, User, WordRememberInfos
+from django.forms import ModelForm
+from django import forms
 
+class RecallWordForm(ModelForm):
+
+    class Meta:
+        model = WordRememberInfos
+        fields = ['word', 'weight']
+        fields = '__all__'
 
 def call(request):
     if request.method:
@@ -15,6 +24,21 @@ def call(request):
         if callMethod == 'init2':
             init2()
         return HttpResponse(callMethod)
+
+def get_recall_word(request):
+
+    if request.method == 'POST':
+        recall_id = request.POST['xid']
+        recall_word = WordRememberInfos.objects.get(pk=recall_id)
+        form = RecallWordForm(request.POST, instance=recall_word)
+        if form.is_valid():
+            recall_word.recall_counts = recall_word.recall_counts + 1
+            form.save()
+
+    recall_word = WordRememberInfos.objects.filter(remember=4).order_by('-word__repeated')[0]
+    form = RecallWordForm(instance=recall_word)
+
+    return render(request, 'recall/recall.html', {"form": form, "id":recall_word.pk} )
 
 
 def init():
@@ -48,3 +72,5 @@ def init2():
         # info.save()
         # print info.pk
     WordRememberInfos.objects.bulk_create(need2create)
+
+

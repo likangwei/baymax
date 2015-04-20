@@ -6,8 +6,11 @@ from django.contrib import admin
 admin.autodiscover()
 
 urlpatterns = patterns('',
-    (r'^$', 'wordRecall.views.index'),
     (r'^call/?', 'wordRecall.views.call'),
+    url(r'^recall/?', 'wordRecall.views.get_recall_word', name='recall'),
 )
 
-print urlpatterns
+import logging
+l = logging.getLogger('django.db.backends')
+l.setLevel(logging.DEBUG)
+l.addHandler(logging.StreamHandler())

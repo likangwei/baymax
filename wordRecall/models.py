@@ -27,12 +27,14 @@ class Word(models.Model):
     def __str__(self):
         return self.spelling
 
+
 class WordRememberInfos(models.Model):
 
+    HAS_SKILLED = 1
     word = models.ForeignKey(Word)
     user = models.ForeignKey(User)
 
-    CHOICES_REMEMBER = [(1, "已记住，非常熟"),
+    CHOICES_REMEMBER = [(HAS_SKILLED, "已记住，非常熟"),
     (2, "费劲的想起来"),
     (3, "仅有点印象"),
     (4, "完全没印象"),
@@ -46,7 +48,7 @@ class WordRememberInfos(models.Model):
                ]
 
     weight = models.IntegerField("重要度", default=3, choices=CHOICES_WEIGHT)
-    remember = models.IntegerField("记住程序", default=4, choices=CHOICES_REMEMBER);
+    remember = models.IntegerField("记住程度", default=4, choices=CHOICES_REMEMBER);
     recall_counts = models.IntegerField("记忆次数", default=0);
 
 

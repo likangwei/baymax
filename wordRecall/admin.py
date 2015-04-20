@@ -13,9 +13,12 @@ class UserAdmin(admin.ModelAdmin):
         'name', 'position', 'phone_num',
         'qq_num', 'alipay_num', 'email')
 
+
 class WordAdmin(admin.ModelAdmin):
     inlines = []
+    search_fields = ['spelling']
     list_display = ['spelling', 'repeated']
+
 
 class WordRememberAdmin(admin.ModelAdmin):
     inlines = []
