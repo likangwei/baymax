@@ -47,6 +47,7 @@ class WordRememberInfos(models.Model):
         (5, "完全不用记"),
                ]
 
+    word_spelling = models.CharField("拼写", max_length=100)
     weight = models.IntegerField("重要度", default=3, choices=CHOICES_WEIGHT)
     remember = models.IntegerField("记住程度", default=4, choices=CHOICES_REMEMBER);
     recall_counts = models.IntegerField("记忆次数", default=0);

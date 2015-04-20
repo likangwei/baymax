@@ -38,7 +38,6 @@ INSTALLED_APPS = (
     "bootstrapform",
     'baymax',
     'wordRecall',
-    'bootstrap_toolkit',
 )
 
 MIDDLEWARE_CLASSES = (

@@ -12,8 +12,11 @@ class RecallWordForm(ModelForm):
 
     class Meta:
         model = WordRememberInfos
-        fields = ['word', 'weight']
-        fields = '__all__'
+        fields = ['word_spelling', 'weight', 'remember', 'recall_counts']
+        # fields = '__all__'
+        widgets = {
+            "remember": forms.RadioSelect()
+        }
 
 def call(request):
     if request.method:
@@ -23,6 +26,8 @@ def call(request):
             init()
         if callMethod == 'init2':
             init2()
+        if callMethod == 'init3':
+            init3()
         return HttpResponse(callMethod)
 
 def get_recall_word(request):
@@ -30,8 +35,11 @@ def get_recall_word(request):
     if request.method == 'POST':
         recall_id = request.POST['xid']
         recall_word = WordRememberInfos.objects.get(pk=recall_id)
+
         form = RecallWordForm(request.POST, instance=recall_word)
         if form.is_valid():
+            if request.POST['commitType'] == '非常熟':
+                recall_word.remember = 1
             recall_word.recall_counts = recall_word.recall_counts + 1
             form.save()
 
@@ -74,3 +82,8 @@ def init2():
     WordRememberInfos.objects.bulk_create(need2create)
 
 
+def init3():
+
+    for recall in WordRememberInfos.objects.all():
+        recall.word_spelling = recall.word.spelling
+        recall.save()
