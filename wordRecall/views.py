@@ -38,7 +38,7 @@ def get_recall_word(request):
 
         form = RecallWordForm(request.POST, instance=recall_word)
         if form.is_valid():
-            if request.POST['commitType'] == '非常熟':
+            if request.POST['commitType'] == '1':
                 recall_word.remember = 1
             recall_word.recall_counts = recall_word.recall_counts + 1
             form.save()

@@ -57,6 +57,7 @@ class Stool(models.Model):
         (HEALTH_9, '健康度9'),
         (HEALTH_10, '健康度10'),
     )
+
     user = models.ForeignKey(User)
     do_time = models.DateTimeField('时间')
     health_degree = models.CharField('健康度', choices=HEALTH_DEGREE_CHOICES, max_length=10)

@@ -21,7 +21,6 @@ class Word(models.Model):
         CHOICES_REPEATED.append((i, '%s' %i))
 
     spelling = models.CharField("拼写", max_length=100, null=False)
-
     repeated = models.IntegerField("复现率", default=0);
 
     def __str__(self):
