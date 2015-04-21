@@ -13,8 +13,8 @@ class User(models.Model):
     def __str__(self):
         return self.name
 
-class Word(models.Model):
 
+class Word(models.Model):
 
     CHOICES_REPEATED = []
     for i in range(11):
@@ -25,6 +25,7 @@ class Word(models.Model):
 
     def __str__(self):
         return self.spelling
+
 
 
 class WordRememberInfos(models.Model):

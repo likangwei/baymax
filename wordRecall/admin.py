@@ -23,6 +23,7 @@ class WordAdmin(admin.ModelAdmin):
 class WordRememberAdmin(admin.ModelAdmin):
     inlines = []
     actions = []
+    list_filter = ['remember']
     list_display = ['word', 'user', 'weight', 'remember', 'recall_counts']
 
 admin.site.register(User, CommonAdmin)
