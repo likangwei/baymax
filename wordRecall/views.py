@@ -7,6 +7,7 @@ from django.http import HttpResponse
 from models import Word, User, WordRememberInfos
 from django.forms import ModelForm
 from django import forms
+import test
 
 class RecallWordForm(ModelForm):
 
@@ -28,6 +29,8 @@ def call(request):
             init2()
         if callMethod == 'init3':
             init3()
+        if callMethod == 'init4':
+            init4()
         return HttpResponse(callMethod)
 
 def get_recall_word(request):
@@ -87,3 +90,10 @@ def init3():
     for recall in WordRememberInfos.objects.all():
         recall.word_spelling = recall.word.spelling
         recall.save()
+
+def init4():
+
+    for word in Word.objects.all():
+        word.meaning = test.get_meaning_of_word(word.spelling)
+        print word.meaning
+        word.save()

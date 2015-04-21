@@ -22,6 +22,7 @@ class Word(models.Model):
 
     spelling = models.CharField("拼写", max_length=100, null=False)
     repeated = models.IntegerField("复现率", default=0);
+    meaning = models.CharField("翻译", max_length=1000)
 
     def __str__(self):
         return self.spelling
