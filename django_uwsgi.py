@@ -2,6 +2,9 @@
 #!/usr/bin/env python
 # coding: utf-8
 import os
+import sys
+reload(sys)
+sys.setdefaultencoding('utf8')
 
 from django.core.wsgi import get_wsgi_application
 
