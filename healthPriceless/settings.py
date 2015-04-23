@@ -74,6 +74,8 @@ LANGUAGE_CODE = 'en-us'
 TIME_ZONE = 'UTC'
 TIME_ZONE = 'Asia/Shanghai'
 
+DATETIME_FORMAT = 'Y-m-d H:i:s'
+DATE_FORMAT = 'Y-m-d'
 
 USE_I18N = True
 
