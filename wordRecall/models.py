@@ -15,6 +15,12 @@ class User(models.Model):
 
 WORD_TYPE_COMMON = 0
 WORD_TYPE_INVALID = 500
+
+WORD_TYPE_CHOICES = [
+    (WORD_TYPE_COMMON, "普通"),
+    (WORD_TYPE_INVALID, "无效"),
+]
+
 class Word(models.Model):
 
     CHOICES_REPEATED = []
@@ -23,7 +29,7 @@ class Word(models.Model):
 
     spelling = models.CharField("拼写", max_length=100, null=False)
     repeated = models.IntegerField("复现率", default=0);
-    type = models.IntegerField("类型", default=WORD_TYPE_COMMON)
+    type = models.IntegerField("类型", choices=WORD_TYPE_CHOICES, default=WORD_TYPE_COMMON)
     meaning = models.CharField("翻译", max_length=1024*8)
 
     def __str__(self):

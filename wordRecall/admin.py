@@ -31,7 +31,9 @@ class UserAdmin(admin.ModelAdmin):
 class WordAdmin(admin.ModelAdmin):
     inlines = []
     search_fields = ['spelling']
-    list_display = ['spelling', 'repeated']
+    list_display = ['spelling', 'repeated', 'type']
+
+    list_filter = ['type']
 
 
 class WordRememberAdmin(admin.ModelAdmin):
