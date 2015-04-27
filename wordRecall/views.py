@@ -35,8 +35,12 @@ def call(request):
             init5()
         return HttpResponse(callMethod)
 
-def get_recall_word(request):
 
+def get_recall_word(request):
+    return _get_words(request, models.CHOICE_REMEMBER_UNACQUAINTED)
+
+
+def _get_words(request, filter):
     if request.method == 'POST':
         recall_id = request.POST['xid']
         recall_word = WordRememberInfos.objects.get(pk=recall_id)
@@ -47,11 +51,9 @@ def get_recall_word(request):
             recall_word.recall_counts = recall_word.recall_counts + 1
             form.save()
 
-    recall_word = WordRememberInfos.objects.filter(remember=models.CHOICE_REMEMBER_UNACQUAINTED).order_by('-word__repeated')[0]
+    recall_word = WordRememberInfos.objects.filter(remember=filter).order_by('-word__repeated')[0]
     form = RecallWordForm(instance=recall_word)
-
     return render(request, 'recall/recall.html', {"form": form, "id":recall_word.pk} )
-
 
 def init():
 
