@@ -35,10 +35,10 @@ class WordRememberInfos(models.Model):
     word = models.ForeignKey(Word)
     user = models.ForeignKey(User)
 
-    CHOICES_REMEMBER = [(HAS_SKILLED, "已记住，非常熟"),
-    (2, "费劲的想起来"),
-    (3, "仅有点印象"),
-    (4, "完全没印象"),
+    CHOICES_REMEMBER = [(HAS_SKILLED, "熟词表"),
+    (2, "半熟不生表"),
+    (3, "半生不熟表"),
+    (4, "生词表"),
            ]
 
     CHOICES_WEIGHT = [(1, "非常重要"),
@@ -52,7 +52,6 @@ class WordRememberInfos(models.Model):
     weight = models.IntegerField("重要度", default=3, choices=CHOICES_WEIGHT)
     remember = models.IntegerField("记住程度", default=4, choices=CHOICES_REMEMBER);
     recall_counts = models.IntegerField("记忆次数", default=0);
-
 
     def get_repeated(self):
         return self.word.repeated
