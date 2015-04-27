@@ -8,7 +8,7 @@ from models import Word, User, WordRememberInfos
 from django.forms import ModelForm
 from django import forms
 import test
-
+import models
 class RecallWordForm(ModelForm):
 
     class Meta:
@@ -40,7 +40,6 @@ def get_recall_word(request):
     if request.method == 'POST':
         recall_id = request.POST['xid']
         recall_word = WordRememberInfos.objects.get(pk=recall_id)
-
         form = RecallWordForm(request.POST, instance=recall_word)
         if form.is_valid():
             if request.POST['commitType'] == '1':
@@ -48,7 +47,7 @@ def get_recall_word(request):
             recall_word.recall_counts = recall_word.recall_counts + 1
             form.save()
 
-    recall_word = WordRememberInfos.objects.filter(remember=4).order_by('-word__repeated')[0]
+    recall_word = WordRememberInfos.objects.filter(remember=models.CHOICE_REMEMBER_UNACQUAINTED).order_by('-word__repeated')[0]
     form = RecallWordForm(instance=recall_word)
 
     return render(request, 'recall/recall.html', {"form": form, "id":recall_word.pk} )
@@ -102,7 +101,6 @@ def init4():
         word.save()
 
 def init5():
-
     for word in Word.objects.all():
         print word.spelling
         word.type = test.is_complex(word.spelling, word.meaning)
