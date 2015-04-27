@@ -31,6 +31,8 @@ def call(request):
             init3()
         if callMethod == 'init4':
             init4()
+        if callMethod == 'init5':
+            init5()
         return HttpResponse(callMethod)
 
 def get_recall_word(request):
@@ -89,6 +91,7 @@ def init3():
 
     for recall in WordRememberInfos.objects.all():
         recall.word_spelling = recall.word.spelling
+        recall.repeated = recall.word.repeated
         recall.save()
 
 def init4():
@@ -96,4 +99,11 @@ def init4():
     for word in Word.objects.all():
         word.meaning = test.get_meaning_of_word(word.spelling)
         print word.meaning
+        word.save()
+
+def init5():
+
+    for word in Word.objects.all():
+        print word.spelling
+        word.type = test.is_complex(word.spelling, word.meaning)
         word.save()

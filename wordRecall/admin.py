@@ -1,7 +1,21 @@
+# -*- coding: utf-8 -*-
 from django.contrib import admin
-
+import models
 from models import User, Word, WordRememberInfos
 # Register your models here.
+
+def make_word_unacquainted(modeladmin, request, queryset):
+    queryset.update(remember=models.CHOICE_REMEMBER_UNACQUAINTED)
+make_word_unacquainted.short_description = "置为生词"
+
+def make_word_conversant(modeladmin, request, queryset):
+    queryset.update(remember=models.CHOICE_REMEMBER_CONVERSANT)
+make_word_conversant.short_description = "置为熟词"
+
+def make_word_add_remember_count(modeladmin, request, queryset):
+    queryset.update(remember=models.CHOICE_REMEMBER_CONVERSANT)
+make_word_add_remember_count.short_description = "过了一遍"
+
 
 class CommonAdmin(admin.ModelAdmin):
     inlines = []
@@ -22,9 +36,11 @@ class WordAdmin(admin.ModelAdmin):
 
 class WordRememberAdmin(admin.ModelAdmin):
     inlines = []
-    actions = []
+    actions = [make_word_unacquainted, make_word_conversant]
     list_filter = ['remember']
-    list_display = ['word', 'user', 'weight', 'remember', 'recall_counts']
+    search_fields = ['word__spelling']
+    list_display = ['word', 'user', 'weight', 'remember', 'recall_counts', 'repeated']
+
 
 admin.site.register(User, CommonAdmin)
 admin.site.register(Word, WordAdmin)
