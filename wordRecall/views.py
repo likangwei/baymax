@@ -13,7 +13,7 @@ class RecallWordForm(ModelForm):
 
     class Meta:
         model = WordRememberInfos
-        fields = ['word_spelling', 'weight', 'remember', 'recall_counts']
+        fields = ['word_spelling', 'weight', 'remember', 'recall_counts', 'repeated', 'remarks']
         # fields = '__all__'
         widgets = {
             "remember": forms.RadioSelect()
