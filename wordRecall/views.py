@@ -33,6 +33,8 @@ def call(request):
             init4()
         if callMethod == 'init5':
             init5()
+        if callMethod == 'init6':
+            init6()
         return HttpResponse(callMethod)
 
 
@@ -48,7 +50,7 @@ def _get_words(request, filter):
         if form.is_valid():
             if request.POST['commitType'] == '1':
                 recall_word.remember = 1
-            recall_word.recall_counts = recall_word.recall_counts + 1
+            recall_word.recall_once()
             form.save()
 
     recall_word = WordRememberInfos.objects.filter(remember=filter).order_by('-word__repeated')[0]
@@ -107,3 +109,10 @@ def init5():
         print word.spelling
         word.type = test.is_complex(word.spelling, word.meaning)
         word.save()
+
+def init6():
+    for word in Word.objects.all():
+
+        if word.repeated == 1 and word.type == models.WORD_TYPE_INVALID:
+            print word.spelling
+            word.delete()

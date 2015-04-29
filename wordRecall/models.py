@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 from django.db import models
-
+import datetime
 # Create your models here.
 
 
@@ -44,9 +44,9 @@ class WordRememberInfos(models.Model):
     word = models.ForeignKey(Word)
     user = models.ForeignKey(User)
 
-    CHOICES_REMEMBER = [(CHOICE_REMEMBER_CONVERSANT, "熟词"),
-    (2, "半生不熟"),
-    (CHOICE_REMEMBER_UNACQUAINTED, "生词"),
+    CHOICES_REMEMBER = [(CHOICE_REMEMBER_CONVERSANT, "熟词,不再复现"),
+    (2, "似曾相识，下次还要提问"),
+    (CHOICE_REMEMBER_UNACQUAINTED, "生词，未掌握"),
     (4, "未分类"),
            ]
 
@@ -59,7 +59,7 @@ class WordRememberInfos(models.Model):
 
     word_spelling = models.CharField("拼写", max_length=100)
     weight = models.IntegerField("重要度", default=3, choices=CHOICES_WEIGHT)
-    remember = models.IntegerField("记住程度", default=4, choices=CHOICES_REMEMBER);
+    remember = models.IntegerField("记住程度", default=4, choices=CHOICES_REMEMBER)
     recall_counts = models.IntegerField("记忆次数", default=0);
     repeated = models.IntegerField("复现率", default=0);
     remarks = models.CharField("备注", max_length=100, null=True)
@@ -69,3 +69,27 @@ class WordRememberInfos(models.Model):
     get_repeated.admin_order_field = 'word__spelling'
     get_repeated.integer = True
 
+    def recall_once(self):
+        self.recall_counts = self.recall_counts + 1
+        self.save()
+        recallInfo = RecallInfo()
+        recallInfo.word_recall = self
+        recallInfo.recall_time = datetime.datetime.now()
+        recallInfo.save()
+
+    def __str__(self):
+        return '%s_%s' %(self.user.name, self.word_spelling)
+
+
+
+class RecallInfo(models.Model):
+    CHOICES_REMEMBER = []
+    for i in range(11):
+        CHOICES_REMEMBER.append((i, '记住%s成' %i))
+    word_recall = models.ForeignKey(WordRememberInfos)
+    recall_time = models.DateTimeField()
+    remember = models.IntegerField("记住程度", default=0, choices=CHOICES_REMEMBER)
+
+# class WordBrother(models.Model):
+#     raw_word = models.ForeignKey(Word, verbose_name="原生词")
+#     brother_word = models.ForeignKey(Word, verbose_name="相似词")
