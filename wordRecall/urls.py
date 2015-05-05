@@ -8,6 +8,8 @@ admin.autodiscover()
 urlpatterns =[
     url(r'^call/?', views.call),
     url(r'^recall/?', views.get_recall_word, name='recall'),
+    url(r'^tran/?', views.get_tran_page, name='tran'),
+
 ]
 
 import logging

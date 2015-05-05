@@ -8,7 +8,15 @@ from models import Word, User, WordRememberInfos
 from django.forms import ModelForm
 from django import forms
 import test
+import urllib
 import models
+import translate
+
+class TransPageForm(forms.Form):
+    tran_page = forms.CharField(label='tran_page', max_length=100)
+
+
+
 class RecallWordForm(ModelForm):
 
     class Meta:
@@ -41,6 +49,22 @@ def call(request):
 def get_recall_word(request):
     return _get_words(request, models.CHOICE_REMEMBER_UNACQUAINTED)
 
+def get_tran_page(request):
+
+    KEY = 'tran_page'
+    if request.method == 'POST':
+        trans_url = request.POST[KEY]
+        return __get_tran_page(trans_url)
+    elif request.method == 'GET':
+        if request.GET.has_key(KEY):
+            trans_url = request.GET[KEY]
+            return __get_tran_page(trans_url)
+        else:
+            form = TransPageForm()
+            return render(request, 'recall/tran_page.html', {"form": form} )
+
+def __get_tran_page(trans_url):
+    return HttpResponse( translate.get_translate_page(trans_url) )
 
 def _get_words(request, filter):
     if request.method == 'POST':
