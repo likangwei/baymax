@@ -13,9 +13,12 @@ for word in SPLIT_STR_LIST:
 def get_split_words(lines, with_blank_space=True):
     if isinstance(lines, str):
         result = [lines]
-    else:
+    elif isinstance(lines, unicode):
         result = lines
-
+    elif lines is None:
+        return []
+    else:
+        raise Exception(lines)
     for split_word in SPLIT_STR_LIST:
         result = get_split_word(result, split_word)
 
@@ -39,6 +42,7 @@ def get_split_word(lines, split_word):
     if isinstance(lines, str) or isinstance(lines, unicode):
         lines = [lines]
     result = []
+    print lines
     for line in lines:
         from_idx = 0
         end_idx = 0

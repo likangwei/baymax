@@ -32,6 +32,7 @@ def get_html_str(tran_page_url):
         return htmlStr
 
 from util import RegexUtil
+
 def get_sub_element_by_text(p_text, parent):
     """
     进行 英文字符处理
@@ -159,10 +160,12 @@ def change_p(html):
     """
     变更所有的<ｐ>标签
     """
-    for p in html.xpath("//p"):
-        if p.text:
-            # print lxml.html.tostring(p)
-            modify_bolock_p(p)
+    change_list = ["//p", "//h1", "//h2", "//li"]
+    for change_tag in change_list:
+        for p in html.xpath(change_tag):
+            if p.text:
+                # print lxml.html.tostring(p)
+                modify_bolock_p(p)
 
 def get_translate_page(tran_page_url):
     htmlStr = get_html_str(tran_page_url)
