@@ -10,6 +10,7 @@ if __name__ == "__main__":
     root = fromstring(html)
     page = etree.HTML(html.lower().decode('utf-8'))
     hrefs = page.xpath(u"//script")
+    hrefs = page.xpath(u"//a")
     base_url = ""
     for href in hrefs:
         print href.attrib

@@ -83,7 +83,11 @@ USE_L10N = True
 
 USE_TZ = True
 
-
+is_server = False
+if is_server:
+    HOST = "http://123.57.157.107/"
+else:
+    HOST = "http://127.0.0.1/"
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/1.6/howto/static-files/
 

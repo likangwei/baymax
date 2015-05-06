@@ -9,6 +9,7 @@ from lxml.html import HtmlElement
 from models import WordRememberInfos
 import urlparse
 
+
 def change_url(pre_url):
     un_change_patterns = ['css', 'png', 'js', 'ico']
 
@@ -17,7 +18,8 @@ def change_url(pre_url):
             return pre_url
 
     params = urllib.urlencode({'tran_page': pre_url})
-    return "http://127.0.0.1:8888/word/tran?%s" % params
+    from healthPriceless.settings import HOST
+    return "%sword/tran?%s" % (HOST, params)
 
 
 def get_html_str(tran_page_url):
@@ -35,6 +37,11 @@ def get_html_str(tran_page_url):
         return htmlStr
 
 from util import RegexUtil
+
+
+def get_translate_word_url(word_lower_case):
+    return "http://127.0.0.1:8888/word/word_translate?word=%s" % word_lower_case
+
 
 def get_sub_element_by_text(p_text, parent):
     """
@@ -57,7 +64,11 @@ def get_sub_element_by_text(p_text, parent):
                     return_p_text = ''
                     has_add_p_text = True
 
-                    cur_u = lxml.etree.SubElement(parent, "u")
+                    cur_u = lxml.etree.SubElement(parent, "a")
+                    cur_u.attrib['href'] = get_translate_word_url(word_lower_case)
+                    # style="color:#DD4C53"
+                    cur_u.attrib['style'] = r"color:#DD4CA0"
+                    cur_u.attrib['target'] = r"_blank"
                     cur_u.text = word
                     cur_u.tail = ''
                     result.append(cur_u)

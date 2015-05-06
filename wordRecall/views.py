@@ -83,6 +83,10 @@ def _get_words(request, filter):
     form = RecallWordForm(instance=recall_word)
     return render(request, 'recall/recall.html', {"form": form, "id":recall_word.pk} )
 
+def translate_word(request):
+    word = request.GET['word']
+    return HttpResponse(word)
+
 def init():
 
     Word.objects.all().delete()
