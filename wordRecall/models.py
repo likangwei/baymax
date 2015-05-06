@@ -36,10 +36,14 @@ class Word(models.Model):
         return self.spelling
 
 
+
 CHOICE_REMEMBER_CONVERSANT = 1
 CHOICE_REMEMBER_UNACQUAINTED = 3
 
 class WordRememberInfos(models.Model):
+
+    CHOICE_REMEMBER_CONVERSANT = 1
+    CHOICE_REMEMBER_UNACQUAINTED = 3
 
     word = models.ForeignKey(Word)
     user = models.ForeignKey(User)
