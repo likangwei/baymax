@@ -11,6 +11,7 @@ import test
 import urllib
 import models
 import translate
+from django.http import HttpResponseRedirect
 
 class TransPageForm(forms.Form):
     tran_page = forms.CharField(label='tran_page', max_length=100)
@@ -54,7 +55,7 @@ def get_tran_page(request):
     KEY = 'tran_page'
     if request.method == 'POST':
         trans_url = request.POST[KEY]
-        return __get_tran_page(trans_url)
+        return HttpResponseRedirect('/word/tran?tran_page=%s' %trans_url)
     elif request.method == 'GET':
         if request.GET.has_key(KEY):
             trans_url = request.GET[KEY]
@@ -64,6 +65,7 @@ def get_tran_page(request):
             return render(request, 'recall/tran_page.html', {"form": form} )
 
 def __get_tran_page(trans_url):
+    print trans_url
     return HttpResponse( translate.get_translate_page(trans_url) )
 
 def _get_words(request, filter):

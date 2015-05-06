@@ -31,9 +31,11 @@ def get_html_str(tran_page_url):
         open(html_tmp_file_name, 'w').write(htmlStr)
         return htmlStr
 
-
+from util import RegexUtil
 def get_sub_element_by_text(p_text, parent):
-
+    """
+    进行 英文字符处理
+    """
     result = []
     conversant_word_map = get_all_conversant_word_list()
     return_p_text = ''
@@ -42,19 +44,26 @@ def get_sub_element_by_text(p_text, parent):
     has_add_p_text = False
     for word in StringUtil.get_split_words(p_text):
             word_lower_case = word.lower()
+            if_is_word = RegexUtil.is_word(word)
 
-            if not conversant_word_map.has_key(word_lower_case):
-                result.append(return_p_text)
-                return_p_text = ''
-                has_add_p_text = True
+            if if_is_word:
+                if not conversant_word_map.has_key(word_lower_case):
+                    #没有在熟词列表内
+                    result.append(return_p_text)
+                    return_p_text = ''
+                    has_add_p_text = True
 
-                cur_u = lxml.etree.SubElement(parent, "u")
-                cur_u.text = word
-                cur_u.tail = ''
-                result.append(cur_u)
+                    cur_u = lxml.etree.SubElement(parent, "u")
+                    cur_u.text = word
+                    cur_u.tail = ''
+                    result.append(cur_u)
+                else:
+                    return_p_text = return_p_text + word
+                    has_add_p_text = False
             else:
                 return_p_text = return_p_text + word
                 has_add_p_text = False
+
     if not has_add_p_text:
         result.append(return_p_text)
 
@@ -62,7 +71,7 @@ def get_sub_element_by_text(p_text, parent):
 
 def get_sub_element(current_tag, parent, get_text=True, get_children=True, get_tail=True):
     """
-    获取block tag的子集
+    获取block tag的所有子集
     """
     result = []
     raw_children = current_tag.getchildren()
@@ -91,8 +100,8 @@ def modify_bolock_p(p):
     """
     变更<ｐ>标签的具体实现
     """
-    print lxml.html.tostring(p)
-    # if not p.text.startswith('The'):
+    # print lxml.html.tostring(p)
+    # if not p.text.startswith('Django provides an abstraction'):
     #     return
     sub_element_list = get_sub_element(p, p)
     p._children = []
@@ -101,8 +110,8 @@ def modify_bolock_p(p):
     cur_sub_element = None
 
     for idx, sub_element in enumerate(sub_element_list):
-        print idx, lxml.html.tostring(p)
-        if isinstance(sub_element, str):
+        # print idx, lxml.html.tostring(p)
+        if isinstance(sub_element, str) or isinstance(sub_element, unicode):
             if p.text is None:
                 p.text = sub_element
 
@@ -112,11 +121,18 @@ def modify_bolock_p(p):
 
             elif p.tail is None:
                 p.tail = sub_element
-        else:
+        elif isinstance(sub_element, lxml.html.HtmlElement):
             cur_sub_element = sub_element
-            p.append(sub_element)
-    print '-' * 40
-    print lxml.html.tostring(p)
+            try:
+                p.append(sub_element)
+            except Exception, e:
+                print e
+        else:
+            print sub_element
+            raise Exception("aa", "bb")
+
+    # print '-' * 40
+    # print lxml.html.tostring(p)
 
 
 all_conversant_word_list = None
@@ -145,7 +161,7 @@ def change_p(html):
     """
     for p in html.xpath("//p"):
         if p.text:
-            print lxml.html.tostring(p)
+            # print lxml.html.tostring(p)
             modify_bolock_p(p)
 
 def get_translate_page(tran_page_url):

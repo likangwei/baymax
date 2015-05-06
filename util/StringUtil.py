@@ -1,7 +1,14 @@
 __author__ = 'hanzhao'
 # -*- coding=utf-8 -*-
-
+import sys
+reload(sys)
+sys.setdefaultencoding('utf-8')
 SPLIT_STR_LIST = [' ', '\n', '.']
+UNICODE_SPLIT_STR_LIST = []
+
+for word in SPLIT_STR_LIST:
+    UNICODE_SPLIT_STR_LIST.append(word.decode())
+
 
 def get_split_words(lines, with_blank_space=True):
     if isinstance(lines, str):
@@ -14,6 +21,14 @@ def get_split_words(lines, with_blank_space=True):
 
     return result
 
+def change_unicode_2_str(unicode_str):
+    if isinstance(unicode_str, unicode):
+        return unicode_str.encode()
+    elif isinstance(unicode_str, str):
+        return unicode_str
+    else:
+        raise Exception("a")
+
 def get_split_word(lines, split_word):
     """
     分词   get_split_words(" a  b \n")　return [' ', 'a', ' ', ' ', 'b', ' ', '\n']
@@ -21,7 +36,7 @@ def get_split_word(lines, split_word):
     :param split_word:
     :return:
     """
-    if isinstance(lines, str):
+    if isinstance(lines, str) or isinstance(lines, unicode):
         lines = [lines]
     result = []
     for line in lines:
@@ -43,4 +58,6 @@ def get_split_word(lines, split_word):
 
     return result
 
-print get_split_words(" a  b \n")
+if __name__== '__main__':
+    v = u'Django provides an abstraction layer (the “models”) for structuring and\nmanipulating the data of your Web application. Learn more about it below:'
+    print get_split_words(v)
