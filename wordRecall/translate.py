@@ -142,8 +142,10 @@ def modify_bolock_p(p):
                 p.append(sub_element)
             except Exception, e:
                 print e
+        elif isinstance(sub_element, lxml.html.HtmlComment):
+            pass
         else:
-            print sub_element
+            print sub_element, type(sub_element)
             raise Exception("aa", "bb")
 
     # print '-' * 40
