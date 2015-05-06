@@ -22,3 +22,4 @@ if __name__== '__main__':
     print 'source string: ', src
     print 'MD5: ', result_md5_value
     print 'SHA1: ', result_sha1_value
+    print __file__.startswith("")
