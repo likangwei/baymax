@@ -3,7 +3,7 @@ __author__ = 'hanzhao'
 import sys
 reload(sys)
 sys.setdefaultencoding('utf-8')
-SPLIT_STR_LIST = [' ', '\n', '.', '?', '!']
+SPLIT_STR_LIST = [' ', '\n', '.', '?', '!', '-']
 UNICODE_SPLIT_STR_LIST = []
 
 for word in SPLIT_STR_LIST:
