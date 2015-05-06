@@ -30,7 +30,8 @@ def get_html_str(tran_page_url):
     else:
         f = urllib.urlopen(tran_page_url)
         htmlStr = f.read()
-        open(html_tmp_file_name, 'w').write(htmlStr)
+        if f.getcode() == 200:
+            open(html_tmp_file_name, 'w').write(htmlStr)
         return htmlStr
 
 from util import RegexUtil
