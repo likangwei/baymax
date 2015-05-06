@@ -85,7 +85,7 @@ def _get_words(request, filter):
 
 def translate_word(request):
     word = request.GET['word']
-    return HttpResponse(word)
+    return render(request, 'recall/translateword.html', {"word": word} )
 
 def init():
 
