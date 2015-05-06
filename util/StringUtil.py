@@ -3,12 +3,11 @@ __author__ = 'hanzhao'
 import sys
 reload(sys)
 sys.setdefaultencoding('utf-8')
-SPLIT_STR_LIST = [' ', '\n', '.']
+SPLIT_STR_LIST = [' ', '\n', '.', '?', '!']
 UNICODE_SPLIT_STR_LIST = []
 
 for word in SPLIT_STR_LIST:
     UNICODE_SPLIT_STR_LIST.append(word.decode())
-
 
 def get_split_words(lines, with_blank_space=True):
     if isinstance(lines, str):
@@ -42,7 +41,7 @@ def get_split_word(lines, split_word):
     if isinstance(lines, str) or isinstance(lines, unicode):
         lines = [lines]
     result = []
-    print lines
+    # print lines
     for line in lines:
         from_idx = 0
         end_idx = 0

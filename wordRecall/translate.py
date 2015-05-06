@@ -7,13 +7,15 @@ from util import md5util, StringUtil
 import os
 from lxml.html import HtmlElement
 from models import WordRememberInfos
-
+import urlparse
 
 def change_url(pre_url):
     un_change_patterns = ['css', 'png', 'js', 'ico']
+
     for un_change_pattern in un_change_patterns:
         if pre_url.endswith(un_change_pattern):
             return pre_url
+
     params = urllib.urlencode({'tran_page': pre_url})
     return "http://127.0.0.1:8888/word/tran?%s" % params
 
@@ -167,10 +169,17 @@ def change_p(html):
                 # print lxml.html.tostring(p)
                 modify_bolock_p(p)
 
+def change_script_data_main_url(html, tran_page_url):
+    scripts = html.xpath(u"//script")
+    for script in scripts:
+        if script.attrib.has_key('data-main'):
+            script.attrib['data-main'] = urlparse.urljoin(tran_page_url, script.attrib['data-main'])
+
 def get_translate_page(tran_page_url):
     htmlStr = get_html_str(tran_page_url)
     html = lxml.html.fromstring(htmlStr)
     html.rewrite_links(change_url, base_href=tran_page_url)
+    change_script_data_main_url(html, tran_page_url)
     change_p(html)
     return lxml.html.tostring(html)
 

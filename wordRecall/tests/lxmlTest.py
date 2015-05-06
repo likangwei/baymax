@@ -5,17 +5,13 @@ import urllib
 from lxml.html.soupparser import fromstring
 from lxml import etree
 if __name__ == "__main__":
-    f = urllib.urlopen("http://passport.cnblogs.com/user/signin?ReturnUrl=http://m.cnblogs.com")
+    f = urllib.urlopen("http://127.0.0.1:8888/word/tran?tran_page=https%3A%2F%2Fdocs.djangoproject.com%2Fhowto%2Fdeployment%2Ffastcgi%2F")
     html = f.read()
     root = fromstring(html)
-    from lxml.etree import tostring
-    # print(tostring(root, pretty_print=True).strip())
     page = etree.HTML(html.lower().decode('utf-8'))
-
-    hrefs = page.xpath(u"//a")
-
+    hrefs = page.xpath(u"//script")
+    base_url = ""
     for href in hrefs:
         print href.attrib
-        href.attrib['href'] = '/baiduxxx'
-
-    print etree.tostring(page)
+        if href.attrib.has_key('data-main'):
+            href.attrib['data-main'] = base_url + href.attrib['data-main']

@@ -4,8 +4,8 @@ __author__ = 'hanzhao'
 import re
 
 def is_word(text):
-    patstr = '^[a-zA-Z]+$'
+    patstr = r'^[a-zA-Z-]+$'
     return re.match(patstr, text)
 if __name__== '__main__':
-    print is_word("Hehe")
+    print is_word("feature-rich")
 
