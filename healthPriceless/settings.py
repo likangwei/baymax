@@ -86,7 +86,7 @@ USE_L10N = True
 
 USE_TZ = True
 
-is_server = IpUtil.get_ip_address().startswith("10")
+is_server = IpUtil.get_host_name() == 'iZ25jidmr1pZ'
 
 if is_server:
     HOST = "http://123.57.157.107/"
