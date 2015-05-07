@@ -7,17 +7,18 @@ from util import StringUtil
 
 all_conversant_word_list = None
 
-def change_word_to_conversant(word_list, user=None):
-    _change_word_remember_status(word_list,WordRememberInfos.CHOICE_REMEMBER_CONVERSANT)
+def change_word_to_conversant(word_list, user):
+    _change_word_remember_status(word_list, WordRememberInfos.CHOICE_REMEMBER_CONVERSANT, user, change_catch=True)
 
-def _change_word_remember_status(word_list, remember_status, change_catch=False, user=None):
+def _change_word_remember_status(word_list, remember_status, user, change_catch=False):
     for word_spelling in word_list:
+        word_spelling = StringUtil.change_unicode_2_str(word_spelling)
         word, created = Word.objects.get_or_create(spelling=word_spelling)
-        recall_info, created = WordRememberInfos.objects.get_or_create(word=word)
+        recall_info, created = WordRememberInfos.objects.get_or_create(word=word, user=user)
         recall_info.remember = remember_status
         recall_info.save()
-        if change_catch:
-            all_conversant_word_list[word] = None
+        if change_catch and all_conversant_word_list:
+            all_conversant_word_list[word_spelling] = None
 
 
 

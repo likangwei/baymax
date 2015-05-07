@@ -58,14 +58,20 @@ def get_word_infos(request):
     """
     获取要变更状态为熟悉的单词
     """
+    user = get_user(request)
     print request
     if request.GET.has_key('conversant_words'):
         conversant_words = request.GET['conversant_words']
-        conversant_words = conversant_words.split(",")
-        change_word_to_conversant(conversant_words)
+        if conversant_words:
+            conversant_words = conversant_words.split(",")
+            change_word_to_conversant(conversant_words, user)
     data = {}
     data['result'] = 'Success'
     return HttpResponse(json.dumps(data), content_type = "application/json")
+
+def get_user(request):
+    user, created = User.objects.get_or_create(pk=1)
+    return user
 
 def get_tran_page(request):
 
@@ -105,14 +111,14 @@ def translate_word(request):
     Goo翻译单词
     显示
     """
-    word = request.GET['word']
+    cur_word = request.GET['word']
     from_page = request.GET['from_page']
     print from_page
     hidden_word_list = get_all_conversant_word_list()
     word_map = get_html_word_repeated_info(from_page, hidden_word_list=hidden_word_list)
     word_sort_list = word_map.items()
     word_sort_list.sort(cmp=lambda x, y: cmp(y[1], x[1]))
-    return render(request, 'recall/translateword.html', {"word": word, "word_sort_list": word_sort_list})
+    return render(request, 'recall/translateword.html', {"cur_word": cur_word, "word_sort_list": word_sort_list})
 
 def init():
 

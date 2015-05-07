@@ -11,7 +11,7 @@
 
 
 <body>
-
+<a href="http://translate.google.cn/?hl=zh-CN&tab=wT#en/zh-CN/{{ cur_word }}">Google翻译 {{ cur_word }}</a>
 <div class="span5">
 
     <a href='#' id='select-all'>select all</a>
@@ -79,12 +79,13 @@
         });
         $('#commit-words').click(function () {
             var set_word_status_url = "/word/set_word_status?conversant_words=" + conversant_words
-            alert(set_word_status_url);
+            alert_msg = "您是否要提交" + conversant_words + "为熟词?"
+            alert(alert_msg);
             $.get(set_word_status_url, function(data, status){
                 alert_msg = data.result;
                 alert(alert_msg);
             });
-            location.reload();
+{#            location.reload();#}
         });
 
     </script>

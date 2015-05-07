@@ -19,7 +19,7 @@ def change_url(pre_url):
             return pre_url
     params = urllib.urlencode({'tran_page': pre_url})
 
-    return "%sword/tran?%s" % (HOST, params)
+    return "/tran?%s" % (params)
 
 
 from util import RegexUtil
