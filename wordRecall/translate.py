@@ -6,11 +6,11 @@ from lxml.html.soupparser import fromstring
 from util import md5util, StringUtil
 import os
 from lxml.html import HtmlElement
-from models import WordRememberInfos
+
 import urlparse
 from healthPriceless.settings import HOST
 from loader import get_html_str
-
+from wordinfos import get_all_conversant_word_list
 
 def change_url(pre_url):
     un_change_patterns = ['css', 'png', 'js', 'ico', 'tgz', 'zip', 'rar', 'pdf', 'gif', 'git']
@@ -139,26 +139,6 @@ def modify_bolock_p(p, translate_url):
 
     # print '-' * 40
     # print lxml.html.tostring(p)
-
-
-all_conversant_word_list = None
-
-def get_all_conversant_word_list():
-    """
-    获取所有的熟单词
-    """
-    global all_conversant_word_list
-    if all_conversant_word_list is not None:
-        return all_conversant_word_list
-
-    conversant_words = WordRememberInfos.objects.filter(remember=WordRememberInfos.CHOICE_REMEMBER_CONVERSANT)
-    all_conversant_word_list = {}
-    for word in conversant_words:
-        all_conversant_word_list[word.word_spelling] = None
-
-    for split_word in StringUtil.SPLIT_STR_LIST:
-        all_conversant_word_list[split_word] = None
-    return all_conversant_word_list
 
 
 def change_p(html, translate_url):

@@ -10,7 +10,7 @@ UNICODE_SPLIT_STR_LIST = []
 for word in SPLIT_STR_LIST:
     UNICODE_SPLIT_STR_LIST.append(word.decode())
 
-def get_split_words(lines, word_only=False, if_check_word=False):
+def get_split_words(lines, word_only=False, if_check_word=False, lower=False):
     if isinstance(lines, str):
         result = [lines]
     elif isinstance(lines, unicode):
@@ -20,7 +20,7 @@ def get_split_words(lines, word_only=False, if_check_word=False):
     else:
         raise Exception(lines)
     for split_word in SPLIT_STR_LIST:
-        result = get_split_word(result, split_word, word_only=word_only, if_check_word=if_check_word)
+        result = get_split_word(result, split_word, word_only=word_only, if_check_word=if_check_word, lower=lower)
 
     return result
 
@@ -32,7 +32,7 @@ def change_unicode_2_str(unicode_str):
     else:
         raise Exception("a")
 
-def get_split_word(lines, split_word, word_only=False, if_check_word=False):
+def get_split_word(lines, split_word, word_only=False, if_check_word=False, lower=False):
     """
     分词   get_split_words(" a  b \n")　return [' ', 'a', ' ', ' ', 'b', ' ', '\n']
     :param lines:
@@ -52,6 +52,8 @@ def get_split_word(lines, split_word, word_only=False, if_check_word=False):
                 if from_idx < find_idx:
                     end_idx = find_idx
                     unchecked_word = line[from_idx:end_idx]
+                    if lower:
+                        unchecked_word = unchecked_word.lower()
                     if if_check_word:
                         if is_word(unchecked_word):
                             result.append(unchecked_word)

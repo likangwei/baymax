@@ -7,7 +7,7 @@ from loader import get_html_element
 change_list = ["//p", "//h1", "//h2", "//li"]
 
 
-def get_html_word_repeated_info(page_url):
+def get_html_word_repeated_info(page_url, hidden_word_list=[]):
     html_element = get_html_element(page_url)
     """
     获取网页的词频数据
@@ -17,12 +17,14 @@ def get_html_word_repeated_info(page_url):
         for p in html_element.xpath(change_tag):
             __add_word_repeated_count(p.text, result)
             __add_word_repeated_count(p.tail, result)
-
+    for hidden_word in hidden_word_list:
+        if result.has_key(hidden_word):
+            del result[hidden_word]
     return result
 
 def __add_word_repeated_count(text, result):
     if text:
-        word_list = StringUtil.get_split_words(text, word_only=True, if_check_word=True)
+        word_list = StringUtil.get_split_words(text, word_only=True, if_check_word=True, lower=True)
 
         for word in word_list:
             if result.has_key(word):
