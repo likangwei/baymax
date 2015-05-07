@@ -11,7 +11,7 @@ import urlparse
 from healthPriceless.settings import HOST
 
 def change_url(pre_url):
-    un_change_patterns = ['css', 'png', 'js', 'ico']
+    un_change_patterns = ['css', 'png', 'js', 'ico', 'tgz', 'zip', 'rar', 'pdf', 'gif', 'git']
 
     for un_change_pattern in un_change_patterns:
         if pre_url.endswith(un_change_pattern):
