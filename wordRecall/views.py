@@ -12,6 +12,7 @@ import urllib
 import models
 import translate
 from django.http import HttpResponseRedirect
+import json
 
 class TransPageForm(forms.Form):
     tran_page = forms.CharField(label='tran_page', max_length=100)
@@ -50,6 +51,13 @@ def call(request):
 def get_recall_word(request):
     return _get_words(request, models.CHOICE_REMEMBER_UNACQUAINTED)
 
+def get_word_infos(request):
+    print request
+    data = {}
+    data['something'] = 'useful'
+    return HttpResponse(json.dumps(data), content_type = "application/json")
+    return HttpResponse(json.dumps(a), content_type='application/json')
+
 def get_tran_page(request):
 
     KEY = 'tran_page'
@@ -84,8 +92,22 @@ def _get_words(request, filter):
     return render(request, 'recall/recall.html', {"form": form, "id":recall_word.pk} )
 
 def translate_word(request):
+    """
+    Goo翻译单词
+    显示
+    """
     word = request.GET['word']
-    return render(request, 'recall/translateword.html', {"word": word} )
+    from_page = request.GET['from_page']
+    print from_page
+    word_map = get_word_repeated_count_map(from_page)
+    word_sort_list = word_map.items()
+    word_sort_list.sort(cmp=lambda x, y: cmp(y[1], x[1]))
+    return render(request, 'recall/translateword.html', {"word": word, "word_sort_list": word_sort_list})
+
+def get_word_repeated_count_map(page_url):
+
+    return {'hello': 1, 'i': 2, 'am': 3, 'superman': 4}
+
 
 def init():
 

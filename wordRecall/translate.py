@@ -9,6 +9,8 @@ from lxml.html import HtmlElement
 from models import WordRememberInfos
 import urlparse
 from healthPriceless.settings import HOST
+from loader import get_html_str
+
 
 def change_url(pre_url):
     un_change_patterns = ['css', 'png', 'js', 'ico', 'tgz', 'zip', 'rar', 'pdf', 'gif', 'git']
@@ -22,28 +24,17 @@ def change_url(pre_url):
     return "%sword/tran?%s" % (HOST, params)
 
 
-def get_html_str(tran_page_url):
-    url_md5 = md5util.get_md5_value(tran_page_url)
-    html_tmp_file_name = "tmp/%s.html" %url_md5
-    print os.path.abspath(html_tmp_file_name)
-
-    if os.path.exists(html_tmp_file_name):
-        return open(html_tmp_file_name).read()
-    else:
-        f = urllib.urlopen(tran_page_url)
-        htmlStr = f.read()
-        if f.getcode() == 200:
-            open(html_tmp_file_name, 'w').write(htmlStr)
-        return htmlStr
-
 from util import RegexUtil
 
 
-def get_translate_word_url(word_lower_case):
-    return "%sword/word_translate?word=%s" %(HOST, word_lower_case)
+def get_translate_word_url(word_lower_case, translate_url):
+    """
+    获取翻译单词的网页网址
+    """
+    return "%sword/word_translate?word=%s&from_page=%s" %(HOST, word_lower_case, translate_url)
 
 
-def get_sub_element_by_text(p_text, parent):
+def get_sub_element_by_text(p_text, parent, translate_url):
     """
     进行 英文字符处理
     """
@@ -65,7 +56,7 @@ def get_sub_element_by_text(p_text, parent):
                     has_add_p_text = True
 
                     cur_u = lxml.etree.SubElement(parent, "a")
-                    cur_u.attrib['href'] = get_translate_word_url(word_lower_case)
+                    cur_u.attrib['href'] = get_translate_word_url(word_lower_case, translate_url)
                     # style="color:#DD4C53"
                     cur_u.attrib['style'] = r"color:#DD4CA0"
                     cur_u.attrib['target'] = r"_blank"
@@ -84,7 +75,7 @@ def get_sub_element_by_text(p_text, parent):
 
     return result
 
-def get_sub_element(current_tag, parent, get_text=True, get_children=True, get_tail=True):
+def get_sub_element(current_tag, parent, translate_url, get_text=True, get_children=True, get_tail=True):
     """
     获取block tag的所有子集
     """
@@ -93,11 +84,11 @@ def get_sub_element(current_tag, parent, get_text=True, get_children=True, get_t
     if get_text:
         current_tag_text = current_tag.text
         current_tag.text = None
-        result.extend(get_sub_element_by_text(current_tag_text, parent))
+        result.extend(get_sub_element_by_text(current_tag_text, parent, translate_url))
 
     if get_children:
         for children in raw_children:
-            children_subs = get_sub_element_by_text(children.tail, parent)
+            children_subs = get_sub_element_by_text(children.tail, parent, translate_url)
             children.tail = None
             result.append(children)
             result.extend(children_subs)
@@ -105,20 +96,18 @@ def get_sub_element(current_tag, parent, get_text=True, get_children=True, get_t
     if get_tail:
         current_tag_tail = current_tag.tail
         current_tag.tail = None
-        result.extend(get_sub_element_by_text(current_tag_tail, parent))
-
-
+        result.extend(get_sub_element_by_text(current_tag_tail, parent, translate_url))
     return result
 
 
-def modify_bolock_p(p):
+def modify_bolock_p(p, translate_url):
     """
     变更<ｐ>标签的具体实现
     """
     # print lxml.html.tostring(p)
     # if not p.text.startswith('Django provides an abstraction'):
     #     return
-    sub_element_list = get_sub_element(p, p)
+    sub_element_list = get_sub_element(p, p, translate_url)
     p._children = []
     p.text = p.tail = None
     # p.clear()
@@ -172,7 +161,7 @@ def get_all_conversant_word_list():
     return all_conversant_word_list
 
 
-def change_p(html):
+def change_p(html, translate_url):
     """
     变更所有的<ｐ>标签
     """
@@ -181,7 +170,7 @@ def change_p(html):
         for p in html.xpath(change_tag):
             if p.text:
                 # print lxml.html.tostring(p)
-                modify_bolock_p(p)
+                modify_bolock_p(p, translate_url)
 
 def change_script_data_main_url(html, tran_page_url):
     scripts = html.xpath(u"//script")
@@ -194,6 +183,6 @@ def get_translate_page(tran_page_url):
     html = lxml.html.fromstring(htmlStr)
     html.rewrite_links(change_url, base_href=tran_page_url)
     change_script_data_main_url(html, tran_page_url)
-    change_p(html)
+    change_p(html, tran_page_url)
     return lxml.html.tostring(html)
 

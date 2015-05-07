@@ -12,6 +12,7 @@ def get_meaning_of_word(word):
     except:
         return ""
 
+import operator
 import json
 def is_complex(word_spelling, wordJson):
 

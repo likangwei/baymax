@@ -10,6 +10,7 @@ urlpatterns =[
     url(r'^recall/?', views.get_recall_word, name='recall'),
     url(r'^tran/?', views.get_tran_page, name='tran'),
     url(r'^word_translate/?', views.translate_word, name='translate_word'),
+    url(r'^set_word_status/?', views.get_word_infos, name='translate_word'),
 
 ]
 
