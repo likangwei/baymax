@@ -29,7 +29,8 @@ def get_all_conversant_word_list():
     global all_conversant_word_list
     if all_conversant_word_list is not None:
         return all_conversant_word_list
-
+    from util import TimeUtil
+    print 'reload all_conversant_word_list %s' %TimeUtil.get_now_time()
     conversant_words = WordRememberInfos.objects.filter(remember=WordRememberInfos.CHOICE_REMEMBER_CONVERSANT)
     all_conversant_word_list = {}
     for word in conversant_words:
