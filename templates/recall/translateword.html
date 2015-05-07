@@ -80,12 +80,13 @@
         $('#commit-words').click(function () {
             var set_word_status_url = "/word/set_word_status?conversant_words=" + conversant_words
             alert_msg = "您是否要提交" + conversant_words + "为熟词?"
-            alert(alert_msg);
-            $.get(set_word_status_url, function(data, status){
-                alert_msg = data.result;
-                alert(alert_msg);
-            });
-{#            location.reload();#}
+            if (confirm(alert_msg) == true) {
+                $.get(set_word_status_url, function(data, status){
+                    alert_msg = data.result;
+                    alert(alert_msg);
+                });
+            }
+
         });
 
     </script>
