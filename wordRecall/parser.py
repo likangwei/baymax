@@ -1,5 +1,5 @@
 __author__ = 'hanzhao'
-
+# -*- coding: utf-8 -*-
 
 from util import StringUtil
 from loader import get_html_element
@@ -7,7 +7,7 @@ from loader import get_html_element
 change_list = ["//p", "//h1", "//h2", "//li"]
 
 
-def parse_html_word_repeated_info(page_url):
+def get_html_word_repeated_info(page_url):
     html_element = get_html_element(page_url)
     """
     获取网页的词频数据

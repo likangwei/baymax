@@ -13,6 +13,7 @@ import models
 import translate
 from django.http import HttpResponseRedirect
 import json
+from parser import get_html_word_repeated_info
 
 class TransPageForm(forms.Form):
     tran_page = forms.CharField(label='tran_page', max_length=100)
@@ -99,14 +100,10 @@ def translate_word(request):
     word = request.GET['word']
     from_page = request.GET['from_page']
     print from_page
-    word_map = get_word_repeated_count_map(from_page)
+    word_map = get_html_word_repeated_info(from_page)
     word_sort_list = word_map.items()
     word_sort_list.sort(cmp=lambda x, y: cmp(y[1], x[1]))
     return render(request, 'recall/translateword.html', {"word": word, "word_sort_list": word_sort_list})
-
-def get_word_repeated_count_map(page_url):
-
-    return {'hello': 1, 'i': 2, 'am': 3, 'superman': 4}
 
 
 def init():

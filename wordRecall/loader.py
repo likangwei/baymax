@@ -1,6 +1,8 @@
 __author__ = 'hanzhao'
 import urllib
 import lxml
+from util import md5util
+import os
 
 def get_html_str(tran_page_url):
     url_md5 = md5util.get_md5_value(tran_page_url)
