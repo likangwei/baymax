@@ -1,0 +1,295 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>Authenticating against Django’s user database from Apache &mdash; Django 1.8.2.dev20150505153848 documentation</title>
+    
+    <link rel="stylesheet" href="../../../_static/default.css" type="text/css" />
+    <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '../../../',
+        VERSION:     '1.8.2.dev20150505153848',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="../../../_static/jquery.js"></script>
+    <script type="text/javascript" src="../../../_static/underscore.js"></script>
+    <script type="text/javascript" src="../../../_static/doctools.js"></script>
+    <link rel="top" title="Django 1.8.2.dev20150505153848 documentation" href="../../../index.html" />
+    <link rel="up" title="How to deploy with WSGI" href="index.html" />
+    <link rel="next" title="How to use Django with Gunicorn" href="gunicorn.html" />
+    <link rel="prev" title="How to use Django with Apache and mod_wsgi" href="modwsgi.html" />
+
+
+
+ 
+<script type="text/javascript" src="../../../templatebuiltins.js"></script>
+<script type="text/javascript">
+(function($) {
+    if (!django_template_builtins) {
+       // templatebuiltins.js missing, do nothing.
+       return;
+    }
+    $(document).ready(function() {
+        // Hyperlink Django template tags and filters
+        var base = "../../../ref/templates/builtins.html";
+        if (base == "#") {
+            // Special case for builtins.html itself
+            base = "";
+        }
+        // Tags are keywords, class '.k'
+        $("div.highlight\\-html\\+django span.k").each(function(i, elem) {
+             var tagname = $(elem).text();
+             if ($.inArray(tagname, django_template_builtins.ttags) != -1) {
+                 var fragment = tagname.replace(/_/, '-');
+                 $(elem).html("<a href='" + base + "#" + fragment + "'>" + tagname + "</a>");
+             }
+        });
+        // Filters are functions, class '.nf'
+        $("div.highlight\\-html\\+django span.nf").each(function(i, elem) {
+             var filtername = $(elem).text();
+             if ($.inArray(filtername, django_template_builtins.tfilters) != -1) {
+                 var fragment = filtername.replace(/_/, '-');
+                 $(elem).html("<a href='" + base + "#" + fragment + "'>" + filtername + "</a>");
+             }
+        });
+    });
+})(jQuery);
+</script>
+
+
+  </head>
+  <body>
+
+    <div class="document">
+  <div id="custom-doc" class="yui-t6">
+    <div id="hd">
+      <h1><a href="../../../index.html">Django 1.8.2.dev20150505153848 documentation</a></h1>
+      <div id="global-nav">
+        <a title="Home page" href="../../../index.html">Home</a>  |
+        <a title="Table of contents" href="../../../contents.html">Table of contents</a>  |
+        <a title="Global index" href="../../../genindex.html">Index</a>  |
+        <a title="Module index" href="../../../py-modindex.html">Modules</a>
+      </div>
+      <div class="nav">
+    &laquo; <a href="modwsgi.html" title="How to use Django with Apache and mod_wsgi">previous</a>
+     |
+    <a href="../../index.html" title="&amp;#8220;How-to&amp;#8221; guides" accesskey="U">up</a>
+   |
+    <a href="gunicorn.html" title="How to use Django with Gunicorn">next</a> &raquo;</div>
+    </div>
+
+    <div id="bd">
+      <div id="yui-main">
+        <div class="yui-b">
+          <div class="yui-g" id="howto-deployment-wsgi-apache-auth">
+            
+  <div class="section" id="s-authenticating-against-django-s-user-database-from-apache">
+<span id="authenticating-against-django-s-user-database-from-apache"></span><h1>Authenticating against Django&#8217;s user database from Apache<a class="headerlink" href="#authenticating-against-django-s-user-database-from-apache" title="Permalink to this headline">¶</a></h1>
+<p>Since keeping multiple authentication databases in sync is a common problem when
+dealing with Apache, you can configure Apache to authenticate against Django&#8217;s
+<a class="reference internal" href="../../../topics/auth/index.html"><em>authentication system</em></a> directly. This requires Apache
+version &gt;= 2.2 and mod_wsgi &gt;= 2.0. For example, you could:</p>
+<ul class="simple">
+<li>Serve static/media files directly from Apache only to authenticated users.</li>
+<li>Authenticate access to a <a class="reference external" href="http://subversion.tigris.org/">Subversion</a> repository against Django users with
+a certain permission.</li>
+<li>Allow certain users to connect to a WebDAV share created with <a class="reference external" href="http://httpd.apache.org/docs/2.2/mod/mod_dav.html">mod_dav</a>.</li>
+</ul>
+<div class="admonition note">
+<p class="first admonition-title">Note</p>
+<p class="last">If you have installed a <a class="reference internal" href="../../../topics/auth/customizing.html#auth-custom-user"><em>custom User model</em></a> and
+want to use this default auth handler, it must support an <tt class="docutils literal"><span class="pre">is_active</span></tt>
+attribute. If you want to use group based authorization, your custom user
+must have a relation named &#8216;groups&#8217;, referring to a related object that has
+a &#8216;name&#8217; field. You can also specify your own custom mod_wsgi
+auth handler if your custom cannot conform to these requirements.</p>
+</div>
+<div class="section" id="s-authentication-with-mod-wsgi">
+<span id="authentication-with-mod-wsgi"></span><h2>Authentication with mod_wsgi<a class="headerlink" href="#authentication-with-mod-wsgi" title="Permalink to this headline">¶</a></h2>
+<div class="admonition note">
+<p class="first admonition-title">Note</p>
+<p class="last">The use of <tt class="docutils literal"><span class="pre">WSGIApplicationGroup</span> <span class="pre">%{GLOBAL}</span></tt> in the configurations below
+presumes that your Apache instance is running only one Django application.
+If you are running more than one Django application, please refer to the
+<a class="reference external" href="https://code.google.com/p/modwsgi/wiki/ConfigurationGuidelines#Defining_Application_Groups">Defining Application Groups</a> section of the mod_wsgi docs for more
+information about this setting.</p>
+</div>
+<p>Make sure that mod_wsgi is installed and activated and that you have
+followed the steps to setup <a class="reference internal" href="modwsgi.html"><em>Apache with mod_wsgi</em></a>.</p>
+<p>Next, edit your Apache configuration to add a location that you want
+only authenticated users to be able to view:</p>
+<div class="highlight-apache"><div class="highlight"><pre><span class="nb">WSGIScriptAlias</span> / <span class="sx">/path/to/mysite.com/mysite/wsgi.py</span>
+<span class="nb">WSGIPythonPath</span> <span class="sx">/path/to/mysite.com</span>
+
+<span class="nb">WSGIProcessGroup</span> %{GLOBAL}
+<span class="nb">WSGIApplicationGroup</span> %{GLOBAL}
+
+<span class="nt">&lt;Location</span> <span class="s">&quot;/secret&quot;</span><span class="nt">&gt;</span>
+    <span class="nb">AuthType</span> Basic
+    <span class="nb">AuthName</span> <span class="s2">&quot;Top Secret&quot;</span>
+    <span class="nb">Require</span> valid-user
+    <span class="nb">AuthBasicProvider</span> wsgi
+    <span class="nb">WSGIAuthUserScript</span> <span class="sx">/path/to/mysite.com/mysite/wsgi.py</span>
+<span class="nt">&lt;/Location&gt;</span>
+</pre></div>
+</div>
+<p>The <tt class="docutils literal"><span class="pre">WSGIAuthUserScript</span></tt> directive tells mod_wsgi to execute the
+<tt class="docutils literal"><span class="pre">check_password</span></tt> function in specified wsgi script, passing the user name and
+password that it receives from the prompt. In this example, the
+<tt class="docutils literal"><span class="pre">WSGIAuthUserScript</span></tt> is the same as the <tt class="docutils literal"><span class="pre">WSGIScriptAlias</span></tt> that defines your
+application <a class="reference internal" href="index.html"><em>that is created by django-admin startproject</em></a>.</p>
+<div class="admonition-using-apache-2-2-with-authentication admonition">
+<p class="first admonition-title">Using Apache 2.2 with authentication</p>
+<p>Make sure that <tt class="docutils literal"><span class="pre">mod_auth_basic</span></tt> and <tt class="docutils literal"><span class="pre">mod_authz_user</span></tt> are loaded.</p>
+<p>These might be compiled statically into Apache, or you might need to use
+LoadModule to load them dynamically in your <tt class="docutils literal"><span class="pre">httpd.conf</span></tt>:</p>
+<div class="last highlight-apache"><div class="highlight"><pre><span class="nb">LoadModule</span> auth_basic_module modules/mod_auth_basic.so
+<span class="nb">LoadModule</span> authz_user_module modules/mod_authz_user.so
+</pre></div>
+</div>
+</div>
+<p>Finally, edit your WSGI script <tt class="docutils literal"><span class="pre">mysite.wsgi</span></tt> to tie Apache&#8217;s authentication
+to your site&#8217;s authentication mechanisms by importing the <tt class="docutils literal"><span class="pre">check_password</span></tt>
+function:</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="kn">import</span> <span class="nn">os</span>
+
+<span class="n">os</span><span class="o">.</span><span class="n">environ</span><span class="p">[</span><span class="s">&#39;DJANGO_SETTINGS_MODULE&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="s">&#39;mysite.settings&#39;</span>
+
+<span class="kn">from</span> <span class="nn">django.contrib.auth.handlers.modwsgi</span> <span class="kn">import</span> <span class="n">check_password</span>
+
+<span class="kn">from</span> <span class="nn">django.core.handlers.wsgi</span> <span class="kn">import</span> <span class="n">WSGIHandler</span>
+<span class="n">application</span> <span class="o">=</span> <span class="n">WSGIHandler</span><span class="p">()</span>
+</pre></div>
+</div>
+<p>Requests beginning with <tt class="docutils literal"><span class="pre">/secret/</span></tt> will now require a user to authenticate.</p>
+<p>The mod_wsgi <a class="reference external" href="http://code.google.com/p/modwsgi/wiki/AccessControlMechanisms">access control mechanisms documentation</a> provides additional
+details and information about alternative methods of authentication.</p>
+<div class="section" id="s-authorization-with-mod-wsgi-and-django-groups">
+<span id="authorization-with-mod-wsgi-and-django-groups"></span><h3>Authorization with mod_wsgi and Django groups<a class="headerlink" href="#authorization-with-mod-wsgi-and-django-groups" title="Permalink to this headline">¶</a></h3>
+<p>mod_wsgi also provides functionality to restrict a particular location to
+members of a group.</p>
+<p>In this case, the Apache configuration should look like this:</p>
+<div class="highlight-apache"><div class="highlight"><pre><span class="nb">WSGIScriptAlias</span> / <span class="sx">/path/to/mysite.com/mysite/wsgi.py</span>
+
+<span class="nb">WSGIProcessGroup</span> %{GLOBAL}
+<span class="nb">WSGIApplicationGroup</span> %{GLOBAL}
+
+<span class="nt">&lt;Location</span> <span class="s">&quot;/secret&quot;</span><span class="nt">&gt;</span>
+    <span class="nb">AuthType</span> Basic
+    <span class="nb">AuthName</span> <span class="s2">&quot;Top Secret&quot;</span>
+    <span class="nb">AuthBasicProvider</span> wsgi
+    <span class="nb">WSGIAuthUserScript</span> <span class="sx">/path/to/mysite.com/mysite/wsgi.py</span>
+    <span class="nb">WSGIAuthGroupScript</span> <span class="sx">/path/to/mysite.com/mysite/wsgi.py</span>
+    <span class="nb">Require</span> <span class="k">group</span> secret-agents
+    <span class="nb">Require</span> valid-user
+<span class="nt">&lt;/Location&gt;</span>
+</pre></div>
+</div>
+<p>To support the <tt class="docutils literal"><span class="pre">WSGIAuthGroupScript</span></tt> directive, the same WSGI script
+<tt class="docutils literal"><span class="pre">mysite.wsgi</span></tt> must also import the <tt class="docutils literal"><span class="pre">groups_for_user</span></tt> function which
+returns a list groups the given user belongs to.</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="kn">from</span> <span class="nn">django.contrib.auth.handlers.modwsgi</span> <span class="kn">import</span> <span class="n">check_password</span><span class="p">,</span> <span class="n">groups_for_user</span>
+</pre></div>
+</div>
+<p>Requests for <tt class="docutils literal"><span class="pre">/secret/</span></tt> will now also require user to be a member of the
+&#8220;secret-agents&#8221; group.</p>
+</div>
+</div>
+</div>
+
+
+          </div>
+        </div>
+      </div>
+      
+        
+          <div class="yui-b" id="sidebar">
+            
+      <div class="sphinxsidebar">
+        <div class="sphinxsidebarwrapper">
+  <h3><a href="../../../contents.html">Table Of Contents</a></h3>
+  <ul>
+<li><a class="reference internal" href="#">Authenticating against Django&#8217;s user database from Apache</a><ul>
+<li><a class="reference internal" href="#authentication-with-mod-wsgi">Authentication with mod_wsgi</a><ul>
+<li><a class="reference internal" href="#authorization-with-mod-wsgi-and-django-groups">Authorization with mod_wsgi and Django groups</a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+
+  <h3>Browse</h3>
+  <ul>
+    
+      <li>Prev: <a href="modwsgi.html">How to use Django with Apache and mod_wsgi</a></li>
+    
+    
+      <li>Next: <a href="gunicorn.html">How to use Django with Gunicorn</a></li>
+    
+  </ul>
+  <h3>You are here:</h3>
+  <ul>
+      <li>
+        <a href="../../../index.html">Django 1.8.2.dev20150505153848 documentation</a>
+        
+          <ul><li><a href="../../index.html">&#8220;How-to&#8221; guides</a>
+        
+          <ul><li><a href="../index.html">Deploying Django</a>
+        
+          <ul><li><a href="index.html">How to deploy with WSGI</a>
+        
+        <ul><li>Authenticating against Django&#8217;s user database from Apache</li></ul>
+        </li></ul></li></ul></li></ul>
+      </li>
+  </ul>
+
+  <h3>This Page</h3>
+  <ul class="this-page-menu">
+    <li><a href="../../../_sources/howto/deployment/wsgi/apache-auth.txt"
+           rel="nofollow">Show Source</a></li>
+  </ul>
+<div id="searchbox" style="display: none">
+  <h3>Quick search</h3>
+    <form class="search" action="../../../search.html" method="get">
+      <input type="text" name="q" />
+      <input type="submit" value="Go" />
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+    <p class="searchtip" style="font-size: 90%">
+    Enter search terms or a module, class or function name.
+    </p>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+              <h3>Last update:</h3>
+              <p class="topless">May 06, 2015</p>
+          </div>
+        
+      
+    </div>
+
+    <div id="ft">
+      <div class="nav">
+    &laquo; <a href="modwsgi.html" title="How to use Django with Apache and mod_wsgi">previous</a>
+     |
+    <a href="../../index.html" title="&amp;#8220;How-to&amp;#8221; guides" accesskey="U">up</a>
+   |
+    <a href="gunicorn.html" title="How to use Django with Gunicorn">next</a> &raquo;</div>
+    </div>
+  </div>
+
+      <div class="clearer"></div>
+    </div>
+  </body>
+</html>

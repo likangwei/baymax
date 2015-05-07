@@ -1,0 +1,882 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>PostgreSQL specific model fields &mdash; Django 1.8.2.dev20150505153848 documentation</title>
+    
+    <link rel="stylesheet" href="../../../_static/default.css" type="text/css" />
+    <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '../../../',
+        VERSION:     '1.8.2.dev20150505153848',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="../../../_static/jquery.js"></script>
+    <script type="text/javascript" src="../../../_static/underscore.js"></script>
+    <script type="text/javascript" src="../../../_static/doctools.js"></script>
+    <link rel="top" title="Django 1.8.2.dev20150505153848 documentation" href="../../../index.html" />
+    <link rel="up" title="django.contrib.postgres" href="index.html" />
+    <link rel="next" title="PostgreSQL specific form fields and widgets" href="forms.html" />
+    <link rel="prev" title="django.contrib.postgres" href="index.html" />
+
+
+
+ 
+<script type="text/javascript" src="../../../templatebuiltins.js"></script>
+<script type="text/javascript">
+(function($) {
+    if (!django_template_builtins) {
+       // templatebuiltins.js missing, do nothing.
+       return;
+    }
+    $(document).ready(function() {
+        // Hyperlink Django template tags and filters
+        var base = "../../templates/builtins.html";
+        if (base == "#") {
+            // Special case for builtins.html itself
+            base = "";
+        }
+        // Tags are keywords, class '.k'
+        $("div.highlight\\-html\\+django span.k").each(function(i, elem) {
+             var tagname = $(elem).text();
+             if ($.inArray(tagname, django_template_builtins.ttags) != -1) {
+                 var fragment = tagname.replace(/_/, '-');
+                 $(elem).html("<a href='" + base + "#" + fragment + "'>" + tagname + "</a>");
+             }
+        });
+        // Filters are functions, class '.nf'
+        $("div.highlight\\-html\\+django span.nf").each(function(i, elem) {
+             var filtername = $(elem).text();
+             if ($.inArray(filtername, django_template_builtins.tfilters) != -1) {
+                 var fragment = filtername.replace(/_/, '-');
+                 $(elem).html("<a href='" + base + "#" + fragment + "'>" + filtername + "</a>");
+             }
+        });
+    });
+})(jQuery);
+</script>
+
+
+  </head>
+  <body>
+
+    <div class="document">
+  <div id="custom-doc" class="yui-t6">
+    <div id="hd">
+      <h1><a href="../../../index.html">Django 1.8.2.dev20150505153848 documentation</a></h1>
+      <div id="global-nav">
+        <a title="Home page" href="../../../index.html">Home</a>  |
+        <a title="Table of contents" href="../../../contents.html">Table of contents</a>  |
+        <a title="Global index" href="../../../genindex.html">Index</a>  |
+        <a title="Module index" href="../../../py-modindex.html">Modules</a>
+      </div>
+      <div class="nav">
+    &laquo; <a href="index.html" title="&lt;tt class=&#34;docutils literal&#34;&gt;&lt;span class=&#34;pre&#34;&gt;django.contrib.postgres&lt;/span&gt;&lt;/tt&gt;">previous</a>
+     |
+    <a href="../../index.html" title="API Reference" accesskey="U">up</a>
+   |
+    <a href="forms.html" title="PostgreSQL specific form fields and widgets">next</a> &raquo;</div>
+    </div>
+
+    <div id="bd">
+      <div id="yui-main">
+        <div class="yui-b">
+          <div class="yui-g" id="ref-contrib-postgres-fields">
+            
+  <div class="section" id="s-postgresql-specific-model-fields">
+<span id="postgresql-specific-model-fields"></span><h1>PostgreSQL specific model fields<a class="headerlink" href="#postgresql-specific-model-fields" title="Permalink to this headline">¶</a></h1>
+<p>All of these fields are available from the <tt class="docutils literal"><span class="pre">django.contrib.postgres.fields</span></tt>
+module.</p>
+<div class="section" id="s-arrayfield">
+<span id="arrayfield"></span><h2>ArrayField<a class="headerlink" href="#arrayfield" title="Permalink to this headline">¶</a></h2>
+<dl class="class">
+<dt id="django.contrib.postgres.fields.ArrayField">
+<em class="property">class </em><tt class="descname">ArrayField</tt>(<em>base_field</em>, <em>size=None</em>, <em>**options</em>)<a class="headerlink" href="#django.contrib.postgres.fields.ArrayField" title="Permalink to this definition">¶</a></dt>
+<dd><p>A field for storing lists of data. Most field types can be used, you simply
+pass another field instance as the <a class="reference internal" href="#django.contrib.postgres.fields.ArrayField.base_field" title="django.contrib.postgres.fields.ArrayField.base_field"><tt class="xref py py-attr docutils literal"><span class="pre">base_field</span></tt></a>. You may also specify a <a class="reference internal" href="#django.contrib.postgres.fields.ArrayField.size" title="django.contrib.postgres.fields.ArrayField.size"><tt class="xref py py-attr docutils literal"><span class="pre">size</span></tt></a>. <tt class="docutils literal"><span class="pre">ArrayField</span></tt> can be nested to store multi-dimensional
+arrays.</p>
+<dl class="attribute">
+<dt id="django.contrib.postgres.fields.ArrayField.base_field">
+<tt class="descname">base_field</tt><a class="headerlink" href="#django.contrib.postgres.fields.ArrayField.base_field" title="Permalink to this definition">¶</a></dt>
+<dd><p>This is a required argument.</p>
+<p>Specifies the underlying data type and behavior for the array. It
+should be an instance of a subclass of
+<a class="reference internal" href="../../models/fields.html#django.db.models.Field" title="django.db.models.Field"><tt class="xref py py-class docutils literal"><span class="pre">Field</span></tt></a>. For example, it could be an
+<a class="reference internal" href="../../models/fields.html#django.db.models.IntegerField" title="django.db.models.IntegerField"><tt class="xref py py-class docutils literal"><span class="pre">IntegerField</span></tt></a> or a
+<a class="reference internal" href="../../models/fields.html#django.db.models.CharField" title="django.db.models.CharField"><tt class="xref py py-class docutils literal"><span class="pre">CharField</span></tt></a>. Most field types are permitted,
+with the exception of those handling relational data
+(<a class="reference internal" href="../../models/fields.html#django.db.models.ForeignKey" title="django.db.models.ForeignKey"><tt class="xref py py-class docutils literal"><span class="pre">ForeignKey</span></tt></a>,
+<a class="reference internal" href="../../models/fields.html#django.db.models.OneToOneField" title="django.db.models.OneToOneField"><tt class="xref py py-class docutils literal"><span class="pre">OneToOneField</span></tt></a> and
+<a class="reference internal" href="../../models/fields.html#django.db.models.ManyToManyField" title="django.db.models.ManyToManyField"><tt class="xref py py-class docutils literal"><span class="pre">ManyToManyField</span></tt></a>).</p>
+<p>It is possible to nest array fields - you can specify an instance of
+<tt class="docutils literal"><span class="pre">ArrayField</span></tt> as the <tt class="docutils literal"><span class="pre">base_field</span></tt>. For example:</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="kn">from</span> <span class="nn">django.db</span> <span class="kn">import</span> <span class="n">models</span>
+<span class="kn">from</span> <span class="nn">django.contrib.postgres.fields</span> <span class="kn">import</span> <span class="n">ArrayField</span>
+
+<span class="k">class</span> <span class="nc">ChessBoard</span><span class="p">(</span><span class="n">models</span><span class="o">.</span><span class="n">Model</span><span class="p">):</span>
+    <span class="n">board</span> <span class="o">=</span> <span class="n">ArrayField</span><span class="p">(</span>
+        <span class="n">ArrayField</span><span class="p">(</span>
+            <span class="n">models</span><span class="o">.</span><span class="n">CharField</span><span class="p">(</span><span class="n">max_length</span><span class="o">=</span><span class="mi">10</span><span class="p">,</span> <span class="n">blank</span><span class="o">=</span><span class="bp">True</span><span class="p">),</span>
+            <span class="n">size</span><span class="o">=</span><span class="mi">8</span><span class="p">,</span>
+        <span class="p">),</span>
+        <span class="n">size</span><span class="o">=</span><span class="mi">8</span><span class="p">,</span>
+    <span class="p">)</span>
+</pre></div>
+</div>
+<p>Transformation of values between the database and the model, validation
+of data and configuration, and serialization are all delegated to the
+underlying base field.</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="django.contrib.postgres.fields.ArrayField.size">
+<tt class="descname">size</tt><a class="headerlink" href="#django.contrib.postgres.fields.ArrayField.size" title="Permalink to this definition">¶</a></dt>
+<dd><p>This is an optional argument.</p>
+<p>If passed, the array will have a maximum size as specified. This will
+be passed to the database, although PostgreSQL at present does not
+enforce the restriction.</p>
+</dd></dl>
+
+</dd></dl>
+
+<div class="admonition note">
+<p class="first admonition-title">Note</p>
+<p>When nesting <tt class="docutils literal"><span class="pre">ArrayField</span></tt>, whether you use the <cite>size</cite> parameter or not,
+PostgreSQL requires that the arrays are rectangular:</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="kn">from</span> <span class="nn">django.contrib.postgres.fields</span> <span class="kn">import</span> <span class="n">ArrayField</span>
+<span class="kn">from</span> <span class="nn">django.db</span> <span class="kn">import</span> <span class="n">models</span>
+
+<span class="k">class</span> <span class="nc">Board</span><span class="p">(</span><span class="n">models</span><span class="o">.</span><span class="n">Model</span><span class="p">):</span>
+    <span class="n">pieces</span> <span class="o">=</span> <span class="n">ArrayField</span><span class="p">(</span><span class="n">ArrayField</span><span class="p">(</span><span class="n">models</span><span class="o">.</span><span class="n">IntegerField</span><span class="p">()))</span>
+
+<span class="c"># Valid</span>
+<span class="n">Board</span><span class="p">(</span><span class="n">pieces</span><span class="o">=</span><span class="p">[</span>
+    <span class="p">[</span><span class="mi">2</span><span class="p">,</span> <span class="mi">3</span><span class="p">],</span>
+    <span class="p">[</span><span class="mi">2</span><span class="p">,</span> <span class="mi">1</span><span class="p">],</span>
+<span class="p">])</span>
+
+<span class="c"># Not valid</span>
+<span class="n">Board</span><span class="p">(</span><span class="n">pieces</span><span class="o">=</span><span class="p">[</span>
+    <span class="p">[</span><span class="mi">2</span><span class="p">,</span> <span class="mi">3</span><span class="p">],</span>
+    <span class="p">[</span><span class="mi">2</span><span class="p">],</span>
+<span class="p">])</span>
+</pre></div>
+</div>
+<p class="last">If irregular shapes are required, then the underlying field should be made
+nullable and the values padded with <tt class="docutils literal"><span class="pre">None</span></tt>.</p>
+</div>
+<div class="section" id="s-querying-arrayfield">
+<span id="querying-arrayfield"></span><h3>Querying ArrayField<a class="headerlink" href="#querying-arrayfield" title="Permalink to this headline">¶</a></h3>
+<p>There are a number of custom lookups and transforms for <a class="reference internal" href="#django.contrib.postgres.fields.ArrayField" title="django.contrib.postgres.fields.ArrayField"><tt class="xref py py-class docutils literal"><span class="pre">ArrayField</span></tt></a>.
+We will use the following example model:</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="kn">from</span> <span class="nn">django.db</span> <span class="kn">import</span> <span class="n">models</span>
+<span class="kn">from</span> <span class="nn">django.contrib.postgres.fields</span> <span class="kn">import</span> <span class="n">ArrayField</span>
+
+<span class="k">class</span> <span class="nc">Post</span><span class="p">(</span><span class="n">models</span><span class="o">.</span><span class="n">Model</span><span class="p">):</span>
+    <span class="n">name</span> <span class="o">=</span> <span class="n">models</span><span class="o">.</span><span class="n">CharField</span><span class="p">(</span><span class="n">max_length</span><span class="o">=</span><span class="mi">200</span><span class="p">)</span>
+    <span class="n">tags</span> <span class="o">=</span> <span class="n">ArrayField</span><span class="p">(</span><span class="n">models</span><span class="o">.</span><span class="n">CharField</span><span class="p">(</span><span class="n">max_length</span><span class="o">=</span><span class="mi">200</span><span class="p">),</span> <span class="n">blank</span><span class="o">=</span><span class="bp">True</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">__str__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>  <span class="c"># __unicode__ on Python 2</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">name</span>
+</pre></div>
+</div>
+<div class="section" id="s-contains">
+<span id="s-std:fieldlookup-arrayfield.contains"></span><span id="contains"></span><span id="std:fieldlookup-arrayfield.contains"></span><h4>contains<a class="headerlink" href="#contains" title="Permalink to this headline">¶</a></h4>
+<p>The <a class="reference internal" href="../../models/querysets.html#std:fieldlookup-contains"><tt class="xref std std-lookup docutils literal"><span class="pre">contains</span></tt></a> lookup is overridden on <a class="reference internal" href="#django.contrib.postgres.fields.ArrayField" title="django.contrib.postgres.fields.ArrayField"><tt class="xref py py-class docutils literal"><span class="pre">ArrayField</span></tt></a>. The
+returned objects will be those where the values passed are a subset of the
+data. It uses the SQL operator <tt class="docutils literal"><span class="pre">&#64;&gt;</span></tt>. For example:</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="n">Post</span><span class="o">.</span><span class="n">objects</span><span class="o">.</span><span class="n">create</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="s">&#39;First post&#39;</span><span class="p">,</span> <span class="n">tags</span><span class="o">=</span><span class="p">[</span><span class="s">&#39;thoughts&#39;</span><span class="p">,</span> <span class="s">&#39;django&#39;</span><span class="p">])</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">Post</span><span class="o">.</span><span class="n">objects</span><span class="o">.</span><span class="n">create</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="s">&#39;Second post&#39;</span><span class="p">,</span> <span class="n">tags</span><span class="o">=</span><span class="p">[</span><span class="s">&#39;thoughts&#39;</span><span class="p">])</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">Post</span><span class="o">.</span><span class="n">objects</span><span class="o">.</span><span class="n">create</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="s">&#39;Third post&#39;</span><span class="p">,</span> <span class="n">tags</span><span class="o">=</span><span class="p">[</span><span class="s">&#39;tutorial&#39;</span><span class="p">,</span> <span class="s">&#39;django&#39;</span><span class="p">])</span>
+
+<span class="gp">&gt;&gt;&gt; </span><span class="n">Post</span><span class="o">.</span><span class="n">objects</span><span class="o">.</span><span class="n">filter</span><span class="p">(</span><span class="n">tags__contains</span><span class="o">=</span><span class="p">[</span><span class="s">&#39;thoughts&#39;</span><span class="p">])</span>
+<span class="go">[&lt;Post: First post&gt;, &lt;Post: Second post&gt;]</span>
+
+<span class="gp">&gt;&gt;&gt; </span><span class="n">Post</span><span class="o">.</span><span class="n">objects</span><span class="o">.</span><span class="n">filter</span><span class="p">(</span><span class="n">tags__contains</span><span class="o">=</span><span class="p">[</span><span class="s">&#39;django&#39;</span><span class="p">])</span>
+<span class="go">[&lt;Post: First post&gt;, &lt;Post: Third post&gt;]</span>
+
+<span class="gp">&gt;&gt;&gt; </span><span class="n">Post</span><span class="o">.</span><span class="n">objects</span><span class="o">.</span><span class="n">filter</span><span class="p">(</span><span class="n">tags__contains</span><span class="o">=</span><span class="p">[</span><span class="s">&#39;django&#39;</span><span class="p">,</span> <span class="s">&#39;thoughts&#39;</span><span class="p">])</span>
+<span class="go">[&lt;Post: First post&gt;]</span>
+</pre></div>
+</div>
+</div>
+<div class="section" id="s-contained-by">
+<span id="s-std:fieldlookup-arrayfield.contained_by"></span><span id="contained-by"></span><span id="std:fieldlookup-arrayfield.contained_by"></span><h4>contained_by<a class="headerlink" href="#contained-by" title="Permalink to this headline">¶</a></h4>
+<p>This is the inverse of the <a class="reference internal" href="#std:fieldlookup-arrayfield.contains"><tt class="xref std std-lookup docutils literal"><span class="pre">contains</span></tt></a> lookup -
+the objects returned will be those where the data is a subset of the values
+passed. It uses the SQL operator <tt class="docutils literal"><span class="pre">&lt;&#64;</span></tt>. For example:</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="n">Post</span><span class="o">.</span><span class="n">objects</span><span class="o">.</span><span class="n">create</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="s">&#39;First post&#39;</span><span class="p">,</span> <span class="n">tags</span><span class="o">=</span><span class="p">[</span><span class="s">&#39;thoughts&#39;</span><span class="p">,</span> <span class="s">&#39;django&#39;</span><span class="p">])</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">Post</span><span class="o">.</span><span class="n">objects</span><span class="o">.</span><span class="n">create</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="s">&#39;Second post&#39;</span><span class="p">,</span> <span class="n">tags</span><span class="o">=</span><span class="p">[</span><span class="s">&#39;thoughts&#39;</span><span class="p">])</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">Post</span><span class="o">.</span><span class="n">objects</span><span class="o">.</span><span class="n">create</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="s">&#39;Third post&#39;</span><span class="p">,</span> <span class="n">tags</span><span class="o">=</span><span class="p">[</span><span class="s">&#39;tutorial&#39;</span><span class="p">,</span> <span class="s">&#39;django&#39;</span><span class="p">])</span>
+
+<span class="gp">&gt;&gt;&gt; </span><span class="n">Post</span><span class="o">.</span><span class="n">objects</span><span class="o">.</span><span class="n">filter</span><span class="p">(</span><span class="n">tags__contained_by</span><span class="o">=</span><span class="p">[</span><span class="s">&#39;thoughts&#39;</span><span class="p">,</span> <span class="s">&#39;django&#39;</span><span class="p">])</span>
+<span class="go">[&lt;Post: First post&gt;, &lt;Post: Second post&gt;]</span>
+
+<span class="gp">&gt;&gt;&gt; </span><span class="n">Post</span><span class="o">.</span><span class="n">objects</span><span class="o">.</span><span class="n">filter</span><span class="p">(</span><span class="n">tags__contained_by</span><span class="o">=</span><span class="p">[</span><span class="s">&#39;thoughts&#39;</span><span class="p">,</span> <span class="s">&#39;django&#39;</span><span class="p">,</span> <span class="s">&#39;tutorial&#39;</span><span class="p">])</span>
+<span class="go">[&lt;Post: First post&gt;, &lt;Post: Second post&gt;, &lt;Post: Third post&gt;]</span>
+</pre></div>
+</div>
+</div>
+<div class="section" id="s-overlap">
+<span id="s-std:fieldlookup-arrayfield.overlap"></span><span id="overlap"></span><span id="std:fieldlookup-arrayfield.overlap"></span><h4>overlap<a class="headerlink" href="#overlap" title="Permalink to this headline">¶</a></h4>
+<p>Returns objects where the data shares any results with the values passed. Uses
+the SQL operator <tt class="docutils literal"><span class="pre">&amp;&amp;</span></tt>. For example:</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="n">Post</span><span class="o">.</span><span class="n">objects</span><span class="o">.</span><span class="n">create</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="s">&#39;First post&#39;</span><span class="p">,</span> <span class="n">tags</span><span class="o">=</span><span class="p">[</span><span class="s">&#39;thoughts&#39;</span><span class="p">,</span> <span class="s">&#39;django&#39;</span><span class="p">])</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">Post</span><span class="o">.</span><span class="n">objects</span><span class="o">.</span><span class="n">create</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="s">&#39;Second post&#39;</span><span class="p">,</span> <span class="n">tags</span><span class="o">=</span><span class="p">[</span><span class="s">&#39;thoughts&#39;</span><span class="p">])</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">Post</span><span class="o">.</span><span class="n">objects</span><span class="o">.</span><span class="n">create</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="s">&#39;Third post&#39;</span><span class="p">,</span> <span class="n">tags</span><span class="o">=</span><span class="p">[</span><span class="s">&#39;tutorial&#39;</span><span class="p">,</span> <span class="s">&#39;django&#39;</span><span class="p">])</span>
+
+<span class="gp">&gt;&gt;&gt; </span><span class="n">Post</span><span class="o">.</span><span class="n">objects</span><span class="o">.</span><span class="n">filter</span><span class="p">(</span><span class="n">tags__overlap</span><span class="o">=</span><span class="p">[</span><span class="s">&#39;thoughts&#39;</span><span class="p">])</span>
+<span class="go">[&lt;Post: First post&gt;, &lt;Post: Second post&gt;]</span>
+
+<span class="gp">&gt;&gt;&gt; </span><span class="n">Post</span><span class="o">.</span><span class="n">objects</span><span class="o">.</span><span class="n">filter</span><span class="p">(</span><span class="n">tags__overlap</span><span class="o">=</span><span class="p">[</span><span class="s">&#39;thoughts&#39;</span><span class="p">,</span> <span class="s">&#39;tutorial&#39;</span><span class="p">])</span>
+<span class="go">[&lt;Post: First post&gt;, &lt;Post: Second post&gt;, &lt;Post: Third post&gt;]</span>
+</pre></div>
+</div>
+</div>
+<div class="section" id="s-len">
+<span id="s-std:fieldlookup-arrayfield.len"></span><span id="len"></span><span id="std:fieldlookup-arrayfield.len"></span><h4>len<a class="headerlink" href="#len" title="Permalink to this headline">¶</a></h4>
+<p>Returns the length of the array. The lookups available afterwards are those
+available for <a class="reference internal" href="../../models/fields.html#django.db.models.IntegerField" title="django.db.models.IntegerField"><tt class="xref py py-class docutils literal"><span class="pre">IntegerField</span></tt></a>. For example:</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="n">Post</span><span class="o">.</span><span class="n">objects</span><span class="o">.</span><span class="n">create</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="s">&#39;First post&#39;</span><span class="p">,</span> <span class="n">tags</span><span class="o">=</span><span class="p">[</span><span class="s">&#39;thoughts&#39;</span><span class="p">,</span> <span class="s">&#39;django&#39;</span><span class="p">])</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">Post</span><span class="o">.</span><span class="n">objects</span><span class="o">.</span><span class="n">create</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="s">&#39;Second post&#39;</span><span class="p">,</span> <span class="n">tags</span><span class="o">=</span><span class="p">[</span><span class="s">&#39;thoughts&#39;</span><span class="p">])</span>
+
+<span class="gp">&gt;&gt;&gt; </span><span class="n">Post</span><span class="o">.</span><span class="n">objects</span><span class="o">.</span><span class="n">filter</span><span class="p">(</span><span class="n">tags__len</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
+<span class="go">[&lt;Post: Second post&gt;]</span>
+</pre></div>
+</div>
+</div>
+<div class="section" id="s-index-transforms">
+<span id="s-std:fieldlookup-arrayfield.index"></span><span id="index-transforms"></span><span id="std:fieldlookup-arrayfield.index"></span><h4>Index transforms<a class="headerlink" href="#index-transforms" title="Permalink to this headline">¶</a></h4>
+<p>This class of transforms allows you to index into the array in queries. Any
+non-negative integer can be used. There are no errors if it exceeds the
+<a class="reference internal" href="#django.contrib.postgres.fields.ArrayField.size" title="django.contrib.postgres.fields.ArrayField.size"><tt class="xref py py-attr docutils literal"><span class="pre">size</span></tt></a> of the array. The lookups available after the
+transform are those from the <a class="reference internal" href="#django.contrib.postgres.fields.ArrayField.base_field" title="django.contrib.postgres.fields.ArrayField.base_field"><tt class="xref py py-attr docutils literal"><span class="pre">base_field</span></tt></a>. For
+example:</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="n">Post</span><span class="o">.</span><span class="n">objects</span><span class="o">.</span><span class="n">create</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="s">&#39;First post&#39;</span><span class="p">,</span> <span class="n">tags</span><span class="o">=</span><span class="p">[</span><span class="s">&#39;thoughts&#39;</span><span class="p">,</span> <span class="s">&#39;django&#39;</span><span class="p">])</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">Post</span><span class="o">.</span><span class="n">objects</span><span class="o">.</span><span class="n">create</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="s">&#39;Second post&#39;</span><span class="p">,</span> <span class="n">tags</span><span class="o">=</span><span class="p">[</span><span class="s">&#39;thoughts&#39;</span><span class="p">])</span>
+
+<span class="gp">&gt;&gt;&gt; </span><span class="n">Post</span><span class="o">.</span><span class="n">objects</span><span class="o">.</span><span class="n">filter</span><span class="p">(</span><span class="n">tags__0</span><span class="o">=</span><span class="s">&#39;thoughts&#39;</span><span class="p">)</span>
+<span class="go">[&lt;Post: First post&gt;, &lt;Post: Second post&gt;]</span>
+
+<span class="gp">&gt;&gt;&gt; </span><span class="n">Post</span><span class="o">.</span><span class="n">objects</span><span class="o">.</span><span class="n">filter</span><span class="p">(</span><span class="n">tags__1__iexact</span><span class="o">=</span><span class="s">&#39;Django&#39;</span><span class="p">)</span>
+<span class="go">[&lt;Post: First post&gt;]</span>
+
+<span class="gp">&gt;&gt;&gt; </span><span class="n">Post</span><span class="o">.</span><span class="n">objects</span><span class="o">.</span><span class="n">filter</span><span class="p">(</span><span class="n">tags__276</span><span class="o">=</span><span class="s">&#39;javascript&#39;</span><span class="p">)</span>
+<span class="go">[]</span>
+</pre></div>
+</div>
+<div class="admonition note">
+<p class="first admonition-title">Note</p>
+<p class="last">PostgreSQL uses 1-based indexing for array fields when writing raw SQL.
+However these indexes and those used in <a class="reference internal" href="#std:fieldlookup-arrayfield.slice"><tt class="xref std std-lookup docutils literal"><span class="pre">slices</span></tt></a>
+use 0-based indexing to be consistent with Python.</p>
+</div>
+</div>
+<div class="section" id="s-slice-transforms">
+<span id="s-std:fieldlookup-arrayfield.slice"></span><span id="slice-transforms"></span><span id="std:fieldlookup-arrayfield.slice"></span><h4>Slice transforms<a class="headerlink" href="#slice-transforms" title="Permalink to this headline">¶</a></h4>
+<p>This class of transforms allow you to take a slice of the array. Any two
+non-negative integers can be used, separated by a single underscore. The
+lookups available after the transform do not change. For example:</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="n">Post</span><span class="o">.</span><span class="n">objects</span><span class="o">.</span><span class="n">create</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="s">&#39;First post&#39;</span><span class="p">,</span> <span class="n">tags</span><span class="o">=</span><span class="p">[</span><span class="s">&#39;thoughts&#39;</span><span class="p">,</span> <span class="s">&#39;django&#39;</span><span class="p">])</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">Post</span><span class="o">.</span><span class="n">objects</span><span class="o">.</span><span class="n">create</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="s">&#39;Second post&#39;</span><span class="p">,</span> <span class="n">tags</span><span class="o">=</span><span class="p">[</span><span class="s">&#39;thoughts&#39;</span><span class="p">])</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">Post</span><span class="o">.</span><span class="n">objects</span><span class="o">.</span><span class="n">create</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="s">&#39;Third post&#39;</span><span class="p">,</span> <span class="n">tags</span><span class="o">=</span><span class="p">[</span><span class="s">&#39;django&#39;</span><span class="p">,</span> <span class="s">&#39;python&#39;</span><span class="p">,</span> <span class="s">&#39;thoughts&#39;</span><span class="p">])</span>
+
+<span class="gp">&gt;&gt;&gt; </span><span class="n">Post</span><span class="o">.</span><span class="n">objects</span><span class="o">.</span><span class="n">filter</span><span class="p">(</span><span class="n">tags__0_1</span><span class="o">=</span><span class="p">[</span><span class="s">&#39;thoughts&#39;</span><span class="p">])</span>
+<span class="go">[&lt;Post: First post&gt;]</span>
+
+<span class="gp">&gt;&gt;&gt; </span><span class="n">Post</span><span class="o">.</span><span class="n">objects</span><span class="o">.</span><span class="n">filter</span><span class="p">(</span><span class="n">tags__0_2__contains</span><span class="o">=</span><span class="s">&#39;thoughts&#39;</span><span class="p">)</span>
+<span class="go">[&lt;Post: First post&gt;, &lt;Post: Second post&gt;]</span>
+</pre></div>
+</div>
+<div class="admonition note">
+<p class="first admonition-title">Note</p>
+<p class="last">PostgreSQL uses 1-based indexing for array fields when writing raw SQL.
+However these slices and those used in <a class="reference internal" href="#std:fieldlookup-arrayfield.index"><tt class="xref std std-lookup docutils literal"><span class="pre">indexes</span></tt></a>
+use 0-based indexing to be consistent with Python.</p>
+</div>
+<div class="admonition-multidimensional-arrays-with-indexes-and-slices admonition">
+<p class="first admonition-title">Multidimensional arrays with indexes and slices</p>
+<p class="last">PostgreSQL has some rather esoteric behavior when using indexes and slices
+on multidimensional arrays. It will always work to use indexes to reach
+down to the final underlying data, but most other slices behave strangely
+at the database level and cannot be supported in a logical, consistent
+fashion by Django.</p>
+</div>
+</div>
+</div>
+<div class="section" id="s-indexing-arrayfield">
+<span id="indexing-arrayfield"></span><h3>Indexing ArrayField<a class="headerlink" href="#indexing-arrayfield" title="Permalink to this headline">¶</a></h3>
+<p>At present using <a class="reference internal" href="../../models/fields.html#django.db.models.Field.db_index" title="django.db.models.Field.db_index"><tt class="xref py py-attr docutils literal"><span class="pre">db_index</span></tt></a> will create a
+<tt class="docutils literal"><span class="pre">btree</span></tt> index. This does not offer particularly significant help to querying.
+A more useful index is a <tt class="docutils literal"><span class="pre">GIN</span></tt> index, which you should create using a
+<a class="reference internal" href="../../migration-operations.html#django.db.migrations.operations.RunSQL" title="django.db.migrations.operations.RunSQL"><tt class="xref py py-class docutils literal"><span class="pre">RunSQL</span></tt></a> operation.</p>
+</div>
+</div>
+<div class="section" id="s-hstorefield">
+<span id="hstorefield"></span><h2>HStoreField<a class="headerlink" href="#hstorefield" title="Permalink to this headline">¶</a></h2>
+<dl class="class">
+<dt id="django.contrib.postgres.fields.HStoreField">
+<em class="property">class </em><tt class="descname">HStoreField</tt>(<em>**options</em>)<a class="headerlink" href="#django.contrib.postgres.fields.HStoreField" title="Permalink to this definition">¶</a></dt>
+<dd><p>A field for storing mappings of strings to strings. The Python data type
+used is a <tt class="docutils literal"><span class="pre">dict</span></tt>.</p>
+<p>To use this field, you&#8217;ll need to:</p>
+<ol class="arabic simple">
+<li>Add <tt class="docutils literal"><span class="pre">'django.contrib.postgres'</span></tt> in your <a class="reference internal" href="../../settings.html#std:setting-INSTALLED_APPS"><tt class="xref std std-setting docutils literal"><span class="pre">INSTALLED_APPS</span></tt></a>.</li>
+<li>Setup the hstore extension in PostgreSQL before the first <tt class="docutils literal"><span class="pre">CreateModel</span></tt>
+or <tt class="docutils literal"><span class="pre">AddField</span></tt> operation by adding a migration with the
+<a class="reference internal" href="operations.html#django.contrib.postgres.operations.HStoreExtension" title="django.contrib.postgres.operations.HStoreExtension"><tt class="xref py py-class docutils literal"><span class="pre">HStoreExtension</span></tt></a> operation.</li>
+</ol>
+<p>You&#8217;ll see an error like <tt class="docutils literal"><span class="pre">can't</span> <span class="pre">adapt</span> <span class="pre">type</span> <span class="pre">'dict'</span></tt> if you skip the first
+step, or <tt class="docutils literal"><span class="pre">type</span> <span class="pre">&quot;hstore&quot;</span> <span class="pre">does</span> <span class="pre">not</span> <span class="pre">exist</span></tt> if you skip the second.</p>
+</dd></dl>
+
+<div class="admonition note">
+<p class="first admonition-title">Note</p>
+<p class="last">On occasions it may be useful to require or restrict the keys which are
+valid for a given field. This can be done using the
+<a class="reference internal" href="validators.html#django.contrib.postgres.validators.KeysValidator" title="django.contrib.postgres.validators.KeysValidator"><tt class="xref py py-class docutils literal"><span class="pre">KeysValidator</span></tt></a>.</p>
+</div>
+<div class="section" id="s-querying-hstorefield">
+<span id="querying-hstorefield"></span><h3>Querying HStoreField<a class="headerlink" href="#querying-hstorefield" title="Permalink to this headline">¶</a></h3>
+<p>In addition to the ability to query by key, there are a number of custom
+lookups available for <tt class="docutils literal"><span class="pre">HStoreField</span></tt>.</p>
+<p>We will use the following example model:</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="kn">from</span> <span class="nn">django.contrib.postgres.fields</span> <span class="kn">import</span> <span class="n">HStoreField</span>
+<span class="kn">from</span> <span class="nn">django.db</span> <span class="kn">import</span> <span class="n">models</span>
+
+<span class="k">class</span> <span class="nc">Dog</span><span class="p">(</span><span class="n">models</span><span class="o">.</span><span class="n">Model</span><span class="p">):</span>
+    <span class="n">name</span> <span class="o">=</span> <span class="n">models</span><span class="o">.</span><span class="n">CharField</span><span class="p">(</span><span class="n">max_length</span><span class="o">=</span><span class="mi">200</span><span class="p">)</span>
+    <span class="n">data</span> <span class="o">=</span> <span class="n">HStoreField</span><span class="p">()</span>
+
+    <span class="k">def</span> <span class="nf">__str__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>  <span class="c"># __unicode__ on Python 2</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">name</span>
+</pre></div>
+</div>
+<div class="section" id="s-key-lookups">
+<span id="s-std:fieldlookup-hstorefield.key"></span><span id="key-lookups"></span><span id="std:fieldlookup-hstorefield.key"></span><h4>Key lookups<a class="headerlink" href="#key-lookups" title="Permalink to this headline">¶</a></h4>
+<p>To query based on a given key, you simply use that key as the lookup name:</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="n">Dog</span><span class="o">.</span><span class="n">objects</span><span class="o">.</span><span class="n">create</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="s">&#39;Rufus&#39;</span><span class="p">,</span> <span class="n">data</span><span class="o">=</span><span class="p">{</span><span class="s">&#39;breed&#39;</span><span class="p">:</span> <span class="s">&#39;labrador&#39;</span><span class="p">})</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">Dog</span><span class="o">.</span><span class="n">objects</span><span class="o">.</span><span class="n">create</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="s">&#39;Meg&#39;</span><span class="p">,</span> <span class="n">data</span><span class="o">=</span><span class="p">{</span><span class="s">&#39;breed&#39;</span><span class="p">:</span> <span class="s">&#39;collie&#39;</span><span class="p">})</span>
+
+<span class="gp">&gt;&gt;&gt; </span><span class="n">Dog</span><span class="o">.</span><span class="n">objects</span><span class="o">.</span><span class="n">filter</span><span class="p">(</span><span class="n">data__breed</span><span class="o">=</span><span class="s">&#39;collie&#39;</span><span class="p">)</span>
+<span class="go">[&lt;Dog: Meg&gt;]</span>
+</pre></div>
+</div>
+<p>You can chain other lookups after key lookups:</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="n">Dog</span><span class="o">.</span><span class="n">objects</span><span class="o">.</span><span class="n">filter</span><span class="p">(</span><span class="n">data__breed__contains</span><span class="o">=</span><span class="s">&#39;l&#39;</span><span class="p">)</span>
+<span class="go">[&lt;Dog: Rufus&gt;, &lt;Dog: Meg&gt;]</span>
+</pre></div>
+</div>
+<p>If the key you wish to query by clashes with the name of another lookup, you
+need to use the <a class="reference internal" href="#std:fieldlookup-hstorefield.contains"><tt class="xref std std-lookup docutils literal"><span class="pre">hstorefield.contains</span></tt></a> lookup instead.</p>
+<div class="admonition warning">
+<p class="first admonition-title">Warning</p>
+<p class="last">Since any string could be a key in a hstore value, any lookup other than
+those listed below will be interpreted as a key lookup. No errors are
+raised. Be extra careful for typing mistakes, and always check your queries
+work as you intend.</p>
+</div>
+</div>
+<div class="section" id="s-std:fieldlookup-hstorefield.contains">
+<span id="s-id1"></span><span id="std:fieldlookup-hstorefield.contains"></span><span id="id1"></span><h4>contains<a class="headerlink" href="#std:fieldlookup-hstorefield.contains" title="Permalink to this headline">¶</a></h4>
+<p>The <a class="reference internal" href="../../models/querysets.html#std:fieldlookup-contains"><tt class="xref std std-lookup docutils literal"><span class="pre">contains</span></tt></a> lookup is overridden on
+<a class="reference internal" href="#django.contrib.postgres.fields.HStoreField" title="django.contrib.postgres.fields.HStoreField"><tt class="xref py py-class docutils literal"><span class="pre">HStoreField</span></tt></a>. The returned objects are
+those where the given <tt class="docutils literal"><span class="pre">dict</span></tt> of key-value pairs are all contained in the
+field. It uses the SQL operator <tt class="docutils literal"><span class="pre">&#64;&gt;</span></tt>. For example:</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="n">Dog</span><span class="o">.</span><span class="n">objects</span><span class="o">.</span><span class="n">create</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="s">&#39;Rufus&#39;</span><span class="p">,</span> <span class="n">data</span><span class="o">=</span><span class="p">{</span><span class="s">&#39;breed&#39;</span><span class="p">:</span> <span class="s">&#39;labrador&#39;</span><span class="p">,</span> <span class="s">&#39;owner&#39;</span><span class="p">:</span> <span class="s">&#39;Bob&#39;</span><span class="p">})</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">Dog</span><span class="o">.</span><span class="n">objects</span><span class="o">.</span><span class="n">create</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="s">&#39;Meg&#39;</span><span class="p">,</span> <span class="n">data</span><span class="o">=</span><span class="p">{</span><span class="s">&#39;breed&#39;</span><span class="p">:</span> <span class="s">&#39;collie&#39;</span><span class="p">,</span> <span class="s">&#39;owner&#39;</span><span class="p">:</span> <span class="s">&#39;Bob&#39;</span><span class="p">})</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">Dog</span><span class="o">.</span><span class="n">objects</span><span class="o">.</span><span class="n">create</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="s">&#39;Fred&#39;</span><span class="p">,</span> <span class="n">data</span><span class="o">=</span><span class="p">{})</span>
+
+<span class="gp">&gt;&gt;&gt; </span><span class="n">Dog</span><span class="o">.</span><span class="n">objects</span><span class="o">.</span><span class="n">filter</span><span class="p">(</span><span class="n">data__contains</span><span class="o">=</span><span class="p">{</span><span class="s">&#39;owner&#39;</span><span class="p">:</span> <span class="s">&#39;Bob&#39;</span><span class="p">})</span>
+<span class="go">[&lt;Dog: Rufus&gt;, &lt;Dog: Meg&gt;]</span>
+
+<span class="gp">&gt;&gt;&gt; </span><span class="n">Dog</span><span class="o">.</span><span class="n">objects</span><span class="o">.</span><span class="n">filter</span><span class="p">(</span><span class="n">data__contains</span><span class="o">=</span><span class="p">{</span><span class="s">&#39;breed&#39;</span><span class="p">:</span> <span class="s">&#39;collie&#39;</span><span class="p">})</span>
+<span class="go">[&lt;Dog: Meg&gt;]</span>
+</pre></div>
+</div>
+</div>
+<div class="section" id="s-std:fieldlookup-hstorefield.contained_by">
+<span id="s-id2"></span><span id="std:fieldlookup-hstorefield.contained_by"></span><span id="id2"></span><h4>contained_by<a class="headerlink" href="#std:fieldlookup-hstorefield.contained_by" title="Permalink to this headline">¶</a></h4>
+<p>This is the inverse of the <a class="reference internal" href="#std:fieldlookup-hstorefield.contains"><tt class="xref std std-lookup docutils literal"><span class="pre">contains</span></tt></a> lookup -
+the objects returned will be those where the key-value pairs on the object are
+a subset of those in the value passed. It uses the SQL operator <tt class="docutils literal"><span class="pre">&lt;&#64;</span></tt>. For
+example:</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="n">Dog</span><span class="o">.</span><span class="n">objects</span><span class="o">.</span><span class="n">create</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="s">&#39;Rufus&#39;</span><span class="p">,</span> <span class="n">data</span><span class="o">=</span><span class="p">{</span><span class="s">&#39;breed&#39;</span><span class="p">:</span> <span class="s">&#39;labrador&#39;</span><span class="p">,</span> <span class="s">&#39;owner&#39;</span><span class="p">:</span> <span class="s">&#39;Bob&#39;</span><span class="p">})</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">Dog</span><span class="o">.</span><span class="n">objects</span><span class="o">.</span><span class="n">create</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="s">&#39;Meg&#39;</span><span class="p">,</span> <span class="n">data</span><span class="o">=</span><span class="p">{</span><span class="s">&#39;breed&#39;</span><span class="p">:</span> <span class="s">&#39;collie&#39;</span><span class="p">,</span> <span class="s">&#39;owner&#39;</span><span class="p">:</span> <span class="s">&#39;Bob&#39;</span><span class="p">})</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">Dog</span><span class="o">.</span><span class="n">objects</span><span class="o">.</span><span class="n">create</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="s">&#39;Fred&#39;</span><span class="p">,</span> <span class="n">data</span><span class="o">=</span><span class="p">{})</span>
+
+<span class="gp">&gt;&gt;&gt; </span><span class="n">Dog</span><span class="o">.</span><span class="n">objects</span><span class="o">.</span><span class="n">filter</span><span class="p">(</span><span class="n">data__contained_by</span><span class="o">=</span><span class="p">{</span><span class="s">&#39;breed&#39;</span><span class="p">:</span> <span class="s">&#39;collie&#39;</span><span class="p">,</span> <span class="s">&#39;owner&#39;</span><span class="p">:</span> <span class="s">&#39;Bob&#39;</span><span class="p">})</span>
+<span class="go">[&lt;Dog: Meg&gt;, &lt;Dog: Fred&gt;]</span>
+
+<span class="gp">&gt;&gt;&gt; </span><span class="n">Dog</span><span class="o">.</span><span class="n">objects</span><span class="o">.</span><span class="n">filter</span><span class="p">(</span><span class="n">data__contained_by</span><span class="o">=</span><span class="p">{</span><span class="s">&#39;breed&#39;</span><span class="p">:</span> <span class="s">&#39;collie&#39;</span><span class="p">})</span>
+<span class="go">[&lt;Dog: Fred&gt;]</span>
+</pre></div>
+</div>
+</div>
+<div class="section" id="s-has-key">
+<span id="s-std:fieldlookup-hstorefield.has_key"></span><span id="has-key"></span><span id="std:fieldlookup-hstorefield.has_key"></span><h4>has_key<a class="headerlink" href="#has-key" title="Permalink to this headline">¶</a></h4>
+<p>Returns objects where the given key is in the data. Uses the SQL operator
+<tt class="docutils literal"><span class="pre">?</span></tt>. For example:</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="n">Dog</span><span class="o">.</span><span class="n">objects</span><span class="o">.</span><span class="n">create</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="s">&#39;Rufus&#39;</span><span class="p">,</span> <span class="n">data</span><span class="o">=</span><span class="p">{</span><span class="s">&#39;breed&#39;</span><span class="p">:</span> <span class="s">&#39;labrador&#39;</span><span class="p">})</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">Dog</span><span class="o">.</span><span class="n">objects</span><span class="o">.</span><span class="n">create</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="s">&#39;Meg&#39;</span><span class="p">,</span> <span class="n">data</span><span class="o">=</span><span class="p">{</span><span class="s">&#39;breed&#39;</span><span class="p">:</span> <span class="s">&#39;collie&#39;</span><span class="p">,</span> <span class="s">&#39;owner&#39;</span><span class="p">:</span> <span class="s">&#39;Bob&#39;</span><span class="p">})</span>
+
+<span class="gp">&gt;&gt;&gt; </span><span class="n">Dog</span><span class="o">.</span><span class="n">objects</span><span class="o">.</span><span class="n">filter</span><span class="p">(</span><span class="n">data__has_key</span><span class="o">=</span><span class="s">&#39;owner&#39;</span><span class="p">)</span>
+<span class="go">[&lt;Dog: Meg&gt;]</span>
+</pre></div>
+</div>
+</div>
+<div class="section" id="s-has-keys">
+<span id="s-std:fieldlookup-hstorefield.has_keys"></span><span id="has-keys"></span><span id="std:fieldlookup-hstorefield.has_keys"></span><h4>has_keys<a class="headerlink" href="#has-keys" title="Permalink to this headline">¶</a></h4>
+<p>Returns objects where all of the given keys are in the data. Uses the SQL operator
+<tt class="docutils literal"><span class="pre">?&amp;</span></tt>. For example:</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="n">Dog</span><span class="o">.</span><span class="n">objects</span><span class="o">.</span><span class="n">create</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="s">&#39;Rufus&#39;</span><span class="p">,</span> <span class="n">data</span><span class="o">=</span><span class="p">{})</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">Dog</span><span class="o">.</span><span class="n">objects</span><span class="o">.</span><span class="n">create</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="s">&#39;Meg&#39;</span><span class="p">,</span> <span class="n">data</span><span class="o">=</span><span class="p">{</span><span class="s">&#39;breed&#39;</span><span class="p">:</span> <span class="s">&#39;collie&#39;</span><span class="p">,</span> <span class="s">&#39;owner&#39;</span><span class="p">:</span> <span class="s">&#39;Bob&#39;</span><span class="p">})</span>
+
+<span class="gp">&gt;&gt;&gt; </span><span class="n">Dog</span><span class="o">.</span><span class="n">objects</span><span class="o">.</span><span class="n">filter</span><span class="p">(</span><span class="n">data__has_keys</span><span class="o">=</span><span class="p">[</span><span class="s">&#39;breed&#39;</span><span class="p">,</span> <span class="s">&#39;owner&#39;</span><span class="p">])</span>
+<span class="go">[&lt;Dog: Meg&gt;]</span>
+</pre></div>
+</div>
+</div>
+<div class="section" id="s-keys">
+<span id="s-std:fieldlookup-hstorefield.keys"></span><span id="keys"></span><span id="std:fieldlookup-hstorefield.keys"></span><h4>keys<a class="headerlink" href="#keys" title="Permalink to this headline">¶</a></h4>
+<p>Returns objects where the array of keys is the given value. Note that the order
+is not guaranteed to be reliable, so this transform is mainly useful for using
+in conjunction with lookups on
+<a class="reference internal" href="#django.contrib.postgres.fields.ArrayField" title="django.contrib.postgres.fields.ArrayField"><tt class="xref py py-class docutils literal"><span class="pre">ArrayField</span></tt></a>. Uses the SQL function
+<tt class="docutils literal"><span class="pre">akeys()</span></tt>. For example:</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="n">Dog</span><span class="o">.</span><span class="n">objects</span><span class="o">.</span><span class="n">create</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="s">&#39;Rufus&#39;</span><span class="p">,</span> <span class="n">data</span><span class="o">=</span><span class="p">{</span><span class="s">&#39;toy&#39;</span><span class="p">:</span> <span class="s">&#39;bone&#39;</span><span class="p">})</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">Dog</span><span class="o">.</span><span class="n">objects</span><span class="o">.</span><span class="n">create</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="s">&#39;Meg&#39;</span><span class="p">,</span> <span class="n">data</span><span class="o">=</span><span class="p">{</span><span class="s">&#39;breed&#39;</span><span class="p">:</span> <span class="s">&#39;collie&#39;</span><span class="p">,</span> <span class="s">&#39;owner&#39;</span><span class="p">:</span> <span class="s">&#39;Bob&#39;</span><span class="p">})</span>
+
+<span class="gp">&gt;&gt;&gt; </span><span class="n">Dog</span><span class="o">.</span><span class="n">objects</span><span class="o">.</span><span class="n">filter</span><span class="p">(</span><span class="n">data__keys__overlap</span><span class="o">=</span><span class="p">[</span><span class="s">&#39;breed&#39;</span><span class="p">,</span> <span class="s">&#39;toy&#39;</span><span class="p">])</span>
+<span class="go">[&lt;Dog: Rufus&gt;, &lt;Dog: Meg&gt;]</span>
+</pre></div>
+</div>
+</div>
+<div class="section" id="s-values">
+<span id="s-std:fieldlookup-hstorefield.values"></span><span id="values"></span><span id="std:fieldlookup-hstorefield.values"></span><h4>values<a class="headerlink" href="#values" title="Permalink to this headline">¶</a></h4>
+<p>Returns objects where the array of values is the given value. Note that the
+order is not guaranteed to be reliable, so this transform is mainly useful for
+using in conjunction with lookups on
+<a class="reference internal" href="#django.contrib.postgres.fields.ArrayField" title="django.contrib.postgres.fields.ArrayField"><tt class="xref py py-class docutils literal"><span class="pre">ArrayField</span></tt></a>. Uses the SQL function
+<tt class="docutils literal"><span class="pre">avalues()</span></tt>. For example:</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="n">Dog</span><span class="o">.</span><span class="n">objects</span><span class="o">.</span><span class="n">create</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="s">&#39;Rufus&#39;</span><span class="p">,</span> <span class="n">data</span><span class="o">=</span><span class="p">{</span><span class="s">&#39;breed&#39;</span><span class="p">:</span> <span class="s">&#39;labrador&#39;</span><span class="p">})</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">Dog</span><span class="o">.</span><span class="n">objects</span><span class="o">.</span><span class="n">create</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="s">&#39;Meg&#39;</span><span class="p">,</span> <span class="n">data</span><span class="o">=</span><span class="p">{</span><span class="s">&#39;breed&#39;</span><span class="p">:</span> <span class="s">&#39;collie&#39;</span><span class="p">,</span> <span class="s">&#39;owner&#39;</span><span class="p">:</span> <span class="s">&#39;Bob&#39;</span><span class="p">})</span>
+
+<span class="gp">&gt;&gt;&gt; </span><span class="n">Dog</span><span class="o">.</span><span class="n">objects</span><span class="o">.</span><span class="n">filter</span><span class="p">(</span><span class="n">data__values__contains</span><span class="o">=</span><span class="p">[</span><span class="s">&#39;collie&#39;</span><span class="p">])</span>
+<span class="go">[&lt;Dog: Meg&gt;]</span>
+</pre></div>
+</div>
+</div>
+</div>
+</div>
+<div class="section" id="s-range-fields">
+<span id="s-id3"></span><span id="range-fields"></span><span id="id3"></span><h2>Range Fields<a class="headerlink" href="#range-fields" title="Permalink to this headline">¶</a></h2>
+<p>There are five range field types, corresponding to the built-in range types in
+PostgreSQL. These fields are used to store a range of values; for example the
+start and end timestamps of an event, or the range of ages an activity is
+suitable for.</p>
+<p>All of the range fields translate to <a class="reference external" href="http://initd.org/psycopg/docs/extras.html#adapt-range" title="(in Psycopg v2.6)"><em class="xref std std-ref">psycopg2 Range objects</em></a> in python, but also accept tuples as input if no bounds
+information is necessary. The default is lower bound included, upper bound
+excluded.</p>
+<div class="section" id="s-integerrangefield">
+<span id="integerrangefield"></span><h3>IntegerRangeField<a class="headerlink" href="#integerrangefield" title="Permalink to this headline">¶</a></h3>
+<dl class="class">
+<dt id="django.contrib.postgres.fields.IntegerRangeField">
+<em class="property">class </em><tt class="descname">IntegerRangeField</tt>(<em>**options</em>)<a class="headerlink" href="#django.contrib.postgres.fields.IntegerRangeField" title="Permalink to this definition">¶</a></dt>
+<dd><p>Stores a range of integers. Based on an
+<a class="reference internal" href="../../models/fields.html#django.db.models.IntegerField" title="django.db.models.IntegerField"><tt class="xref py py-class docutils literal"><span class="pre">IntegerField</span></tt></a>. Represented by an <tt class="docutils literal"><span class="pre">int4range</span></tt> in
+the database and a <a class="reference external" href="http://initd.org/psycopg/docs/extras.html#psycopg2.extras.NumericRange" title="(in Psycopg v2.6)"><tt class="xref py py-class docutils literal"><span class="pre">NumericRange</span></tt></a> in
+Python.</p>
+</dd></dl>
+
+</div>
+<div class="section" id="s-bigintegerrangefield">
+<span id="bigintegerrangefield"></span><h3>BigIntegerRangeField<a class="headerlink" href="#bigintegerrangefield" title="Permalink to this headline">¶</a></h3>
+<dl class="class">
+<dt id="django.contrib.postgres.fields.BigIntegerRangeField">
+<em class="property">class </em><tt class="descname">BigIntegerRangeField</tt>(<em>**options</em>)<a class="headerlink" href="#django.contrib.postgres.fields.BigIntegerRangeField" title="Permalink to this definition">¶</a></dt>
+<dd><p>Stores a range of large integers. Based on a
+<a class="reference internal" href="../../models/fields.html#django.db.models.BigIntegerField" title="django.db.models.BigIntegerField"><tt class="xref py py-class docutils literal"><span class="pre">BigIntegerField</span></tt></a>. Represented by an <tt class="docutils literal"><span class="pre">int8range</span></tt>
+in the database and a <a class="reference external" href="http://initd.org/psycopg/docs/extras.html#psycopg2.extras.NumericRange" title="(in Psycopg v2.6)"><tt class="xref py py-class docutils literal"><span class="pre">NumericRange</span></tt></a> in
+Python.</p>
+</dd></dl>
+
+</div>
+<div class="section" id="s-floatrangefield">
+<span id="floatrangefield"></span><h3>FloatRangeField<a class="headerlink" href="#floatrangefield" title="Permalink to this headline">¶</a></h3>
+<dl class="class">
+<dt id="django.contrib.postgres.fields.FloatRangeField">
+<em class="property">class </em><tt class="descname">FloatRangeField</tt>(<em>**options</em>)<a class="headerlink" href="#django.contrib.postgres.fields.FloatRangeField" title="Permalink to this definition">¶</a></dt>
+<dd><p>Stores a range of floating point values. Based on a
+<a class="reference internal" href="../../models/fields.html#django.db.models.FloatField" title="django.db.models.FloatField"><tt class="xref py py-class docutils literal"><span class="pre">FloatField</span></tt></a>. Represented by a <tt class="docutils literal"><span class="pre">numrange</span></tt> in the
+database and a <a class="reference external" href="http://initd.org/psycopg/docs/extras.html#psycopg2.extras.NumericRange" title="(in Psycopg v2.6)"><tt class="xref py py-class docutils literal"><span class="pre">NumericRange</span></tt></a> in Python.</p>
+</dd></dl>
+
+</div>
+<div class="section" id="s-datetimerangefield">
+<span id="datetimerangefield"></span><h3>DateTimeRangeField<a class="headerlink" href="#datetimerangefield" title="Permalink to this headline">¶</a></h3>
+<dl class="class">
+<dt id="django.contrib.postgres.fields.DateTimeRangeField">
+<em class="property">class </em><tt class="descname">DateTimeRangeField</tt>(<em>**options</em>)<a class="headerlink" href="#django.contrib.postgres.fields.DateTimeRangeField" title="Permalink to this definition">¶</a></dt>
+<dd><p>Stores a range of timestamps. Based on a
+<a class="reference internal" href="../../models/fields.html#django.db.models.DateTimeField" title="django.db.models.DateTimeField"><tt class="xref py py-class docutils literal"><span class="pre">DateTimeField</span></tt></a>. Represented by a <tt class="docutils literal"><span class="pre">tztsrange</span></tt> in
+the database and a <a class="reference external" href="http://initd.org/psycopg/docs/extras.html#psycopg2.extras.DateTimeTZRange" title="(in Psycopg v2.6)"><tt class="xref py py-class docutils literal"><span class="pre">DateTimeTZRange</span></tt></a> in
+Python.</p>
+</dd></dl>
+
+</div>
+<div class="section" id="s-daterangefield">
+<span id="daterangefield"></span><h3>DateRangeField<a class="headerlink" href="#daterangefield" title="Permalink to this headline">¶</a></h3>
+<dl class="class">
+<dt id="django.contrib.postgres.fields.DateRangeField">
+<em class="property">class </em><tt class="descname">DateRangeField</tt>(<em>**options</em>)<a class="headerlink" href="#django.contrib.postgres.fields.DateRangeField" title="Permalink to this definition">¶</a></dt>
+<dd><p>Stores a range of dates. Based on a
+<a class="reference internal" href="../../models/fields.html#django.db.models.DateField" title="django.db.models.DateField"><tt class="xref py py-class docutils literal"><span class="pre">DateField</span></tt></a>. Represented by a <tt class="docutils literal"><span class="pre">daterange</span></tt> in the
+database and a <a class="reference external" href="http://initd.org/psycopg/docs/extras.html#psycopg2.extras.DateRange" title="(in Psycopg v2.6)"><tt class="xref py py-class docutils literal"><span class="pre">DateRange</span></tt></a> in Python.</p>
+</dd></dl>
+
+</div>
+<div class="section" id="s-querying-range-fields">
+<span id="querying-range-fields"></span><h3>Querying Range Fields<a class="headerlink" href="#querying-range-fields" title="Permalink to this headline">¶</a></h3>
+<p>There are a number of custom lookups and transforms for range fields. They are
+available on all the above fields, but we will use the following example
+model:</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="kn">from</span> <span class="nn">django.contrib.postgres.fields</span> <span class="kn">import</span> <span class="n">IntegerRangeField</span>
+<span class="kn">from</span> <span class="nn">django.db</span> <span class="kn">import</span> <span class="n">models</span>
+
+<span class="k">class</span> <span class="nc">Event</span><span class="p">(</span><span class="n">models</span><span class="o">.</span><span class="n">Model</span><span class="p">):</span>
+    <span class="n">name</span> <span class="o">=</span> <span class="n">models</span><span class="o">.</span><span class="n">CharField</span><span class="p">(</span><span class="n">max_length</span><span class="o">=</span><span class="mi">200</span><span class="p">)</span>
+    <span class="n">ages</span> <span class="o">=</span> <span class="n">IntegerRangeField</span><span class="p">()</span>
+
+    <span class="k">def</span> <span class="nf">__str__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>  <span class="c"># __unicode__ on Python 2</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">name</span>
+</pre></div>
+</div>
+<p>We will also use the following example objects:</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="n">Event</span><span class="o">.</span><span class="n">objects</span><span class="o">.</span><span class="n">create</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="s">&#39;Soft play&#39;</span><span class="p">,</span> <span class="n">ages</span><span class="o">=</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">10</span><span class="p">))</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">Event</span><span class="o">.</span><span class="n">objects</span><span class="o">.</span><span class="n">create</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="s">&#39;Pub trip&#39;</span><span class="p">,</span> <span class="n">ages</span><span class="o">=</span><span class="p">(</span><span class="mi">21</span><span class="p">,</span> <span class="bp">None</span><span class="p">))</span>
+</pre></div>
+</div>
+<p>and <tt class="docutils literal"><span class="pre">NumericRange</span></tt>:</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">psycopg2.extras</span> <span class="kn">import</span> <span class="n">NumericRange</span>
+</pre></div>
+</div>
+<div class="section" id="s-containment-functions">
+<span id="containment-functions"></span><h4>Containment functions<a class="headerlink" href="#containment-functions" title="Permalink to this headline">¶</a></h4>
+<p>As with other PostgreSQL fields, there are three standard containment
+operators: <tt class="docutils literal"><span class="pre">contains</span></tt>, <tt class="docutils literal"><span class="pre">contained_by</span></tt> and <tt class="docutils literal"><span class="pre">overlap</span></tt>, using the SQL
+operators <tt class="docutils literal"><span class="pre">&#64;&gt;</span></tt>, <tt class="docutils literal"><span class="pre">&lt;&#64;</span></tt>, and <tt class="docutils literal"><span class="pre">&amp;&amp;</span></tt> respectively.</p>
+<div class="section" id="s-std:fieldlookup-rangefield.contains">
+<span id="s-id4"></span><span id="std:fieldlookup-rangefield.contains"></span><span id="id4"></span><h5>contains<a class="headerlink" href="#std:fieldlookup-rangefield.contains" title="Permalink to this headline">¶</a></h5>
+<div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="n">Event</span><span class="o">.</span><span class="n">objects</span><span class="o">.</span><span class="n">filter</span><span class="p">(</span><span class="n">ages__contains</span><span class="o">=</span><span class="n">NumericRange</span><span class="p">(</span><span class="mi">4</span><span class="p">,</span> <span class="mi">5</span><span class="p">))</span>
+<span class="go">[&lt;Event: Soft play&gt;]</span>
+</pre></div>
+</div>
+</div>
+<div class="section" id="s-std:fieldlookup-rangefield.contained_by">
+<span id="s-id5"></span><span id="std:fieldlookup-rangefield.contained_by"></span><span id="id5"></span><h5>contained_by<a class="headerlink" href="#std:fieldlookup-rangefield.contained_by" title="Permalink to this headline">¶</a></h5>
+<div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="n">Event</span><span class="o">.</span><span class="n">objects</span><span class="o">.</span><span class="n">filter</span><span class="p">(</span><span class="n">ages__contained_by</span><span class="o">=</span><span class="n">NumericRange</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">15</span><span class="p">))</span>
+<span class="go">[&lt;Event: Soft play&gt;]</span>
+</pre></div>
+</div>
+</div>
+<div class="section" id="s-std:fieldlookup-rangefield.overlap">
+<span id="s-id6"></span><span id="std:fieldlookup-rangefield.overlap"></span><span id="id6"></span><h5>overlap<a class="headerlink" href="#std:fieldlookup-rangefield.overlap" title="Permalink to this headline">¶</a></h5>
+<div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="n">Event</span><span class="o">.</span><span class="n">objects</span><span class="o">.</span><span class="n">filter</span><span class="p">(</span><span class="n">ages__overlap</span><span class="o">=</span><span class="n">NumericRange</span><span class="p">(</span><span class="mi">8</span><span class="p">,</span> <span class="mi">12</span><span class="p">))</span>
+<span class="go">[&lt;Event: Soft play&gt;]</span>
+</pre></div>
+</div>
+</div>
+</div>
+<div class="section" id="s-comparison-functions">
+<span id="comparison-functions"></span><h4>Comparison functions<a class="headerlink" href="#comparison-functions" title="Permalink to this headline">¶</a></h4>
+<p>Range fields support the standard lookups: <a class="reference internal" href="../../models/querysets.html#std:fieldlookup-lt"><tt class="xref std std-lookup docutils literal"><span class="pre">lt</span></tt></a>, <a class="reference internal" href="../../models/querysets.html#std:fieldlookup-gt"><tt class="xref std std-lookup docutils literal"><span class="pre">gt</span></tt></a>,
+<a class="reference internal" href="../../models/querysets.html#std:fieldlookup-lte"><tt class="xref std std-lookup docutils literal"><span class="pre">lte</span></tt></a> and <a class="reference internal" href="../../models/querysets.html#std:fieldlookup-gte"><tt class="xref std std-lookup docutils literal"><span class="pre">gte</span></tt></a>. These are not particularly helpful - they
+compare the lower bounds first and then the upper bounds only if necessary.
+This is also the strategy used to order by a range field. It is better to use
+the specific range comparison operators.</p>
+<div class="section" id="s-fully-lt">
+<span id="s-std:fieldlookup-rangefield.fully_lt"></span><span id="fully-lt"></span><span id="std:fieldlookup-rangefield.fully_lt"></span><h5>fully_lt<a class="headerlink" href="#fully-lt" title="Permalink to this headline">¶</a></h5>
+<p>The returned ranges are strictly less than the passed range. In other words,
+all the points in the returned range are less than all those in the passed
+range.</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="n">Event</span><span class="o">.</span><span class="n">objects</span><span class="o">.</span><span class="n">filter</span><span class="p">(</span><span class="n">ages__fully_lt</span><span class="o">=</span><span class="n">NumericRange</span><span class="p">(</span><span class="mi">11</span><span class="p">,</span> <span class="mi">15</span><span class="p">))</span>
+<span class="go">[&lt;Event: Soft play&gt;]</span>
+</pre></div>
+</div>
+</div>
+<div class="section" id="s-fully-gt">
+<span id="s-std:fieldlookup-rangefield.fully_gt"></span><span id="fully-gt"></span><span id="std:fieldlookup-rangefield.fully_gt"></span><h5>fully_gt<a class="headerlink" href="#fully-gt" title="Permalink to this headline">¶</a></h5>
+<p>The returned ranges are strictly greater than the passed range. In other words,
+the all the points in the returned range are greater than all those in the
+passed range.</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="n">Event</span><span class="o">.</span><span class="n">objects</span><span class="o">.</span><span class="n">filter</span><span class="p">(</span><span class="n">ages__fully_gt</span><span class="o">=</span><span class="n">NumericRange</span><span class="p">(</span><span class="mi">11</span><span class="p">,</span> <span class="mi">15</span><span class="p">))</span>
+<span class="go">[&lt;Event: Pub trip&gt;]</span>
+</pre></div>
+</div>
+</div>
+<div class="section" id="s-not-lt">
+<span id="s-std:fieldlookup-rangefield.not_lt"></span><span id="not-lt"></span><span id="std:fieldlookup-rangefield.not_lt"></span><h5>not_lt<a class="headerlink" href="#not-lt" title="Permalink to this headline">¶</a></h5>
+<p>The returned ranges do not contain any points less than the passed range, that
+is the lower bound of the returned range is at least the lower bound of the
+passed range.</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="n">Event</span><span class="o">.</span><span class="n">objects</span><span class="o">.</span><span class="n">filter</span><span class="p">(</span><span class="n">ages__not_lt</span><span class="o">=</span><span class="n">NumericRange</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">15</span><span class="p">))</span>
+<span class="go">[&lt;Event: Soft play&gt;, &lt;Event: Pub trip&gt;]</span>
+</pre></div>
+</div>
+</div>
+<div class="section" id="s-not-gt">
+<span id="s-std:fieldlookup-rangefield.not_gt"></span><span id="not-gt"></span><span id="std:fieldlookup-rangefield.not_gt"></span><h5>not_gt<a class="headerlink" href="#not-gt" title="Permalink to this headline">¶</a></h5>
+<p>The returned ranges do not contain any points greater than the passed range, that
+is the upper bound of the returned range is at most the upper bound of the
+passed range.</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="n">Event</span><span class="o">.</span><span class="n">objects</span><span class="o">.</span><span class="n">filter</span><span class="p">(</span><span class="n">ages__not_gt</span><span class="o">=</span><span class="n">NumericRange</span><span class="p">(</span><span class="mi">3</span><span class="p">,</span> <span class="mi">10</span><span class="p">))</span>
+<span class="go">[&lt;Event: Soft play&gt;]</span>
+</pre></div>
+</div>
+</div>
+<div class="section" id="s-adjacent-to">
+<span id="s-std:fieldlookup-rangefield.adjacent_to"></span><span id="adjacent-to"></span><span id="std:fieldlookup-rangefield.adjacent_to"></span><h5>adjacent_to<a class="headerlink" href="#adjacent-to" title="Permalink to this headline">¶</a></h5>
+<p>The returned ranges share a bound with the passed range.</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="n">Event</span><span class="o">.</span><span class="n">objects</span><span class="o">.</span><span class="n">filter</span><span class="p">(</span><span class="n">ages__adjacent_to</span><span class="o">=</span><span class="n">NumericRange</span><span class="p">(</span><span class="mi">10</span><span class="p">,</span> <span class="mi">21</span><span class="p">))</span>
+<span class="go">[&lt;Event: Soft play&gt;, &lt;Event: Pub trip&gt;]</span>
+</pre></div>
+</div>
+</div>
+</div>
+<div class="section" id="s-querying-using-the-bounds">
+<span id="querying-using-the-bounds"></span><h4>Querying using the bounds<a class="headerlink" href="#querying-using-the-bounds" title="Permalink to this headline">¶</a></h4>
+<p>There are three transforms available for use in queries. You can extract the
+lower or upper bound, or query based on emptiness.</p>
+<div class="section" id="s-startswith">
+<span id="s-std:fieldlookup-rangefield.startswith"></span><span id="startswith"></span><span id="std:fieldlookup-rangefield.startswith"></span><h5>startswith<a class="headerlink" href="#startswith" title="Permalink to this headline">¶</a></h5>
+<p>Returned objects have the given lower bound. Can be chained to valid lookups
+for the base field.</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="n">Event</span><span class="o">.</span><span class="n">objects</span><span class="o">.</span><span class="n">filter</span><span class="p">(</span><span class="n">ages__startswith</span><span class="o">=</span><span class="mi">21</span><span class="p">)</span>
+<span class="go">[&lt;Event: Pub trip&gt;]</span>
+</pre></div>
+</div>
+</div>
+<div class="section" id="s-endswith">
+<span id="s-std:fieldlookup-rangefield.endswith"></span><span id="endswith"></span><span id="std:fieldlookup-rangefield.endswith"></span><h5>endswith<a class="headerlink" href="#endswith" title="Permalink to this headline">¶</a></h5>
+<p>Returned objects have the given upper bound. Can be chained to valid lookups
+for the base field.</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="n">Event</span><span class="o">.</span><span class="n">objects</span><span class="o">.</span><span class="n">filter</span><span class="p">(</span><span class="n">ages__endswith</span><span class="o">=</span><span class="mi">10</span><span class="p">)</span>
+<span class="go">[&lt;Event: Soft play&gt;]</span>
+</pre></div>
+</div>
+</div>
+<div class="section" id="s-isempty">
+<span id="s-std:fieldlookup-rangefield.isempty"></span><span id="isempty"></span><span id="std:fieldlookup-rangefield.isempty"></span><h5>isempty<a class="headerlink" href="#isempty" title="Permalink to this headline">¶</a></h5>
+<p>Returned objects are empty ranges. Can be chained to valid lookups for a
+<a class="reference internal" href="../../models/fields.html#django.db.models.BooleanField" title="django.db.models.BooleanField"><tt class="xref py py-class docutils literal"><span class="pre">BooleanField</span></tt></a>.</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="n">Event</span><span class="o">.</span><span class="n">objects</span><span class="o">.</span><span class="n">filter</span><span class="p">(</span><span class="n">ages__isempty</span><span class="o">=</span><span class="bp">True</span><span class="p">)</span>
+<span class="go">[]</span>
+</pre></div>
+</div>
+</div>
+</div>
+<div class="section" id="s-defining-your-own-range-types">
+<span id="defining-your-own-range-types"></span><h4>Defining your own range types<a class="headerlink" href="#defining-your-own-range-types" title="Permalink to this headline">¶</a></h4>
+<p>PostgreSQL allows the definition of custom range types. Django&#8217;s model and form
+field implementations use base classes below, and psycopg2 provides a
+<a class="reference external" href="http://initd.org/psycopg/docs/extras.html#psycopg2.extras.register_range" title="(in Psycopg v2.6)"><tt class="xref py py-func docutils literal"><span class="pre">register_range()</span></tt></a> to allow use of custom range
+types.</p>
+<dl class="class">
+<dt id="django.contrib.postgres.fields.RangeField">
+<em class="property">class </em><tt class="descname">RangeField</tt>(<em>**options</em>)<a class="headerlink" href="#django.contrib.postgres.fields.RangeField" title="Permalink to this definition">¶</a></dt>
+<dd><p>Base class for model range fields.</p>
+<dl class="attribute">
+<dt id="django.contrib.postgres.fields.RangeField.base_field">
+<tt class="descname">base_field</tt><a class="headerlink" href="#django.contrib.postgres.fields.RangeField.base_field" title="Permalink to this definition">¶</a></dt>
+<dd><p>The model field to use.</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="django.contrib.postgres.fields.RangeField.range_type">
+<tt class="descname">range_type</tt><a class="headerlink" href="#django.contrib.postgres.fields.RangeField.range_type" title="Permalink to this definition">¶</a></dt>
+<dd><p>The psycopg2 range type to use.</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="django.contrib.postgres.fields.RangeField.form_field">
+<tt class="descname">form_field</tt><a class="headerlink" href="#django.contrib.postgres.fields.RangeField.form_field" title="Permalink to this definition">¶</a></dt>
+<dd><p>The form field class to use. Should be a subclass of
+<a class="reference internal" href="#django.contrib.postgres.fields.django.contrib.postgres.forms.BaseRangeField" title="django.contrib.postgres.fields.django.contrib.postgres.forms.BaseRangeField"><tt class="xref py py-class docutils literal"><span class="pre">django.contrib.postgres.forms.BaseRangeField</span></tt></a>.</p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="class">
+<dt id="django.contrib.postgres.fields.django.contrib.postgres.forms.BaseRangeField">
+<em class="property">class </em><tt class="descclassname">django.contrib.postgres.forms.</tt><tt class="descname">BaseRangeField</tt><a class="headerlink" href="#django.contrib.postgres.fields.django.contrib.postgres.forms.BaseRangeField" title="Permalink to this definition">¶</a></dt>
+<dd><p>Base class for form range fields.</p>
+<dl class="attribute">
+<dt id="django.contrib.postgres.fields.django.contrib.postgres.forms.BaseRangeField.base_field">
+<tt class="descname">base_field</tt><a class="headerlink" href="#django.contrib.postgres.fields.django.contrib.postgres.forms.BaseRangeField.base_field" title="Permalink to this definition">¶</a></dt>
+<dd><p>The form field to use.</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="django.contrib.postgres.fields.django.contrib.postgres.forms.BaseRangeField.range_type">
+<tt class="descname">range_type</tt><a class="headerlink" href="#django.contrib.postgres.fields.django.contrib.postgres.forms.BaseRangeField.range_type" title="Permalink to this definition">¶</a></dt>
+<dd><p>The psycopg2 range type to use.</p>
+</dd></dl>
+
+</dd></dl>
+
+</div>
+</div>
+</div>
+</div>
+
+
+          </div>
+        </div>
+      </div>
+      
+        
+          <div class="yui-b" id="sidebar">
+            
+      <div class="sphinxsidebar">
+        <div class="sphinxsidebarwrapper">
+  <h3><a href="../../../contents.html">Table Of Contents</a></h3>
+  <ul>
+<li><a class="reference internal" href="#">PostgreSQL specific model fields</a><ul>
+<li><a class="reference internal" href="#arrayfield">ArrayField</a><ul>
+<li><a class="reference internal" href="#querying-arrayfield">Querying ArrayField</a><ul>
+<li><a class="reference internal" href="#contains">contains</a></li>
+<li><a class="reference internal" href="#contained-by">contained_by</a></li>
+<li><a class="reference internal" href="#overlap">overlap</a></li>
+<li><a class="reference internal" href="#len">len</a></li>
+<li><a class="reference internal" href="#index-transforms">Index transforms</a></li>
+<li><a class="reference internal" href="#slice-transforms">Slice transforms</a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#indexing-arrayfield">Indexing ArrayField</a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#hstorefield">HStoreField</a><ul>
+<li><a class="reference internal" href="#querying-hstorefield">Querying HStoreField</a><ul>
+<li><a class="reference internal" href="#key-lookups">Key lookups</a></li>
+<li><a class="reference internal" href="#std:fieldlookup-hstorefield.contains">contains</a></li>
+<li><a class="reference internal" href="#std:fieldlookup-hstorefield.contained_by">contained_by</a></li>
+<li><a class="reference internal" href="#has-key">has_key</a></li>
+<li><a class="reference internal" href="#has-keys">has_keys</a></li>
+<li><a class="reference internal" href="#keys">keys</a></li>
+<li><a class="reference internal" href="#values">values</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li><a class="reference internal" href="#range-fields">Range Fields</a><ul>
+<li><a class="reference internal" href="#integerrangefield">IntegerRangeField</a></li>
+<li><a class="reference internal" href="#bigintegerrangefield">BigIntegerRangeField</a></li>
+<li><a class="reference internal" href="#floatrangefield">FloatRangeField</a></li>
+<li><a class="reference internal" href="#datetimerangefield">DateTimeRangeField</a></li>
+<li><a class="reference internal" href="#daterangefield">DateRangeField</a></li>
+<li><a class="reference internal" href="#querying-range-fields">Querying Range Fields</a><ul>
+<li><a class="reference internal" href="#containment-functions">Containment functions</a><ul>
+<li><a class="reference internal" href="#std:fieldlookup-rangefield.contains">contains</a></li>
+<li><a class="reference internal" href="#std:fieldlookup-rangefield.contained_by">contained_by</a></li>
+<li><a class="reference internal" href="#std:fieldlookup-rangefield.overlap">overlap</a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#comparison-functions">Comparison functions</a><ul>
+<li><a class="reference internal" href="#fully-lt">fully_lt</a></li>
+<li><a class="reference internal" href="#fully-gt">fully_gt</a></li>
+<li><a class="reference internal" href="#not-lt">not_lt</a></li>
+<li><a class="reference internal" href="#not-gt">not_gt</a></li>
+<li><a class="reference internal" href="#adjacent-to">adjacent_to</a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#querying-using-the-bounds">Querying using the bounds</a><ul>
+<li><a class="reference internal" href="#startswith">startswith</a></li>
+<li><a class="reference internal" href="#endswith">endswith</a></li>
+<li><a class="reference internal" href="#isempty">isempty</a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#defining-your-own-range-types">Defining your own range types</a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+
+  <h3>Browse</h3>
+  <ul>
+    
+      <li>Prev: <a href="index.html"><tt class="docutils literal"><span class="pre">django.contrib.postgres</span></tt></a></li>
+    
+    
+      <li>Next: <a href="forms.html">PostgreSQL specific form fields and widgets</a></li>
+    
+  </ul>
+  <h3>You are here:</h3>
+  <ul>
+      <li>
+        <a href="../../../index.html">Django 1.8.2.dev20150505153848 documentation</a>
+        
+          <ul><li><a href="../../index.html">API Reference</a>
+        
+          <ul><li><a href="../index.html"><tt class="docutils literal"><span class="pre">contrib</span></tt> packages</a>
+        
+          <ul><li><a href="index.html"><tt class="docutils literal"><span class="pre">django.contrib.postgres</span></tt></a>
+        
+        <ul><li>PostgreSQL specific model fields</li></ul>
+        </li></ul></li></ul></li></ul>
+      </li>
+  </ul>
+
+  <h3>This Page</h3>
+  <ul class="this-page-menu">
+    <li><a href="../../../_sources/ref/contrib/postgres/fields.txt"
+           rel="nofollow">Show Source</a></li>
+  </ul>
+<div id="searchbox" style="display: none">
+  <h3>Quick search</h3>
+    <form class="search" action="../../../search.html" method="get">
+      <input type="text" name="q" />
+      <input type="submit" value="Go" />
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+    <p class="searchtip" style="font-size: 90%">
+    Enter search terms or a module, class or function name.
+    </p>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+              <h3>Last update:</h3>
+              <p class="topless">May 06, 2015</p>
+          </div>
+        
+      
+    </div>
+
+    <div id="ft">
+      <div class="nav">
+    &laquo; <a href="index.html" title="&lt;tt class=&#34;docutils literal&#34;&gt;&lt;span class=&#34;pre&#34;&gt;django.contrib.postgres&lt;/span&gt;&lt;/tt&gt;">previous</a>
+     |
+    <a href="../../index.html" title="API Reference" accesskey="U">up</a>
+   |
+    <a href="forms.html" title="PostgreSQL specific form fields and widgets">next</a> &raquo;</div>
+    </div>
+  </div>
+
+      <div class="clearer"></div>
+    </div>
+  </body>
+</html>

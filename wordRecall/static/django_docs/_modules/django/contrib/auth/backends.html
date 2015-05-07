@@ -1,0 +1,313 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>django.contrib.auth.backends &mdash; Django 1.8.2.dev20150505153848 documentation</title>
+    
+    <link rel="stylesheet" href="../../../../_static/default.css" type="text/css" />
+    <link rel="stylesheet" href="../../../../_static/pygments.css" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '../../../../',
+        VERSION:     '1.8.2.dev20150505153848',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="../../../../_static/jquery.js"></script>
+    <script type="text/javascript" src="../../../../_static/underscore.js"></script>
+    <script type="text/javascript" src="../../../../_static/doctools.js"></script>
+    <link rel="top" title="Django 1.8.2.dev20150505153848 documentation" href="../../../../index.html" />
+    <link rel="up" title="django.contrib.auth" href="../auth.html" />
+
+
+
+ 
+<script type="text/javascript" src="../../../../templatebuiltins.js"></script>
+<script type="text/javascript">
+(function($) {
+    if (!django_template_builtins) {
+       // templatebuiltins.js missing, do nothing.
+       return;
+    }
+    $(document).ready(function() {
+        // Hyperlink Django template tags and filters
+        var base = "../../../../ref/templates/builtins.html";
+        if (base == "#") {
+            // Special case for builtins.html itself
+            base = "";
+        }
+        // Tags are keywords, class '.k'
+        $("div.highlight\\-html\\+django span.k").each(function(i, elem) {
+             var tagname = $(elem).text();
+             if ($.inArray(tagname, django_template_builtins.ttags) != -1) {
+                 var fragment = tagname.replace(/_/, '-');
+                 $(elem).html("<a href='" + base + "#" + fragment + "'>" + tagname + "</a>");
+             }
+        });
+        // Filters are functions, class '.nf'
+        $("div.highlight\\-html\\+django span.nf").each(function(i, elem) {
+             var filtername = $(elem).text();
+             if ($.inArray(filtername, django_template_builtins.tfilters) != -1) {
+                 var fragment = filtername.replace(/_/, '-');
+                 $(elem).html("<a href='" + base + "#" + fragment + "'>" + filtername + "</a>");
+             }
+        });
+    });
+})(jQuery);
+</script>
+
+
+  </head>
+  <body>
+
+    <div class="document">
+  <div id="custom-doc" class="yui-t6">
+    <div id="hd">
+      <h1><a href="../../../../index.html">Django 1.8.2.dev20150505153848 documentation</a></h1>
+      <div id="global-nav">
+        <a title="Home page" href="../../../../index.html">Home</a>  |
+        <a title="Table of contents" href="../../../../contents.html">Table of contents</a>  |
+        <a title="Global index" href="../../../../genindex.html">Index</a>  |
+        <a title="Module index" href="../../../../py-modindex.html">Modules</a>
+      </div>
+      <div class="nav">
+    <a href="../../../index.html" title="Module code" accesskey="U">up</a></div>
+    </div>
+
+    <div id="bd">
+      <div id="yui-main">
+        <div class="yui-b">
+          <div class="yui-g" id="_modules-django-contrib-auth-backends">
+            
+  <h1>Source code for django.contrib.auth.backends</h1><div class="highlight"><pre>
+<span class="kn">from</span> <span class="nn">__future__</span> <span class="kn">import</span> <span class="n">unicode_literals</span>
+
+<span class="kn">from</span> <span class="nn">django.contrib.auth</span> <span class="kn">import</span> <span class="n">get_user_model</span>
+<span class="kn">from</span> <span class="nn">django.contrib.auth.models</span> <span class="kn">import</span> <span class="n">Permission</span>
+
+
+<div class="viewcode-block" id="ModelBackend"><a class="viewcode-back" href="../../../../ref/contrib/auth.html#django.contrib.auth.backends.ModelBackend">[docs]</a><span class="k">class</span> <span class="nc">ModelBackend</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Authenticates against settings.AUTH_USER_MODEL.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+<div class="viewcode-block" id="ModelBackend.authenticate"><a class="viewcode-back" href="../../../../ref/contrib/auth.html#django.contrib.auth.backends.ModelBackend.authenticate">[docs]</a>    <span class="k">def</span> <span class="nf">authenticate</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">username</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span> <span class="n">password</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+        <span class="n">UserModel</span> <span class="o">=</span> <span class="n">get_user_model</span><span class="p">()</span>
+        <span class="k">if</span> <span class="n">username</span> <span class="ow">is</span> <span class="bp">None</span><span class="p">:</span>
+            <span class="n">username</span> <span class="o">=</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">UserModel</span><span class="o">.</span><span class="n">USERNAME_FIELD</span><span class="p">)</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="n">user</span> <span class="o">=</span> <span class="n">UserModel</span><span class="o">.</span><span class="n">_default_manager</span><span class="o">.</span><span class="n">get_by_natural_key</span><span class="p">(</span><span class="n">username</span><span class="p">)</span>
+            <span class="k">if</span> <span class="n">user</span><span class="o">.</span><span class="n">check_password</span><span class="p">(</span><span class="n">password</span><span class="p">):</span>
+                <span class="k">return</span> <span class="n">user</span>
+        <span class="k">except</span> <span class="n">UserModel</span><span class="o">.</span><span class="n">DoesNotExist</span><span class="p">:</span>
+            <span class="c"># Run the default password hasher once to reduce the timing</span>
+            <span class="c"># difference between an existing and a non-existing user (#20760).</span>
+            <span class="n">UserModel</span><span class="p">()</span><span class="o">.</span><span class="n">set_password</span><span class="p">(</span><span class="n">password</span><span class="p">)</span>
+</div>
+    <span class="k">def</span> <span class="nf">_get_user_permissions</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">user_obj</span><span class="p">):</span>
+        <span class="k">return</span> <span class="n">user_obj</span><span class="o">.</span><span class="n">user_permissions</span><span class="o">.</span><span class="n">all</span><span class="p">()</span>
+
+    <span class="k">def</span> <span class="nf">_get_group_permissions</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">user_obj</span><span class="p">):</span>
+        <span class="n">user_groups_field</span> <span class="o">=</span> <span class="n">get_user_model</span><span class="p">()</span><span class="o">.</span><span class="n">_meta</span><span class="o">.</span><span class="n">get_field</span><span class="p">(</span><span class="s">&#39;groups&#39;</span><span class="p">)</span>
+        <span class="n">user_groups_query</span> <span class="o">=</span> <span class="s">&#39;group__</span><span class="si">%s</span><span class="s">&#39;</span> <span class="o">%</span> <span class="n">user_groups_field</span><span class="o">.</span><span class="n">related_query_name</span><span class="p">()</span>
+        <span class="k">return</span> <span class="n">Permission</span><span class="o">.</span><span class="n">objects</span><span class="o">.</span><span class="n">filter</span><span class="p">(</span><span class="o">**</span><span class="p">{</span><span class="n">user_groups_query</span><span class="p">:</span> <span class="n">user_obj</span><span class="p">})</span>
+
+    <span class="k">def</span> <span class="nf">_get_permissions</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">user_obj</span><span class="p">,</span> <span class="n">obj</span><span class="p">,</span> <span class="n">from_name</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Returns the permissions of `user_obj` from `from_name`. `from_name` can</span>
+<span class="sd">        be either &quot;group&quot; or &quot;user&quot; to return permissions from</span>
+<span class="sd">        `_get_group_permissions` or `_get_user_permissions` respectively.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">user_obj</span><span class="o">.</span><span class="n">is_active</span> <span class="ow">or</span> <span class="n">user_obj</span><span class="o">.</span><span class="n">is_anonymous</span><span class="p">()</span> <span class="ow">or</span> <span class="n">obj</span> <span class="ow">is</span> <span class="ow">not</span> <span class="bp">None</span><span class="p">:</span>
+            <span class="k">return</span> <span class="nb">set</span><span class="p">()</span>
+
+        <span class="n">perm_cache_name</span> <span class="o">=</span> <span class="s">&#39;_</span><span class="si">%s</span><span class="s">_perm_cache&#39;</span> <span class="o">%</span> <span class="n">from_name</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="nb">hasattr</span><span class="p">(</span><span class="n">user_obj</span><span class="p">,</span> <span class="n">perm_cache_name</span><span class="p">):</span>
+            <span class="k">if</span> <span class="n">user_obj</span><span class="o">.</span><span class="n">is_superuser</span><span class="p">:</span>
+                <span class="n">perms</span> <span class="o">=</span> <span class="n">Permission</span><span class="o">.</span><span class="n">objects</span><span class="o">.</span><span class="n">all</span><span class="p">()</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">perms</span> <span class="o">=</span> <span class="nb">getattr</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="s">&#39;_get_</span><span class="si">%s</span><span class="s">_permissions&#39;</span> <span class="o">%</span> <span class="n">from_name</span><span class="p">)(</span><span class="n">user_obj</span><span class="p">)</span>
+            <span class="n">perms</span> <span class="o">=</span> <span class="n">perms</span><span class="o">.</span><span class="n">values_list</span><span class="p">(</span><span class="s">&#39;content_type__app_label&#39;</span><span class="p">,</span> <span class="s">&#39;codename&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">order_by</span><span class="p">()</span>
+            <span class="nb">setattr</span><span class="p">(</span><span class="n">user_obj</span><span class="p">,</span> <span class="n">perm_cache_name</span><span class="p">,</span> <span class="nb">set</span><span class="p">(</span><span class="s">&quot;</span><span class="si">%s</span><span class="s">.</span><span class="si">%s</span><span class="s">&quot;</span> <span class="o">%</span> <span class="p">(</span><span class="n">ct</span><span class="p">,</span> <span class="n">name</span><span class="p">)</span> <span class="k">for</span> <span class="n">ct</span><span class="p">,</span> <span class="n">name</span> <span class="ow">in</span> <span class="n">perms</span><span class="p">))</span>
+        <span class="k">return</span> <span class="nb">getattr</span><span class="p">(</span><span class="n">user_obj</span><span class="p">,</span> <span class="n">perm_cache_name</span><span class="p">)</span>
+
+<div class="viewcode-block" id="ModelBackend.get_user_permissions"><a class="viewcode-back" href="../../../../ref/contrib/auth.html#django.contrib.auth.backends.ModelBackend.get_user_permissions">[docs]</a>    <span class="k">def</span> <span class="nf">get_user_permissions</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">user_obj</span><span class="p">,</span> <span class="n">obj</span><span class="o">=</span><span class="bp">None</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Returns a set of permission strings the user `user_obj` has from their</span>
+<span class="sd">        `user_permissions`.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_get_permissions</span><span class="p">(</span><span class="n">user_obj</span><span class="p">,</span> <span class="n">obj</span><span class="p">,</span> <span class="s">&#39;user&#39;</span><span class="p">)</span>
+</div>
+<div class="viewcode-block" id="ModelBackend.get_group_permissions"><a class="viewcode-back" href="../../../../ref/contrib/auth.html#django.contrib.auth.backends.ModelBackend.get_group_permissions">[docs]</a>    <span class="k">def</span> <span class="nf">get_group_permissions</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">user_obj</span><span class="p">,</span> <span class="n">obj</span><span class="o">=</span><span class="bp">None</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Returns a set of permission strings the user `user_obj` has from the</span>
+<span class="sd">        groups they belong.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_get_permissions</span><span class="p">(</span><span class="n">user_obj</span><span class="p">,</span> <span class="n">obj</span><span class="p">,</span> <span class="s">&#39;group&#39;</span><span class="p">)</span>
+</div>
+<div class="viewcode-block" id="ModelBackend.get_all_permissions"><a class="viewcode-back" href="../../../../ref/contrib/auth.html#django.contrib.auth.backends.ModelBackend.get_all_permissions">[docs]</a>    <span class="k">def</span> <span class="nf">get_all_permissions</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">user_obj</span><span class="p">,</span> <span class="n">obj</span><span class="o">=</span><span class="bp">None</span><span class="p">):</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">user_obj</span><span class="o">.</span><span class="n">is_active</span> <span class="ow">or</span> <span class="n">user_obj</span><span class="o">.</span><span class="n">is_anonymous</span><span class="p">()</span> <span class="ow">or</span> <span class="n">obj</span> <span class="ow">is</span> <span class="ow">not</span> <span class="bp">None</span><span class="p">:</span>
+            <span class="k">return</span> <span class="nb">set</span><span class="p">()</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="nb">hasattr</span><span class="p">(</span><span class="n">user_obj</span><span class="p">,</span> <span class="s">&#39;_perm_cache&#39;</span><span class="p">):</span>
+            <span class="n">user_obj</span><span class="o">.</span><span class="n">_perm_cache</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_user_permissions</span><span class="p">(</span><span class="n">user_obj</span><span class="p">)</span>
+            <span class="n">user_obj</span><span class="o">.</span><span class="n">_perm_cache</span><span class="o">.</span><span class="n">update</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">get_group_permissions</span><span class="p">(</span><span class="n">user_obj</span><span class="p">))</span>
+        <span class="k">return</span> <span class="n">user_obj</span><span class="o">.</span><span class="n">_perm_cache</span>
+</div>
+<div class="viewcode-block" id="ModelBackend.has_perm"><a class="viewcode-back" href="../../../../ref/contrib/auth.html#django.contrib.auth.backends.ModelBackend.has_perm">[docs]</a>    <span class="k">def</span> <span class="nf">has_perm</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">user_obj</span><span class="p">,</span> <span class="n">perm</span><span class="p">,</span> <span class="n">obj</span><span class="o">=</span><span class="bp">None</span><span class="p">):</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">user_obj</span><span class="o">.</span><span class="n">is_active</span><span class="p">:</span>
+            <span class="k">return</span> <span class="bp">False</span>
+        <span class="k">return</span> <span class="n">perm</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_all_permissions</span><span class="p">(</span><span class="n">user_obj</span><span class="p">,</span> <span class="n">obj</span><span class="p">)</span>
+</div>
+<div class="viewcode-block" id="ModelBackend.has_module_perms"><a class="viewcode-back" href="../../../../ref/contrib/auth.html#django.contrib.auth.backends.ModelBackend.has_module_perms">[docs]</a>    <span class="k">def</span> <span class="nf">has_module_perms</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">user_obj</span><span class="p">,</span> <span class="n">app_label</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Returns True if user_obj has any permissions in the given app_label.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">user_obj</span><span class="o">.</span><span class="n">is_active</span><span class="p">:</span>
+            <span class="k">return</span> <span class="bp">False</span>
+        <span class="k">for</span> <span class="n">perm</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_all_permissions</span><span class="p">(</span><span class="n">user_obj</span><span class="p">):</span>
+            <span class="k">if</span> <span class="n">perm</span><span class="p">[:</span><span class="n">perm</span><span class="o">.</span><span class="n">index</span><span class="p">(</span><span class="s">&#39;.&#39;</span><span class="p">)]</span> <span class="o">==</span> <span class="n">app_label</span><span class="p">:</span>
+                <span class="k">return</span> <span class="bp">True</span>
+        <span class="k">return</span> <span class="bp">False</span>
+</div>
+    <span class="k">def</span> <span class="nf">get_user</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">user_id</span><span class="p">):</span>
+        <span class="n">UserModel</span> <span class="o">=</span> <span class="n">get_user_model</span><span class="p">()</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="k">return</span> <span class="n">UserModel</span><span class="o">.</span><span class="n">_default_manager</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">pk</span><span class="o">=</span><span class="n">user_id</span><span class="p">)</span>
+        <span class="k">except</span> <span class="n">UserModel</span><span class="o">.</span><span class="n">DoesNotExist</span><span class="p">:</span>
+            <span class="k">return</span> <span class="bp">None</span>
+
+</div>
+<div class="viewcode-block" id="RemoteUserBackend"><a class="viewcode-back" href="../../../../ref/contrib/auth.html#django.contrib.auth.backends.RemoteUserBackend">[docs]</a><span class="k">class</span> <span class="nc">RemoteUserBackend</span><span class="p">(</span><span class="n">ModelBackend</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    This backend is to be used in conjunction with the ``RemoteUserMiddleware``</span>
+<span class="sd">    found in the middleware module of this package, and is used when the server</span>
+<span class="sd">    is handling authentication outside of Django.</span>
+
+<span class="sd">    By default, the ``authenticate`` method creates ``User`` objects for</span>
+<span class="sd">    usernames that don&#39;t already exist in the database.  Subclasses can disable</span>
+<span class="sd">    this behavior by setting the ``create_unknown_user`` attribute to</span>
+<span class="sd">    ``False``.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="c"># Create a User object if not already in the database?</span>
+    <span class="n">create_unknown_user</span> <span class="o">=</span> <span class="bp">True</span>
+
+<div class="viewcode-block" id="RemoteUserBackend.authenticate"><a class="viewcode-back" href="../../../../ref/contrib/auth.html#django.contrib.auth.backends.RemoteUserBackend.authenticate">[docs]</a>    <span class="k">def</span> <span class="nf">authenticate</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">remote_user</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        The username passed as ``remote_user`` is considered trusted.  This</span>
+<span class="sd">        method simply returns the ``User`` object with the given username,</span>
+<span class="sd">        creating a new ``User`` object if ``create_unknown_user`` is ``True``.</span>
+
+<span class="sd">        Returns None if ``create_unknown_user`` is ``False`` and a ``User``</span>
+<span class="sd">        object with the given username is not found in the database.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">remote_user</span><span class="p">:</span>
+            <span class="k">return</span>
+        <span class="n">user</span> <span class="o">=</span> <span class="bp">None</span>
+        <span class="n">username</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">clean_username</span><span class="p">(</span><span class="n">remote_user</span><span class="p">)</span>
+
+        <span class="n">UserModel</span> <span class="o">=</span> <span class="n">get_user_model</span><span class="p">()</span>
+
+        <span class="c"># Note that this could be accomplished in one try-except clause, but</span>
+        <span class="c"># instead we use get_or_create when creating unknown users since it has</span>
+        <span class="c"># built-in safeguards for multiple threads.</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">create_unknown_user</span><span class="p">:</span>
+            <span class="n">user</span><span class="p">,</span> <span class="n">created</span> <span class="o">=</span> <span class="n">UserModel</span><span class="o">.</span><span class="n">_default_manager</span><span class="o">.</span><span class="n">get_or_create</span><span class="p">(</span><span class="o">**</span><span class="p">{</span>
+                <span class="n">UserModel</span><span class="o">.</span><span class="n">USERNAME_FIELD</span><span class="p">:</span> <span class="n">username</span>
+            <span class="p">})</span>
+            <span class="k">if</span> <span class="n">created</span><span class="p">:</span>
+                <span class="n">user</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">configure_user</span><span class="p">(</span><span class="n">user</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">try</span><span class="p">:</span>
+                <span class="n">user</span> <span class="o">=</span> <span class="n">UserModel</span><span class="o">.</span><span class="n">_default_manager</span><span class="o">.</span><span class="n">get_by_natural_key</span><span class="p">(</span><span class="n">username</span><span class="p">)</span>
+            <span class="k">except</span> <span class="n">UserModel</span><span class="o">.</span><span class="n">DoesNotExist</span><span class="p">:</span>
+                <span class="k">pass</span>
+        <span class="k">return</span> <span class="n">user</span>
+</div>
+<div class="viewcode-block" id="RemoteUserBackend.clean_username"><a class="viewcode-back" href="../../../../ref/contrib/auth.html#django.contrib.auth.backends.RemoteUserBackend.clean_username">[docs]</a>    <span class="k">def</span> <span class="nf">clean_username</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">username</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Performs any cleaning on the &quot;username&quot; prior to using it to get or</span>
+<span class="sd">        create the user object.  Returns the cleaned username.</span>
+
+<span class="sd">        By default, returns the username unchanged.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="n">username</span>
+</div>
+<div class="viewcode-block" id="RemoteUserBackend.configure_user"><a class="viewcode-back" href="../../../../ref/contrib/auth.html#django.contrib.auth.backends.RemoteUserBackend.configure_user">[docs]</a>    <span class="k">def</span> <span class="nf">configure_user</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">user</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Configures a user after creation and returns the updated user.</span>
+
+<span class="sd">        By default, returns the user unmodified.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="n">user</span></div></div>
+</pre></div>
+
+          </div>
+        </div>
+      </div>
+      
+        
+          <div class="yui-b" id="sidebar">
+            
+      <div class="sphinxsidebar">
+        <div class="sphinxsidebarwrapper">
+  <h3>Browse</h3>
+  <ul>
+    
+    
+  </ul>
+  <h3>You are here:</h3>
+  <ul>
+      <li>
+        <a href="../../../../index.html">Django 1.8.2.dev20150505153848 documentation</a>
+        
+          <ul><li><a href="../../../index.html">Module code</a>
+        
+          <ul><li><a href="../../../django.html">django</a>
+        
+          <ul><li><a href="../auth.html">django.contrib.auth</a>
+        
+        <ul><li>django.contrib.auth.backends</li></ul>
+        </li></ul></li></ul></li></ul>
+      </li>
+  </ul>
+
+<div id="searchbox" style="display: none">
+  <h3>Quick search</h3>
+    <form class="search" action="../../../../search.html" method="get">
+      <input type="text" name="q" />
+      <input type="submit" value="Go" />
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+    <p class="searchtip" style="font-size: 90%">
+    Enter search terms or a module, class or function name.
+    </p>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+              <h3>Last update:</h3>
+              <p class="topless">May 06, 2015</p>
+          </div>
+        
+      
+    </div>
+
+    <div id="ft">
+      <div class="nav">
+    <a href="../../../index.html" title="Module code" accesskey="U">up</a></div>
+    </div>
+  </div>
+
+      <div class="clearer"></div>
+    </div>
+  </body>
+</html>

@@ -1,0 +1,15 @@
+==========================
+Django 1.8.2 release notes
+==========================
+
+*Under development*
+
+Django 1.8.2 fixes several bugs in 1.8.1.
+
+Bugfixes
+========
+
+* Fixed check for template engine alias uniqueness (:ticket:`24685`).
+
+* Fixed crash when reusing the same ``Case`` instance in a query
+  (:ticket:`24752`).

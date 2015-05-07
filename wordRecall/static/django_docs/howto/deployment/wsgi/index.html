@@ -1,0 +1,253 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>How to deploy with WSGI &mdash; Django 1.8.2.dev20150505153848 documentation</title>
+    
+    <link rel="stylesheet" href="../../../_static/default.css" type="text/css" />
+    <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '../../../',
+        VERSION:     '1.8.2.dev20150505153848',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="../../../_static/jquery.js"></script>
+    <script type="text/javascript" src="../../../_static/underscore.js"></script>
+    <script type="text/javascript" src="../../../_static/doctools.js"></script>
+    <link rel="top" title="Django 1.8.2.dev20150505153848 documentation" href="../../../index.html" />
+    <link rel="up" title="Deploying Django" href="../index.html" />
+    <link rel="next" title="How to use Django with Apache and mod_wsgi" href="modwsgi.html" />
+    <link rel="prev" title="Deploying Django" href="../index.html" />
+
+
+
+ 
+<script type="text/javascript" src="../../../templatebuiltins.js"></script>
+<script type="text/javascript">
+(function($) {
+    if (!django_template_builtins) {
+       // templatebuiltins.js missing, do nothing.
+       return;
+    }
+    $(document).ready(function() {
+        // Hyperlink Django template tags and filters
+        var base = "../../../ref/templates/builtins.html";
+        if (base == "#") {
+            // Special case for builtins.html itself
+            base = "";
+        }
+        // Tags are keywords, class '.k'
+        $("div.highlight\\-html\\+django span.k").each(function(i, elem) {
+             var tagname = $(elem).text();
+             if ($.inArray(tagname, django_template_builtins.ttags) != -1) {
+                 var fragment = tagname.replace(/_/, '-');
+                 $(elem).html("<a href='" + base + "#" + fragment + "'>" + tagname + "</a>");
+             }
+        });
+        // Filters are functions, class '.nf'
+        $("div.highlight\\-html\\+django span.nf").each(function(i, elem) {
+             var filtername = $(elem).text();
+             if ($.inArray(filtername, django_template_builtins.tfilters) != -1) {
+                 var fragment = filtername.replace(/_/, '-');
+                 $(elem).html("<a href='" + base + "#" + fragment + "'>" + filtername + "</a>");
+             }
+        });
+    });
+})(jQuery);
+</script>
+
+
+  </head>
+  <body>
+
+    <div class="document">
+  <div id="custom-doc" class="yui-t6">
+    <div id="hd">
+      <h1><a href="../../../index.html">Django 1.8.2.dev20150505153848 documentation</a></h1>
+      <div id="global-nav">
+        <a title="Home page" href="../../../index.html">Home</a>  |
+        <a title="Table of contents" href="../../../contents.html">Table of contents</a>  |
+        <a title="Global index" href="../../../genindex.html">Index</a>  |
+        <a title="Module index" href="../../../py-modindex.html">Modules</a>
+      </div>
+      <div class="nav">
+    &laquo; <a href="../index.html" title="Deploying Django">previous</a>
+     |
+    <a href="../../index.html" title="&amp;#8220;How-to&amp;#8221; guides" accesskey="U">up</a>
+   |
+    <a href="modwsgi.html" title="How to use Django with Apache and mod_wsgi">next</a> &raquo;</div>
+    </div>
+
+    <div id="bd">
+      <div id="yui-main">
+        <div class="yui-b">
+          <div class="yui-g" id="howto-deployment-wsgi-index">
+            
+  <div class="section" id="s-how-to-deploy-with-wsgi">
+<span id="how-to-deploy-with-wsgi"></span><h1>How to deploy with WSGI<a class="headerlink" href="#how-to-deploy-with-wsgi" title="Permalink to this headline">¶</a></h1>
+<p>Django&#8217;s primary deployment platform is <a class="reference external" href="http://www.wsgi.org">WSGI</a>, the Python standard for web
+servers and applications.</p>
+<p>Django&#8217;s <a class="reference internal" href="../../../ref/django-admin.html#django-admin-startproject"><tt class="xref std std-djadmin docutils literal"><span class="pre">startproject</span></tt></a> management command sets up a simple default
+WSGI configuration for you, which you can tweak as needed for your project,
+and direct any WSGI-compliant application server to use.</p>
+<p>Django includes getting-started documentation for the following WSGI servers:</p>
+<div class="toctree-wrapper compound">
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="modwsgi.html">How to use Django with Apache and mod_wsgi</a></li>
+<li class="toctree-l1"><a class="reference internal" href="apache-auth.html">Authenticating against Django&#8217;s user database from Apache</a></li>
+<li class="toctree-l1"><a class="reference internal" href="gunicorn.html">How to use Django with Gunicorn</a></li>
+<li class="toctree-l1"><a class="reference internal" href="uwsgi.html">How to use Django with uWSGI</a></li>
+</ul>
+</div>
+<div class="section" id="s-the-application-object">
+<span id="the-application-object"></span><h2>The <tt class="docutils literal"><span class="pre">application</span></tt> object<a class="headerlink" href="#the-application-object" title="Permalink to this headline">¶</a></h2>
+<p>The key concept of deploying with WSGI is the <tt class="docutils literal"><span class="pre">application</span></tt> callable which
+the application server uses to communicate with your code. It&#8217;s commonly
+provided as an object named <tt class="docutils literal"><span class="pre">application</span></tt> in a Python module accessible to
+the server.</p>
+<p>The <a class="reference internal" href="../../../ref/django-admin.html#django-admin-startproject"><tt class="xref std std-djadmin docutils literal"><span class="pre">startproject</span></tt></a> command creates a file
+<tt class="file docutils literal"><span class="pre">&lt;project_name&gt;/wsgi.py</span></tt> that contains such an <tt class="docutils literal"><span class="pre">application</span></tt> callable.</p>
+<p>It&#8217;s used both by Django&#8217;s development server and in production WSGI
+deployments.</p>
+<p>WSGI servers obtain the path to the <tt class="docutils literal"><span class="pre">application</span></tt> callable from their
+configuration. Django&#8217;s built-in servers, namely the <a class="reference internal" href="../../../ref/django-admin.html#django-admin-runserver"><tt class="xref std std-djadmin docutils literal"><span class="pre">runserver</span></tt></a> and
+<a class="reference internal" href="../../../ref/django-admin.html#django-admin-runfcgi"><tt class="xref std std-djadmin docutils literal"><span class="pre">runfcgi</span></tt></a> commands, read it from the <a class="reference internal" href="../../../ref/settings.html#std:setting-WSGI_APPLICATION"><tt class="xref std std-setting docutils literal"><span class="pre">WSGI_APPLICATION</span></tt></a>
+setting. By default, it&#8217;s set to <tt class="docutils literal"><span class="pre">&lt;project_name&gt;.wsgi.application</span></tt>, which
+points to the <tt class="docutils literal"><span class="pre">application</span></tt> callable in <tt class="file docutils literal"><span class="pre">&lt;project_name&gt;/wsgi.py</span></tt>.</p>
+</div>
+<div class="section" id="s-configuring-the-settings-module">
+<span id="configuring-the-settings-module"></span><h2>Configuring the settings module<a class="headerlink" href="#configuring-the-settings-module" title="Permalink to this headline">¶</a></h2>
+<p>When the WSGI server loads your application, Django needs to import the
+settings module — that&#8217;s where your entire application is defined.</p>
+<p>Django uses the <span class="target" id="index-0"></span><a class="reference internal" href="../../../topics/settings.html#envvar-DJANGO_SETTINGS_MODULE"><tt class="xref std std-envvar docutils literal"><span class="pre">DJANGO_SETTINGS_MODULE</span></tt></a> environment variable to
+locate the appropriate settings module. It must contain the dotted path to the
+settings module. You can use a different value for development and production;
+it all depends on how you organize your settings.</p>
+<p>If this variable isn&#8217;t set, the default <tt class="file docutils literal"><span class="pre">wsgi.py</span></tt> sets it to
+<tt class="docutils literal"><span class="pre">mysite.settings</span></tt>, where <tt class="docutils literal"><span class="pre">mysite</span></tt> is the name of your project. That&#8217;s how
+<a class="reference internal" href="../../../ref/django-admin.html#django-admin-runserver"><tt class="xref std std-djadmin docutils literal"><span class="pre">runserver</span></tt></a> discovers the default settings file by default.</p>
+<div class="admonition note">
+<p class="first admonition-title">Note</p>
+<p>Since environment variables are process-wide, this doesn&#8217;t work when you
+run multiple Django sites in the same process. This happens with mod_wsgi.</p>
+<p class="last">To avoid this problem, use mod_wsgi&#8217;s daemon mode with each site in its
+own daemon process, or override the value from the environment by
+enforcing <tt class="docutils literal"><span class="pre">os.environ[&quot;DJANGO_SETTINGS_MODULE&quot;]</span> <span class="pre">=</span> <span class="pre">&quot;mysite.settings&quot;</span></tt> in
+your <tt class="file docutils literal"><span class="pre">wsgi.py</span></tt>.</p>
+</div>
+</div>
+<div class="section" id="s-applying-wsgi-middleware">
+<span id="applying-wsgi-middleware"></span><h2>Applying WSGI middleware<a class="headerlink" href="#applying-wsgi-middleware" title="Permalink to this headline">¶</a></h2>
+<p>To apply <a class="reference external" href="https://www.python.org/dev/peps/pep-3333/#middleware-components-that-play-both-sides">WSGI middleware</a> you can simply wrap the application object. For
+instance you could add these lines at the bottom of <tt class="file docutils literal"><span class="pre">wsgi.py</span></tt>:</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="kn">from</span> <span class="nn">helloworld.wsgi</span> <span class="kn">import</span> <span class="n">HelloWorldApplication</span>
+<span class="n">application</span> <span class="o">=</span> <span class="n">HelloWorldApplication</span><span class="p">(</span><span class="n">application</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>You could also replace the Django WSGI application with a custom WSGI
+application that later delegates to the Django WSGI application, if you want
+to combine a Django application with a WSGI application of another framework.</p>
+<div class="admonition note">
+<p class="first admonition-title">Note</p>
+<p class="last">Some third-party WSGI middleware do not call <tt class="docutils literal"><span class="pre">close</span></tt> on the response
+object after handling a request — most notably Sentry&#8217;s error reporting
+middleware up to version 2.0.7. In those cases the
+<a class="reference internal" href="../../../ref/signals.html#django.core.signals.request_finished" title="django.core.signals.request_finished"><tt class="xref py py-data docutils literal"><span class="pre">request_finished</span></tt></a> signal isn&#8217;t sent. This can
+result in idle connections to database and memcache servers.</p>
+</div>
+</div>
+</div>
+
+
+          </div>
+        </div>
+      </div>
+      
+        
+          <div class="yui-b" id="sidebar">
+            
+      <div class="sphinxsidebar">
+        <div class="sphinxsidebarwrapper">
+  <h3><a href="../../../contents.html">Table Of Contents</a></h3>
+  <ul>
+<li><a class="reference internal" href="#">How to deploy with WSGI</a><ul>
+<li><a class="reference internal" href="#the-application-object">The <tt class="docutils literal"><span class="pre">application</span></tt> object</a></li>
+<li><a class="reference internal" href="#configuring-the-settings-module">Configuring the settings module</a></li>
+<li><a class="reference internal" href="#applying-wsgi-middleware">Applying WSGI middleware</a></li>
+</ul>
+</li>
+</ul>
+
+  <h3>Browse</h3>
+  <ul>
+    
+      <li>Prev: <a href="../index.html">Deploying Django</a></li>
+    
+    
+      <li>Next: <a href="modwsgi.html">How to use Django with Apache and mod_wsgi</a></li>
+    
+  </ul>
+  <h3>You are here:</h3>
+  <ul>
+      <li>
+        <a href="../../../index.html">Django 1.8.2.dev20150505153848 documentation</a>
+        
+          <ul><li><a href="../../index.html">&#8220;How-to&#8221; guides</a>
+        
+          <ul><li><a href="../index.html">Deploying Django</a>
+        
+        <ul><li>How to deploy with WSGI</li></ul>
+        </li></ul></li></ul>
+      </li>
+  </ul>
+
+  <h3>This Page</h3>
+  <ul class="this-page-menu">
+    <li><a href="../../../_sources/howto/deployment/wsgi/index.txt"
+           rel="nofollow">Show Source</a></li>
+  </ul>
+<div id="searchbox" style="display: none">
+  <h3>Quick search</h3>
+    <form class="search" action="../../../search.html" method="get">
+      <input type="text" name="q" />
+      <input type="submit" value="Go" />
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+    <p class="searchtip" style="font-size: 90%">
+    Enter search terms or a module, class or function name.
+    </p>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+              <h3>Last update:</h3>
+              <p class="topless">May 06, 2015</p>
+          </div>
+        
+      
+    </div>
+
+    <div id="ft">
+      <div class="nav">
+    &laquo; <a href="../index.html" title="Deploying Django">previous</a>
+     |
+    <a href="../../index.html" title="&amp;#8220;How-to&amp;#8221; guides" accesskey="U">up</a>
+   |
+    <a href="modwsgi.html" title="How to use Django with Apache and mod_wsgi">next</a> &raquo;</div>
+    </div>
+  </div>
+
+      <div class="clearer"></div>
+    </div>
+  </body>
+</html>

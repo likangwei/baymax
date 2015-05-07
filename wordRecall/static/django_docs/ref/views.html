@@ -1,0 +1,317 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>Built-in Views &mdash; Django 1.8.2.dev20150505153848 documentation</title>
+    
+    <link rel="stylesheet" href="../_static/default.css" type="text/css" />
+    <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '../',
+        VERSION:     '1.8.2.dev20150505153848',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="../_static/jquery.js"></script>
+    <script type="text/javascript" src="../_static/underscore.js"></script>
+    <script type="text/javascript" src="../_static/doctools.js"></script>
+    <link rel="top" title="Django 1.8.2.dev20150505153848 documentation" href="../index.html" />
+    <link rel="up" title="API Reference" href="index.html" />
+    <link rel="next" title="Meta-documentation and miscellany" href="../misc/index.html" />
+    <link rel="prev" title="Validators" href="validators.html" />
+
+
+
+ 
+<script type="text/javascript" src="../templatebuiltins.js"></script>
+<script type="text/javascript">
+(function($) {
+    if (!django_template_builtins) {
+       // templatebuiltins.js missing, do nothing.
+       return;
+    }
+    $(document).ready(function() {
+        // Hyperlink Django template tags and filters
+        var base = "templates/builtins.html";
+        if (base == "#") {
+            // Special case for builtins.html itself
+            base = "";
+        }
+        // Tags are keywords, class '.k'
+        $("div.highlight\\-html\\+django span.k").each(function(i, elem) {
+             var tagname = $(elem).text();
+             if ($.inArray(tagname, django_template_builtins.ttags) != -1) {
+                 var fragment = tagname.replace(/_/, '-');
+                 $(elem).html("<a href='" + base + "#" + fragment + "'>" + tagname + "</a>");
+             }
+        });
+        // Filters are functions, class '.nf'
+        $("div.highlight\\-html\\+django span.nf").each(function(i, elem) {
+             var filtername = $(elem).text();
+             if ($.inArray(filtername, django_template_builtins.tfilters) != -1) {
+                 var fragment = filtername.replace(/_/, '-');
+                 $(elem).html("<a href='" + base + "#" + fragment + "'>" + filtername + "</a>");
+             }
+        });
+    });
+})(jQuery);
+</script>
+
+
+  </head>
+  <body>
+
+    <div class="document">
+  <div id="custom-doc" class="yui-t6">
+    <div id="hd">
+      <h1><a href="../index.html">Django 1.8.2.dev20150505153848 documentation</a></h1>
+      <div id="global-nav">
+        <a title="Home page" href="../index.html">Home</a>  |
+        <a title="Table of contents" href="../contents.html">Table of contents</a>  |
+        <a title="Global index" href="../genindex.html">Index</a>  |
+        <a title="Module index" href="../py-modindex.html">Modules</a>
+      </div>
+      <div class="nav">
+    &laquo; <a href="validators.html" title="Validators">previous</a>
+     |
+    <a href="index.html" title="API Reference" accesskey="U">up</a>
+   |
+    <a href="../misc/index.html" title="Meta-documentation and miscellany">next</a> &raquo;</div>
+    </div>
+
+    <div id="bd">
+      <div id="yui-main">
+        <div class="yui-b">
+          <div class="yui-g" id="ref-views">
+            
+  <div class="section" id="s-module-django.views">
+<span id="s-built-in-views"></span><span id="module-django.views"></span><span id="built-in-views"></span><h1>Built-in Views<a class="headerlink" href="#module-django.views" title="Permalink to this headline">¶</a></h1>
+<p>Several of Django&#8217;s built-in views are documented in
+<a class="reference internal" href="../topics/http/views.html"><em>Writing views</em></a> as well as elsewhere in the documentation.</p>
+<div class="section" id="s-serving-files-in-development">
+<span id="serving-files-in-development"></span><h2>Serving files in development<a class="headerlink" href="#serving-files-in-development" title="Permalink to this headline">¶</a></h2>
+<dl class="function">
+<dt id="django.views.static.serve">
+<tt class="descclassname">static.</tt><tt class="descname">serve</tt>(<em>request</em>, <em>path</em>, <em>document_root</em>, <em>show_indexes=False</em>)<a class="headerlink" href="#django.views.static.serve" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<p>There may be files other than your project&#8217;s static assets that, for
+convenience, you&#8217;d like to have Django serve for you in local development.
+The <a class="reference internal" href="#django.views.static.serve" title="django.views.static.serve"><tt class="xref py py-func docutils literal"><span class="pre">serve()</span></tt></a> view can be used to serve any directory
+you give it. (This view is <strong>not</strong> hardened for production use and should be
+used only as a development aid; you should serve these files in production
+using a real front-end web server).</p>
+<p>The most likely example is user-uploaded content in <a class="reference internal" href="settings.html#std:setting-MEDIA_ROOT"><tt class="xref std std-setting docutils literal"><span class="pre">MEDIA_ROOT</span></tt></a>.
+<tt class="docutils literal"><span class="pre">django.contrib.staticfiles</span></tt> is intended for static assets and has no
+built-in handling for user-uploaded files, but you can have Django serve your
+<a class="reference internal" href="settings.html#std:setting-MEDIA_ROOT"><tt class="xref std std-setting docutils literal"><span class="pre">MEDIA_ROOT</span></tt></a> by appending something like this to your URLconf:</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="kn">from</span> <span class="nn">django.conf</span> <span class="kn">import</span> <span class="n">settings</span>
+<span class="kn">from</span> <span class="nn">django.views.static</span> <span class="kn">import</span> <span class="n">serve</span>
+
+<span class="c"># ... the rest of your URLconf goes here ...</span>
+
+<span class="k">if</span> <span class="n">settings</span><span class="o">.</span><span class="n">DEBUG</span><span class="p">:</span>
+    <span class="n">urlpatterns</span> <span class="o">+=</span> <span class="p">[</span>
+        <span class="n">url</span><span class="p">(</span><span class="s">r&#39;^media/(?P&lt;path&gt;.*)$&#39;</span><span class="p">,</span> <span class="n">serve</span><span class="p">,</span> <span class="p">{</span>
+            <span class="s">&#39;document_root&#39;</span><span class="p">:</span> <span class="n">settings</span><span class="o">.</span><span class="n">MEDIA_ROOT</span><span class="p">,</span>
+        <span class="p">}),</span>
+   <span class="p">]</span>
+</pre></div>
+</div>
+<p>Note, the snippet assumes your <a class="reference internal" href="settings.html#std:setting-MEDIA_URL"><tt class="xref std std-setting docutils literal"><span class="pre">MEDIA_URL</span></tt></a> has a value of
+<tt class="docutils literal"><span class="pre">'/media/'</span></tt>. This will call the <a class="reference internal" href="#django.views.static.serve" title="django.views.static.serve"><tt class="xref py py-func docutils literal"><span class="pre">serve()</span></tt></a> view,
+passing in the path from the URLconf and the (required) <tt class="docutils literal"><span class="pre">document_root</span></tt>
+parameter.</p>
+<p>Since it can become a bit cumbersome to define this URL pattern, Django
+ships with a small URL helper function <a class="reference internal" href="urls.html#django.conf.urls.static.static" title="django.conf.urls.static.static"><tt class="xref py py-func docutils literal"><span class="pre">static()</span></tt></a>
+that takes as parameters the prefix such as <a class="reference internal" href="settings.html#std:setting-MEDIA_URL"><tt class="xref std std-setting docutils literal"><span class="pre">MEDIA_URL</span></tt></a> and a dotted
+path to a view, such as <tt class="docutils literal"><span class="pre">'django.views.static.serve'</span></tt>. Any other function
+parameter will be transparently passed to the view.</p>
+</div>
+<div class="section" id="s-error-views">
+<span id="s-id1"></span><span id="error-views"></span><span id="id1"></span><h2>Error views<a class="headerlink" href="#error-views" title="Permalink to this headline">¶</a></h2>
+<p>Django comes with a few views by default for handling HTTP errors. To override
+these with your own custom views, see <a class="reference internal" href="../topics/http/views.html#customizing-error-views"><em>Customizing error views</em></a>.</p>
+<div class="section" id="s-the-404-page-not-found-view">
+<span id="s-http-not-found-view"></span><span id="the-404-page-not-found-view"></span><span id="http-not-found-view"></span><h3>The 404 (page not found) view<a class="headerlink" href="#the-404-page-not-found-view" title="Permalink to this headline">¶</a></h3>
+<dl class="function">
+<dt id="django.views.defaults.page_not_found">
+<tt class="descclassname">defaults.</tt><tt class="descname">page_not_found</tt>(<em>request</em>, <em>template_name='404.html'</em>)<a class="headerlink" href="#django.views.defaults.page_not_found" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<p>When you raise <a class="reference internal" href="../topics/http/views.html#django.http.Http404" title="django.http.Http404"><tt class="xref py py-exc docutils literal"><span class="pre">Http404</span></tt></a> from within a view, Django loads a
+special view devoted to handling 404 errors. By default, it&#8217;s the view
+<a class="reference internal" href="#django.views.defaults.page_not_found" title="django.views.defaults.page_not_found"><tt class="xref py py-func docutils literal"><span class="pre">django.views.defaults.page_not_found()</span></tt></a>, which either produces a very
+simple &#8220;Not Found&#8221; message or loads and renders the template <tt class="docutils literal"><span class="pre">404.html</span></tt> if
+you created it in your root template directory.</p>
+<p>The default 404 view will pass one variable to the template: <tt class="docutils literal"><span class="pre">request_path</span></tt>,
+which is the URL that resulted in the error.</p>
+<p>Three things to note about 404 views:</p>
+<ul class="simple">
+<li>The 404 view is also called if Django doesn&#8217;t find a match after
+checking every regular expression in the URLconf.</li>
+<li>The 404 view is passed a <a class="reference internal" href="templates/api.html#django.template.RequestContext" title="django.template.RequestContext"><tt class="xref py py-class docutils literal"><span class="pre">RequestContext</span></tt></a> and
+will have access to variables supplied by your template context
+processors (e.g. <tt class="docutils literal"><span class="pre">MEDIA_URL</span></tt>).</li>
+<li>If <a class="reference internal" href="settings.html#std:setting-DEBUG"><tt class="xref std std-setting docutils literal"><span class="pre">DEBUG</span></tt></a> is set to <tt class="docutils literal"><span class="pre">True</span></tt> (in your settings module), then
+your 404 view will never be used, and your URLconf will be displayed
+instead, with some debug information.</li>
+</ul>
+</div>
+<div class="section" id="s-the-500-server-error-view">
+<span id="s-http-internal-server-error-view"></span><span id="the-500-server-error-view"></span><span id="http-internal-server-error-view"></span><h3>The 500 (server error) view<a class="headerlink" href="#the-500-server-error-view" title="Permalink to this headline">¶</a></h3>
+<dl class="function">
+<dt id="django.views.defaults.server_error">
+<tt class="descclassname">defaults.</tt><tt class="descname">server_error</tt>(<em>request</em>, <em>template_name='500.html'</em>)<a class="headerlink" href="#django.views.defaults.server_error" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<p>Similarly, Django executes special-case behavior in the case of runtime errors
+in view code. If a view results in an exception, Django will, by default, call
+the view <tt class="docutils literal"><span class="pre">django.views.defaults.server_error</span></tt>, which either produces a very
+simple &#8220;Server Error&#8221; message or loads and renders the template <tt class="docutils literal"><span class="pre">500.html</span></tt> if
+you created it in your root template directory.</p>
+<p>The default 500 view passes no variables to the <tt class="docutils literal"><span class="pre">500.html</span></tt> template and is
+rendered with an empty <tt class="docutils literal"><span class="pre">Context</span></tt> to lessen the chance of additional errors.</p>
+<p>If <a class="reference internal" href="settings.html#std:setting-DEBUG"><tt class="xref std std-setting docutils literal"><span class="pre">DEBUG</span></tt></a> is set to <tt class="docutils literal"><span class="pre">True</span></tt> (in your settings module), then
+your 500 view will never be used, and the traceback will be displayed
+instead, with some debug information.</p>
+</div>
+<div class="section" id="s-the-403-http-forbidden-view">
+<span id="s-http-forbidden-view"></span><span id="the-403-http-forbidden-view"></span><span id="http-forbidden-view"></span><h3>The 403 (HTTP Forbidden) view<a class="headerlink" href="#the-403-http-forbidden-view" title="Permalink to this headline">¶</a></h3>
+<dl class="function">
+<dt id="django.views.defaults.permission_denied">
+<tt class="descclassname">defaults.</tt><tt class="descname">permission_denied</tt>(<em>request</em>, <em>template_name='403.html'</em>)<a class="headerlink" href="#django.views.defaults.permission_denied" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<p>In the same vein as the 404 and 500 views, Django has a view to handle 403
+Forbidden errors. If a view results in a 403 exception then Django will, by
+default, call the view <tt class="docutils literal"><span class="pre">django.views.defaults.permission_denied</span></tt>.</p>
+<p>This view loads and renders the template <tt class="docutils literal"><span class="pre">403.html</span></tt> in your root template
+directory, or if this file does not exist, instead serves the text
+&#8220;403 Forbidden&#8221;, as per <span class="target" id="index-0"></span><a class="rfc reference external" href="http://tools.ietf.org/html/rfc2616.html"><strong>RFC 2616</strong></a> (the HTTP 1.1 Specification).</p>
+<p><tt class="docutils literal"><span class="pre">django.views.defaults.permission_denied</span></tt> is triggered by a
+<a class="reference internal" href="exceptions.html#django.core.exceptions.PermissionDenied" title="django.core.exceptions.PermissionDenied"><tt class="xref py py-exc docutils literal"><span class="pre">PermissionDenied</span></tt></a> exception. To deny access in a
+view you can use code like this:</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="kn">from</span> <span class="nn">django.core.exceptions</span> <span class="kn">import</span> <span class="n">PermissionDenied</span>
+
+<span class="k">def</span> <span class="nf">edit</span><span class="p">(</span><span class="n">request</span><span class="p">,</span> <span class="n">pk</span><span class="p">):</span>
+    <span class="k">if</span> <span class="ow">not</span> <span class="n">request</span><span class="o">.</span><span class="n">user</span><span class="o">.</span><span class="n">is_staff</span><span class="p">:</span>
+        <span class="k">raise</span> <span class="n">PermissionDenied</span>
+    <span class="c"># ...</span>
+</pre></div>
+</div>
+</div>
+<div class="section" id="s-the-400-bad-request-view">
+<span id="s-http-bad-request-view"></span><span id="the-400-bad-request-view"></span><span id="http-bad-request-view"></span><h3>The 400 (bad request) view<a class="headerlink" href="#the-400-bad-request-view" title="Permalink to this headline">¶</a></h3>
+<dl class="function">
+<dt id="django.views.defaults.bad_request">
+<tt class="descclassname">defaults.</tt><tt class="descname">bad_request</tt>(<em>request</em>, <em>template_name='400.html'</em>)<a class="headerlink" href="#django.views.defaults.bad_request" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<p>When a <a class="reference internal" href="exceptions.html#django.core.exceptions.SuspiciousOperation" title="django.core.exceptions.SuspiciousOperation"><tt class="xref py py-exc docutils literal"><span class="pre">SuspiciousOperation</span></tt></a> is raised in Django,
+it may be handled by a component of Django (for example resetting the session
+data). If not specifically handled, Django will consider the current request a
+&#8216;bad request&#8217; instead of a server error.</p>
+<p><tt class="docutils literal"><span class="pre">django.views.defaults.bad_request</span></tt>, is otherwise very similar to the
+<tt class="docutils literal"><span class="pre">server_error</span></tt> view, but returns with the status code 400 indicating that
+the error condition was the result of a client operation.</p>
+<p><tt class="docutils literal"><span class="pre">bad_request</span></tt> views are also only used when <a class="reference internal" href="settings.html#std:setting-DEBUG"><tt class="xref std std-setting docutils literal"><span class="pre">DEBUG</span></tt></a> is <tt class="docutils literal"><span class="pre">False</span></tt>.</p>
+</div>
+</div>
+</div>
+
+
+          </div>
+        </div>
+      </div>
+      
+        
+          <div class="yui-b" id="sidebar">
+            
+      <div class="sphinxsidebar">
+        <div class="sphinxsidebarwrapper">
+  <h3><a href="../contents.html">Table Of Contents</a></h3>
+  <ul>
+<li><a class="reference internal" href="#">Built-in Views</a><ul>
+<li><a class="reference internal" href="#serving-files-in-development">Serving files in development</a></li>
+<li><a class="reference internal" href="#error-views">Error views</a><ul>
+<li><a class="reference internal" href="#the-404-page-not-found-view">The 404 (page not found) view</a></li>
+<li><a class="reference internal" href="#the-500-server-error-view">The 500 (server error) view</a></li>
+<li><a class="reference internal" href="#the-403-http-forbidden-view">The 403 (HTTP Forbidden) view</a></li>
+<li><a class="reference internal" href="#the-400-bad-request-view">The 400 (bad request) view</a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+
+  <h3>Browse</h3>
+  <ul>
+    
+      <li>Prev: <a href="validators.html">Validators</a></li>
+    
+    
+      <li>Next: <a href="../misc/index.html">Meta-documentation and miscellany</a></li>
+    
+  </ul>
+  <h3>You are here:</h3>
+  <ul>
+      <li>
+        <a href="../index.html">Django 1.8.2.dev20150505153848 documentation</a>
+        
+          <ul><li><a href="index.html">API Reference</a>
+        
+        <ul><li>Built-in Views</li></ul>
+        </li></ul>
+      </li>
+  </ul>
+
+  <h3>This Page</h3>
+  <ul class="this-page-menu">
+    <li><a href="../_sources/ref/views.txt"
+           rel="nofollow">Show Source</a></li>
+  </ul>
+<div id="searchbox" style="display: none">
+  <h3>Quick search</h3>
+    <form class="search" action="../search.html" method="get">
+      <input type="text" name="q" />
+      <input type="submit" value="Go" />
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+    <p class="searchtip" style="font-size: 90%">
+    Enter search terms or a module, class or function name.
+    </p>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+              <h3>Last update:</h3>
+              <p class="topless">May 06, 2015</p>
+          </div>
+        
+      
+    </div>
+
+    <div id="ft">
+      <div class="nav">
+    &laquo; <a href="validators.html" title="Validators">previous</a>
+     |
+    <a href="index.html" title="API Reference" accesskey="U">up</a>
+   |
+    <a href="../misc/index.html" title="Meta-documentation and miscellany">next</a> &raquo;</div>
+    </div>
+  </div>
+
+      <div class="clearer"></div>
+    </div>
+  </body>
+</html>

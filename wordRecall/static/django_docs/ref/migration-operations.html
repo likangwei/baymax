@@ -1,0 +1,646 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>Migration Operations &mdash; Django 1.8.2.dev20150505153848 documentation</title>
+    
+    <link rel="stylesheet" href="../_static/default.css" type="text/css" />
+    <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '../',
+        VERSION:     '1.8.2.dev20150505153848',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="../_static/jquery.js"></script>
+    <script type="text/javascript" src="../_static/underscore.js"></script>
+    <script type="text/javascript" src="../_static/doctools.js"></script>
+    <link rel="top" title="Django 1.8.2.dev20150505153848 documentation" href="../index.html" />
+    <link rel="up" title="API Reference" href="index.html" />
+    <link rel="next" title="Models" href="models/index.html" />
+    <link rel="prev" title="Middleware" href="middleware.html" />
+
+
+
+ 
+<script type="text/javascript" src="../templatebuiltins.js"></script>
+<script type="text/javascript">
+(function($) {
+    if (!django_template_builtins) {
+       // templatebuiltins.js missing, do nothing.
+       return;
+    }
+    $(document).ready(function() {
+        // Hyperlink Django template tags and filters
+        var base = "templates/builtins.html";
+        if (base == "#") {
+            // Special case for builtins.html itself
+            base = "";
+        }
+        // Tags are keywords, class '.k'
+        $("div.highlight\\-html\\+django span.k").each(function(i, elem) {
+             var tagname = $(elem).text();
+             if ($.inArray(tagname, django_template_builtins.ttags) != -1) {
+                 var fragment = tagname.replace(/_/, '-');
+                 $(elem).html("<a href='" + base + "#" + fragment + "'>" + tagname + "</a>");
+             }
+        });
+        // Filters are functions, class '.nf'
+        $("div.highlight\\-html\\+django span.nf").each(function(i, elem) {
+             var filtername = $(elem).text();
+             if ($.inArray(filtername, django_template_builtins.tfilters) != -1) {
+                 var fragment = filtername.replace(/_/, '-');
+                 $(elem).html("<a href='" + base + "#" + fragment + "'>" + filtername + "</a>");
+             }
+        });
+    });
+})(jQuery);
+</script>
+
+
+  </head>
+  <body>
+
+    <div class="document">
+  <div id="custom-doc" class="yui-t6">
+    <div id="hd">
+      <h1><a href="../index.html">Django 1.8.2.dev20150505153848 documentation</a></h1>
+      <div id="global-nav">
+        <a title="Home page" href="../index.html">Home</a>  |
+        <a title="Table of contents" href="../contents.html">Table of contents</a>  |
+        <a title="Global index" href="../genindex.html">Index</a>  |
+        <a title="Module index" href="../py-modindex.html">Modules</a>
+      </div>
+      <div class="nav">
+    &laquo; <a href="middleware.html" title="Middleware">previous</a>
+     |
+    <a href="index.html" title="API Reference" accesskey="U">up</a>
+   |
+    <a href="models/index.html" title="Models">next</a> &raquo;</div>
+    </div>
+
+    <div id="bd">
+      <div id="yui-main">
+        <div class="yui-b">
+          <div class="yui-g" id="ref-migration-operations">
+            
+  <div class="section" id="s-module-django.db.migrations.operations">
+<span id="s-migration-operations"></span><span id="module-django.db.migrations.operations"></span><span id="migration-operations"></span><h1>Migration Operations<a class="headerlink" href="#module-django.db.migrations.operations" title="Permalink to this headline">¶</a></h1>
+<p>Migration files are composed of one or more <tt class="docutils literal"><span class="pre">Operation</span></tt>s, objects that
+declaratively record what the migration should do to your database.</p>
+<p>Django also uses these <tt class="docutils literal"><span class="pre">Operation</span></tt> objects to work out what your models
+looked like historically, and to calculate what changes you&#8217;ve made to
+your models since the last migration so it can automatically write
+your migrations; that&#8217;s why they&#8217;re declarative, as it means Django can
+easily load them all into memory and run through them without touching
+the database to work out what your project should look like.</p>
+<p>There are also more specialized <tt class="docutils literal"><span class="pre">Operation</span></tt> objects which are for things like
+<a class="reference internal" href="../topics/migrations.html#data-migrations"><em>data migrations</em></a> and for advanced manual database
+manipulation. You can also write your own <tt class="docutils literal"><span class="pre">Operation</span></tt> classes if you want
+to encapsulate a custom change you commonly make.</p>
+<p>If you need an empty migration file to write your own <tt class="docutils literal"><span class="pre">Operation</span></tt> objects
+into, just use <tt class="docutils literal"><span class="pre">python</span> <span class="pre">manage.py</span> <span class="pre">makemigrations</span> <span class="pre">--empty</span> <span class="pre">yourappname</span></tt>,
+but be aware that manually adding schema-altering operations can confuse the
+migration autodetector and make resulting runs of <a class="reference internal" href="django-admin.html#django-admin-makemigrations"><tt class="xref std std-djadmin docutils literal"><span class="pre">makemigrations</span></tt></a>
+output incorrect code.</p>
+<p>All of the core Django operations are available from the
+<tt class="docutils literal"><span class="pre">django.db.migrations.operations</span></tt> module.</p>
+<p>For introductory material, see the <a class="reference internal" href="../topics/migrations.html"><em>migrations topic guide</em></a>.</p>
+<div class="section" id="s-schema-operations">
+<span id="schema-operations"></span><h2>Schema Operations<a class="headerlink" href="#schema-operations" title="Permalink to this headline">¶</a></h2>
+<div class="section" id="s-createmodel">
+<span id="createmodel"></span><h3>CreateModel<a class="headerlink" href="#createmodel" title="Permalink to this headline">¶</a></h3>
+<dl class="class">
+<dt id="django.db.migrations.operations.CreateModel">
+<em class="property">class </em><tt class="descname">CreateModel</tt>(<em>name</em>, <em>fields</em>, <em>options=None</em>, <em>bases=None</em>, <em>managers=None</em>)<a class="headerlink" href="#django.db.migrations.operations.CreateModel" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<p>Creates a new model in the project history and a corresponding table in the
+database to match it.</p>
+<p><tt class="docutils literal"><span class="pre">name</span></tt> is the model name, as would be written in the <tt class="docutils literal"><span class="pre">models.py</span></tt> file.</p>
+<p><tt class="docutils literal"><span class="pre">fields</span></tt> is a list of 2-tuples of <tt class="docutils literal"><span class="pre">(field_name,</span> <span class="pre">field_instance)</span></tt>.
+The field instance should be an unbound field (so just <tt class="docutils literal"><span class="pre">models.CharField()</span></tt>,
+rather than a field takes from another model).</p>
+<p><tt class="docutils literal"><span class="pre">options</span></tt> is an optional dictionary of values from the model&#8217;s <tt class="docutils literal"><span class="pre">Meta</span></tt> class.</p>
+<p><tt class="docutils literal"><span class="pre">bases</span></tt> is an optional list of other classes to have this model inherit from;
+it can contain both class objects as well as strings in the format
+<tt class="docutils literal"><span class="pre">&quot;appname.ModelName&quot;</span></tt> if you want to depend on another model (so you inherit
+from the historical version). If it&#8217;s not supplied, it defaults to just
+inheriting from the standard <tt class="docutils literal"><span class="pre">models.Model</span></tt>.</p>
+<p><tt class="docutils literal"><span class="pre">managers</span></tt> takes a list of 2-tuples of <tt class="docutils literal"><span class="pre">(manager_name,</span> <span class="pre">manager_instance)</span></tt>.
+The first manager in the list will be the default manager for this model during
+migrations.</p>
+<div class="versionchanged">
+<span class="title">Changed in Django 1.8:</span> <p>The <tt class="docutils literal"><span class="pre">managers</span></tt> argument was added.</p>
+</div>
+</div>
+<div class="section" id="s-deletemodel">
+<span id="deletemodel"></span><h3>DeleteModel<a class="headerlink" href="#deletemodel" title="Permalink to this headline">¶</a></h3>
+<dl class="class">
+<dt id="django.db.migrations.operations.DeleteModel">
+<em class="property">class </em><tt class="descname">DeleteModel</tt>(<em>name</em>)<a class="headerlink" href="#django.db.migrations.operations.DeleteModel" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<p>Deletes the model from the project history and its table from the database.</p>
+</div>
+<div class="section" id="s-renamemodel">
+<span id="renamemodel"></span><h3>RenameModel<a class="headerlink" href="#renamemodel" title="Permalink to this headline">¶</a></h3>
+<dl class="class">
+<dt id="django.db.migrations.operations.RenameModel">
+<em class="property">class </em><tt class="descname">RenameModel</tt>(<em>old_name</em>, <em>new_name</em>)<a class="headerlink" href="#django.db.migrations.operations.RenameModel" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<p>Renames the model from an old name to a new one.</p>
+<p>You may have to manually add
+this if you change the model&#8217;s name and quite a few of its fields at once; to
+the autodetector, this will look like you deleted a model with the old name
+and added a new one with a different name, and the migration it creates will
+lose any data in the old table.</p>
+</div>
+<div class="section" id="s-altermodeltable">
+<span id="altermodeltable"></span><h3>AlterModelTable<a class="headerlink" href="#altermodeltable" title="Permalink to this headline">¶</a></h3>
+<dl class="class">
+<dt id="django.db.migrations.operations.AlterModelTable">
+<em class="property">class </em><tt class="descname">AlterModelTable</tt>(<em>name</em>, <em>table</em>)<a class="headerlink" href="#django.db.migrations.operations.AlterModelTable" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<p>Changes the model&#8217;s table name (the <a class="reference internal" href="models/options.html#django.db.models.Options.db_table" title="django.db.models.Options.db_table"><tt class="xref py py-attr docutils literal"><span class="pre">db_table</span></tt></a>
+option on the <tt class="docutils literal"><span class="pre">Meta</span></tt> subclass).</p>
+</div>
+<div class="section" id="s-alteruniquetogether">
+<span id="alteruniquetogether"></span><h3>AlterUniqueTogether<a class="headerlink" href="#alteruniquetogether" title="Permalink to this headline">¶</a></h3>
+<dl class="class">
+<dt id="django.db.migrations.operations.AlterUniqueTogether">
+<em class="property">class </em><tt class="descname">AlterUniqueTogether</tt>(<em>name</em>, <em>unique_together</em>)<a class="headerlink" href="#django.db.migrations.operations.AlterUniqueTogether" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<p>Changes the model&#8217;s set of unique constraints (the
+<a class="reference internal" href="models/options.html#django.db.models.Options.unique_together" title="django.db.models.Options.unique_together"><tt class="xref py py-attr docutils literal"><span class="pre">unique_together</span></tt></a> option on the <tt class="docutils literal"><span class="pre">Meta</span></tt>
+subclass).</p>
+</div>
+<div class="section" id="s-alterindextogether">
+<span id="alterindextogether"></span><h3>AlterIndexTogether<a class="headerlink" href="#alterindextogether" title="Permalink to this headline">¶</a></h3>
+<dl class="class">
+<dt id="django.db.migrations.operations.AlterIndexTogether">
+<em class="property">class </em><tt class="descname">AlterIndexTogether</tt>(<em>name</em>, <em>index_together</em>)<a class="headerlink" href="#django.db.migrations.operations.AlterIndexTogether" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<p>Changes the model&#8217;s set of custom indexes (the
+<a class="reference internal" href="models/options.html#django.db.models.Options.index_together" title="django.db.models.Options.index_together"><tt class="xref py py-attr docutils literal"><span class="pre">index_together</span></tt></a> option on the <tt class="docutils literal"><span class="pre">Meta</span></tt>
+subclass).</p>
+</div>
+<div class="section" id="s-alterorderwithrespectto">
+<span id="alterorderwithrespectto"></span><h3>AlterOrderWithRespectTo<a class="headerlink" href="#alterorderwithrespectto" title="Permalink to this headline">¶</a></h3>
+<dl class="class">
+<dt id="django.db.migrations.operations.AlterOrderWithRespectTo">
+<em class="property">class </em><tt class="descname">AlterOrderWithRespectTo</tt>(<em>name</em>, <em>order_with_respect_to</em>)<a class="headerlink" href="#django.db.migrations.operations.AlterOrderWithRespectTo" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<p>Makes or deletes the <tt class="docutils literal"><span class="pre">_order</span></tt> column needed for the
+<a class="reference internal" href="models/options.html#django.db.models.Options.order_with_respect_to" title="django.db.models.Options.order_with_respect_to"><tt class="xref py py-attr docutils literal"><span class="pre">order_with_respect_to</span></tt></a> option on the <tt class="docutils literal"><span class="pre">Meta</span></tt>
+subclass.</p>
+</div>
+<div class="section" id="s-altermodeloptions">
+<span id="altermodeloptions"></span><h3>AlterModelOptions<a class="headerlink" href="#altermodeloptions" title="Permalink to this headline">¶</a></h3>
+<dl class="class">
+<dt id="django.db.migrations.operations.AlterModelOptions">
+<em class="property">class </em><tt class="descname">AlterModelOptions</tt>(<em>name</em>, <em>options</em>)<a class="headerlink" href="#django.db.migrations.operations.AlterModelOptions" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<p>Stores changes to miscellaneous model options (settings on a model&#8217;s <tt class="docutils literal"><span class="pre">Meta</span></tt>)
+like <tt class="docutils literal"><span class="pre">permissions</span></tt> and <tt class="docutils literal"><span class="pre">verbose_name</span></tt>. Does not affect the database, but
+persists these changes for <a class="reference internal" href="#django.db.migrations.operations.RunPython" title="django.db.migrations.operations.RunPython"><tt class="xref py py-class docutils literal"><span class="pre">RunPython</span></tt></a> instances to use. <tt class="docutils literal"><span class="pre">options</span></tt>
+should be a dictionary mapping option names to values.</p>
+</div>
+<div class="section" id="s-altermodelmanagers">
+<span id="altermodelmanagers"></span><h3>AlterModelManagers<a class="headerlink" href="#altermodelmanagers" title="Permalink to this headline">¶</a></h3>
+<div class="versionadded">
+<span class="title">New in Django 1.8.</span> </div>
+<dl class="class">
+<dt id="django.db.migrations.operations.AlterModelManagers">
+<em class="property">class </em><tt class="descname">AlterModelManagers</tt>(<em>name</em>, <em>managers</em>)<a class="headerlink" href="#django.db.migrations.operations.AlterModelManagers" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<p>Alters the managers that are available during migrations.</p>
+</div>
+<div class="section" id="s-addfield">
+<span id="addfield"></span><h3>AddField<a class="headerlink" href="#addfield" title="Permalink to this headline">¶</a></h3>
+<dl class="class">
+<dt id="django.db.migrations.operations.AddField">
+<em class="property">class </em><tt class="descname">AddField</tt>(<em>model_name</em>, <em>name</em>, <em>field</em>, <em>preserve_default=True</em>)<a class="headerlink" href="#django.db.migrations.operations.AddField" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<p>Adds a field to a model. <tt class="docutils literal"><span class="pre">model_name</span></tt> is the model&#8217;s name, <tt class="docutils literal"><span class="pre">name</span></tt> is
+the field&#8217;s name, and <tt class="docutils literal"><span class="pre">field</span></tt> is an unbound Field instance (the thing
+you would put in the field declaration in <tt class="docutils literal"><span class="pre">models.py</span></tt> - for example,
+<tt class="docutils literal"><span class="pre">models.IntegerField(null=True)</span></tt>.</p>
+<p>The <tt class="docutils literal"><span class="pre">preserve_default</span></tt> argument indicates whether the field&#8217;s default
+value is permanent and should be baked into the project state (<tt class="docutils literal"><span class="pre">True</span></tt>),
+or if it is temporary and just for this migration (<tt class="docutils literal"><span class="pre">False</span></tt>) - usually
+because the migration is adding a non-nullable field to a table and needs
+a default value to put into existing rows. It does not effect the behavior
+of setting defaults in the database directly - Django never sets database
+defaults and always applies them in the Django ORM code.</p>
+</div>
+<div class="section" id="s-removefield">
+<span id="removefield"></span><h3>RemoveField<a class="headerlink" href="#removefield" title="Permalink to this headline">¶</a></h3>
+<dl class="class">
+<dt id="django.db.migrations.operations.RemoveField">
+<em class="property">class </em><tt class="descname">RemoveField</tt>(<em>model_name</em>, <em>name</em>)<a class="headerlink" href="#django.db.migrations.operations.RemoveField" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<p>Removes a field from a model.</p>
+<p>Bear in mind that when reversed this is actually adding a field to a model;
+if the field is not nullable this may make this operation irreversible (apart
+from any data loss, which of course is irreversible).</p>
+</div>
+<div class="section" id="s-alterfield">
+<span id="alterfield"></span><h3>AlterField<a class="headerlink" href="#alterfield" title="Permalink to this headline">¶</a></h3>
+<dl class="class">
+<dt id="django.db.migrations.operations.AlterField">
+<em class="property">class </em><tt class="descname">AlterField</tt>(<em>model_name</em>, <em>name</em>, <em>field</em>, <em>preserve_default=True</em>)<a class="headerlink" href="#django.db.migrations.operations.AlterField" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<p>Alters a field&#8217;s definition, including changes to its type,
+<a class="reference internal" href="models/fields.html#django.db.models.Field.null" title="django.db.models.Field.null"><tt class="xref py py-attr docutils literal"><span class="pre">null</span></tt></a>, <a class="reference internal" href="models/fields.html#django.db.models.Field.unique" title="django.db.models.Field.unique"><tt class="xref py py-attr docutils literal"><span class="pre">unique</span></tt></a>,
+<a class="reference internal" href="models/fields.html#django.db.models.Field.db_column" title="django.db.models.Field.db_column"><tt class="xref py py-attr docutils literal"><span class="pre">db_column</span></tt></a> and other field attributes.</p>
+<p>The <tt class="docutils literal"><span class="pre">preserve_default</span></tt> argument indicates whether the field&#8217;s default
+value is permanent and should be baked into the project state (<tt class="docutils literal"><span class="pre">True</span></tt>),
+or if it is temporary and just for this migration (<tt class="docutils literal"><span class="pre">False</span></tt>) - usually
+because the migration is altering a nullable field to a non-nullable one and
+needs a default value to put into existing rows. It does not effect the
+behavior of setting defaults in the database directly - Django never sets
+database defaults and always applies them in the Django ORM code.</p>
+<p>Note that not all changes are possible on all databases - for example, you
+cannot change a text-type field like <tt class="docutils literal"><span class="pre">models.TextField()</span></tt> into a number-type
+field like <tt class="docutils literal"><span class="pre">models.IntegerField()</span></tt> on most databases.</p>
+<div class="versionchanged">
+<span class="title">Changed in Django 1.7.1:</span> <p>The <tt class="docutils literal"><span class="pre">preserve_default</span></tt> argument was added.</p>
+</div>
+</div>
+<div class="section" id="s-renamefield">
+<span id="renamefield"></span><h3>RenameField<a class="headerlink" href="#renamefield" title="Permalink to this headline">¶</a></h3>
+<dl class="class">
+<dt id="django.db.migrations.operations.RenameField">
+<em class="property">class </em><tt class="descname">RenameField</tt>(<em>model_name</em>, <em>old_name</em>, <em>new_name</em>)<a class="headerlink" href="#django.db.migrations.operations.RenameField" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<p>Changes a field&#8217;s name (and, unless <a class="reference internal" href="models/fields.html#django.db.models.Field.db_column" title="django.db.models.Field.db_column"><tt class="xref py py-attr docutils literal"><span class="pre">db_column</span></tt></a>
+is set, its column name).</p>
+</div>
+</div>
+<div class="section" id="s-special-operations">
+<span id="special-operations"></span><h2>Special Operations<a class="headerlink" href="#special-operations" title="Permalink to this headline">¶</a></h2>
+<div class="section" id="s-runsql">
+<span id="runsql"></span><h3>RunSQL<a class="headerlink" href="#runsql" title="Permalink to this headline">¶</a></h3>
+<dl class="class">
+<dt id="django.db.migrations.operations.RunSQL">
+<em class="property">class </em><tt class="descname">RunSQL</tt>(<em>sql</em>, <em>reverse_sql=None</em>, <em>state_operations=None</em>, <em>hints=None</em>)<a class="headerlink" href="#django.db.migrations.operations.RunSQL" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<p>Allows running of arbitrary SQL on the database - useful for more advanced
+features of database backends that Django doesn&#8217;t support directly, like
+partial indexes.</p>
+<p><tt class="docutils literal"><span class="pre">sql</span></tt>, and <tt class="docutils literal"><span class="pre">reverse_sql</span></tt> if provided, should be strings of SQL to run on
+the database. On most database backends (all but PostgreSQL), Django will
+split the SQL into individual statements prior to executing them. This
+requires installing the <a class="reference external" href="https://pypi.python.org/pypi/sqlparse">sqlparse</a> Python library.</p>
+<p>You can also pass a list of strings or 2-tuples. The latter is used for passing
+queries and parameters in the same way as <a class="reference internal" href="../topics/db/sql.html#executing-custom-sql"><em>cursor.execute()</em></a>. These three operations are equivalent:</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="n">migrations</span><span class="o">.</span><span class="n">RunSQL</span><span class="p">(</span><span class="s">&quot;INSERT INTO musician (name) VALUES (&#39;Reinhardt&#39;);&quot;</span><span class="p">)</span>
+<span class="n">migrations</span><span class="o">.</span><span class="n">RunSQL</span><span class="p">([</span><span class="s">&quot;INSERT INTO musician (name) VALUES (&#39;Reinhardt&#39;);&quot;</span><span class="p">,</span> <span class="bp">None</span><span class="p">])</span>
+<span class="n">migrations</span><span class="o">.</span><span class="n">RunSQL</span><span class="p">([</span><span class="s">&quot;INSERT INTO musician (name) VALUES (</span><span class="si">%s</span><span class="s">);&quot;</span><span class="p">,</span> <span class="p">[</span><span class="s">&#39;Reinhardt&#39;</span><span class="p">]])</span>
+</pre></div>
+</div>
+<p>If you want to include literal percent signs in the query, you have to double
+them if you are passing parameters.</p>
+<p>The <tt class="docutils literal"><span class="pre">state_operations</span></tt> argument is so you can supply operations that are
+equivalent to the SQL in terms of project state; for example, if you are
+manually creating a column, you should pass in a list containing an <tt class="docutils literal"><span class="pre">AddField</span></tt>
+operation here so that the autodetector still has an up-to-date state of the
+model (otherwise, when you next run <tt class="docutils literal"><span class="pre">makemigrations</span></tt>, it won&#8217;t see any
+operation that adds that field and so will try to run it again).</p>
+<p>The optional <tt class="docutils literal"><span class="pre">hints</span></tt> argument will be passed as <tt class="docutils literal"><span class="pre">**hints</span></tt> to the
+<a class="reference internal" href="../topics/db/multi-db.html#allow_migrate" title="allow_migrate"><tt class="xref py py-meth docutils literal"><span class="pre">allow_migrate()</span></tt></a> method of database routers to assist them in making
+routing decisions. See <a class="reference internal" href="../topics/db/multi-db.html#topics-db-multi-db-hints"><em>Hints</em></a> for more details on
+database hints.</p>
+<div class="versionchanged">
+<span class="title">Changed in Django 1.7.1:</span> <p>If you want to include literal percent signs in a query without parameters
+you don&#8217;t need to double them anymore.</p>
+</div>
+<div class="versionchanged">
+<span class="title">Changed in Django 1.8:</span> <p>The ability to pass parameters to the <tt class="docutils literal"><span class="pre">sql</span></tt> and <tt class="docutils literal"><span class="pre">reverse_sql</span></tt> queries
+was added.</p>
+<p>The <tt class="docutils literal"><span class="pre">hints</span></tt> argument was added.</p>
+</div>
+<dl class="attribute">
+<dt id="django.db.migrations.operations.RunSQL.noop">
+<tt class="descclassname">RunSQL.</tt><tt class="descname">noop</tt><a class="headerlink" href="#django.db.migrations.operations.RunSQL.noop" title="Permalink to this definition">¶</a></dt>
+<dd><div class="versionadded">
+<span class="title">New in Django 1.8.</span> </div>
+<p>Pass the <tt class="docutils literal"><span class="pre">RunSQL.noop</span></tt> attribute to <tt class="docutils literal"><span class="pre">sql</span></tt> or <tt class="docutils literal"><span class="pre">reverse_sql</span></tt> when you
+want the operation not to do anything in the given direction. This is
+especially useful in making the operation reversible.</p>
+</dd></dl>
+
+</div>
+<div class="section" id="s-runpython">
+<span id="runpython"></span><h3>RunPython<a class="headerlink" href="#runpython" title="Permalink to this headline">¶</a></h3>
+<dl class="class">
+<dt id="django.db.migrations.operations.RunPython">
+<em class="property">class </em><tt class="descname">RunPython</tt>(<em>code</em>, <em>reverse_code=None</em>, <em>atomic=True</em>, <em>hints=None</em>)<a class="headerlink" href="#django.db.migrations.operations.RunPython" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<p>Runs custom Python code in a historical context. <tt class="docutils literal"><span class="pre">code</span></tt> (and <tt class="docutils literal"><span class="pre">reverse_code</span></tt>
+if supplied) should be callable objects that accept two arguments; the first is
+an instance of <tt class="docutils literal"><span class="pre">django.apps.registry.Apps</span></tt> containing historical models that
+match the operation&#8217;s place in the project history, and the second is an
+instance of <a class="reference internal" href="schema-editor.html#django.db.backends.base.schema.BaseDatabaseSchemaEditor" title="django.db.backends.base.schema.BaseDatabaseSchemaEditor"><tt class="xref py py-class docutils literal"><span class="pre">SchemaEditor</span></tt></a>.</p>
+<p>The optional <tt class="docutils literal"><span class="pre">hints</span></tt> argument will be passed as <tt class="docutils literal"><span class="pre">**hints</span></tt> to the
+<a class="reference internal" href="../topics/db/multi-db.html#allow_migrate" title="allow_migrate"><tt class="xref py py-meth docutils literal"><span class="pre">allow_migrate()</span></tt></a> method of database routers to assist them in making a
+routing decision. See <a class="reference internal" href="../topics/db/multi-db.html#topics-db-multi-db-hints"><em>Hints</em></a> for more details on
+database hints.</p>
+<div class="versionadded">
+<span class="title">New in Django 1.8:</span> <p>The <tt class="docutils literal"><span class="pre">hints</span></tt> argument was added.</p>
+</div>
+<p>You are advised to write the code as a separate function above the <tt class="docutils literal"><span class="pre">Migration</span></tt>
+class in the migration file, and just pass it to <tt class="docutils literal"><span class="pre">RunPython</span></tt>. Here&#8217;s an
+example of using <tt class="docutils literal"><span class="pre">RunPython</span></tt> to create some initial objects on a <tt class="docutils literal"><span class="pre">Country</span></tt>
+model:</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="c"># -*- coding: utf-8 -*-</span>
+<span class="kn">from</span> <span class="nn">django.db</span> <span class="kn">import</span> <span class="n">models</span><span class="p">,</span> <span class="n">migrations</span>
+
+<span class="k">def</span> <span class="nf">forwards_func</span><span class="p">(</span><span class="n">apps</span><span class="p">,</span> <span class="n">schema_editor</span><span class="p">):</span>
+    <span class="c"># We get the model from the versioned app registry;</span>
+    <span class="c"># if we directly import it, it&#39;ll be the wrong version</span>
+    <span class="n">Country</span> <span class="o">=</span> <span class="n">apps</span><span class="o">.</span><span class="n">get_model</span><span class="p">(</span><span class="s">&quot;myapp&quot;</span><span class="p">,</span> <span class="s">&quot;Country&quot;</span><span class="p">)</span>
+    <span class="n">db_alias</span> <span class="o">=</span> <span class="n">schema_editor</span><span class="o">.</span><span class="n">connection</span><span class="o">.</span><span class="n">alias</span>
+    <span class="n">Country</span><span class="o">.</span><span class="n">objects</span><span class="o">.</span><span class="n">using</span><span class="p">(</span><span class="n">db_alias</span><span class="p">)</span><span class="o">.</span><span class="n">bulk_create</span><span class="p">([</span>
+        <span class="n">Country</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="s">&quot;USA&quot;</span><span class="p">,</span> <span class="n">code</span><span class="o">=</span><span class="s">&quot;us&quot;</span><span class="p">),</span>
+        <span class="n">Country</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="s">&quot;France&quot;</span><span class="p">,</span> <span class="n">code</span><span class="o">=</span><span class="s">&quot;fr&quot;</span><span class="p">),</span>
+    <span class="p">])</span>
+
+<span class="k">class</span> <span class="nc">Migration</span><span class="p">(</span><span class="n">migrations</span><span class="o">.</span><span class="n">Migration</span><span class="p">):</span>
+
+    <span class="n">dependencies</span> <span class="o">=</span> <span class="p">[]</span>
+
+    <span class="n">operations</span> <span class="o">=</span> <span class="p">[</span>
+        <span class="n">migrations</span><span class="o">.</span><span class="n">RunPython</span><span class="p">(</span>
+            <span class="n">forwards_func</span><span class="p">,</span>
+        <span class="p">),</span>
+    <span class="p">]</span>
+</pre></div>
+</div>
+<p>This is generally the operation you would use to create
+<a class="reference internal" href="../topics/migrations.html#data-migrations"><em>data migrations</em></a>, run
+custom data updates and alterations, and anything else you need access to an
+ORM and/or python code for.</p>
+<p>If you&#8217;re upgrading from South, this is basically the South pattern as an
+operation - one or two methods for forwards and backwards, with an ORM and
+schema operations available. Most of the time, you should be able to translate
+the <tt class="docutils literal"><span class="pre">orm.Model</span></tt> or <tt class="docutils literal"><span class="pre">orm[&quot;appname&quot;,</span> <span class="pre">&quot;Model&quot;]</span></tt> references from South directly
+into <tt class="docutils literal"><span class="pre">apps.get_model(&quot;appname&quot;,</span> <span class="pre">&quot;Model&quot;)</span></tt> references here and leave most of
+the rest of the code unchanged for data migrations. However, <tt class="docutils literal"><span class="pre">apps</span></tt> will only
+have references to models in the current app unless migrations in other apps
+are added to the migration&#8217;s dependencies.</p>
+<p>Much like <a class="reference internal" href="#django.db.migrations.operations.RunSQL" title="django.db.migrations.operations.RunSQL"><tt class="xref py py-class docutils literal"><span class="pre">RunSQL</span></tt></a>, ensure that if you change schema inside here you&#8217;re
+either doing it outside the scope of the Django model system (e.g. triggers)
+or that you use <a class="reference internal" href="#django.db.migrations.operations.SeparateDatabaseAndState" title="django.db.migrations.operations.SeparateDatabaseAndState"><tt class="xref py py-class docutils literal"><span class="pre">SeparateDatabaseAndState</span></tt></a> to add in operations that will
+reflect your changes to the model state - otherwise, the versioned ORM and
+the autodetector will stop working correctly.</p>
+<p>By default, <tt class="docutils literal"><span class="pre">RunPython</span></tt> will run its contents inside a transaction even
+on databases that do not support DDL transactions (for example, MySQL and
+Oracle). This should be safe, but may cause a crash if you attempt to use
+the <tt class="docutils literal"><span class="pre">schema_editor</span></tt> provided on these backends; in this case, please
+set <tt class="docutils literal"><span class="pre">atomic=False</span></tt>.</p>
+<div class="admonition warning">
+<p class="first admonition-title">Warning</p>
+<p class="last"><tt class="docutils literal"><span class="pre">RunPython</span></tt> does not magically alter the connection of the models for you;
+any model methods you call will go to the default database unless you
+give them the current database alias (available from
+<tt class="docutils literal"><span class="pre">schema_editor.connection.alias</span></tt>, where <tt class="docutils literal"><span class="pre">schema_editor</span></tt> is the second
+argument to your function).</p>
+</div>
+<dl class="staticmethod">
+<dt id="django.db.migrations.operations.RunPython.noop">
+<em class="property">static </em><tt class="descclassname">RunPython.</tt><tt class="descname">noop</tt>()<a class="headerlink" href="#django.db.migrations.operations.RunPython.noop" title="Permalink to this definition">¶</a></dt>
+<dd><div class="versionadded">
+<span class="title">New in Django 1.8.</span> </div>
+<p>Pass the <tt class="docutils literal"><span class="pre">RunPython.noop</span></tt> method to <tt class="docutils literal"><span class="pre">code</span></tt> or <tt class="docutils literal"><span class="pre">reverse_code</span></tt> when
+you want the operation not to do anything in the given direction. This is
+especially useful in making the operation reversible.</p>
+</dd></dl>
+
+</div>
+<div class="section" id="s-separatedatabaseandstate">
+<span id="separatedatabaseandstate"></span><h3>SeparateDatabaseAndState<a class="headerlink" href="#separatedatabaseandstate" title="Permalink to this headline">¶</a></h3>
+<dl class="class">
+<dt id="django.db.migrations.operations.SeparateDatabaseAndState">
+<em class="property">class </em><tt class="descname">SeparateDatabaseAndState</tt>(<em>database_operations=None</em>, <em>state_operations=None</em>)<a class="headerlink" href="#django.db.migrations.operations.SeparateDatabaseAndState" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<p>A highly specialized operation that let you mix and match the database
+(schema-changing) and state (autodetector-powering) aspects of operations.</p>
+<p>It accepts two list of operations, and when asked to apply state will use the
+state list, and when asked to apply changes to the database will use the database
+list. Do not use this operation unless you&#8217;re very sure you know what you&#8217;re doing.</p>
+</div>
+</div>
+<div class="section" id="s-writing-your-own">
+<span id="writing-your-own"></span><h2>Writing your own<a class="headerlink" href="#writing-your-own" title="Permalink to this headline">¶</a></h2>
+<p>Operations have a relatively simple API, and they&#8217;re designed so that you can
+easily write your own to supplement the built-in Django ones. The basic structure
+of an <tt class="docutils literal"><span class="pre">Operation</span></tt> looks like this:</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="kn">from</span> <span class="nn">django.db.migrations.operations.base</span> <span class="kn">import</span> <span class="n">Operation</span>
+
+<span class="k">class</span> <span class="nc">MyCustomOperation</span><span class="p">(</span><span class="n">Operation</span><span class="p">):</span>
+
+    <span class="c"># If this is False, it means that this operation will be ignored by</span>
+    <span class="c"># sqlmigrate; if true, it will be run and the SQL collected for its output.</span>
+    <span class="n">reduces_to_sql</span> <span class="o">=</span> <span class="bp">False</span>
+
+    <span class="c"># If this is False, Django will refuse to reverse past this operation.</span>
+    <span class="n">reversible</span> <span class="o">=</span> <span class="bp">False</span>
+
+    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">arg1</span><span class="p">,</span> <span class="n">arg2</span><span class="p">):</span>
+        <span class="c"># Operations are usually instantiated with arguments in migration</span>
+        <span class="c"># files. Store the values of them on self for later use.</span>
+        <span class="k">pass</span>
+
+    <span class="k">def</span> <span class="nf">state_forwards</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">app_label</span><span class="p">,</span> <span class="n">state</span><span class="p">):</span>
+        <span class="c"># The Operation should take the &#39;state&#39; parameter (an instance of</span>
+        <span class="c"># django.db.migrations.state.ProjectState) and mutate it to match</span>
+        <span class="c"># any schema changes that have occurred.</span>
+        <span class="k">pass</span>
+
+    <span class="k">def</span> <span class="nf">database_forwards</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">app_label</span><span class="p">,</span> <span class="n">schema_editor</span><span class="p">,</span> <span class="n">from_state</span><span class="p">,</span> <span class="n">to_state</span><span class="p">):</span>
+        <span class="c"># The Operation should use schema_editor to apply any changes it</span>
+        <span class="c"># wants to make to the database.</span>
+        <span class="k">pass</span>
+
+    <span class="k">def</span> <span class="nf">database_backwards</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">app_label</span><span class="p">,</span> <span class="n">schema_editor</span><span class="p">,</span> <span class="n">from_state</span><span class="p">,</span> <span class="n">to_state</span><span class="p">):</span>
+        <span class="c"># If reversible is True, this is called when the operation is reversed.</span>
+        <span class="k">pass</span>
+
+    <span class="k">def</span> <span class="nf">describe</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="c"># This is used to describe what the operation does in console output.</span>
+        <span class="k">return</span> <span class="s">&quot;Custom Operation&quot;</span>
+</pre></div>
+</div>
+<p>You can take this template and work from it, though we suggest looking at the
+built-in Django operations in <tt class="docutils literal"><span class="pre">django.db.migrations.operations</span></tt> - they&#8217;re
+easy to read and cover a lot of the example usage of semi-internal aspects
+of the migration framework like <tt class="docutils literal"><span class="pre">ProjectState</span></tt> and the patterns used to get
+historical models.</p>
+<p>Some things to note:</p>
+<ul class="simple">
+<li>You don&#8217;t need to learn too much about <tt class="docutils literal"><span class="pre">ProjectState</span></tt> to just write simple
+migrations; just know that it has an <tt class="docutils literal"><span class="pre">apps</span></tt> property that gives access to
+an app registry (which you can then call <tt class="docutils literal"><span class="pre">get_model</span></tt> on).</li>
+<li><tt class="docutils literal"><span class="pre">database_forwards</span></tt> and <tt class="docutils literal"><span class="pre">database_backwards</span></tt> both get two states passed
+to them; these just represent the difference the <tt class="docutils literal"><span class="pre">state_forwards</span></tt> method
+would have applied, but are given to you for convenience and speed reasons.</li>
+<li><tt class="docutils literal"><span class="pre">to_state</span></tt> in the database_backwards method is the <em>older</em> state; that is,
+the one that will be the current state once the migration has finished reversing.</li>
+<li>You might see implementations of <tt class="docutils literal"><span class="pre">references_model</span></tt> on the built-in
+operations; this is part of the autodetection code and does not matter for
+custom operations.</li>
+</ul>
+<p>As a simple example, let&#8217;s make an operation that loads PostgreSQL extensions
+(which contain some of PostgreSQL&#8217;s more exciting features). It&#8217;s simple enough;
+there&#8217;s no model state changes, and all it does is run one command:</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="kn">from</span> <span class="nn">django.db.migrations.operations.base</span> <span class="kn">import</span> <span class="n">Operation</span>
+
+<span class="k">class</span> <span class="nc">LoadExtension</span><span class="p">(</span><span class="n">Operation</span><span class="p">):</span>
+
+    <span class="n">reversible</span> <span class="o">=</span> <span class="bp">True</span>
+
+    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">name</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">name</span> <span class="o">=</span> <span class="n">name</span>
+
+    <span class="k">def</span> <span class="nf">state_forwards</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">app_label</span><span class="p">,</span> <span class="n">state</span><span class="p">):</span>
+        <span class="k">pass</span>
+
+    <span class="k">def</span> <span class="nf">database_forwards</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">app_label</span><span class="p">,</span> <span class="n">schema_editor</span><span class="p">,</span> <span class="n">from_state</span><span class="p">,</span> <span class="n">to_state</span><span class="p">):</span>
+        <span class="n">schema_editor</span><span class="o">.</span><span class="n">execute</span><span class="p">(</span><span class="s">&quot;CREATE EXTENSION IF NOT EXISTS </span><span class="si">%s</span><span class="s">&quot;</span> <span class="o">%</span> <span class="bp">self</span><span class="o">.</span><span class="n">name</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">database_backwards</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">app_label</span><span class="p">,</span> <span class="n">schema_editor</span><span class="p">,</span> <span class="n">from_state</span><span class="p">,</span> <span class="n">to_state</span><span class="p">):</span>
+        <span class="n">schema_editor</span><span class="o">.</span><span class="n">execute</span><span class="p">(</span><span class="s">&quot;DROP EXTENSION </span><span class="si">%s</span><span class="s">&quot;</span> <span class="o">%</span> <span class="bp">self</span><span class="o">.</span><span class="n">name</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">describe</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="s">&quot;Creates extension </span><span class="si">%s</span><span class="s">&quot;</span> <span class="o">%</span> <span class="bp">self</span><span class="o">.</span><span class="n">name</span>
+</pre></div>
+</div>
+</div>
+</div>
+
+
+          </div>
+        </div>
+      </div>
+      
+        
+          <div class="yui-b" id="sidebar">
+            
+      <div class="sphinxsidebar">
+        <div class="sphinxsidebarwrapper">
+  <h3><a href="../contents.html">Table Of Contents</a></h3>
+  <ul>
+<li><a class="reference internal" href="#">Migration Operations</a><ul>
+<li><a class="reference internal" href="#schema-operations">Schema Operations</a><ul>
+<li><a class="reference internal" href="#createmodel">CreateModel</a></li>
+<li><a class="reference internal" href="#deletemodel">DeleteModel</a></li>
+<li><a class="reference internal" href="#renamemodel">RenameModel</a></li>
+<li><a class="reference internal" href="#altermodeltable">AlterModelTable</a></li>
+<li><a class="reference internal" href="#alteruniquetogether">AlterUniqueTogether</a></li>
+<li><a class="reference internal" href="#alterindextogether">AlterIndexTogether</a></li>
+<li><a class="reference internal" href="#alterorderwithrespectto">AlterOrderWithRespectTo</a></li>
+<li><a class="reference internal" href="#altermodeloptions">AlterModelOptions</a></li>
+<li><a class="reference internal" href="#altermodelmanagers">AlterModelManagers</a></li>
+<li><a class="reference internal" href="#addfield">AddField</a></li>
+<li><a class="reference internal" href="#removefield">RemoveField</a></li>
+<li><a class="reference internal" href="#alterfield">AlterField</a></li>
+<li><a class="reference internal" href="#renamefield">RenameField</a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#special-operations">Special Operations</a><ul>
+<li><a class="reference internal" href="#runsql">RunSQL</a></li>
+<li><a class="reference internal" href="#runpython">RunPython</a></li>
+<li><a class="reference internal" href="#separatedatabaseandstate">SeparateDatabaseAndState</a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#writing-your-own">Writing your own</a></li>
+</ul>
+</li>
+</ul>
+
+  <h3>Browse</h3>
+  <ul>
+    
+      <li>Prev: <a href="middleware.html">Middleware</a></li>
+    
+    
+      <li>Next: <a href="models/index.html">Models</a></li>
+    
+  </ul>
+  <h3>You are here:</h3>
+  <ul>
+      <li>
+        <a href="../index.html">Django 1.8.2.dev20150505153848 documentation</a>
+        
+          <ul><li><a href="index.html">API Reference</a>
+        
+        <ul><li>Migration Operations</li></ul>
+        </li></ul>
+      </li>
+  </ul>
+
+  <h3>This Page</h3>
+  <ul class="this-page-menu">
+    <li><a href="../_sources/ref/migration-operations.txt"
+           rel="nofollow">Show Source</a></li>
+  </ul>
+<div id="searchbox" style="display: none">
+  <h3>Quick search</h3>
+    <form class="search" action="../search.html" method="get">
+      <input type="text" name="q" />
+      <input type="submit" value="Go" />
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+    <p class="searchtip" style="font-size: 90%">
+    Enter search terms or a module, class or function name.
+    </p>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+              <h3>Last update:</h3>
+              <p class="topless">May 06, 2015</p>
+          </div>
+        
+      
+    </div>
+
+    <div id="ft">
+      <div class="nav">
+    &laquo; <a href="middleware.html" title="Middleware">previous</a>
+     |
+    <a href="index.html" title="API Reference" accesskey="U">up</a>
+   |
+    <a href="models/index.html" title="Models">next</a> &raquo;</div>
+    </div>
+  </div>
+
+      <div class="clearer"></div>
+    </div>
+  </body>
+</html>

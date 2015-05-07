@@ -19,8 +19,9 @@
     <a href='#' id='select-100'>select 100 elems</a>
     <a href='#' id='deselect-100'>deselect 100 elems</a>
     <a href='#' id='show-all'>show-all</a>
+    <a href='#' id='commit-words'>提交</a>
 
-    <select id='public-methods' multiple='multiple'>
+    <select style="width=100px, height:1000px" id='public-methods' multiple='multiple'>
         {% for word,review_count in word_sort_list%}
             <option value='{{  word }}'>{{ word|ljust:5 }} &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{{ review_count }}</option>
         {% endfor %}
@@ -33,11 +34,13 @@
 
         $('#public-methods').multiSelect({
             afterSelect: function(values){
-                conversant_words.push(values)
+                values = values.toString();
+                conversant_words.push(values);
             },
             afterDeselect: function(values){
-                del_idx = conversant_words.indexOf(values)
-                delete conversant_words[del_idx]
+                values = values.toString();
+                del_idx = conversant_words.indexOf(values);
+                delete conversant_words[del_idx];
             }
         });
 
@@ -68,11 +71,20 @@
 
         $('#show-all').click(function () {
 //            alert(conversant_words.toString());
-            var set_word_status_url = "http://127.0.0.1:8888/word/set_word_status?words=" + conversant_words
+            var set_word_status_url = "/word/set_word_status?words=" + conversant_words
             alert(set_word_status_url);
            $.get(set_word_status_url, function(data, status){
                 alert("Data: " + data + "\nStatus: " + status);
             });
+        });
+        $('#commit-words').click(function () {
+            var set_word_status_url = "/word/set_word_status?conversant_words=" + conversant_words
+            alert(set_word_status_url);
+            $.get(set_word_status_url, function(data, status){
+                alert_msg = data.result;
+                alert(alert_msg);
+            });
+            location.reload();
         });
 
     </script>

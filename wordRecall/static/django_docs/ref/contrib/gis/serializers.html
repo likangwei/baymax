@@ -1,0 +1,231 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>GeoJSON Serializer &mdash; Django 1.8.2.dev20150505153848 documentation</title>
+    
+    <link rel="stylesheet" href="../../../_static/default.css" type="text/css" />
+    <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '../../../',
+        VERSION:     '1.8.2.dev20150505153848',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="../../../_static/jquery.js"></script>
+    <script type="text/javascript" src="../../../_static/underscore.js"></script>
+    <script type="text/javascript" src="../../../_static/doctools.js"></script>
+    <link rel="top" title="Django 1.8.2.dev20150505153848 documentation" href="../../../index.html" />
+    <link rel="up" title="GeoDjango Utilities" href="utils.html" />
+    <link rel="next" title="GeoDjango Management Commands" href="commands.html" />
+    <link rel="prev" title="OGR Inspection" href="ogrinspect.html" />
+
+
+
+ 
+<script type="text/javascript" src="../../../templatebuiltins.js"></script>
+<script type="text/javascript">
+(function($) {
+    if (!django_template_builtins) {
+       // templatebuiltins.js missing, do nothing.
+       return;
+    }
+    $(document).ready(function() {
+        // Hyperlink Django template tags and filters
+        var base = "../../templates/builtins.html";
+        if (base == "#") {
+            // Special case for builtins.html itself
+            base = "";
+        }
+        // Tags are keywords, class '.k'
+        $("div.highlight\\-html\\+django span.k").each(function(i, elem) {
+             var tagname = $(elem).text();
+             if ($.inArray(tagname, django_template_builtins.ttags) != -1) {
+                 var fragment = tagname.replace(/_/, '-');
+                 $(elem).html("<a href='" + base + "#" + fragment + "'>" + tagname + "</a>");
+             }
+        });
+        // Filters are functions, class '.nf'
+        $("div.highlight\\-html\\+django span.nf").each(function(i, elem) {
+             var filtername = $(elem).text();
+             if ($.inArray(filtername, django_template_builtins.tfilters) != -1) {
+                 var fragment = filtername.replace(/_/, '-');
+                 $(elem).html("<a href='" + base + "#" + fragment + "'>" + filtername + "</a>");
+             }
+        });
+    });
+})(jQuery);
+</script>
+
+
+  </head>
+  <body>
+
+    <div class="document">
+  <div id="custom-doc" class="yui-t6">
+    <div id="hd">
+      <h1><a href="../../../index.html">Django 1.8.2.dev20150505153848 documentation</a></h1>
+      <div id="global-nav">
+        <a title="Home page" href="../../../index.html">Home</a>  |
+        <a title="Table of contents" href="../../../contents.html">Table of contents</a>  |
+        <a title="Global index" href="../../../genindex.html">Index</a>  |
+        <a title="Module index" href="../../../py-modindex.html">Modules</a>
+      </div>
+      <div class="nav">
+    &laquo; <a href="ogrinspect.html" title="OGR Inspection">previous</a>
+     |
+    <a href="../../index.html" title="API Reference" accesskey="U">up</a>
+   |
+    <a href="commands.html" title="GeoDjango Management Commands">next</a> &raquo;</div>
+    </div>
+
+    <div id="bd">
+      <div id="yui-main">
+        <div class="yui-b">
+          <div class="yui-g" id="ref-contrib-gis-serializers">
+            
+  <div class="section" id="s-geojson-serializer">
+<span id="geojson-serializer"></span><h1>GeoJSON Serializer<a class="headerlink" href="#geojson-serializer" title="Permalink to this headline">¶</a></h1>
+<div class="versionadded">
+<span class="title">New in Django 1.8.</span> </div>
+<span class="target" id="module-django.contrib.gis.serializers.geojson"></span><p>GeoDjango provides a specific serializer for the <a class="reference external" href="http://geojson.org/">GeoJSON</a> format. The GDAL
+library is required for this serializer. See <a class="reference internal" href="../../../topics/serialization.html"><em>Serializing Django objects</em></a> for
+more information on serialization.</p>
+<p>The <tt class="docutils literal"><span class="pre">geojson</span></tt> serializer is not meant for round-tripping data, as it has no
+deserializer equivalent. For example, you cannot use <a class="reference internal" href="../../django-admin.html#django-admin-loaddata"><tt class="xref std std-djadmin docutils literal"><span class="pre">loaddata</span></tt></a> to
+reload the output produced by this serializer. If you plan to reload the
+outputted data, use the plain <a class="reference internal" href="../../../topics/serialization.html#serialization-formats-json"><em>json serializer</em></a>
+instead.</p>
+<p>In addition to the options of the <tt class="docutils literal"><span class="pre">json</span></tt> serializer, the <tt class="docutils literal"><span class="pre">geojson</span></tt>
+serializer accepts the following additional option when it is called by
+<tt class="docutils literal"><span class="pre">serializers.serialize()</span></tt>:</p>
+<ul class="simple">
+<li><tt class="docutils literal"><span class="pre">geometry_field</span></tt>: A string containing the name of a geometry field to use
+for the <tt class="docutils literal"><span class="pre">geometry</span></tt> key of the GeoJSON feature. This is only needed when you
+have a model with more than one geometry field and you don&#8217;t want to use the
+first defined geometry field (by default, the first geometry field is picked).</li>
+<li><tt class="docutils literal"><span class="pre">srid</span></tt>: The SRID to use for the <tt class="docutils literal"><span class="pre">geometry</span></tt> content. Defaults to 4326
+(WGS 84).</li>
+</ul>
+<p>The <a class="reference internal" href="../../../topics/serialization.html#subset-of-fields"><em>fields</em></a> option can be used to limit fields that
+will be present in the <tt class="docutils literal"><span class="pre">properties</span></tt> key, as it works with all other
+serializers.</p>
+<p>Example:</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="kn">from</span> <span class="nn">django.core.serializers</span> <span class="kn">import</span> <span class="n">serialize</span>
+<span class="kn">from</span> <span class="nn">my_app.models</span> <span class="kn">import</span> <span class="n">City</span>
+
+<span class="n">serialize</span><span class="p">(</span><span class="s">&#39;geojson&#39;</span><span class="p">,</span> <span class="n">City</span><span class="o">.</span><span class="n">objects</span><span class="o">.</span><span class="n">all</span><span class="p">(),</span>
+          <span class="n">geometry_field</span><span class="o">=</span><span class="s">&#39;point&#39;</span><span class="p">,</span>
+          <span class="n">fields</span><span class="o">=</span><span class="p">(</span><span class="s">&#39;name&#39;</span><span class="p">,))</span>
+</pre></div>
+</div>
+<p>Would output:</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="p">{</span>
+  <span class="s">&#39;type&#39;</span><span class="p">:</span> <span class="s">&#39;FeatureCollection&#39;</span><span class="p">,</span>
+  <span class="s">&#39;crs&#39;</span><span class="p">:</span> <span class="p">{</span>
+    <span class="s">&#39;type&#39;</span><span class="p">:</span> <span class="s">&#39;name&#39;</span><span class="p">,</span>
+    <span class="s">&#39;properties&#39;</span><span class="p">:</span> <span class="p">{</span><span class="s">&#39;name&#39;</span><span class="p">:</span> <span class="s">&#39;EPSG:4326&#39;</span><span class="p">}</span>
+  <span class="p">},</span>
+  <span class="s">&#39;features&#39;</span><span class="p">:</span> <span class="p">[</span>
+    <span class="p">{</span>
+      <span class="s">&#39;type&#39;</span><span class="p">:</span> <span class="s">&#39;Feature&#39;</span><span class="p">,</span>
+      <span class="s">&#39;geometry&#39;</span><span class="p">:</span> <span class="p">{</span>
+        <span class="s">&#39;type&#39;</span><span class="p">:</span> <span class="s">&#39;Point&#39;</span><span class="p">,</span>
+        <span class="s">&#39;coordinates&#39;</span><span class="p">:</span> <span class="p">[</span><span class="o">-</span><span class="mf">87.650175</span><span class="p">,</span> <span class="mf">41.850385</span><span class="p">]</span>
+      <span class="p">},</span>
+      <span class="s">&#39;properties&#39;</span><span class="p">:</span> <span class="p">{</span>
+        <span class="s">&#39;name&#39;</span><span class="p">:</span> <span class="s">&#39;Chicago&#39;</span>
+      <span class="p">}</span>
+    <span class="p">}</span>
+  <span class="p">]</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+</div>
+
+
+          </div>
+        </div>
+      </div>
+      
+        
+          <div class="yui-b" id="sidebar">
+            
+      <div class="sphinxsidebar">
+        <div class="sphinxsidebarwrapper">
+  <h3>Browse</h3>
+  <ul>
+    
+      <li>Prev: <a href="ogrinspect.html">OGR Inspection</a></li>
+    
+    
+      <li>Next: <a href="commands.html">GeoDjango Management Commands</a></li>
+    
+  </ul>
+  <h3>You are here:</h3>
+  <ul>
+      <li>
+        <a href="../../../index.html">Django 1.8.2.dev20150505153848 documentation</a>
+        
+          <ul><li><a href="../../index.html">API Reference</a>
+        
+          <ul><li><a href="../index.html"><tt class="docutils literal"><span class="pre">contrib</span></tt> packages</a>
+        
+          <ul><li><a href="index.html">GeoDjango</a>
+        
+          <ul><li><a href="utils.html">GeoDjango Utilities</a>
+        
+        <ul><li>GeoJSON Serializer</li></ul>
+        </li></ul></li></ul></li></ul></li></ul>
+      </li>
+  </ul>
+
+  <h3>This Page</h3>
+  <ul class="this-page-menu">
+    <li><a href="../../../_sources/ref/contrib/gis/serializers.txt"
+           rel="nofollow">Show Source</a></li>
+  </ul>
+<div id="searchbox" style="display: none">
+  <h3>Quick search</h3>
+    <form class="search" action="../../../search.html" method="get">
+      <input type="text" name="q" />
+      <input type="submit" value="Go" />
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+    <p class="searchtip" style="font-size: 90%">
+    Enter search terms or a module, class or function name.
+    </p>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+              <h3>Last update:</h3>
+              <p class="topless">May 06, 2015</p>
+          </div>
+        
+      
+    </div>
+
+    <div id="ft">
+      <div class="nav">
+    &laquo; <a href="ogrinspect.html" title="OGR Inspection">previous</a>
+     |
+    <a href="../../index.html" title="API Reference" accesskey="U">up</a>
+   |
+    <a href="commands.html" title="GeoDjango Management Commands">next</a> &raquo;</div>
+    </div>
+  </div>
+
+      <div class="clearer"></div>
+    </div>
+  </body>
+</html>

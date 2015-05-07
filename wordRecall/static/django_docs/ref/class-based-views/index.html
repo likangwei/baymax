@@ -1,0 +1,322 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>Built-in Class-based views API &mdash; Django 1.8.2.dev20150505153848 documentation</title>
+    
+    <link rel="stylesheet" href="../../_static/default.css" type="text/css" />
+    <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '../../',
+        VERSION:     '1.8.2.dev20150505153848',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="../../_static/jquery.js"></script>
+    <script type="text/javascript" src="../../_static/underscore.js"></script>
+    <script type="text/javascript" src="../../_static/doctools.js"></script>
+    <link rel="top" title="Django 1.8.2.dev20150505153848 documentation" href="../../index.html" />
+    <link rel="up" title="API Reference" href="../index.html" />
+    <link rel="next" title="Base views" href="base.html" />
+    <link rel="prev" title="System check framework" href="../checks.html" />
+
+
+
+ 
+<script type="text/javascript" src="../../templatebuiltins.js"></script>
+<script type="text/javascript">
+(function($) {
+    if (!django_template_builtins) {
+       // templatebuiltins.js missing, do nothing.
+       return;
+    }
+    $(document).ready(function() {
+        // Hyperlink Django template tags and filters
+        var base = "../templates/builtins.html";
+        if (base == "#") {
+            // Special case for builtins.html itself
+            base = "";
+        }
+        // Tags are keywords, class '.k'
+        $("div.highlight\\-html\\+django span.k").each(function(i, elem) {
+             var tagname = $(elem).text();
+             if ($.inArray(tagname, django_template_builtins.ttags) != -1) {
+                 var fragment = tagname.replace(/_/, '-');
+                 $(elem).html("<a href='" + base + "#" + fragment + "'>" + tagname + "</a>");
+             }
+        });
+        // Filters are functions, class '.nf'
+        $("div.highlight\\-html\\+django span.nf").each(function(i, elem) {
+             var filtername = $(elem).text();
+             if ($.inArray(filtername, django_template_builtins.tfilters) != -1) {
+                 var fragment = filtername.replace(/_/, '-');
+                 $(elem).html("<a href='" + base + "#" + fragment + "'>" + filtername + "</a>");
+             }
+        });
+    });
+})(jQuery);
+</script>
+
+
+  </head>
+  <body>
+
+    <div class="document">
+  <div id="custom-doc" class="yui-t6">
+    <div id="hd">
+      <h1><a href="../../index.html">Django 1.8.2.dev20150505153848 documentation</a></h1>
+      <div id="global-nav">
+        <a title="Home page" href="../../index.html">Home</a>  |
+        <a title="Table of contents" href="../../contents.html">Table of contents</a>  |
+        <a title="Global index" href="../../genindex.html">Index</a>  |
+        <a title="Module index" href="../../py-modindex.html">Modules</a>
+      </div>
+      <div class="nav">
+    &laquo; <a href="../checks.html" title="System check framework">previous</a>
+     |
+    <a href="../index.html" title="API Reference" accesskey="U">up</a>
+   |
+    <a href="base.html" title="Base views">next</a> &raquo;</div>
+    </div>
+
+    <div id="bd">
+      <div id="yui-main">
+        <div class="yui-b">
+          <div class="yui-g" id="ref-class-based-views-index">
+            
+  <div class="section" id="s-built-in-class-based-views-api">
+<span id="built-in-class-based-views-api"></span><h1>Built-in Class-based views API<a class="headerlink" href="#built-in-class-based-views-api" title="Permalink to this headline">¶</a></h1>
+<p>Class-based views API reference. For introductory material, see the
+<a class="reference internal" href="../../topics/class-based-views/index.html"><em>Class-based views</em></a> topic guide.</p>
+<div class="toctree-wrapper compound">
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="base.html">Base views</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="base.html#view">View</a></li>
+<li class="toctree-l2"><a class="reference internal" href="base.html#templateview">TemplateView</a></li>
+<li class="toctree-l2"><a class="reference internal" href="base.html#redirectview">RedirectView</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="generic-display.html">Generic display views</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="generic-display.html#detailview">DetailView</a></li>
+<li class="toctree-l2"><a class="reference internal" href="generic-display.html#listview">ListView</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="generic-editing.html">Generic editing views</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="generic-editing.html#formview">FormView</a></li>
+<li class="toctree-l2"><a class="reference internal" href="generic-editing.html#createview">CreateView</a></li>
+<li class="toctree-l2"><a class="reference internal" href="generic-editing.html#updateview">UpdateView</a></li>
+<li class="toctree-l2"><a class="reference internal" href="generic-editing.html#deleteview">DeleteView</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="generic-date-based.html">Generic date views</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="generic-date-based.html#archiveindexview">ArchiveIndexView</a></li>
+<li class="toctree-l2"><a class="reference internal" href="generic-date-based.html#yeararchiveview">YearArchiveView</a></li>
+<li class="toctree-l2"><a class="reference internal" href="generic-date-based.html#montharchiveview">MonthArchiveView</a></li>
+<li class="toctree-l2"><a class="reference internal" href="generic-date-based.html#weekarchiveview">WeekArchiveView</a></li>
+<li class="toctree-l2"><a class="reference internal" href="generic-date-based.html#dayarchiveview">DayArchiveView</a></li>
+<li class="toctree-l2"><a class="reference internal" href="generic-date-based.html#todayarchiveview">TodayArchiveView</a></li>
+<li class="toctree-l2"><a class="reference internal" href="generic-date-based.html#datedetailview">DateDetailView</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="mixins.html">Class-based views mixins</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="mixins-simple.html">Simple mixins</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="mixins-simple.html#contextmixin">ContextMixin</a></li>
+<li class="toctree-l3"><a class="reference internal" href="mixins-simple.html#templateresponsemixin">TemplateResponseMixin</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="mixins-single-object.html">Single object mixins</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="mixins-single-object.html#singleobjectmixin">SingleObjectMixin</a></li>
+<li class="toctree-l3"><a class="reference internal" href="mixins-single-object.html#singleobjecttemplateresponsemixin">SingleObjectTemplateResponseMixin</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="mixins-multiple-object.html">Multiple object mixins</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="mixins-multiple-object.html#multipleobjectmixin">MultipleObjectMixin</a></li>
+<li class="toctree-l3"><a class="reference internal" href="mixins-multiple-object.html#multipleobjecttemplateresponsemixin">MultipleObjectTemplateResponseMixin</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="mixins-editing.html">Editing mixins</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="mixins-editing.html#formmixin">FormMixin</a></li>
+<li class="toctree-l3"><a class="reference internal" href="mixins-editing.html#modelformmixin">ModelFormMixin</a></li>
+<li class="toctree-l3"><a class="reference internal" href="mixins-editing.html#processformview">ProcessFormView</a></li>
+<li class="toctree-l3"><a class="reference internal" href="mixins-editing.html#deletionmixin">DeletionMixin</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="mixins-date-based.html">Date-based mixins</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="mixins-date-based.html#yearmixin">YearMixin</a></li>
+<li class="toctree-l3"><a class="reference internal" href="mixins-date-based.html#monthmixin">MonthMixin</a></li>
+<li class="toctree-l3"><a class="reference internal" href="mixins-date-based.html#daymixin">DayMixin</a></li>
+<li class="toctree-l3"><a class="reference internal" href="mixins-date-based.html#weekmixin">WeekMixin</a></li>
+<li class="toctree-l3"><a class="reference internal" href="mixins-date-based.html#datemixin">DateMixin</a></li>
+<li class="toctree-l3"><a class="reference internal" href="mixins-date-based.html#basedatelistview">BaseDateListView</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="flattened-index.html">Class-based generic views - flattened index</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="flattened-index.html#simple-generic-views">Simple generic views</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="flattened-index.html#view">View</a></li>
+<li class="toctree-l3"><a class="reference internal" href="flattened-index.html#templateview">TemplateView</a></li>
+<li class="toctree-l3"><a class="reference internal" href="flattened-index.html#redirectview">RedirectView</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="flattened-index.html#detail-views">Detail Views</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="flattened-index.html#detailview">DetailView</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="flattened-index.html#list-views">List Views</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="flattened-index.html#listview">ListView</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="flattened-index.html#editing-views">Editing views</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="flattened-index.html#formview">FormView</a></li>
+<li class="toctree-l3"><a class="reference internal" href="flattened-index.html#createview">CreateView</a></li>
+<li class="toctree-l3"><a class="reference internal" href="flattened-index.html#updateview">UpdateView</a></li>
+<li class="toctree-l3"><a class="reference internal" href="flattened-index.html#deleteview">DeleteView</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="flattened-index.html#date-based-views">Date-based views</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="flattened-index.html#archiveindexview">ArchiveIndexView</a></li>
+<li class="toctree-l3"><a class="reference internal" href="flattened-index.html#yeararchiveview">YearArchiveView</a></li>
+<li class="toctree-l3"><a class="reference internal" href="flattened-index.html#montharchiveview">MonthArchiveView</a></li>
+<li class="toctree-l3"><a class="reference internal" href="flattened-index.html#weekarchiveview">WeekArchiveView</a></li>
+<li class="toctree-l3"><a class="reference internal" href="flattened-index.html#dayarchiveview">DayArchiveView</a></li>
+<li class="toctree-l3"><a class="reference internal" href="flattened-index.html#todayarchiveview">TodayArchiveView</a></li>
+<li class="toctree-l3"><a class="reference internal" href="flattened-index.html#datedetailview">DateDetailView</a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</div>
+<div class="section" id="s-specification">
+<span id="specification"></span><h2>Specification<a class="headerlink" href="#specification" title="Permalink to this headline">¶</a></h2>
+<p>Each request served by a class-based view has an independent state; therefore,
+it is safe to store state variables on the instance (i.e., <tt class="docutils literal"><span class="pre">self.foo</span> <span class="pre">=</span> <span class="pre">3</span></tt> is
+a thread-safe operation).</p>
+<p>A class-based view is deployed into a URL pattern using the
+<a class="reference internal" href="base.html#django.views.generic.base.View.as_view" title="django.views.generic.base.View.as_view"><tt class="xref py py-meth docutils literal"><span class="pre">as_view()</span></tt></a> classmethod:</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="n">urlpatterns</span> <span class="o">=</span> <span class="p">[</span>
+    <span class="n">url</span><span class="p">(</span><span class="s">r&#39;^view/$&#39;</span><span class="p">,</span> <span class="n">MyView</span><span class="o">.</span><span class="n">as_view</span><span class="p">(</span><span class="n">size</span><span class="o">=</span><span class="mi">42</span><span class="p">)),</span>
+<span class="p">]</span>
+</pre></div>
+</div>
+<div class="admonition-thread-safety-with-view-arguments admonition">
+<p class="first admonition-title">Thread safety with view arguments</p>
+<p class="last">Arguments passed to a view are shared between every instance of a view.
+This means that you shouldn&#8217;t use a list, dictionary, or any other
+mutable object as an argument to a view. If you do and the shared object
+is modified, the actions of one user visiting your view could have an
+effect on subsequent users visiting the same view.</p>
+</div>
+<p>Arguments passed into <a class="reference internal" href="base.html#django.views.generic.base.View.as_view" title="django.views.generic.base.View.as_view"><tt class="xref py py-meth docutils literal"><span class="pre">as_view()</span></tt></a> will
+be assigned onto the instance that is used to service a request. Using the
+previous example, this means that every request on <tt class="docutils literal"><span class="pre">MyView</span></tt> is able to use
+<tt class="docutils literal"><span class="pre">self.size</span></tt>. Arguments must correspond to attributes that already exist on
+the class (return <tt class="docutils literal"><span class="pre">True</span></tt> on a <tt class="docutils literal"><span class="pre">hasattr</span></tt> check).</p>
+</div>
+<div class="section" id="s-base-vs-generic-views">
+<span id="base-vs-generic-views"></span><h2>Base vs Generic views<a class="headerlink" href="#base-vs-generic-views" title="Permalink to this headline">¶</a></h2>
+<p>Base class-based views can be thought of as <em>parent</em> views, which can be
+used by themselves or inherited from. They may not provide all the
+capabilities required for projects, in which case there are Mixins which
+extend what base views can do.</p>
+<p>Django’s generic views are built off of those base views, and were developed
+as a shortcut for common usage patterns such as displaying the details of an
+object. They take certain common idioms and patterns found in view
+development and abstract them so that you can quickly write common views of
+data without having to repeat yourself.</p>
+<p>Most generic views require the <tt class="docutils literal"><span class="pre">queryset</span></tt> key, which is a <tt class="docutils literal"><span class="pre">QuerySet</span></tt>
+instance; see <a class="reference internal" href="../../topics/db/queries.html"><em>Making queries</em></a> for more information about <tt class="docutils literal"><span class="pre">QuerySet</span></tt>
+objects.</p>
+</div>
+</div>
+
+
+          </div>
+        </div>
+      </div>
+      
+        
+          <div class="yui-b" id="sidebar">
+            
+      <div class="sphinxsidebar">
+        <div class="sphinxsidebarwrapper">
+  <h3><a href="../../contents.html">Table Of Contents</a></h3>
+  <ul>
+<li><a class="reference internal" href="#">Built-in Class-based views API</a><ul>
+<li><a class="reference internal" href="#specification">Specification</a></li>
+<li><a class="reference internal" href="#base-vs-generic-views">Base vs Generic views</a></li>
+</ul>
+</li>
+</ul>
+
+  <h3>Browse</h3>
+  <ul>
+    
+      <li>Prev: <a href="../checks.html">System check framework</a></li>
+    
+    
+      <li>Next: <a href="base.html">Base views</a></li>
+    
+  </ul>
+  <h3>You are here:</h3>
+  <ul>
+      <li>
+        <a href="../../index.html">Django 1.8.2.dev20150505153848 documentation</a>
+        
+          <ul><li><a href="../index.html">API Reference</a>
+        
+        <ul><li>Built-in Class-based views API</li></ul>
+        </li></ul>
+      </li>
+  </ul>
+
+  <h3>This Page</h3>
+  <ul class="this-page-menu">
+    <li><a href="../../_sources/ref/class-based-views/index.txt"
+           rel="nofollow">Show Source</a></li>
+  </ul>
+<div id="searchbox" style="display: none">
+  <h3>Quick search</h3>
+    <form class="search" action="../../search.html" method="get">
+      <input type="text" name="q" />
+      <input type="submit" value="Go" />
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+    <p class="searchtip" style="font-size: 90%">
+    Enter search terms or a module, class or function name.
+    </p>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+              <h3>Last update:</h3>
+              <p class="topless">May 06, 2015</p>
+          </div>
+        
+      
+    </div>
+
+    <div id="ft">
+      <div class="nav">
+    &laquo; <a href="../checks.html" title="System check framework">previous</a>
+     |
+    <a href="../index.html" title="API Reference" accesskey="U">up</a>
+   |
+    <a href="base.html" title="Base views">next</a> &raquo;</div>
+    </div>
+  </div>
+
+      <div class="clearer"></div>
+    </div>
+  </body>
+</html>

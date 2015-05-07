@@ -1,0 +1,235 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>Roles &mdash; Django 1.8.2.dev20150505153848 documentation</title>
+    
+    <link rel="stylesheet" href="../_static/default.css" type="text/css" />
+    <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '../',
+        VERSION:     '1.8.2.dev20150505153848',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="../_static/jquery.js"></script>
+    <script type="text/javascript" src="../_static/underscore.js"></script>
+    <script type="text/javascript" src="../_static/doctools.js"></script>
+    <link rel="top" title="Django 1.8.2.dev20150505153848 documentation" href="../index.html" />
+    <link rel="up" title="Django internals" href="index.html" />
+    <link rel="next" title="Django’s security policies" href="security.html" />
+    <link rel="prev" title="Django team" href="team.html" />
+
+
+
+ 
+<script type="text/javascript" src="../templatebuiltins.js"></script>
+<script type="text/javascript">
+(function($) {
+    if (!django_template_builtins) {
+       // templatebuiltins.js missing, do nothing.
+       return;
+    }
+    $(document).ready(function() {
+        // Hyperlink Django template tags and filters
+        var base = "../ref/templates/builtins.html";
+        if (base == "#") {
+            // Special case for builtins.html itself
+            base = "";
+        }
+        // Tags are keywords, class '.k'
+        $("div.highlight\\-html\\+django span.k").each(function(i, elem) {
+             var tagname = $(elem).text();
+             if ($.inArray(tagname, django_template_builtins.ttags) != -1) {
+                 var fragment = tagname.replace(/_/, '-');
+                 $(elem).html("<a href='" + base + "#" + fragment + "'>" + tagname + "</a>");
+             }
+        });
+        // Filters are functions, class '.nf'
+        $("div.highlight\\-html\\+django span.nf").each(function(i, elem) {
+             var filtername = $(elem).text();
+             if ($.inArray(filtername, django_template_builtins.tfilters) != -1) {
+                 var fragment = filtername.replace(/_/, '-');
+                 $(elem).html("<a href='" + base + "#" + fragment + "'>" + filtername + "</a>");
+             }
+        });
+    });
+})(jQuery);
+</script>
+
+
+  </head>
+  <body>
+
+    <div class="document">
+  <div id="custom-doc" class="yui-t6">
+    <div id="hd">
+      <h1><a href="../index.html">Django 1.8.2.dev20150505153848 documentation</a></h1>
+      <div id="global-nav">
+        <a title="Home page" href="../index.html">Home</a>  |
+        <a title="Table of contents" href="../contents.html">Table of contents</a>  |
+        <a title="Global index" href="../genindex.html">Index</a>  |
+        <a title="Module index" href="../py-modindex.html">Modules</a>
+      </div>
+      <div class="nav">
+    &laquo; <a href="team.html" title="Django team">previous</a>
+     |
+    <a href="index.html" title="Django internals" accesskey="U">up</a>
+   |
+    <a href="security.html" title="Django&amp;#8217;s security policies">next</a> &raquo;</div>
+    </div>
+
+    <div id="bd">
+      <div id="yui-main">
+        <div class="yui-b">
+          <div class="yui-g" id="internals-roles">
+            
+  <div class="section" id="s-roles">
+<span id="roles"></span><h1>Roles<a class="headerlink" href="#roles" title="Permalink to this headline">¶</a></h1>
+<div class="section" id="s-technical-board">
+<span id="s-technical-board-list"></span><span id="technical-board"></span><span id="technical-board-list"></span><h2>Technical board<a class="headerlink" href="#technical-board" title="Permalink to this headline">¶</a></h2>
+<p>The technical board for the 1.8 release cycle is:</p>
+<ul class="simple">
+<li>Aymeric Augustin</li>
+<li>Andrew Godwin</li>
+<li>Russell Keith-Magee</li>
+<li>Jannis Leidel</li>
+<li>Carl Meyer</li>
+</ul>
+</div>
+<div class="section" id="s-committers">
+<span id="s-id1"></span><span id="committers"></span><span id="id1"></span><h2>Committers<a class="headerlink" href="#committers" title="Permalink to this headline">¶</a></h2>
+<p>Most <a class="reference internal" href="organization.html#core-team"><em>core team</em></a> members have commit access. They&#8217;re called
+&#8220;committers&#8221; or &#8220;core developers&#8221;.</p>
+<p>Being part of the core team is a pre-requisite for having commit access.</p>
+</div>
+<div class="section" id="s-security-team">
+<span id="s-security-team-list"></span><span id="security-team"></span><span id="security-team-list"></span><h2>Security team<a class="headerlink" href="#security-team" title="Permalink to this headline">¶</a></h2>
+<p>The security team is responsible for <a class="reference internal" href="security.html"><em>Django&#8217;s security policies</em></a>. It handles private reports of security issues.</p>
+<p>The current security team members are:</p>
+<ul class="simple">
+<li>Florian Apolloner</li>
+<li>James Bennett</li>
+<li>Jeremy Dunck</li>
+<li>Adrian Holovaty</li>
+<li>Jacob Kaplan-Moss</li>
+<li>Russell Keith-Magee</li>
+<li>Paul McMillan</li>
+<li>Carl Meyer</li>
+<li>Donald Stufft</li>
+</ul>
+</div>
+<div class="section" id="s-releasers">
+<span id="s-releasers-list"></span><span id="releasers"></span><span id="releasers-list"></span><h2>Releasers<a class="headerlink" href="#releasers" title="Permalink to this headline">¶</a></h2>
+<p>Releasers take care of <a class="reference internal" href="howto-release-django.html"><em>building Django releases</em></a>.</p>
+<p>The current releasers are:</p>
+<ul class="simple">
+<li>James Bennett</li>
+<li>Jacob Kaplan-Moss</li>
+</ul>
+</div>
+<div class="section" id="s-ops-team">
+<span id="ops-team"></span><h2>Ops team<a class="headerlink" href="#ops-team" title="Permalink to this headline">¶</a></h2>
+<p>The ops team maintains Django&#8217;s infrastructure like the Django Project server,
+Trac instance, and continuous integration infrastructure.</p>
+<ul class="simple">
+<li>Florian Apolloner</li>
+<li>Aymeric Augustin</li>
+<li>Tim Graham</li>
+<li>Jannis Leidel</li>
+</ul>
+</div>
+</div>
+
+
+          </div>
+        </div>
+      </div>
+      
+        
+          <div class="yui-b" id="sidebar">
+            
+      <div class="sphinxsidebar">
+        <div class="sphinxsidebarwrapper">
+  <h3><a href="../contents.html">Table Of Contents</a></h3>
+  <ul>
+<li><a class="reference internal" href="#">Roles</a><ul>
+<li><a class="reference internal" href="#technical-board">Technical board</a></li>
+<li><a class="reference internal" href="#committers">Committers</a></li>
+<li><a class="reference internal" href="#security-team">Security team</a></li>
+<li><a class="reference internal" href="#releasers">Releasers</a></li>
+<li><a class="reference internal" href="#ops-team">Ops team</a></li>
+</ul>
+</li>
+</ul>
+
+  <h3>Browse</h3>
+  <ul>
+    
+      <li>Prev: <a href="team.html">Django team</a></li>
+    
+    
+      <li>Next: <a href="security.html">Django&#8217;s security policies</a></li>
+    
+  </ul>
+  <h3>You are here:</h3>
+  <ul>
+      <li>
+        <a href="../index.html">Django 1.8.2.dev20150505153848 documentation</a>
+        
+          <ul><li><a href="index.html">Django internals</a>
+        
+        <ul><li>Roles</li></ul>
+        </li></ul>
+      </li>
+  </ul>
+
+  <h3>This Page</h3>
+  <ul class="this-page-menu">
+    <li><a href="../_sources/internals/roles.txt"
+           rel="nofollow">Show Source</a></li>
+  </ul>
+<div id="searchbox" style="display: none">
+  <h3>Quick search</h3>
+    <form class="search" action="../search.html" method="get">
+      <input type="text" name="q" />
+      <input type="submit" value="Go" />
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+    <p class="searchtip" style="font-size: 90%">
+    Enter search terms or a module, class or function name.
+    </p>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+              <h3>Last update:</h3>
+              <p class="topless">May 06, 2015</p>
+          </div>
+        
+      
+    </div>
+
+    <div id="ft">
+      <div class="nav">
+    &laquo; <a href="team.html" title="Django team">previous</a>
+     |
+    <a href="index.html" title="Django internals" accesskey="U">up</a>
+   |
+    <a href="security.html" title="Django&amp;#8217;s security policies">next</a> &raquo;</div>
+    </div>
+  </div>
+
+      <div class="clearer"></div>
+    </div>
+  </body>
+</html>

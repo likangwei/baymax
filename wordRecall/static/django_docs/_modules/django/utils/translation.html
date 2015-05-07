@@ -1,0 +1,384 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>django.utils.translation &mdash; Django 1.8.2.dev20150505153848 documentation</title>
+    
+    <link rel="stylesheet" href="../../../_static/default.css" type="text/css" />
+    <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '../../../',
+        VERSION:     '1.8.2.dev20150505153848',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="../../../_static/jquery.js"></script>
+    <script type="text/javascript" src="../../../_static/underscore.js"></script>
+    <script type="text/javascript" src="../../../_static/doctools.js"></script>
+    <link rel="top" title="Django 1.8.2.dev20150505153848 documentation" href="../../../index.html" />
+    <link rel="up" title="django" href="../../django.html" />
+
+
+
+ 
+<script type="text/javascript" src="../../../templatebuiltins.js"></script>
+<script type="text/javascript">
+(function($) {
+    if (!django_template_builtins) {
+       // templatebuiltins.js missing, do nothing.
+       return;
+    }
+    $(document).ready(function() {
+        // Hyperlink Django template tags and filters
+        var base = "../../../ref/templates/builtins.html";
+        if (base == "#") {
+            // Special case for builtins.html itself
+            base = "";
+        }
+        // Tags are keywords, class '.k'
+        $("div.highlight\\-html\\+django span.k").each(function(i, elem) {
+             var tagname = $(elem).text();
+             if ($.inArray(tagname, django_template_builtins.ttags) != -1) {
+                 var fragment = tagname.replace(/_/, '-');
+                 $(elem).html("<a href='" + base + "#" + fragment + "'>" + tagname + "</a>");
+             }
+        });
+        // Filters are functions, class '.nf'
+        $("div.highlight\\-html\\+django span.nf").each(function(i, elem) {
+             var filtername = $(elem).text();
+             if ($.inArray(filtername, django_template_builtins.tfilters) != -1) {
+                 var fragment = filtername.replace(/_/, '-');
+                 $(elem).html("<a href='" + base + "#" + fragment + "'>" + filtername + "</a>");
+             }
+        });
+    });
+})(jQuery);
+</script>
+
+
+  </head>
+  <body>
+
+    <div class="document">
+  <div id="custom-doc" class="yui-t6">
+    <div id="hd">
+      <h1><a href="../../../index.html">Django 1.8.2.dev20150505153848 documentation</a></h1>
+      <div id="global-nav">
+        <a title="Home page" href="../../../index.html">Home</a>  |
+        <a title="Table of contents" href="../../../contents.html">Table of contents</a>  |
+        <a title="Global index" href="../../../genindex.html">Index</a>  |
+        <a title="Module index" href="../../../py-modindex.html">Modules</a>
+      </div>
+      <div class="nav">
+    <a href="../../index.html" title="Module code" accesskey="U">up</a></div>
+    </div>
+
+    <div id="bd">
+      <div id="yui-main">
+        <div class="yui-b">
+          <div class="yui-g" id="_modules-django-utils-translation">
+            
+  <h1>Source code for django.utils.translation</h1><div class="highlight"><pre>
+<span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">Internationalization support.</span>
+<span class="sd">&quot;&quot;&quot;</span>
+<span class="kn">from</span> <span class="nn">__future__</span> <span class="kn">import</span> <span class="n">unicode_literals</span>
+<span class="kn">import</span> <span class="nn">re</span>
+<span class="kn">from</span> <span class="nn">django.utils.decorators</span> <span class="kn">import</span> <span class="n">ContextDecorator</span>
+<span class="kn">from</span> <span class="nn">django.utils.encoding</span> <span class="kn">import</span> <span class="n">force_text</span>
+<span class="kn">from</span> <span class="nn">django.utils.functional</span> <span class="kn">import</span> <span class="n">lazy</span>
+<span class="kn">from</span> <span class="nn">django.utils</span> <span class="kn">import</span> <span class="n">six</span>
+
+
+<span class="n">__all__</span> <span class="o">=</span> <span class="p">[</span>
+    <span class="s">&#39;activate&#39;</span><span class="p">,</span> <span class="s">&#39;deactivate&#39;</span><span class="p">,</span> <span class="s">&#39;override&#39;</span><span class="p">,</span> <span class="s">&#39;deactivate_all&#39;</span><span class="p">,</span>
+    <span class="s">&#39;get_language&#39;</span><span class="p">,</span> <span class="s">&#39;get_language_from_request&#39;</span><span class="p">,</span>
+    <span class="s">&#39;get_language_info&#39;</span><span class="p">,</span> <span class="s">&#39;get_language_bidi&#39;</span><span class="p">,</span>
+    <span class="s">&#39;check_for_language&#39;</span><span class="p">,</span> <span class="s">&#39;to_locale&#39;</span><span class="p">,</span> <span class="s">&#39;templatize&#39;</span><span class="p">,</span> <span class="s">&#39;string_concat&#39;</span><span class="p">,</span>
+    <span class="s">&#39;gettext&#39;</span><span class="p">,</span> <span class="s">&#39;gettext_lazy&#39;</span><span class="p">,</span> <span class="s">&#39;gettext_noop&#39;</span><span class="p">,</span>
+    <span class="s">&#39;ugettext&#39;</span><span class="p">,</span> <span class="s">&#39;ugettext_lazy&#39;</span><span class="p">,</span> <span class="s">&#39;ugettext_noop&#39;</span><span class="p">,</span>
+    <span class="s">&#39;ngettext&#39;</span><span class="p">,</span> <span class="s">&#39;ngettext_lazy&#39;</span><span class="p">,</span>
+    <span class="s">&#39;ungettext&#39;</span><span class="p">,</span> <span class="s">&#39;ungettext_lazy&#39;</span><span class="p">,</span>
+    <span class="s">&#39;pgettext&#39;</span><span class="p">,</span> <span class="s">&#39;pgettext_lazy&#39;</span><span class="p">,</span>
+    <span class="s">&#39;npgettext&#39;</span><span class="p">,</span> <span class="s">&#39;npgettext_lazy&#39;</span><span class="p">,</span>
+    <span class="s">&#39;LANGUAGE_SESSION_KEY&#39;</span><span class="p">,</span>
+<span class="p">]</span>
+
+<span class="n">LANGUAGE_SESSION_KEY</span> <span class="o">=</span> <span class="s">&#39;_language&#39;</span>
+
+
+<span class="k">class</span> <span class="nc">TranslatorCommentWarning</span><span class="p">(</span><span class="ne">SyntaxWarning</span><span class="p">):</span>
+    <span class="k">pass</span>
+
+
+<span class="c"># Here be dragons, so a short explanation of the logic won&#39;t hurt:</span>
+<span class="c"># We are trying to solve two problems: (1) access settings, in particular</span>
+<span class="c"># settings.USE_I18N, as late as possible, so that modules can be imported</span>
+<span class="c"># without having to first configure Django, and (2) if some other code creates</span>
+<span class="c"># a reference to one of these functions, don&#39;t break that reference when we</span>
+<span class="c"># replace the functions with their real counterparts (once we do access the</span>
+<span class="c"># settings).</span>
+
+<span class="k">class</span> <span class="nc">Trans</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    The purpose of this class is to store the actual translation function upon</span>
+<span class="sd">    receiving the first call to that function. After this is done, changes to</span>
+<span class="sd">    USE_I18N will have no effect to which function is served upon request. If</span>
+<span class="sd">    your tests rely on changing USE_I18N, you can delete all the functions</span>
+<span class="sd">    from _trans.__dict__.</span>
+
+<span class="sd">    Note that storing the function with setattr will have a noticeable</span>
+<span class="sd">    performance effect, as access to the function goes the normal path,</span>
+<span class="sd">    instead of using __getattr__.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="k">def</span> <span class="nf">__getattr__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">real_name</span><span class="p">):</span>
+        <span class="kn">from</span> <span class="nn">django.conf</span> <span class="kn">import</span> <span class="n">settings</span>
+        <span class="k">if</span> <span class="n">settings</span><span class="o">.</span><span class="n">USE_I18N</span><span class="p">:</span>
+            <span class="kn">from</span> <span class="nn">django.utils.translation</span> <span class="kn">import</span> <span class="n">trans_real</span> <span class="k">as</span> <span class="n">trans</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="kn">from</span> <span class="nn">django.utils.translation</span> <span class="kn">import</span> <span class="n">trans_null</span> <span class="k">as</span> <span class="n">trans</span>
+        <span class="nb">setattr</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">real_name</span><span class="p">,</span> <span class="nb">getattr</span><span class="p">(</span><span class="n">trans</span><span class="p">,</span> <span class="n">real_name</span><span class="p">))</span>
+        <span class="k">return</span> <span class="nb">getattr</span><span class="p">(</span><span class="n">trans</span><span class="p">,</span> <span class="n">real_name</span><span class="p">)</span>
+
+<span class="n">_trans</span> <span class="o">=</span> <span class="n">Trans</span><span class="p">()</span>
+
+<span class="c"># The Trans class is no more needed, so remove it from the namespace.</span>
+<span class="k">del</span> <span class="n">Trans</span>
+
+
+<div class="viewcode-block" id="gettext_noop"><a class="viewcode-back" href="../../../ref/utils.html#django.utils.translation.gettext_noop">[docs]</a><span class="k">def</span> <span class="nf">gettext_noop</span><span class="p">(</span><span class="n">message</span><span class="p">):</span>
+    <span class="k">return</span> <span class="n">_trans</span><span class="o">.</span><span class="n">gettext_noop</span><span class="p">(</span><span class="n">message</span><span class="p">)</span>
+</div>
+<span class="n">ugettext_noop</span> <span class="o">=</span> <span class="n">gettext_noop</span>
+
+
+<div class="viewcode-block" id="gettext"><a class="viewcode-back" href="../../../ref/utils.html#django.utils.translation.gettext">[docs]</a><span class="k">def</span> <span class="nf">gettext</span><span class="p">(</span><span class="n">message</span><span class="p">):</span>
+    <span class="k">return</span> <span class="n">_trans</span><span class="o">.</span><span class="n">gettext</span><span class="p">(</span><span class="n">message</span><span class="p">)</span>
+
+</div>
+<div class="viewcode-block" id="ngettext"><a class="viewcode-back" href="../../../ref/utils.html#django.utils.translation.ngettext">[docs]</a><span class="k">def</span> <span class="nf">ngettext</span><span class="p">(</span><span class="n">singular</span><span class="p">,</span> <span class="n">plural</span><span class="p">,</span> <span class="n">number</span><span class="p">):</span>
+    <span class="k">return</span> <span class="n">_trans</span><span class="o">.</span><span class="n">ngettext</span><span class="p">(</span><span class="n">singular</span><span class="p">,</span> <span class="n">plural</span><span class="p">,</span> <span class="n">number</span><span class="p">)</span>
+
+</div>
+<div class="viewcode-block" id="ugettext"><a class="viewcode-back" href="../../../ref/utils.html#django.utils.translation.ugettext">[docs]</a><span class="k">def</span> <span class="nf">ugettext</span><span class="p">(</span><span class="n">message</span><span class="p">):</span>
+    <span class="k">return</span> <span class="n">_trans</span><span class="o">.</span><span class="n">ugettext</span><span class="p">(</span><span class="n">message</span><span class="p">)</span>
+
+</div>
+<div class="viewcode-block" id="ungettext"><a class="viewcode-back" href="../../../ref/utils.html#django.utils.translation.ungettext">[docs]</a><span class="k">def</span> <span class="nf">ungettext</span><span class="p">(</span><span class="n">singular</span><span class="p">,</span> <span class="n">plural</span><span class="p">,</span> <span class="n">number</span><span class="p">):</span>
+    <span class="k">return</span> <span class="n">_trans</span><span class="o">.</span><span class="n">ungettext</span><span class="p">(</span><span class="n">singular</span><span class="p">,</span> <span class="n">plural</span><span class="p">,</span> <span class="n">number</span><span class="p">)</span>
+
+</div>
+<div class="viewcode-block" id="pgettext"><a class="viewcode-back" href="../../../ref/utils.html#django.utils.translation.pgettext">[docs]</a><span class="k">def</span> <span class="nf">pgettext</span><span class="p">(</span><span class="n">context</span><span class="p">,</span> <span class="n">message</span><span class="p">):</span>
+    <span class="k">return</span> <span class="n">_trans</span><span class="o">.</span><span class="n">pgettext</span><span class="p">(</span><span class="n">context</span><span class="p">,</span> <span class="n">message</span><span class="p">)</span>
+
+</div>
+<div class="viewcode-block" id="npgettext"><a class="viewcode-back" href="../../../ref/utils.html#django.utils.translation.npgettext">[docs]</a><span class="k">def</span> <span class="nf">npgettext</span><span class="p">(</span><span class="n">context</span><span class="p">,</span> <span class="n">singular</span><span class="p">,</span> <span class="n">plural</span><span class="p">,</span> <span class="n">number</span><span class="p">):</span>
+    <span class="k">return</span> <span class="n">_trans</span><span class="o">.</span><span class="n">npgettext</span><span class="p">(</span><span class="n">context</span><span class="p">,</span> <span class="n">singular</span><span class="p">,</span> <span class="n">plural</span><span class="p">,</span> <span class="n">number</span><span class="p">)</span>
+</div>
+<span class="n">gettext_lazy</span> <span class="o">=</span> <span class="n">lazy</span><span class="p">(</span><span class="n">gettext</span><span class="p">,</span> <span class="nb">str</span><span class="p">)</span>
+<span class="n">ugettext_lazy</span> <span class="o">=</span> <span class="n">lazy</span><span class="p">(</span><span class="n">ugettext</span><span class="p">,</span> <span class="n">six</span><span class="o">.</span><span class="n">text_type</span><span class="p">)</span>
+<span class="n">pgettext_lazy</span> <span class="o">=</span> <span class="n">lazy</span><span class="p">(</span><span class="n">pgettext</span><span class="p">,</span> <span class="n">six</span><span class="o">.</span><span class="n">text_type</span><span class="p">)</span>
+
+
+<span class="k">def</span> <span class="nf">lazy_number</span><span class="p">(</span><span class="n">func</span><span class="p">,</span> <span class="n">resultclass</span><span class="p">,</span> <span class="n">number</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+    <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">number</span><span class="p">,</span> <span class="n">six</span><span class="o">.</span><span class="n">integer_types</span><span class="p">):</span>
+        <span class="n">kwargs</span><span class="p">[</span><span class="s">&#39;number&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">number</span>
+        <span class="n">proxy</span> <span class="o">=</span> <span class="n">lazy</span><span class="p">(</span><span class="n">func</span><span class="p">,</span> <span class="n">resultclass</span><span class="p">)(</span><span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="k">class</span> <span class="nc">NumberAwareString</span><span class="p">(</span><span class="n">resultclass</span><span class="p">):</span>
+            <span class="k">def</span> <span class="nf">__mod__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">rhs</span><span class="p">):</span>
+                <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">rhs</span><span class="p">,</span> <span class="nb">dict</span><span class="p">)</span> <span class="ow">and</span> <span class="n">number</span><span class="p">:</span>
+                    <span class="k">try</span><span class="p">:</span>
+                        <span class="n">number_value</span> <span class="o">=</span> <span class="n">rhs</span><span class="p">[</span><span class="n">number</span><span class="p">]</span>
+                    <span class="k">except</span> <span class="ne">KeyError</span><span class="p">:</span>
+                        <span class="k">raise</span> <span class="ne">KeyError</span><span class="p">(</span><span class="s">&#39;Your dictionary lacks key </span><span class="se">\&#39;</span><span class="si">%s</span><span class="se">\&#39;</span><span class="s">. &#39;</span>
+                            <span class="s">&#39;Please provide it, because it is required to &#39;</span>
+                            <span class="s">&#39;determine whether string is singular or plural.&#39;</span>
+                            <span class="o">%</span> <span class="n">number</span><span class="p">)</span>
+                <span class="k">else</span><span class="p">:</span>
+                    <span class="n">number_value</span> <span class="o">=</span> <span class="n">rhs</span>
+                <span class="n">kwargs</span><span class="p">[</span><span class="s">&#39;number&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">number_value</span>
+                <span class="n">translated</span> <span class="o">=</span> <span class="n">func</span><span class="p">(</span><span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+                <span class="k">try</span><span class="p">:</span>
+                    <span class="n">translated</span> <span class="o">=</span> <span class="n">translated</span> <span class="o">%</span> <span class="n">rhs</span>
+                <span class="k">except</span> <span class="ne">TypeError</span><span class="p">:</span>
+                    <span class="c"># String doesn&#39;t contain a placeholder for the number</span>
+                    <span class="k">pass</span>
+                <span class="k">return</span> <span class="n">translated</span>
+
+        <span class="n">proxy</span> <span class="o">=</span> <span class="n">lazy</span><span class="p">(</span><span class="k">lambda</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">:</span> <span class="n">NumberAwareString</span><span class="p">(),</span> <span class="n">NumberAwareString</span><span class="p">)(</span><span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">proxy</span>
+
+
+<div class="viewcode-block" id="ngettext_lazy"><a class="viewcode-back" href="../../../ref/utils.html#django.utils.translation.ngettext_lazy">[docs]</a><span class="k">def</span> <span class="nf">ngettext_lazy</span><span class="p">(</span><span class="n">singular</span><span class="p">,</span> <span class="n">plural</span><span class="p">,</span> <span class="n">number</span><span class="o">=</span><span class="bp">None</span><span class="p">):</span>
+    <span class="k">return</span> <span class="n">lazy_number</span><span class="p">(</span><span class="n">ngettext</span><span class="p">,</span> <span class="nb">str</span><span class="p">,</span> <span class="n">singular</span><span class="o">=</span><span class="n">singular</span><span class="p">,</span> <span class="n">plural</span><span class="o">=</span><span class="n">plural</span><span class="p">,</span> <span class="n">number</span><span class="o">=</span><span class="n">number</span><span class="p">)</span>
+
+</div>
+<div class="viewcode-block" id="ungettext_lazy"><a class="viewcode-back" href="../../../ref/utils.html#django.utils.translation.ungettext_lazy">[docs]</a><span class="k">def</span> <span class="nf">ungettext_lazy</span><span class="p">(</span><span class="n">singular</span><span class="p">,</span> <span class="n">plural</span><span class="p">,</span> <span class="n">number</span><span class="o">=</span><span class="bp">None</span><span class="p">):</span>
+    <span class="k">return</span> <span class="n">lazy_number</span><span class="p">(</span><span class="n">ungettext</span><span class="p">,</span> <span class="n">six</span><span class="o">.</span><span class="n">text_type</span><span class="p">,</span> <span class="n">singular</span><span class="o">=</span><span class="n">singular</span><span class="p">,</span> <span class="n">plural</span><span class="o">=</span><span class="n">plural</span><span class="p">,</span> <span class="n">number</span><span class="o">=</span><span class="n">number</span><span class="p">)</span>
+
+</div>
+<div class="viewcode-block" id="npgettext_lazy"><a class="viewcode-back" href="../../../ref/utils.html#django.utils.translation.npgettext_lazy">[docs]</a><span class="k">def</span> <span class="nf">npgettext_lazy</span><span class="p">(</span><span class="n">context</span><span class="p">,</span> <span class="n">singular</span><span class="p">,</span> <span class="n">plural</span><span class="p">,</span> <span class="n">number</span><span class="o">=</span><span class="bp">None</span><span class="p">):</span>
+    <span class="k">return</span> <span class="n">lazy_number</span><span class="p">(</span><span class="n">npgettext</span><span class="p">,</span> <span class="n">six</span><span class="o">.</span><span class="n">text_type</span><span class="p">,</span> <span class="n">context</span><span class="o">=</span><span class="n">context</span><span class="p">,</span> <span class="n">singular</span><span class="o">=</span><span class="n">singular</span><span class="p">,</span> <span class="n">plural</span><span class="o">=</span><span class="n">plural</span><span class="p">,</span> <span class="n">number</span><span class="o">=</span><span class="n">number</span><span class="p">)</span>
+
+</div>
+<div class="viewcode-block" id="activate"><a class="viewcode-back" href="../../../ref/utils.html#django.utils.translation.activate">[docs]</a><span class="k">def</span> <span class="nf">activate</span><span class="p">(</span><span class="n">language</span><span class="p">):</span>
+    <span class="k">return</span> <span class="n">_trans</span><span class="o">.</span><span class="n">activate</span><span class="p">(</span><span class="n">language</span><span class="p">)</span>
+
+</div>
+<div class="viewcode-block" id="deactivate"><a class="viewcode-back" href="../../../ref/utils.html#django.utils.translation.deactivate">[docs]</a><span class="k">def</span> <span class="nf">deactivate</span><span class="p">():</span>
+    <span class="k">return</span> <span class="n">_trans</span><span class="o">.</span><span class="n">deactivate</span><span class="p">()</span>
+
+</div>
+<div class="viewcode-block" id="override"><a class="viewcode-back" href="../../../ref/utils.html#django.utils.translation.override">[docs]</a><span class="k">class</span> <span class="nc">override</span><span class="p">(</span><span class="n">ContextDecorator</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">language</span><span class="p">,</span> <span class="n">deactivate</span><span class="o">=</span><span class="bp">False</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">language</span> <span class="o">=</span> <span class="n">language</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">deactivate</span> <span class="o">=</span> <span class="n">deactivate</span>
+
+    <span class="k">def</span> <span class="nf">__enter__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">old_language</span> <span class="o">=</span> <span class="n">get_language</span><span class="p">()</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">language</span> <span class="ow">is</span> <span class="ow">not</span> <span class="bp">None</span><span class="p">:</span>
+            <span class="n">activate</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">language</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">deactivate_all</span><span class="p">()</span>
+
+    <span class="k">def</span> <span class="nf">__exit__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">exc_type</span><span class="p">,</span> <span class="n">exc_value</span><span class="p">,</span> <span class="n">traceback</span><span class="p">):</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">deactivate</span><span class="p">:</span>
+            <span class="n">deactivate</span><span class="p">()</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">activate</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">old_language</span><span class="p">)</span>
+
+</div>
+<div class="viewcode-block" id="get_language"><a class="viewcode-back" href="../../../ref/utils.html#django.utils.translation.get_language">[docs]</a><span class="k">def</span> <span class="nf">get_language</span><span class="p">():</span>
+    <span class="k">return</span> <span class="n">_trans</span><span class="o">.</span><span class="n">get_language</span><span class="p">()</span>
+
+</div>
+<div class="viewcode-block" id="get_language_bidi"><a class="viewcode-back" href="../../../ref/utils.html#django.utils.translation.get_language_bidi">[docs]</a><span class="k">def</span> <span class="nf">get_language_bidi</span><span class="p">():</span>
+    <span class="k">return</span> <span class="n">_trans</span><span class="o">.</span><span class="n">get_language_bidi</span><span class="p">()</span>
+
+</div>
+<span class="k">def</span> <span class="nf">check_for_language</span><span class="p">(</span><span class="n">lang_code</span><span class="p">):</span>
+    <span class="k">return</span> <span class="n">_trans</span><span class="o">.</span><span class="n">check_for_language</span><span class="p">(</span><span class="n">lang_code</span><span class="p">)</span>
+
+
+<div class="viewcode-block" id="to_locale"><a class="viewcode-back" href="../../../ref/utils.html#django.utils.translation.to_locale">[docs]</a><span class="k">def</span> <span class="nf">to_locale</span><span class="p">(</span><span class="n">language</span><span class="p">):</span>
+    <span class="k">return</span> <span class="n">_trans</span><span class="o">.</span><span class="n">to_locale</span><span class="p">(</span><span class="n">language</span><span class="p">)</span>
+
+</div>
+<div class="viewcode-block" id="get_language_from_request"><a class="viewcode-back" href="../../../ref/utils.html#django.utils.translation.get_language_from_request">[docs]</a><span class="k">def</span> <span class="nf">get_language_from_request</span><span class="p">(</span><span class="n">request</span><span class="p">,</span> <span class="n">check_path</span><span class="o">=</span><span class="bp">False</span><span class="p">):</span>
+    <span class="k">return</span> <span class="n">_trans</span><span class="o">.</span><span class="n">get_language_from_request</span><span class="p">(</span><span class="n">request</span><span class="p">,</span> <span class="n">check_path</span><span class="p">)</span>
+
+</div>
+<span class="k">def</span> <span class="nf">get_language_from_path</span><span class="p">(</span><span class="n">path</span><span class="p">):</span>
+    <span class="k">return</span> <span class="n">_trans</span><span class="o">.</span><span class="n">get_language_from_path</span><span class="p">(</span><span class="n">path</span><span class="p">)</span>
+
+
+<div class="viewcode-block" id="templatize"><a class="viewcode-back" href="../../../ref/utils.html#django.utils.translation.templatize">[docs]</a><span class="k">def</span> <span class="nf">templatize</span><span class="p">(</span><span class="n">src</span><span class="p">,</span> <span class="n">origin</span><span class="o">=</span><span class="bp">None</span><span class="p">):</span>
+    <span class="k">return</span> <span class="n">_trans</span><span class="o">.</span><span class="n">templatize</span><span class="p">(</span><span class="n">src</span><span class="p">,</span> <span class="n">origin</span><span class="p">)</span>
+
+</div>
+<div class="viewcode-block" id="deactivate_all"><a class="viewcode-back" href="../../../ref/utils.html#django.utils.translation.deactivate_all">[docs]</a><span class="k">def</span> <span class="nf">deactivate_all</span><span class="p">():</span>
+    <span class="k">return</span> <span class="n">_trans</span><span class="o">.</span><span class="n">deactivate_all</span><span class="p">()</span>
+
+</div>
+<span class="k">def</span> <span class="nf">_string_concat</span><span class="p">(</span><span class="o">*</span><span class="n">strings</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Lazy variant of string concatenation, needed for translations that are</span>
+<span class="sd">    constructed from multiple parts.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">return</span> <span class="s">&#39;&#39;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">force_text</span><span class="p">(</span><span class="n">s</span><span class="p">)</span> <span class="k">for</span> <span class="n">s</span> <span class="ow">in</span> <span class="n">strings</span><span class="p">)</span>
+<span class="n">string_concat</span> <span class="o">=</span> <span class="n">lazy</span><span class="p">(</span><span class="n">_string_concat</span><span class="p">,</span> <span class="n">six</span><span class="o">.</span><span class="n">text_type</span><span class="p">)</span>
+
+
+<div class="viewcode-block" id="get_language_info"><a class="viewcode-back" href="../../../topics/i18n/translation.html#django.utils.translation.get_language_info">[docs]</a><span class="k">def</span> <span class="nf">get_language_info</span><span class="p">(</span><span class="n">lang_code</span><span class="p">):</span>
+    <span class="kn">from</span> <span class="nn">django.conf.locale</span> <span class="kn">import</span> <span class="n">LANG_INFO</span>
+    <span class="k">try</span><span class="p">:</span>
+        <span class="n">lang_info</span> <span class="o">=</span> <span class="n">LANG_INFO</span><span class="p">[</span><span class="n">lang_code</span><span class="p">]</span>
+        <span class="k">if</span> <span class="s">&#39;fallback&#39;</span> <span class="ow">in</span> <span class="n">lang_info</span> <span class="ow">and</span> <span class="s">&#39;name&#39;</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">lang_info</span><span class="p">:</span>
+            <span class="k">return</span> <span class="n">get_language_info</span><span class="p">(</span><span class="n">lang_info</span><span class="p">[</span><span class="s">&#39;fallback&#39;</span><span class="p">][</span><span class="mi">0</span><span class="p">])</span>
+        <span class="k">return</span> <span class="n">lang_info</span>
+    <span class="k">except</span> <span class="ne">KeyError</span><span class="p">:</span>
+        <span class="k">if</span> <span class="s">&#39;-&#39;</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">lang_code</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">KeyError</span><span class="p">(</span><span class="s">&quot;Unknown language code </span><span class="si">%s</span><span class="s">.&quot;</span> <span class="o">%</span> <span class="n">lang_code</span><span class="p">)</span>
+        <span class="n">generic_lang_code</span> <span class="o">=</span> <span class="n">lang_code</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s">&#39;-&#39;</span><span class="p">)[</span><span class="mi">0</span><span class="p">]</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="k">return</span> <span class="n">LANG_INFO</span><span class="p">[</span><span class="n">generic_lang_code</span><span class="p">]</span>
+        <span class="k">except</span> <span class="ne">KeyError</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">KeyError</span><span class="p">(</span><span class="s">&quot;Unknown language code </span><span class="si">%s</span><span class="s"> and </span><span class="si">%s</span><span class="s">.&quot;</span> <span class="o">%</span> <span class="p">(</span><span class="n">lang_code</span><span class="p">,</span> <span class="n">generic_lang_code</span><span class="p">))</span>
+</div>
+<span class="n">trim_whitespace_re</span> <span class="o">=</span> <span class="n">re</span><span class="o">.</span><span class="n">compile</span><span class="p">(</span><span class="s">&#39;\s*</span><span class="se">\n</span><span class="s">\s*&#39;</span><span class="p">)</span>
+
+
+<span class="k">def</span> <span class="nf">trim_whitespace</span><span class="p">(</span><span class="n">s</span><span class="p">):</span>
+    <span class="k">return</span> <span class="n">trim_whitespace_re</span><span class="o">.</span><span class="n">sub</span><span class="p">(</span><span class="s">&#39; &#39;</span><span class="p">,</span> <span class="n">s</span><span class="o">.</span><span class="n">strip</span><span class="p">())</span>
+</pre></div>
+
+          </div>
+        </div>
+      </div>
+      
+        
+          <div class="yui-b" id="sidebar">
+            
+      <div class="sphinxsidebar">
+        <div class="sphinxsidebarwrapper">
+  <h3>Browse</h3>
+  <ul>
+    
+    
+  </ul>
+  <h3>You are here:</h3>
+  <ul>
+      <li>
+        <a href="../../../index.html">Django 1.8.2.dev20150505153848 documentation</a>
+        
+          <ul><li><a href="../../index.html">Module code</a>
+        
+          <ul><li><a href="../../django.html">django</a>
+        
+        <ul><li>django.utils.translation</li></ul>
+        </li></ul></li></ul>
+      </li>
+  </ul>
+
+<div id="searchbox" style="display: none">
+  <h3>Quick search</h3>
+    <form class="search" action="../../../search.html" method="get">
+      <input type="text" name="q" />
+      <input type="submit" value="Go" />
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+    <p class="searchtip" style="font-size: 90%">
+    Enter search terms or a module, class or function name.
+    </p>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+              <h3>Last update:</h3>
+              <p class="topless">May 06, 2015</p>
+          </div>
+        
+      
+    </div>
+
+    <div id="ft">
+      <div class="nav">
+    <a href="../../index.html" title="Module code" accesskey="U">up</a></div>
+    </div>
+  </div>
+
+      <div class="clearer"></div>
+    </div>
+  </body>
+</html>

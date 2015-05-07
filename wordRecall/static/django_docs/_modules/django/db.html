@@ -1,0 +1,217 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>django.db &mdash; Django 1.8.2.dev20150505153848 documentation</title>
+    
+    <link rel="stylesheet" href="../../_static/default.css" type="text/css" />
+    <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '../../',
+        VERSION:     '1.8.2.dev20150505153848',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="../../_static/jquery.js"></script>
+    <script type="text/javascript" src="../../_static/underscore.js"></script>
+    <script type="text/javascript" src="../../_static/doctools.js"></script>
+    <link rel="top" title="Django 1.8.2.dev20150505153848 documentation" href="../../index.html" />
+    <link rel="up" title="django" href="../django.html" />
+
+
+
+ 
+<script type="text/javascript" src="../../templatebuiltins.js"></script>
+<script type="text/javascript">
+(function($) {
+    if (!django_template_builtins) {
+       // templatebuiltins.js missing, do nothing.
+       return;
+    }
+    $(document).ready(function() {
+        // Hyperlink Django template tags and filters
+        var base = "../../ref/templates/builtins.html";
+        if (base == "#") {
+            // Special case for builtins.html itself
+            base = "";
+        }
+        // Tags are keywords, class '.k'
+        $("div.highlight\\-html\\+django span.k").each(function(i, elem) {
+             var tagname = $(elem).text();
+             if ($.inArray(tagname, django_template_builtins.ttags) != -1) {
+                 var fragment = tagname.replace(/_/, '-');
+                 $(elem).html("<a href='" + base + "#" + fragment + "'>" + tagname + "</a>");
+             }
+        });
+        // Filters are functions, class '.nf'
+        $("div.highlight\\-html\\+django span.nf").each(function(i, elem) {
+             var filtername = $(elem).text();
+             if ($.inArray(filtername, django_template_builtins.tfilters) != -1) {
+                 var fragment = filtername.replace(/_/, '-');
+                 $(elem).html("<a href='" + base + "#" + fragment + "'>" + filtername + "</a>");
+             }
+        });
+    });
+})(jQuery);
+</script>
+
+
+  </head>
+  <body>
+
+    <div class="document">
+  <div id="custom-doc" class="yui-t6">
+    <div id="hd">
+      <h1><a href="../../index.html">Django 1.8.2.dev20150505153848 documentation</a></h1>
+      <div id="global-nav">
+        <a title="Home page" href="../../index.html">Home</a>  |
+        <a title="Table of contents" href="../../contents.html">Table of contents</a>  |
+        <a title="Global index" href="../../genindex.html">Index</a>  |
+        <a title="Module index" href="../../py-modindex.html">Modules</a>
+      </div>
+      <div class="nav">
+    <a href="../index.html" title="Module code" accesskey="U">up</a></div>
+    </div>
+
+    <div id="bd">
+      <div id="yui-main">
+        <div class="yui-b">
+          <div class="yui-g" id="_modules-django-db">
+            
+  <h1>Source code for django.db</h1><div class="highlight"><pre>
+<span class="kn">from</span> <span class="nn">django.core</span> <span class="kn">import</span> <span class="n">signals</span>
+<span class="kn">from</span> <span class="nn">django.db.utils</span> <span class="kn">import</span> <span class="p">(</span><span class="n">DEFAULT_DB_ALIAS</span><span class="p">,</span> <span class="n">DJANGO_VERSION_PICKLE_KEY</span><span class="p">,</span>
+    <span class="n">DataError</span><span class="p">,</span> <span class="n">OperationalError</span><span class="p">,</span> <span class="n">IntegrityError</span><span class="p">,</span> <span class="n">InternalError</span><span class="p">,</span> <span class="n">ProgrammingError</span><span class="p">,</span>
+    <span class="n">NotSupportedError</span><span class="p">,</span> <span class="n">DatabaseError</span><span class="p">,</span> <span class="n">InterfaceError</span><span class="p">,</span> <span class="n">Error</span><span class="p">,</span> <span class="n">ConnectionHandler</span><span class="p">,</span>
+    <span class="n">ConnectionRouter</span><span class="p">)</span>
+
+
+<span class="n">__all__</span> <span class="o">=</span> <span class="p">[</span>
+    <span class="s">&#39;backend&#39;</span><span class="p">,</span> <span class="s">&#39;connection&#39;</span><span class="p">,</span> <span class="s">&#39;connections&#39;</span><span class="p">,</span> <span class="s">&#39;router&#39;</span><span class="p">,</span> <span class="s">&#39;DatabaseError&#39;</span><span class="p">,</span>
+    <span class="s">&#39;IntegrityError&#39;</span><span class="p">,</span> <span class="s">&#39;InternalError&#39;</span><span class="p">,</span> <span class="s">&#39;ProgrammingError&#39;</span><span class="p">,</span> <span class="s">&#39;DataError&#39;</span><span class="p">,</span>
+    <span class="s">&#39;NotSupportedError&#39;</span><span class="p">,</span> <span class="s">&#39;Error&#39;</span><span class="p">,</span> <span class="s">&#39;InterfaceError&#39;</span><span class="p">,</span> <span class="s">&#39;OperationalError&#39;</span><span class="p">,</span>
+    <span class="s">&#39;DEFAULT_DB_ALIAS&#39;</span><span class="p">,</span> <span class="s">&#39;DJANGO_VERSION_PICKLE_KEY&#39;</span>
+<span class="p">]</span>
+
+<span class="n">connections</span> <span class="o">=</span> <span class="n">ConnectionHandler</span><span class="p">()</span>
+
+<span class="n">router</span> <span class="o">=</span> <span class="n">ConnectionRouter</span><span class="p">()</span>
+
+
+<span class="c"># `connection`, `DatabaseError` and `IntegrityError` are convenient aliases</span>
+<span class="c"># for backend bits.</span>
+
+<span class="c"># DatabaseWrapper.__init__() takes a dictionary, not a settings module, so</span>
+<span class="c"># we manually create the dictionary from the settings, passing only the</span>
+<span class="c"># settings that the database backends care about. Note that TIME_ZONE is used</span>
+<span class="c"># by the PostgreSQL backends.</span>
+<span class="c"># We load all these up for backwards compatibility, you should use</span>
+<span class="c"># connections[&#39;default&#39;] instead.</span>
+<span class="k">class</span> <span class="nc">DefaultConnectionProxy</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Proxy for accessing the default DatabaseWrapper object&#39;s attributes. If you</span>
+<span class="sd">    need to access the DatabaseWrapper object itself, use</span>
+<span class="sd">    connections[DEFAULT_DB_ALIAS] instead.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">def</span> <span class="nf">__getattr__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">item</span><span class="p">):</span>
+        <span class="k">return</span> <span class="nb">getattr</span><span class="p">(</span><span class="n">connections</span><span class="p">[</span><span class="n">DEFAULT_DB_ALIAS</span><span class="p">],</span> <span class="n">item</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">__setattr__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">name</span><span class="p">,</span> <span class="n">value</span><span class="p">):</span>
+        <span class="k">return</span> <span class="nb">setattr</span><span class="p">(</span><span class="n">connections</span><span class="p">[</span><span class="n">DEFAULT_DB_ALIAS</span><span class="p">],</span> <span class="n">name</span><span class="p">,</span> <span class="n">value</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">__delattr__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">name</span><span class="p">):</span>
+        <span class="k">return</span> <span class="nb">delattr</span><span class="p">(</span><span class="n">connections</span><span class="p">[</span><span class="n">DEFAULT_DB_ALIAS</span><span class="p">],</span> <span class="n">name</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">__eq__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">other</span><span class="p">):</span>
+        <span class="k">return</span> <span class="n">connections</span><span class="p">[</span><span class="n">DEFAULT_DB_ALIAS</span><span class="p">]</span> <span class="o">==</span> <span class="n">other</span>
+
+    <span class="k">def</span> <span class="nf">__ne__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">other</span><span class="p">):</span>
+        <span class="k">return</span> <span class="n">connections</span><span class="p">[</span><span class="n">DEFAULT_DB_ALIAS</span><span class="p">]</span> <span class="o">!=</span> <span class="n">other</span>
+
+<span class="n">connection</span> <span class="o">=</span> <span class="n">DefaultConnectionProxy</span><span class="p">()</span>
+
+
+<span class="c"># Register an event to reset saved queries when a Django request is started.</span>
+<span class="k">def</span> <span class="nf">reset_queries</span><span class="p">(</span><span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+    <span class="k">for</span> <span class="n">conn</span> <span class="ow">in</span> <span class="n">connections</span><span class="o">.</span><span class="n">all</span><span class="p">():</span>
+        <span class="n">conn</span><span class="o">.</span><span class="n">queries_log</span><span class="o">.</span><span class="n">clear</span><span class="p">()</span>
+<span class="n">signals</span><span class="o">.</span><span class="n">request_started</span><span class="o">.</span><span class="n">connect</span><span class="p">(</span><span class="n">reset_queries</span><span class="p">)</span>
+
+
+<span class="c"># Register an event to reset transaction state and close connections past</span>
+<span class="c"># their lifetime.</span>
+<span class="k">def</span> <span class="nf">close_old_connections</span><span class="p">(</span><span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+    <span class="k">for</span> <span class="n">conn</span> <span class="ow">in</span> <span class="n">connections</span><span class="o">.</span><span class="n">all</span><span class="p">():</span>
+        <span class="n">conn</span><span class="o">.</span><span class="n">close_if_unusable_or_obsolete</span><span class="p">()</span>
+<span class="n">signals</span><span class="o">.</span><span class="n">request_started</span><span class="o">.</span><span class="n">connect</span><span class="p">(</span><span class="n">close_old_connections</span><span class="p">)</span>
+<span class="n">signals</span><span class="o">.</span><span class="n">request_finished</span><span class="o">.</span><span class="n">connect</span><span class="p">(</span><span class="n">close_old_connections</span><span class="p">)</span>
+</pre></div>
+
+          </div>
+        </div>
+      </div>
+      
+        
+          <div class="yui-b" id="sidebar">
+            
+      <div class="sphinxsidebar">
+        <div class="sphinxsidebarwrapper">
+  <h3>Browse</h3>
+  <ul>
+    
+    
+  </ul>
+  <h3>You are here:</h3>
+  <ul>
+      <li>
+        <a href="../../index.html">Django 1.8.2.dev20150505153848 documentation</a>
+        
+          <ul><li><a href="../index.html">Module code</a>
+        
+          <ul><li><a href="../django.html">django</a>
+        
+        <ul><li>django.db</li></ul>
+        </li></ul></li></ul>
+      </li>
+  </ul>
+
+<div id="searchbox" style="display: none">
+  <h3>Quick search</h3>
+    <form class="search" action="../../search.html" method="get">
+      <input type="text" name="q" />
+      <input type="submit" value="Go" />
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+    <p class="searchtip" style="font-size: 90%">
+    Enter search terms or a module, class or function name.
+    </p>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+              <h3>Last update:</h3>
+              <p class="topless">May 06, 2015</p>
+          </div>
+        
+      
+    </div>
+
+    <div id="ft">
+      <div class="nav">
+    <a href="../index.html" title="Module code" accesskey="U">up</a></div>
+    </div>
+  </div>
+
+      <div class="clearer"></div>
+    </div>
+  </body>
+</html>

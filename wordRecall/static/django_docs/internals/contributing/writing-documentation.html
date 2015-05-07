@@ -1,0 +1,576 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>Writing documentation &mdash; Django 1.8.2.dev20150505153848 documentation</title>
+    
+    <link rel="stylesheet" href="../../_static/default.css" type="text/css" />
+    <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '../../',
+        VERSION:     '1.8.2.dev20150505153848',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="../../_static/jquery.js"></script>
+    <script type="text/javascript" src="../../_static/underscore.js"></script>
+    <script type="text/javascript" src="../../_static/doctools.js"></script>
+    <link rel="top" title="Django 1.8.2.dev20150505153848 documentation" href="../../index.html" />
+    <link rel="up" title="Contributing to Django" href="index.html" />
+    <link rel="next" title="Localizing Django" href="localizing.html" />
+    <link rel="prev" title="Working with Git and GitHub" href="writing-code/working-with-git.html" />
+
+
+
+ 
+<script type="text/javascript" src="../../templatebuiltins.js"></script>
+<script type="text/javascript">
+(function($) {
+    if (!django_template_builtins) {
+       // templatebuiltins.js missing, do nothing.
+       return;
+    }
+    $(document).ready(function() {
+        // Hyperlink Django template tags and filters
+        var base = "../../ref/templates/builtins.html";
+        if (base == "#") {
+            // Special case for builtins.html itself
+            base = "";
+        }
+        // Tags are keywords, class '.k'
+        $("div.highlight\\-html\\+django span.k").each(function(i, elem) {
+             var tagname = $(elem).text();
+             if ($.inArray(tagname, django_template_builtins.ttags) != -1) {
+                 var fragment = tagname.replace(/_/, '-');
+                 $(elem).html("<a href='" + base + "#" + fragment + "'>" + tagname + "</a>");
+             }
+        });
+        // Filters are functions, class '.nf'
+        $("div.highlight\\-html\\+django span.nf").each(function(i, elem) {
+             var filtername = $(elem).text();
+             if ($.inArray(filtername, django_template_builtins.tfilters) != -1) {
+                 var fragment = filtername.replace(/_/, '-');
+                 $(elem).html("<a href='" + base + "#" + fragment + "'>" + filtername + "</a>");
+             }
+        });
+    });
+})(jQuery);
+</script>
+
+
+  </head>
+  <body>
+
+    <div class="document">
+  <div id="custom-doc" class="yui-t6">
+    <div id="hd">
+      <h1><a href="../../index.html">Django 1.8.2.dev20150505153848 documentation</a></h1>
+      <div id="global-nav">
+        <a title="Home page" href="../../index.html">Home</a>  |
+        <a title="Table of contents" href="../../contents.html">Table of contents</a>  |
+        <a title="Global index" href="../../genindex.html">Index</a>  |
+        <a title="Module index" href="../../py-modindex.html">Modules</a>
+      </div>
+      <div class="nav">
+    &laquo; <a href="writing-code/working-with-git.html" title="Working with Git and GitHub">previous</a>
+     |
+    <a href="../index.html" title="Django internals" accesskey="U">up</a>
+   |
+    <a href="localizing.html" title="Localizing Django">next</a> &raquo;</div>
+    </div>
+
+    <div id="bd">
+      <div id="yui-main">
+        <div class="yui-b">
+          <div class="yui-g" id="internals-contributing-writing-documentation">
+            
+  <div class="section" id="s-writing-documentation">
+<span id="writing-documentation"></span><h1>Writing documentation<a class="headerlink" href="#writing-documentation" title="Permalink to this headline">¶</a></h1>
+<p>We place a high importance on consistency and readability of documentation.
+After all, Django was created in a journalism environment! So we treat our
+documentation like we treat our code: we aim to improve it as often as
+possible.</p>
+<p>Documentation changes generally come in two forms:</p>
+<ul class="simple">
+<li>General improvements: typo corrections, error fixes and better
+explanations through clearer writing and more examples.</li>
+<li>New features: documentation of features that have been added to the
+framework since the last release.</li>
+</ul>
+<p>This section explains how writers can craft their documentation changes
+in the most useful and least error-prone ways.</p>
+<div class="section" id="s-getting-the-raw-documentation">
+<span id="getting-the-raw-documentation"></span><h2>Getting the raw documentation<a class="headerlink" href="#getting-the-raw-documentation" title="Permalink to this headline">¶</a></h2>
+<p>Though Django&#8217;s documentation is intended to be read as HTML at
+<a class="reference external" href="https://docs.djangoproject.com/">https://docs.djangoproject.com/</a>, we edit it as a collection of text files for
+maximum flexibility. These files live in the top-level <tt class="docutils literal"><span class="pre">docs/</span></tt> directory of a
+Django release.</p>
+<p>If you&#8217;d like to start contributing to our docs, get the development version of
+Django from the source code repository
+(see <a class="reference internal" href="../../topics/install.html#installing-development-version"><em>Installing the development version</em></a>). The development version has the
+latest-and-greatest documentation, just as it has latest-and-greatest code.
+We also backport documentation fixes and improvements, at the discretion of the
+committer, to the last release branch. That&#8217;s because it&#8217;s highly advantageous
+to have the docs for the last release be up-to-date and correct (see
+<a class="reference internal" href="../../intro/whatsnext.html#differences-between-doc-versions"><em>Differences between versions</em></a>).</p>
+</div>
+<div class="section" id="s-getting-started-with-sphinx">
+<span id="getting-started-with-sphinx"></span><h2>Getting started with Sphinx<a class="headerlink" href="#getting-started-with-sphinx" title="Permalink to this headline">¶</a></h2>
+<p>Django&#8217;s documentation uses the <a class="reference external" href="http://sphinx-doc.org/">Sphinx</a> documentation system, which in turn
+is based on <a class="reference external" href="http://docutils.sourceforge.net/">docutils</a>. The basic idea is that lightly-formatted plain-text
+documentation is transformed into HTML, PDF, and any other output format.</p>
+<p>To actually build the documentation locally, you&#8217;ll currently need to install
+Sphinx &#8211; <tt class="docutils literal"><span class="pre">pip</span> <span class="pre">install</span> <span class="pre">Sphinx</span></tt> should do the trick.</p>
+<div class="admonition note">
+<p class="first admonition-title">Note</p>
+<p class="last">Building the Django documentation requires Sphinx 1.0.2 or newer. Sphinx
+also requires the <a class="reference external" href="http://pygments.org">Pygments</a> library for syntax highlighting; building the
+Django documentation requires Pygments 1.1 or newer (a new-enough version
+should automatically be installed along with Sphinx).</p>
+</div>
+<p>Then, building the HTML is easy; just <tt class="docutils literal"><span class="pre">make</span> <span class="pre">html</span></tt> (or <tt class="docutils literal"><span class="pre">make.bat</span> <span class="pre">html</span></tt> on
+Windows) from the <tt class="docutils literal"><span class="pre">docs</span></tt> directory.</p>
+<p>To get started contributing, you&#8217;ll want to read the <a class="reference external" href="http://sphinx-doc.org/rest.html#rst-primer" title="(in Sphinx v1.3.1+)"><em class="xref std std-ref">reStructuredText
+Primer</em></a>. After that, you&#8217;ll want to read about the
+<a class="reference external" href="http://sphinx-doc.org/markup/index.html#sphinxmarkup" title="(in Sphinx v1.3.1+)"><em class="xref std std-ref">Sphinx-specific markup</em></a> that&#8217;s used to manage
+metadata, indexing, and cross-references.</p>
+</div>
+<div class="section" id="s-writing-style">
+<span id="writing-style"></span><h2>Writing style<a class="headerlink" href="#writing-style" title="Permalink to this headline">¶</a></h2>
+<p>When using pronouns in reference to a hypothetical person, such as &#8220;a user with
+a session cookie&#8221;, gender neutral pronouns (they/their/them) should be used.
+Instead of:</p>
+<ul class="simple">
+<li>he or she... use they.</li>
+<li>him or her... use them.</li>
+<li>his or her... use their.</li>
+<li>his or hers... use theirs.</li>
+<li>himself or herself... use themselves.</li>
+</ul>
+</div>
+<div class="section" id="s-commonly-used-terms">
+<span id="commonly-used-terms"></span><h2>Commonly used terms<a class="headerlink" href="#commonly-used-terms" title="Permalink to this headline">¶</a></h2>
+<p>Here are some style guidelines on commonly used terms throughout the
+documentation:</p>
+<ul class="simple">
+<li><strong>Django</strong> &#8211; when referring to the framework, capitalize Django. It is
+lowercase only in Python code and in the djangoproject.com logo.</li>
+<li><strong>email</strong> &#8211; no hyphen.</li>
+<li><strong>MySQL</strong>, <strong>PostgreSQL</strong>, <strong>SQLite</strong></li>
+<li><strong>SQL</strong> &#8211; when referring to SQL, the expected pronunciation should be
+&#8220;Ess Queue Ell&#8221; and not &#8220;sequel&#8221;. Thus in a phrase like &#8220;Returns an
+SQL expression&#8221;, &#8220;SQL&#8221; should be preceded by &#8220;an&#8221; and not &#8220;a&#8221;.</li>
+<li><strong>Python</strong> &#8211; when referring to the language, capitalize Python.</li>
+<li><strong>realize</strong>, <strong>customize</strong>, <strong>initialize</strong>, etc. &#8211; use the American
+&#8220;ize&#8221; suffix, not &#8220;ise.&#8221;</li>
+<li><strong>subclass</strong> &#8211; it&#8217;s a single word without a hyphen, both as a verb
+(&#8220;subclass that model&#8221;) and as a noun (&#8220;create a subclass&#8221;).</li>
+<li><strong>Web</strong>, <strong>World Wide Web</strong>, <strong>the Web</strong> &#8211; note Web is always
+capitalized when referring to the World Wide Web.</li>
+<li><strong>Web site</strong> &#8211; use two words, with Web capitalized.</li>
+</ul>
+</div>
+<div class="section" id="s-django-specific-terminology">
+<span id="django-specific-terminology"></span><h2>Django-specific terminology<a class="headerlink" href="#django-specific-terminology" title="Permalink to this headline">¶</a></h2>
+<ul class="simple">
+<li><strong>model</strong> &#8211; it&#8217;s not capitalized.</li>
+<li><strong>template</strong> &#8211; it&#8217;s not capitalized.</li>
+<li><strong>URLconf</strong> &#8211; use three capitalized letters, with no space before
+&#8220;conf.&#8221;</li>
+<li><strong>view</strong> &#8211; it&#8217;s not capitalized.</li>
+</ul>
+</div>
+<div class="section" id="s-guidelines-for-restructuredtext-files">
+<span id="guidelines-for-restructuredtext-files"></span><h2>Guidelines for reStructuredText files<a class="headerlink" href="#guidelines-for-restructuredtext-files" title="Permalink to this headline">¶</a></h2>
+<p>These guidelines regulate the format of our reST (reStructuredText)
+documentation:</p>
+<ul>
+<li><p class="first">In section titles, capitalize only initial words and proper nouns.</p>
+</li>
+<li><p class="first">Wrap the documentation at 80 characters wide, unless a code example
+is significantly less readable when split over two lines, or for another
+good reason.</p>
+</li>
+<li><p class="first">The main thing to keep in mind as you write and edit docs is that the
+more semantic markup you can add the better. So:</p>
+<div class="highlight-python"><div class="highlight"><pre>Add ``django.contrib.auth`` to your ``INSTALLED_APPS``...
+</pre></div>
+</div>
+<p>Isn&#8217;t nearly as helpful as:</p>
+<div class="highlight-python"><div class="highlight"><pre>Add :mod:`django.contrib.auth` to your :setting:`INSTALLED_APPS`...
+</pre></div>
+</div>
+<p>This is because Sphinx will generate proper links for the latter, which
+greatly helps readers. There&#8217;s basically no limit to the amount of
+useful markup you can add.</p>
+</li>
+<li><p class="first">Use <a class="reference external" href="http://sphinx-doc.org/ext/intersphinx.html#module-sphinx.ext.intersphinx" title="(in Sphinx v1.3.1+)"><tt class="xref py py-mod docutils literal"><span class="pre">intersphinx</span></tt></a> to reference Python&#8217;s and Sphinx&#8217;
+documentation.</p>
+</li>
+</ul>
+</div>
+<div class="section" id="s-django-specific-markup">
+<span id="django-specific-markup"></span><h2>Django-specific markup<a class="headerlink" href="#django-specific-markup" title="Permalink to this headline">¶</a></h2>
+<p>Besides the <a class="reference external" href="http://sphinx-doc.org/markup/">Sphinx built-in markup</a>, Django&#8217;s docs defines some extra
+description units:</p>
+<ul>
+<li><p class="first">Settings:</p>
+<div class="highlight-python"><div class="highlight"><pre>.. setting:: INSTALLED_APPS
+</pre></div>
+</div>
+<p>To link to a setting, use <tt class="docutils literal"><span class="pre">:setting:`INSTALLED_APPS`</span></tt>.</p>
+</li>
+<li><p class="first">Template tags:</p>
+<div class="highlight-python"><div class="highlight"><pre>.. templatetag:: regroup
+</pre></div>
+</div>
+<p>To link, use <tt class="docutils literal"><span class="pre">:ttag:`regroup`</span></tt>.</p>
+</li>
+<li><p class="first">Template filters:</p>
+<div class="highlight-python"><div class="highlight"><pre>.. templatefilter:: linebreaksbr
+</pre></div>
+</div>
+<p>To link, use <tt class="docutils literal"><span class="pre">:tfilter:`linebreaksbr`</span></tt>.</p>
+</li>
+<li><p class="first">Field lookups (i.e. <tt class="docutils literal"><span class="pre">Foo.objects.filter(bar__exact=whatever)</span></tt>):</p>
+<div class="highlight-python"><div class="highlight"><pre>.. fieldlookup:: exact
+</pre></div>
+</div>
+<p>To link, use <tt class="docutils literal"><span class="pre">:lookup:`exact`</span></tt>.</p>
+</li>
+<li><p class="first"><tt class="docutils literal"><span class="pre">django-admin</span></tt> commands:</p>
+<div class="highlight-python"><div class="highlight"><pre>.. django-admin:: migrate
+</pre></div>
+</div>
+<p>To link, use <tt class="docutils literal"><span class="pre">:djadmin:`migrate`</span></tt>.</p>
+</li>
+<li><p class="first"><tt class="docutils literal"><span class="pre">django-admin</span></tt> command-line options:</p>
+<div class="highlight-python"><div class="highlight"><pre>.. django-admin-option:: --traceback
+</pre></div>
+</div>
+<p>To link, use <tt class="docutils literal"><span class="pre">:djadminopt:`--traceback`</span></tt>.</p>
+</li>
+<li><p class="first">Links to Trac tickets (typically reserved for minor release notes):</p>
+<div class="highlight-python"><div class="highlight"><pre>:ticket:`12345`
+</pre></div>
+</div>
+</li>
+</ul>
+</div>
+<div class="section" id="s-documenting-new-features">
+<span id="s-id5"></span><span id="documenting-new-features"></span><span id="id5"></span><h2>Documenting new features<a class="headerlink" href="#documenting-new-features" title="Permalink to this headline">¶</a></h2>
+<p>Our policy for new features is:</p>
+<blockquote>
+<div>All documentation of new features should be written in a way that
+clearly designates the features are only available in the Django
+development version. Assume documentation readers are using the latest
+release, not the development version.</div></blockquote>
+<p>Our preferred way for marking new features is by prefacing the features&#8217;
+documentation with: &#8220;<tt class="docutils literal"><span class="pre">..</span> <span class="pre">versionadded::</span> <span class="pre">X.Y</span></tt>&#8221;, followed by a mandatory
+blank line and an optional content (indented).</p>
+<p>General improvements, or other changes to the APIs that should be emphasized
+should use the &#8220;<tt class="docutils literal"><span class="pre">..</span> <span class="pre">versionchanged::</span> <span class="pre">X.Y</span></tt>&#8221; directive (with the same format
+as the <tt class="docutils literal"><span class="pre">versionadded</span></tt> mentioned above.</p>
+<p>These <tt class="docutils literal"><span class="pre">versionadded</span></tt> and <tt class="docutils literal"><span class="pre">versionchanged</span></tt> blocks should be &#8220;self-contained.&#8221;
+In other words, since we only keep these annotations around for two releases,
+it&#8217;s nice to be able to remove the annotation and its contents without having
+to reflow, reindent, or edit the surrounding text. For example, instead of
+putting the entire description of a new or changed feature in a block, do
+something like this:</p>
+<div class="highlight-python"><div class="highlight"><pre>.. class:: Author(first_name, last_name, middle_name=None)
+
+    A person who writes books.
+
+    ``first_name`` is ...
+
+    ...
+
+    ``middle_name`` is ...
+
+    .. versionchanged:: A.B
+
+        The ``middle_name`` argument was added.
+</pre></div>
+</div>
+<p>Put the changed annotation notes at the bottom of a section, not the top.</p>
+<p>Also, avoid referring to a specific version of Django outside a
+<tt class="docutils literal"><span class="pre">versionadded</span></tt> or <tt class="docutils literal"><span class="pre">versionchanged</span></tt> block. Even inside a block, it&#8217;s often
+redundant to do so as these annotations render as &#8220;New in Django A.B:&#8221; and
+&#8220;Changed in Django A.B&#8221;, respectively.</p>
+<p>If a function, attribute, etc. is added, it&#8217;s also okay to use a
+<tt class="docutils literal"><span class="pre">versionadded</span></tt> annotation like this:</p>
+<div class="highlight-python"><div class="highlight"><pre>.. attribute:: Author.middle_name
+
+    .. versionadded:: A.B
+
+    An author&#39;s middle name.
+</pre></div>
+</div>
+<p>We can simply remove the <tt class="docutils literal"><span class="pre">..</span> <span class="pre">versionadded::</span> <span class="pre">A.B</span></tt> annotation without any
+indentation changes when the time comes.</p>
+</div>
+<div class="section" id="s-an-example">
+<span id="an-example"></span><h2>An example<a class="headerlink" href="#an-example" title="Permalink to this headline">¶</a></h2>
+<p>For a quick example of how it all fits together, consider this hypothetical
+example:</p>
+<ul>
+<li><p class="first">First, the <tt class="docutils literal"><span class="pre">ref/settings.txt</span></tt> document could have an overall layout
+like this:</p>
+<div class="highlight-rst"><div class="highlight"><pre><span class="gh">========</span>
+<span class="gh">Settings</span>
+<span class="gh">========</span>
+
+<span class="cp">...</span>
+
+<span class="p">..</span> <span class="nt">_available-settings:</span>
+
+<span class="gh">Available settings</span>
+<span class="gh">==================</span>
+
+<span class="cp">...</span>
+
+<span class="p">..</span> <span class="nt">_deprecated-settings:</span>
+
+<span class="gh">Deprecated settings</span>
+<span class="gh">===================</span>
+
+<span class="cp">...</span>
+</pre></div>
+</div>
+</li>
+<li><p class="first">Next, the <tt class="docutils literal"><span class="pre">topics/settings.txt</span></tt> document could contain something like
+this:</p>
+<div class="highlight-rst"><div class="highlight"><pre>You can access a :ref:`listing of all available settings
+<span class="nt">&lt;available-settings&gt;</span>`. For a list of deprecated settings see
+<span class="na">:ref:</span><span class="nv">`deprecated-settings`</span>.
+
+You can find both in the :doc:`settings reference document
+<span class="nt">&lt;/ref/settings&gt;</span>`.
+</pre></div>
+</div>
+<p>We use the Sphinx <a class="reference external" href="http://sphinx-doc.org/markup/inline.html#role-doc" title="(in Sphinx v1.3.1+)"><tt class="xref rst rst-role docutils literal"><span class="pre">doc</span></tt></a> cross reference element when we want to
+link to another document as a whole and the <a class="reference external" href="http://sphinx-doc.org/markup/inline.html#role-ref" title="(in Sphinx v1.3.1+)"><tt class="xref rst rst-role docutils literal"><span class="pre">ref</span></tt></a> element when
+we want to link to an arbitrary location in a document.</p>
+</li>
+<li><p class="first">Next, notice how the settings are annotated:</p>
+<div class="highlight-rst"><div class="highlight"><pre><span class="p">..</span> <span class="ow">setting</span><span class="p">::</span> ADMINS
+
+<span class="gh">ADMINS</span>
+<span class="gh">------</span>
+
+Default: <span class="s">``()``</span> (Empty tuple)
+
+A tuple that lists people who get code error notifications. When
+<span class="s">``DEBUG=False``</span> and a view raises an exception, Django will email these people
+with the full exception information. Each member of the tuple should be a tuple
+of (Full name, email address). Example<span class="se">::</span>
+
+<span class="s">    ((&#39;John&#39;, &#39;john@example.com&#39;), (&#39;Mary&#39;, &#39;mary@example.com&#39;))</span>
+
+Note that Django will email <span class="ge">*all*</span> of these people whenever an error happens.
+See <span class="na">:doc:</span><span class="nv">`/howto/error-reporting`</span> for more information.
+</pre></div>
+</div>
+<p>This marks up the following header as the &#8220;canonical&#8221; target for the
+setting <tt class="docutils literal"><span class="pre">ADMINS</span></tt>. This means any time I talk about <tt class="docutils literal"><span class="pre">ADMINS</span></tt>,
+I can reference it using <tt class="docutils literal"><span class="pre">:setting:`ADMINS`</span></tt>.</p>
+</li>
+</ul>
+<p>That&#8217;s basically how everything fits together.</p>
+</div>
+<div class="section" id="s-improving-the-documentation">
+<span id="s-id6"></span><span id="improving-the-documentation"></span><span id="id6"></span><h2>Improving the documentation<a class="headerlink" href="#improving-the-documentation" title="Permalink to this headline">¶</a></h2>
+<p>A few small improvements can be made to make the documentation read and
+look better:</p>
+<ul>
+<li><p class="first">Most of the various <tt class="docutils literal"><span class="pre">index.txt</span></tt> documents have <em>very</em> short or even
+non-existent intro text. Each of those documents needs a good short
+intro the content below that point.</p>
+</li>
+<li><p class="first">The glossary is very perfunctory. It needs to be filled out.</p>
+</li>
+<li><p class="first">Add more metadata targets. Lots of places look like:</p>
+<div class="highlight-python"><div class="highlight"><pre>``File.close()``
+~~~~~~~~~~~~~~~~
+</pre></div>
+</div>
+<p>... these should be:</p>
+<div class="highlight-python"><div class="highlight"><pre>.. method:: File.close()
+</pre></div>
+</div>
+<p>That is, use metadata instead of titles.</p>
+</li>
+<li><p class="first">Add more links &#8211; nearly everything that&#8217;s an inline code literal
+right now can probably be turned into a xref.</p>
+<p>See the <tt class="docutils literal"><span class="pre">literals_to_xrefs.py</span></tt> file in <tt class="docutils literal"><span class="pre">_ext</span></tt> &#8211; it&#8217;s a shell script
+to help do this work.</p>
+<p>This will probably be a continuing, never-ending project.</p>
+</li>
+<li><p class="first">Whenever possible, use links. So, use <tt class="docutils literal"><span class="pre">:setting:`ADMINS`</span></tt> instead
+of <tt class="docutils literal"><span class="pre">``ADMINS``</span></tt>.</p>
+</li>
+<li><p class="first">Use directives where appropriate. Some directives
+(e.g. <tt class="docutils literal"><span class="pre">..</span> <span class="pre">setting::</span></tt>) are prefix-style directives; they go <em>before</em>
+the unit they&#8217;re describing. These are known as &#8220;crossref&#8221; directives.
+Others (e.g. <tt class="docutils literal"><span class="pre">..</span> <span class="pre">class::</span></tt>) generate their own markup; these should go
+inside the section they&#8217;re describing. These are called
+&#8220;description units&#8221;.</p>
+<p>You can tell which are which by looking at in
+<tt class="file docutils literal"><span class="pre">_ext/djangodocs.py</span></tt>; it registers roles as one of the other.</p>
+</li>
+<li><p class="first">Add <tt class="docutils literal"><span class="pre">..</span> <span class="pre">code-block::</span> <span class="pre">&lt;lang&gt;</span></tt> to literal blocks so that they get
+highlighted.</p>
+</li>
+<li><p class="first">When referring to classes/functions/modules, etc., you&#8217;ll want to use
+the fully-qualified name of the target
+(<tt class="docutils literal"><span class="pre">:class:`django.contrib.contenttypes.models.ContentType`</span></tt>).</p>
+<p>Since this doesn&#8217;t look all that awesome in the output &#8211; it shows the
+entire path to the object &#8211; you can prefix the target with a <tt class="docutils literal"><span class="pre">~</span></tt>
+(that&#8217;s a tilde) to get just the &#8220;last bit&#8221; of that path. So
+<tt class="docutils literal"><span class="pre">:class:`~django.contrib.contenttypes.models.ContentType`</span></tt> will just
+display a link with the title &#8220;ContentType&#8221;.</p>
+</li>
+</ul>
+</div>
+<div class="section" id="s-spelling-check">
+<span id="s-documentation-spelling-check"></span><span id="spelling-check"></span><span id="documentation-spelling-check"></span><h2>Spelling check<a class="headerlink" href="#spelling-check" title="Permalink to this headline">¶</a></h2>
+<p>Before you commit your docs, it&#8217;s a good idea to run the spelling checker.
+You&#8217;ll need to install a couple packages first:</p>
+<ul class="simple">
+<li><a class="reference external" href="https://pypi.python.org/pypi/pyenchant/">pyenchant</a> (which requires
+<a class="reference external" href="http://www.abisource.com/projects/enchant/">enchant</a>)</li>
+<li><a class="reference external" href="https://pypi.python.org/pypi/sphinxcontrib-spelling/">sphinxcontrib-spelling</a></li>
+</ul>
+<p>Then from the <tt class="docutils literal"><span class="pre">docs</span></tt> directory, run <tt class="docutils literal"><span class="pre">make</span> <span class="pre">spelling</span></tt>. Wrong words (if any)
+along with the file and line number where they occur will be saved to
+<tt class="docutils literal"><span class="pre">_build/spelling/output.txt</span></tt>.</p>
+<p>If you encounter false-positives (error output that actually is correct), do
+one of the following:</p>
+<ul class="simple">
+<li>Surround inline code or brand/technology names with grave accents (`).</li>
+<li>Find synonyms that the spell checker recognizes.</li>
+<li>If, and only if, you are sure the word you are using is correct - add it
+to <tt class="docutils literal"><span class="pre">docs/spelling_wordlist</span></tt> (please keep the list in alphabetical order).</li>
+</ul>
+</div>
+<div class="section" id="s-translating-documentation">
+<span id="translating-documentation"></span><h2>Translating documentation<a class="headerlink" href="#translating-documentation" title="Permalink to this headline">¶</a></h2>
+<p>See <a class="reference internal" href="localizing.html#translating-documentation"><em>Localizing the Django documentation</em></a> if
+you&#8217;d like to help translate the documentation into another language.</p>
+</div>
+<div class="section" id="s-django-admin-man-page">
+<span id="s-django-admin-manpage"></span><span id="django-admin-man-page"></span><span id="django-admin-manpage"></span><h2><tt class="docutils literal"><span class="pre">django-admin</span></tt> man page<a class="headerlink" href="#django-admin-man-page" title="Permalink to this headline">¶</a></h2>
+<p>Sphinx can generate a manual page for the
+<a class="reference internal" href="../../ref/django-admin.html"><em>django-admin</em></a> command. This is configured in
+<tt class="docutils literal"><span class="pre">docs/conf.py</span></tt>. Unlike other documentation output, this man page should be
+included in the Django repository and the releases as
+<tt class="docutils literal"><span class="pre">docs/man/django-admin.1</span></tt>. There isn&#8217;t a need to update this file when
+updating the documentation, as it&#8217;s updated once as part of the release process.</p>
+<p>To generate an updated version of the man page, run <tt class="docutils literal"><span class="pre">make</span> <span class="pre">man</span></tt> in the
+<tt class="docutils literal"><span class="pre">docs</span></tt> directory. The new man page will be written in
+<tt class="docutils literal"><span class="pre">docs/_build/man/django-admin.1</span></tt>.</p>
+</div>
+</div>
+
+
+          </div>
+        </div>
+      </div>
+      
+        
+          <div class="yui-b" id="sidebar">
+            
+      <div class="sphinxsidebar">
+        <div class="sphinxsidebarwrapper">
+  <h3><a href="../../contents.html">Table Of Contents</a></h3>
+  <ul>
+<li><a class="reference internal" href="#">Writing documentation</a><ul>
+<li><a class="reference internal" href="#getting-the-raw-documentation">Getting the raw documentation</a></li>
+<li><a class="reference internal" href="#getting-started-with-sphinx">Getting started with Sphinx</a></li>
+<li><a class="reference internal" href="#writing-style">Writing style</a></li>
+<li><a class="reference internal" href="#commonly-used-terms">Commonly used terms</a></li>
+<li><a class="reference internal" href="#django-specific-terminology">Django-specific terminology</a></li>
+<li><a class="reference internal" href="#guidelines-for-restructuredtext-files">Guidelines for reStructuredText files</a></li>
+<li><a class="reference internal" href="#django-specific-markup">Django-specific markup</a></li>
+<li><a class="reference internal" href="#documenting-new-features">Documenting new features</a></li>
+<li><a class="reference internal" href="#an-example">An example</a></li>
+<li><a class="reference internal" href="#improving-the-documentation">Improving the documentation</a></li>
+<li><a class="reference internal" href="#spelling-check">Spelling check</a></li>
+<li><a class="reference internal" href="#translating-documentation">Translating documentation</a></li>
+<li><a class="reference internal" href="#django-admin-man-page"><tt class="docutils literal"><span class="pre">django-admin</span></tt> man page</a></li>
+</ul>
+</li>
+</ul>
+
+  <h3>Browse</h3>
+  <ul>
+    
+      <li>Prev: <a href="writing-code/working-with-git.html">Working with Git and GitHub</a></li>
+    
+    
+      <li>Next: <a href="localizing.html">Localizing Django</a></li>
+    
+  </ul>
+  <h3>You are here:</h3>
+  <ul>
+      <li>
+        <a href="../../index.html">Django 1.8.2.dev20150505153848 documentation</a>
+        
+          <ul><li><a href="../index.html">Django internals</a>
+        
+          <ul><li><a href="index.html">Contributing to Django</a>
+        
+        <ul><li>Writing documentation</li></ul>
+        </li></ul></li></ul>
+      </li>
+  </ul>
+
+  <h3>This Page</h3>
+  <ul class="this-page-menu">
+    <li><a href="../../_sources/internals/contributing/writing-documentation.txt"
+           rel="nofollow">Show Source</a></li>
+  </ul>
+<div id="searchbox" style="display: none">
+  <h3>Quick search</h3>
+    <form class="search" action="../../search.html" method="get">
+      <input type="text" name="q" />
+      <input type="submit" value="Go" />
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+    <p class="searchtip" style="font-size: 90%">
+    Enter search terms or a module, class or function name.
+    </p>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+              <h3>Last update:</h3>
+              <p class="topless">May 06, 2015</p>
+          </div>
+        
+      
+    </div>
+
+    <div id="ft">
+      <div class="nav">
+    &laquo; <a href="writing-code/working-with-git.html" title="Working with Git and GitHub">previous</a>
+     |
+    <a href="../index.html" title="Django internals" accesskey="U">up</a>
+   |
+    <a href="localizing.html" title="Localizing Django">next</a> &raquo;</div>
+    </div>
+  </div>
+
+      <div class="clearer"></div>
+    </div>
+  </body>
+</html>

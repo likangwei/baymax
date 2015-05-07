@@ -1,0 +1,290 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>django.contrib.contenttypes.admin &mdash; Django 1.8.2.dev20150505153848 documentation</title>
+    
+    <link rel="stylesheet" href="../../../../_static/default.css" type="text/css" />
+    <link rel="stylesheet" href="../../../../_static/pygments.css" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '../../../../',
+        VERSION:     '1.8.2.dev20150505153848',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="../../../../_static/jquery.js"></script>
+    <script type="text/javascript" src="../../../../_static/underscore.js"></script>
+    <script type="text/javascript" src="../../../../_static/doctools.js"></script>
+    <link rel="top" title="Django 1.8.2.dev20150505153848 documentation" href="../../../../index.html" />
+    <link rel="up" title="django" href="../../../django.html" />
+
+
+
+ 
+<script type="text/javascript" src="../../../../templatebuiltins.js"></script>
+<script type="text/javascript">
+(function($) {
+    if (!django_template_builtins) {
+       // templatebuiltins.js missing, do nothing.
+       return;
+    }
+    $(document).ready(function() {
+        // Hyperlink Django template tags and filters
+        var base = "../../../../ref/templates/builtins.html";
+        if (base == "#") {
+            // Special case for builtins.html itself
+            base = "";
+        }
+        // Tags are keywords, class '.k'
+        $("div.highlight\\-html\\+django span.k").each(function(i, elem) {
+             var tagname = $(elem).text();
+             if ($.inArray(tagname, django_template_builtins.ttags) != -1) {
+                 var fragment = tagname.replace(/_/, '-');
+                 $(elem).html("<a href='" + base + "#" + fragment + "'>" + tagname + "</a>");
+             }
+        });
+        // Filters are functions, class '.nf'
+        $("div.highlight\\-html\\+django span.nf").each(function(i, elem) {
+             var filtername = $(elem).text();
+             if ($.inArray(filtername, django_template_builtins.tfilters) != -1) {
+                 var fragment = filtername.replace(/_/, '-');
+                 $(elem).html("<a href='" + base + "#" + fragment + "'>" + filtername + "</a>");
+             }
+        });
+    });
+})(jQuery);
+</script>
+
+
+  </head>
+  <body>
+
+    <div class="document">
+  <div id="custom-doc" class="yui-t6">
+    <div id="hd">
+      <h1><a href="../../../../index.html">Django 1.8.2.dev20150505153848 documentation</a></h1>
+      <div id="global-nav">
+        <a title="Home page" href="../../../../index.html">Home</a>  |
+        <a title="Table of contents" href="../../../../contents.html">Table of contents</a>  |
+        <a title="Global index" href="../../../../genindex.html">Index</a>  |
+        <a title="Module index" href="../../../../py-modindex.html">Modules</a>
+      </div>
+      <div class="nav">
+    <a href="../../../index.html" title="Module code" accesskey="U">up</a></div>
+    </div>
+
+    <div id="bd">
+      <div id="yui-main">
+        <div class="yui-b">
+          <div class="yui-g" id="_modules-django-contrib-contenttypes-admin">
+            
+  <h1>Source code for django.contrib.contenttypes.admin</h1><div class="highlight"><pre>
+<span class="kn">from</span> <span class="nn">__future__</span> <span class="kn">import</span> <span class="n">unicode_literals</span>
+
+<span class="kn">from</span> <span class="nn">functools</span> <span class="kn">import</span> <span class="n">partial</span>
+
+<span class="kn">from</span> <span class="nn">django.contrib.admin.checks</span> <span class="kn">import</span> <span class="n">InlineModelAdminChecks</span>
+<span class="kn">from</span> <span class="nn">django.contrib.admin.options</span> <span class="kn">import</span> <span class="n">InlineModelAdmin</span><span class="p">,</span> <span class="n">flatten_fieldsets</span>
+<span class="kn">from</span> <span class="nn">django.contrib.contenttypes.fields</span> <span class="kn">import</span> <span class="n">GenericForeignKey</span>
+<span class="kn">from</span> <span class="nn">django.contrib.contenttypes.forms</span> <span class="kn">import</span> <span class="p">(</span>
+    <span class="n">BaseGenericInlineFormSet</span><span class="p">,</span> <span class="n">generic_inlineformset_factory</span><span class="p">,</span>
+<span class="p">)</span>
+<span class="kn">from</span> <span class="nn">django.core</span> <span class="kn">import</span> <span class="n">checks</span>
+<span class="kn">from</span> <span class="nn">django.core.exceptions</span> <span class="kn">import</span> <span class="n">FieldDoesNotExist</span>
+<span class="kn">from</span> <span class="nn">django.forms</span> <span class="kn">import</span> <span class="n">ALL_FIELDS</span>
+<span class="kn">from</span> <span class="nn">django.forms.models</span> <span class="kn">import</span> <span class="n">modelform_defines_fields</span>
+
+
+<span class="k">class</span> <span class="nc">GenericInlineModelAdminChecks</span><span class="p">(</span><span class="n">InlineModelAdminChecks</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">_check_exclude_of_parent_model</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">cls</span><span class="p">,</span> <span class="n">parent_model</span><span class="p">):</span>
+        <span class="c"># There&#39;s no FK to exclude, so no exclusion checks are required.</span>
+        <span class="k">return</span> <span class="p">[]</span>
+
+    <span class="k">def</span> <span class="nf">_check_relation</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">cls</span><span class="p">,</span> <span class="n">parent_model</span><span class="p">):</span>
+        <span class="c"># There&#39;s no FK, but we do need to confirm that the ct_field and ct_fk_field are valid,</span>
+        <span class="c"># and that they are part of a GenericForeignKey.</span>
+
+        <span class="n">gfks</span> <span class="o">=</span> <span class="p">[</span>
+            <span class="n">f</span> <span class="k">for</span> <span class="n">f</span> <span class="ow">in</span> <span class="n">cls</span><span class="o">.</span><span class="n">model</span><span class="o">.</span><span class="n">_meta</span><span class="o">.</span><span class="n">virtual_fields</span>
+            <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">f</span><span class="p">,</span> <span class="n">GenericForeignKey</span><span class="p">)</span>
+        <span class="p">]</span>
+        <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">gfks</span><span class="p">)</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+            <span class="k">return</span> <span class="p">[</span>
+                <span class="n">checks</span><span class="o">.</span><span class="n">Error</span><span class="p">(</span>
+                    <span class="s">&quot;&#39;</span><span class="si">%s</span><span class="s">.</span><span class="si">%s</span><span class="s">&#39; has no GenericForeignKey.&quot;</span> <span class="o">%</span> <span class="p">(</span>
+                        <span class="n">cls</span><span class="o">.</span><span class="n">model</span><span class="o">.</span><span class="n">_meta</span><span class="o">.</span><span class="n">app_label</span><span class="p">,</span> <span class="n">cls</span><span class="o">.</span><span class="n">model</span><span class="o">.</span><span class="n">_meta</span><span class="o">.</span><span class="n">object_name</span>
+                    <span class="p">),</span>
+                    <span class="n">hint</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span>
+                    <span class="n">obj</span><span class="o">=</span><span class="n">cls</span><span class="p">,</span>
+                    <span class="nb">id</span><span class="o">=</span><span class="s">&#39;admin.E301&#39;</span>
+                <span class="p">)</span>
+            <span class="p">]</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="c"># Check that the ct_field and ct_fk_fields exist</span>
+            <span class="k">try</span><span class="p">:</span>
+                <span class="n">cls</span><span class="o">.</span><span class="n">model</span><span class="o">.</span><span class="n">_meta</span><span class="o">.</span><span class="n">get_field</span><span class="p">(</span><span class="n">cls</span><span class="o">.</span><span class="n">ct_field</span><span class="p">)</span>
+            <span class="k">except</span> <span class="n">FieldDoesNotExist</span><span class="p">:</span>
+                <span class="k">return</span> <span class="p">[</span>
+                    <span class="n">checks</span><span class="o">.</span><span class="n">Error</span><span class="p">(</span>
+                        <span class="s">&quot;&#39;ct_field&#39; references &#39;</span><span class="si">%s</span><span class="s">&#39;, which is not a field on &#39;</span><span class="si">%s</span><span class="s">.</span><span class="si">%s</span><span class="s">&#39;.&quot;</span> <span class="o">%</span> <span class="p">(</span>
+                            <span class="n">cls</span><span class="o">.</span><span class="n">ct_field</span><span class="p">,</span> <span class="n">cls</span><span class="o">.</span><span class="n">model</span><span class="o">.</span><span class="n">_meta</span><span class="o">.</span><span class="n">app_label</span><span class="p">,</span> <span class="n">cls</span><span class="o">.</span><span class="n">model</span><span class="o">.</span><span class="n">_meta</span><span class="o">.</span><span class="n">object_name</span>
+                        <span class="p">),</span>
+                        <span class="n">hint</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span>
+                        <span class="n">obj</span><span class="o">=</span><span class="n">cls</span><span class="p">,</span>
+                        <span class="nb">id</span><span class="o">=</span><span class="s">&#39;admin.E302&#39;</span>
+                    <span class="p">)</span>
+                <span class="p">]</span>
+
+            <span class="k">try</span><span class="p">:</span>
+                <span class="n">cls</span><span class="o">.</span><span class="n">model</span><span class="o">.</span><span class="n">_meta</span><span class="o">.</span><span class="n">get_field</span><span class="p">(</span><span class="n">cls</span><span class="o">.</span><span class="n">ct_fk_field</span><span class="p">)</span>
+            <span class="k">except</span> <span class="n">FieldDoesNotExist</span><span class="p">:</span>
+                <span class="k">return</span> <span class="p">[</span>
+                    <span class="n">checks</span><span class="o">.</span><span class="n">Error</span><span class="p">(</span>
+                        <span class="s">&quot;&#39;ct_fk_field&#39; references &#39;</span><span class="si">%s</span><span class="s">&#39;, which is not a field on &#39;</span><span class="si">%s</span><span class="s">.</span><span class="si">%s</span><span class="s">&#39;.&quot;</span> <span class="o">%</span> <span class="p">(</span>
+                            <span class="n">cls</span><span class="o">.</span><span class="n">ct_fk_field</span><span class="p">,</span> <span class="n">cls</span><span class="o">.</span><span class="n">model</span><span class="o">.</span><span class="n">_meta</span><span class="o">.</span><span class="n">app_label</span><span class="p">,</span> <span class="n">cls</span><span class="o">.</span><span class="n">model</span><span class="o">.</span><span class="n">_meta</span><span class="o">.</span><span class="n">object_name</span>
+                        <span class="p">),</span>
+                        <span class="n">hint</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span>
+                        <span class="n">obj</span><span class="o">=</span><span class="n">cls</span><span class="p">,</span>
+                        <span class="nb">id</span><span class="o">=</span><span class="s">&#39;admin.E303&#39;</span>
+                    <span class="p">)</span>
+                <span class="p">]</span>
+
+            <span class="c"># There&#39;s one or more GenericForeignKeys; make sure that one of them</span>
+            <span class="c"># uses the right ct_field and ct_fk_field.</span>
+            <span class="k">for</span> <span class="n">gfk</span> <span class="ow">in</span> <span class="n">gfks</span><span class="p">:</span>
+                <span class="k">if</span> <span class="n">gfk</span><span class="o">.</span><span class="n">ct_field</span> <span class="o">==</span> <span class="n">cls</span><span class="o">.</span><span class="n">ct_field</span> <span class="ow">and</span> <span class="n">gfk</span><span class="o">.</span><span class="n">fk_field</span> <span class="o">==</span> <span class="n">cls</span><span class="o">.</span><span class="n">ct_fk_field</span><span class="p">:</span>
+                    <span class="k">return</span> <span class="p">[]</span>
+
+            <span class="k">return</span> <span class="p">[</span>
+                <span class="n">checks</span><span class="o">.</span><span class="n">Error</span><span class="p">(</span>
+                    <span class="s">&quot;&#39;</span><span class="si">%s</span><span class="s">.</span><span class="si">%s</span><span class="s">&#39; has no GenericForeignKey using content type field &#39;</span><span class="si">%s</span><span class="s">&#39; and object ID field &#39;</span><span class="si">%s</span><span class="s">&#39;.&quot;</span> <span class="o">%</span> <span class="p">(</span>
+                        <span class="n">cls</span><span class="o">.</span><span class="n">model</span><span class="o">.</span><span class="n">_meta</span><span class="o">.</span><span class="n">app_label</span><span class="p">,</span> <span class="n">cls</span><span class="o">.</span><span class="n">model</span><span class="o">.</span><span class="n">_meta</span><span class="o">.</span><span class="n">object_name</span><span class="p">,</span> <span class="n">cls</span><span class="o">.</span><span class="n">ct_field</span><span class="p">,</span> <span class="n">cls</span><span class="o">.</span><span class="n">ct_fk_field</span>
+                    <span class="p">),</span>
+                    <span class="n">hint</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span>
+                    <span class="n">obj</span><span class="o">=</span><span class="n">cls</span><span class="p">,</span>
+                    <span class="nb">id</span><span class="o">=</span><span class="s">&#39;admin.E304&#39;</span>
+                <span class="p">)</span>
+            <span class="p">]</span>
+
+
+<div class="viewcode-block" id="GenericInlineModelAdmin"><a class="viewcode-back" href="../../../../ref/contrib/contenttypes.html#django.contrib.contenttypes.admin.GenericInlineModelAdmin">[docs]</a><span class="k">class</span> <span class="nc">GenericInlineModelAdmin</span><span class="p">(</span><span class="n">InlineModelAdmin</span><span class="p">):</span>
+    <span class="n">ct_field</span> <span class="o">=</span> <span class="s">&quot;content_type&quot;</span>
+    <span class="n">ct_fk_field</span> <span class="o">=</span> <span class="s">&quot;object_id&quot;</span>
+    <span class="n">formset</span> <span class="o">=</span> <span class="n">BaseGenericInlineFormSet</span>
+
+    <span class="n">checks_class</span> <span class="o">=</span> <span class="n">GenericInlineModelAdminChecks</span>
+
+    <span class="k">def</span> <span class="nf">get_formset</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">request</span><span class="p">,</span> <span class="n">obj</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+        <span class="k">if</span> <span class="s">&#39;fields&#39;</span> <span class="ow">in</span> <span class="n">kwargs</span><span class="p">:</span>
+            <span class="n">fields</span> <span class="o">=</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="s">&#39;fields&#39;</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">fields</span> <span class="o">=</span> <span class="n">flatten_fieldsets</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">get_fieldsets</span><span class="p">(</span><span class="n">request</span><span class="p">,</span> <span class="n">obj</span><span class="p">))</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">exclude</span> <span class="ow">is</span> <span class="bp">None</span><span class="p">:</span>
+            <span class="n">exclude</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">exclude</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">exclude</span><span class="p">)</span>
+        <span class="n">exclude</span><span class="o">.</span><span class="n">extend</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">get_readonly_fields</span><span class="p">(</span><span class="n">request</span><span class="p">,</span> <span class="n">obj</span><span class="p">))</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">exclude</span> <span class="ow">is</span> <span class="bp">None</span> <span class="ow">and</span> <span class="nb">hasattr</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">form</span><span class="p">,</span> <span class="s">&#39;_meta&#39;</span><span class="p">)</span> <span class="ow">and</span> <span class="bp">self</span><span class="o">.</span><span class="n">form</span><span class="o">.</span><span class="n">_meta</span><span class="o">.</span><span class="n">exclude</span><span class="p">:</span>
+            <span class="c"># Take the custom ModelForm&#39;s Meta.exclude into account only if the</span>
+            <span class="c"># GenericInlineModelAdmin doesn&#39;t define its own.</span>
+            <span class="n">exclude</span><span class="o">.</span><span class="n">extend</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">form</span><span class="o">.</span><span class="n">_meta</span><span class="o">.</span><span class="n">exclude</span><span class="p">)</span>
+        <span class="n">exclude</span> <span class="o">=</span> <span class="n">exclude</span> <span class="ow">or</span> <span class="bp">None</span>
+        <span class="n">can_delete</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">can_delete</span> <span class="ow">and</span> <span class="bp">self</span><span class="o">.</span><span class="n">has_delete_permission</span><span class="p">(</span><span class="n">request</span><span class="p">,</span> <span class="n">obj</span><span class="p">)</span>
+        <span class="n">defaults</span> <span class="o">=</span> <span class="p">{</span>
+            <span class="s">&quot;ct_field&quot;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">ct_field</span><span class="p">,</span>
+            <span class="s">&quot;fk_field&quot;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">ct_fk_field</span><span class="p">,</span>
+            <span class="s">&quot;form&quot;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">form</span><span class="p">,</span>
+            <span class="s">&quot;formfield_callback&quot;</span><span class="p">:</span> <span class="n">partial</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">formfield_for_dbfield</span><span class="p">,</span> <span class="n">request</span><span class="o">=</span><span class="n">request</span><span class="p">),</span>
+            <span class="s">&quot;formset&quot;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">formset</span><span class="p">,</span>
+            <span class="s">&quot;extra&quot;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_extra</span><span class="p">(</span><span class="n">request</span><span class="p">,</span> <span class="n">obj</span><span class="p">),</span>
+            <span class="s">&quot;can_delete&quot;</span><span class="p">:</span> <span class="n">can_delete</span><span class="p">,</span>
+            <span class="s">&quot;can_order&quot;</span><span class="p">:</span> <span class="bp">False</span><span class="p">,</span>
+            <span class="s">&quot;fields&quot;</span><span class="p">:</span> <span class="n">fields</span><span class="p">,</span>
+            <span class="s">&quot;min_num&quot;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_min_num</span><span class="p">(</span><span class="n">request</span><span class="p">,</span> <span class="n">obj</span><span class="p">),</span>
+            <span class="s">&quot;max_num&quot;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_max_num</span><span class="p">(</span><span class="n">request</span><span class="p">,</span> <span class="n">obj</span><span class="p">),</span>
+            <span class="s">&quot;exclude&quot;</span><span class="p">:</span> <span class="n">exclude</span>
+        <span class="p">}</span>
+        <span class="n">defaults</span><span class="o">.</span><span class="n">update</span><span class="p">(</span><span class="n">kwargs</span><span class="p">)</span>
+
+        <span class="k">if</span> <span class="n">defaults</span><span class="p">[</span><span class="s">&#39;fields&#39;</span><span class="p">]</span> <span class="ow">is</span> <span class="bp">None</span> <span class="ow">and</span> <span class="ow">not</span> <span class="n">modelform_defines_fields</span><span class="p">(</span><span class="n">defaults</span><span class="p">[</span><span class="s">&#39;form&#39;</span><span class="p">]):</span>
+            <span class="n">defaults</span><span class="p">[</span><span class="s">&#39;fields&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">ALL_FIELDS</span>
+
+        <span class="k">return</span> <span class="n">generic_inlineformset_factory</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">model</span><span class="p">,</span> <span class="o">**</span><span class="n">defaults</span><span class="p">)</span>
+
+</div>
+<div class="viewcode-block" id="GenericStackedInline"><a class="viewcode-back" href="../../../../ref/contrib/contenttypes.html#django.contrib.contenttypes.admin.GenericStackedInline">[docs]</a><span class="k">class</span> <span class="nc">GenericStackedInline</span><span class="p">(</span><span class="n">GenericInlineModelAdmin</span><span class="p">):</span>
+    <span class="n">template</span> <span class="o">=</span> <span class="s">&#39;admin/edit_inline/stacked.html&#39;</span>
+
+</div>
+<div class="viewcode-block" id="GenericTabularInline"><a class="viewcode-back" href="../../../../ref/contrib/contenttypes.html#django.contrib.contenttypes.admin.GenericTabularInline">[docs]</a><span class="k">class</span> <span class="nc">GenericTabularInline</span><span class="p">(</span><span class="n">GenericInlineModelAdmin</span><span class="p">):</span>
+    <span class="n">template</span> <span class="o">=</span> <span class="s">&#39;admin/edit_inline/tabular.html&#39;</span></div>
+</pre></div>
+
+          </div>
+        </div>
+      </div>
+      
+        
+          <div class="yui-b" id="sidebar">
+            
+      <div class="sphinxsidebar">
+        <div class="sphinxsidebarwrapper">
+  <h3>Browse</h3>
+  <ul>
+    
+    
+  </ul>
+  <h3>You are here:</h3>
+  <ul>
+      <li>
+        <a href="../../../../index.html">Django 1.8.2.dev20150505153848 documentation</a>
+        
+          <ul><li><a href="../../../index.html">Module code</a>
+        
+          <ul><li><a href="../../../django.html">django</a>
+        
+        <ul><li>django.contrib.contenttypes.admin</li></ul>
+        </li></ul></li></ul>
+      </li>
+  </ul>
+
+<div id="searchbox" style="display: none">
+  <h3>Quick search</h3>
+    <form class="search" action="../../../../search.html" method="get">
+      <input type="text" name="q" />
+      <input type="submit" value="Go" />
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+    <p class="searchtip" style="font-size: 90%">
+    Enter search terms or a module, class or function name.
+    </p>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+              <h3>Last update:</h3>
+              <p class="topless">May 06, 2015</p>
+          </div>
+        
+      
+    </div>
+
+    <div id="ft">
+      <div class="nav">
+    <a href="../../../index.html" title="Module code" accesskey="U">up</a></div>
+    </div>
+  </div>
+
+      <div class="clearer"></div>
+    </div>
+  </body>
+</html>

@@ -1,0 +1,359 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>django.template.response &mdash; Django 1.8.2.dev20150505153848 documentation</title>
+    
+    <link rel="stylesheet" href="../../../_static/default.css" type="text/css" />
+    <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '../../../',
+        VERSION:     '1.8.2.dev20150505153848',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="../../../_static/jquery.js"></script>
+    <script type="text/javascript" src="../../../_static/underscore.js"></script>
+    <script type="text/javascript" src="../../../_static/doctools.js"></script>
+    <link rel="top" title="Django 1.8.2.dev20150505153848 documentation" href="../../../index.html" />
+    <link rel="up" title="django.template" href="../template.html" />
+
+
+
+ 
+<script type="text/javascript" src="../../../templatebuiltins.js"></script>
+<script type="text/javascript">
+(function($) {
+    if (!django_template_builtins) {
+       // templatebuiltins.js missing, do nothing.
+       return;
+    }
+    $(document).ready(function() {
+        // Hyperlink Django template tags and filters
+        var base = "../../../ref/templates/builtins.html";
+        if (base == "#") {
+            // Special case for builtins.html itself
+            base = "";
+        }
+        // Tags are keywords, class '.k'
+        $("div.highlight\\-html\\+django span.k").each(function(i, elem) {
+             var tagname = $(elem).text();
+             if ($.inArray(tagname, django_template_builtins.ttags) != -1) {
+                 var fragment = tagname.replace(/_/, '-');
+                 $(elem).html("<a href='" + base + "#" + fragment + "'>" + tagname + "</a>");
+             }
+        });
+        // Filters are functions, class '.nf'
+        $("div.highlight\\-html\\+django span.nf").each(function(i, elem) {
+             var filtername = $(elem).text();
+             if ($.inArray(filtername, django_template_builtins.tfilters) != -1) {
+                 var fragment = filtername.replace(/_/, '-');
+                 $(elem).html("<a href='" + base + "#" + fragment + "'>" + filtername + "</a>");
+             }
+        });
+    });
+})(jQuery);
+</script>
+
+
+  </head>
+  <body>
+
+    <div class="document">
+  <div id="custom-doc" class="yui-t6">
+    <div id="hd">
+      <h1><a href="../../../index.html">Django 1.8.2.dev20150505153848 documentation</a></h1>
+      <div id="global-nav">
+        <a title="Home page" href="../../../index.html">Home</a>  |
+        <a title="Table of contents" href="../../../contents.html">Table of contents</a>  |
+        <a title="Global index" href="../../../genindex.html">Index</a>  |
+        <a title="Module index" href="../../../py-modindex.html">Modules</a>
+      </div>
+      <div class="nav">
+    <a href="../../index.html" title="Module code" accesskey="U">up</a></div>
+    </div>
+
+    <div id="bd">
+      <div id="yui-main">
+        <div class="yui-b">
+          <div class="yui-g" id="_modules-django-template-response">
+            
+  <h1>Source code for django.template.response</h1><div class="highlight"><pre>
+<span class="kn">import</span> <span class="nn">warnings</span>
+
+<span class="kn">from</span> <span class="nn">django.http</span> <span class="kn">import</span> <span class="n">HttpResponse</span>
+<span class="kn">from</span> <span class="nn">django.template</span> <span class="kn">import</span> <span class="n">Context</span><span class="p">,</span> <span class="n">RequestContext</span><span class="p">,</span> <span class="n">Template</span><span class="p">,</span> <span class="n">loader</span>
+<span class="kn">from</span> <span class="nn">django.template.backends.django</span> <span class="kn">import</span> <span class="n">Template</span> <span class="k">as</span> <span class="n">BackendTemplate</span>
+<span class="kn">from</span> <span class="nn">django.template.context</span> <span class="kn">import</span> <span class="n">_current_app_undefined</span>
+<span class="kn">from</span> <span class="nn">django.utils</span> <span class="kn">import</span> <span class="n">six</span>
+<span class="kn">from</span> <span class="nn">django.utils.deprecation</span> <span class="kn">import</span> <span class="n">RemovedInDjango20Warning</span>
+
+
+<span class="k">class</span> <span class="nc">ContentNotRenderedError</span><span class="p">(</span><span class="ne">Exception</span><span class="p">):</span>
+    <span class="k">pass</span>
+
+
+<div class="viewcode-block" id="SimpleTemplateResponse"><a class="viewcode-back" href="../../../ref/template-response.html#django.template.response.SimpleTemplateResponse">[docs]</a><span class="k">class</span> <span class="nc">SimpleTemplateResponse</span><span class="p">(</span><span class="n">HttpResponse</span><span class="p">):</span>
+    <span class="n">rendering_attrs</span> <span class="o">=</span> <span class="p">[</span><span class="s">&#39;template_name&#39;</span><span class="p">,</span> <span class="s">&#39;context_data&#39;</span><span class="p">,</span> <span class="s">&#39;_post_render_callbacks&#39;</span><span class="p">]</span>
+
+<div class="viewcode-block" id="SimpleTemplateResponse.__init__"><a class="viewcode-back" href="../../../ref/template-response.html#django.template.response.SimpleTemplateResponse.__init__">[docs]</a>    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">template</span><span class="p">,</span> <span class="n">context</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span> <span class="n">content_type</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span> <span class="n">status</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span>
+                 <span class="n">charset</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span> <span class="n">using</span><span class="o">=</span><span class="bp">None</span><span class="p">):</span>
+        <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">template</span><span class="p">,</span> <span class="n">Template</span><span class="p">):</span>
+            <span class="n">warnings</span><span class="o">.</span><span class="n">warn</span><span class="p">(</span>
+                <span class="s">&quot;{}&#39;s template argument cannot be a django.template.Template &quot;</span>
+                <span class="s">&quot;anymore. It may be a backend-specific template like those &quot;</span>
+                <span class="s">&quot;created by get_template().&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">__class__</span><span class="o">.</span><span class="n">__name__</span><span class="p">),</span>
+                <span class="n">RemovedInDjango20Warning</span><span class="p">,</span> <span class="n">stacklevel</span><span class="o">=</span><span class="mi">2</span><span class="p">)</span>
+            <span class="n">template</span> <span class="o">=</span> <span class="n">BackendTemplate</span><span class="p">(</span><span class="n">template</span><span class="p">)</span>
+
+        <span class="c"># It would seem obvious to call these next two members &#39;template&#39; and</span>
+        <span class="c"># &#39;context&#39;, but those names are reserved as part of the test Client</span>
+        <span class="c"># API. To avoid the name collision, we use different names.</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">template_name</span> <span class="o">=</span> <span class="n">template</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">context_data</span> <span class="o">=</span> <span class="n">context</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">using</span> <span class="o">=</span> <span class="n">using</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">_post_render_callbacks</span> <span class="o">=</span> <span class="p">[]</span>
+
+        <span class="c"># _request stores the current request object in subclasses that know</span>
+        <span class="c"># about requests, like TemplateResponse. It&#39;s defined in the base class</span>
+        <span class="c"># to minimize code duplication.</span>
+        <span class="c"># It&#39;s called self._request because self.request gets overwritten by</span>
+        <span class="c"># django.test.client.Client. Unlike template_name and context_data,</span>
+        <span class="c"># _request should not be considered part of the public API.</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_request</span> <span class="o">=</span> <span class="bp">None</span>
+
+        <span class="c"># content argument doesn&#39;t make sense here because it will be replaced</span>
+        <span class="c"># with rendered template so we always pass empty string in order to</span>
+        <span class="c"># prevent errors and provide shorter signature.</span>
+        <span class="nb">super</span><span class="p">(</span><span class="n">SimpleTemplateResponse</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="n">__init__</span><span class="p">(</span><span class="s">&#39;&#39;</span><span class="p">,</span> <span class="n">content_type</span><span class="p">,</span> <span class="n">status</span><span class="p">,</span> <span class="n">charset</span><span class="p">)</span>
+
+        <span class="c"># _is_rendered tracks whether the template and context has been baked</span>
+        <span class="c"># into a final response.</span>
+        <span class="c"># Super __init__ doesn&#39;t know any better than to set self.content to</span>
+        <span class="c"># the empty string we just gave it, which wrongly sets _is_rendered</span>
+        <span class="c"># True, so we initialize it to False after the call to super __init__.</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_is_rendered</span> <span class="o">=</span> <span class="bp">False</span>
+</div>
+    <span class="k">def</span> <span class="nf">__getstate__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Pickling support function.</span>
+
+<span class="sd">        Ensures that the object can&#39;t be pickled before it has been</span>
+<span class="sd">        rendered, and that the pickled state only includes rendered</span>
+<span class="sd">        data, not the data used to construct the response.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">obj_dict</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">__dict__</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">_is_rendered</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="n">ContentNotRenderedError</span><span class="p">(</span><span class="s">&#39;The response content must be &#39;</span>
+                                          <span class="s">&#39;rendered before it can be pickled.&#39;</span><span class="p">)</span>
+        <span class="k">for</span> <span class="n">attr</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">rendering_attrs</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">attr</span> <span class="ow">in</span> <span class="n">obj_dict</span><span class="p">:</span>
+                <span class="k">del</span> <span class="n">obj_dict</span><span class="p">[</span><span class="n">attr</span><span class="p">]</span>
+
+        <span class="k">return</span> <span class="n">obj_dict</span>
+
+<div class="viewcode-block" id="SimpleTemplateResponse.resolve_template"><a class="viewcode-back" href="../../../ref/template-response.html#django.template.response.SimpleTemplateResponse.resolve_template">[docs]</a>    <span class="k">def</span> <span class="nf">resolve_template</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">template</span><span class="p">):</span>
+        <span class="s">&quot;Accepts a template object, path-to-template or list of paths&quot;</span>
+        <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">template</span><span class="p">,</span> <span class="p">(</span><span class="nb">list</span><span class="p">,</span> <span class="nb">tuple</span><span class="p">)):</span>
+            <span class="k">return</span> <span class="n">loader</span><span class="o">.</span><span class="n">select_template</span><span class="p">(</span><span class="n">template</span><span class="p">,</span> <span class="n">using</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">using</span><span class="p">)</span>
+        <span class="k">elif</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">template</span><span class="p">,</span> <span class="n">six</span><span class="o">.</span><span class="n">string_types</span><span class="p">):</span>
+            <span class="k">return</span> <span class="n">loader</span><span class="o">.</span><span class="n">get_template</span><span class="p">(</span><span class="n">template</span><span class="p">,</span> <span class="n">using</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">using</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">return</span> <span class="n">template</span>
+</div>
+    <span class="k">def</span> <span class="nf">_resolve_template</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">template</span><span class="p">):</span>
+        <span class="c"># This wrapper deprecates returning a django.template.Template in</span>
+        <span class="c"># subclasses that override resolve_template. It can be removed in</span>
+        <span class="c"># Django 2.0.</span>
+        <span class="n">new_template</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">resolve_template</span><span class="p">(</span><span class="n">template</span><span class="p">)</span>
+        <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">new_template</span><span class="p">,</span> <span class="n">Template</span><span class="p">):</span>
+            <span class="n">warnings</span><span class="o">.</span><span class="n">warn</span><span class="p">(</span>
+                <span class="s">&quot;{}.resolve_template() must return a backend-specific &quot;</span>
+                <span class="s">&quot;template like those created by get_template(), not a &quot;</span>
+                <span class="s">&quot;{}.&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">__class__</span><span class="o">.</span><span class="n">__name__</span><span class="p">,</span> <span class="n">new_template</span><span class="o">.</span><span class="n">__class__</span><span class="o">.</span><span class="n">__name__</span><span class="p">),</span>
+                <span class="n">RemovedInDjango20Warning</span><span class="p">,</span> <span class="n">stacklevel</span><span class="o">=</span><span class="mi">2</span><span class="p">)</span>
+            <span class="n">new_template</span> <span class="o">=</span> <span class="n">BackendTemplate</span><span class="p">(</span><span class="n">new_template</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">new_template</span>
+
+<div class="viewcode-block" id="SimpleTemplateResponse.resolve_context"><a class="viewcode-back" href="../../../ref/template-response.html#django.template.response.SimpleTemplateResponse.resolve_context">[docs]</a>    <span class="k">def</span> <span class="nf">resolve_context</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">context</span><span class="p">):</span>
+        <span class="k">return</span> <span class="n">context</span>
+</div>
+    <span class="k">def</span> <span class="nf">_resolve_context</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">context</span><span class="p">):</span>
+        <span class="c"># This wrapper deprecates returning a Context or a RequestContext in</span>
+        <span class="c"># subclasses that override resolve_context. It can be removed in</span>
+        <span class="c"># Django 2.0. If returning a Context or a RequestContext works by</span>
+        <span class="c"># accident, it won&#39;t be an issue per se, but it won&#39;t be officially</span>
+        <span class="c"># supported either.</span>
+        <span class="n">new_context</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">resolve_context</span><span class="p">(</span><span class="n">context</span><span class="p">)</span>
+        <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">new_context</span><span class="p">,</span> <span class="n">RequestContext</span><span class="p">)</span> <span class="ow">and</span> <span class="bp">self</span><span class="o">.</span><span class="n">_request</span> <span class="ow">is</span> <span class="bp">None</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_request</span> <span class="o">=</span> <span class="n">new_context</span><span class="o">.</span><span class="n">request</span>
+        <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">new_context</span><span class="p">,</span> <span class="n">Context</span><span class="p">):</span>
+            <span class="n">warnings</span><span class="o">.</span><span class="n">warn</span><span class="p">(</span>
+                <span class="s">&quot;{}.resolve_context() must return a dict, not a {}.&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">__class__</span><span class="o">.</span><span class="n">__name__</span><span class="p">,</span> <span class="n">new_context</span><span class="o">.</span><span class="n">__class__</span><span class="o">.</span><span class="n">__name__</span><span class="p">),</span>
+                <span class="n">RemovedInDjango20Warning</span><span class="p">,</span> <span class="n">stacklevel</span><span class="o">=</span><span class="mi">2</span><span class="p">)</span>
+            <span class="c"># It would be tempting to do new_context = new_context.flatten()</span>
+            <span class="c"># here but that would cause template context processors to run for</span>
+            <span class="c"># TemplateResponse(request, template, Context({})), which would be</span>
+            <span class="c"># backwards-incompatible. As a consequence another deprecation</span>
+            <span class="c"># warning will be raised when rendering the template. There isn&#39;t</span>
+            <span class="c"># much we can do about that.</span>
+        <span class="k">return</span> <span class="n">new_context</span>
+
+    <span class="nd">@property</span>
+<div class="viewcode-block" id="SimpleTemplateResponse.rendered_content"><a class="viewcode-back" href="../../../ref/template-response.html#django.template.response.SimpleTemplateResponse.rendered_content">[docs]</a>    <span class="k">def</span> <span class="nf">rendered_content</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Returns the freshly rendered content for the template and context</span>
+<span class="sd">        described by the TemplateResponse.</span>
+
+<span class="sd">        This *does not* set the final content of the response. To set the</span>
+<span class="sd">        response content, you must either call render(), or set the</span>
+<span class="sd">        content explicitly using the value of this property.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">template</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_resolve_template</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">template_name</span><span class="p">)</span>
+        <span class="n">context</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_resolve_context</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">context_data</span><span class="p">)</span>
+        <span class="n">content</span> <span class="o">=</span> <span class="n">template</span><span class="o">.</span><span class="n">render</span><span class="p">(</span><span class="n">context</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_request</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">content</span>
+</div>
+<div class="viewcode-block" id="SimpleTemplateResponse.add_post_render_callback"><a class="viewcode-back" href="../../../ref/template-response.html#django.template.response.SimpleTemplateResponse.add_post_render_callback">[docs]</a>    <span class="k">def</span> <span class="nf">add_post_render_callback</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">callback</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Adds a new post-rendering callback.</span>
+
+<span class="sd">        If the response has already been rendered,</span>
+<span class="sd">        invoke the callback immediately.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_is_rendered</span><span class="p">:</span>
+            <span class="n">callback</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_post_render_callbacks</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">callback</span><span class="p">)</span>
+</div>
+<div class="viewcode-block" id="SimpleTemplateResponse.render"><a class="viewcode-back" href="../../../ref/template-response.html#django.template.response.SimpleTemplateResponse.render">[docs]</a>    <span class="k">def</span> <span class="nf">render</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Renders (thereby finalizing) the content of the response.</span>
+
+<span class="sd">        If the content has already been rendered, this is a no-op.</span>
+
+<span class="sd">        Returns the baked response instance.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">retval</span> <span class="o">=</span> <span class="bp">self</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">_is_rendered</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">content</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">rendered_content</span>
+            <span class="k">for</span> <span class="n">post_callback</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_post_render_callbacks</span><span class="p">:</span>
+                <span class="n">newretval</span> <span class="o">=</span> <span class="n">post_callback</span><span class="p">(</span><span class="n">retval</span><span class="p">)</span>
+                <span class="k">if</span> <span class="n">newretval</span> <span class="ow">is</span> <span class="ow">not</span> <span class="bp">None</span><span class="p">:</span>
+                    <span class="n">retval</span> <span class="o">=</span> <span class="n">newretval</span>
+        <span class="k">return</span> <span class="n">retval</span>
+</div>
+    <span class="nd">@property</span>
+<div class="viewcode-block" id="SimpleTemplateResponse.is_rendered"><a class="viewcode-back" href="../../../ref/template-response.html#django.template.response.SimpleTemplateResponse.is_rendered">[docs]</a>    <span class="k">def</span> <span class="nf">is_rendered</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_is_rendered</span>
+</div>
+    <span class="k">def</span> <span class="nf">__iter__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">_is_rendered</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="n">ContentNotRenderedError</span><span class="p">(</span><span class="s">&#39;The response content must be &#39;</span>
+                                          <span class="s">&#39;rendered before it can be iterated over.&#39;</span><span class="p">)</span>
+        <span class="k">return</span> <span class="nb">super</span><span class="p">(</span><span class="n">SimpleTemplateResponse</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="n">__iter__</span><span class="p">()</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">content</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">_is_rendered</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="n">ContentNotRenderedError</span><span class="p">(</span><span class="s">&#39;The response content must be &#39;</span>
+                                          <span class="s">&#39;rendered before it can be accessed.&#39;</span><span class="p">)</span>
+        <span class="k">return</span> <span class="nb">super</span><span class="p">(</span><span class="n">SimpleTemplateResponse</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="n">content</span>
+
+    <span class="nd">@content.setter</span>
+    <span class="k">def</span> <span class="nf">content</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">value</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Sets the content for the response</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">HttpResponse</span><span class="o">.</span><span class="n">content</span><span class="o">.</span><span class="n">fset</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">value</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_is_rendered</span> <span class="o">=</span> <span class="bp">True</span>
+
+</div>
+<div class="viewcode-block" id="TemplateResponse"><a class="viewcode-back" href="../../../ref/template-response.html#django.template.response.TemplateResponse">[docs]</a><span class="k">class</span> <span class="nc">TemplateResponse</span><span class="p">(</span><span class="n">SimpleTemplateResponse</span><span class="p">):</span>
+    <span class="n">rendering_attrs</span> <span class="o">=</span> <span class="n">SimpleTemplateResponse</span><span class="o">.</span><span class="n">rendering_attrs</span> <span class="o">+</span> <span class="p">[</span><span class="s">&#39;_request&#39;</span><span class="p">,</span> <span class="s">&#39;_current_app&#39;</span><span class="p">]</span>
+
+<div class="viewcode-block" id="TemplateResponse.__init__"><a class="viewcode-back" href="../../../ref/template-response.html#django.template.response.TemplateResponse.__init__">[docs]</a>    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">request</span><span class="p">,</span> <span class="n">template</span><span class="p">,</span> <span class="n">context</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span> <span class="n">content_type</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span>
+            <span class="n">status</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span> <span class="n">current_app</span><span class="o">=</span><span class="n">_current_app_undefined</span><span class="p">,</span> <span class="n">charset</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span>
+            <span class="n">using</span><span class="o">=</span><span class="bp">None</span><span class="p">):</span>
+        <span class="c"># As a convenience we&#39;ll allow callers to provide current_app without</span>
+        <span class="c"># having to avoid needing to create the RequestContext directly</span>
+        <span class="k">if</span> <span class="n">current_app</span> <span class="ow">is</span> <span class="ow">not</span> <span class="n">_current_app_undefined</span><span class="p">:</span>
+            <span class="n">warnings</span><span class="o">.</span><span class="n">warn</span><span class="p">(</span>
+                <span class="s">&quot;The current_app argument of TemplateResponse is deprecated. &quot;</span>
+                <span class="s">&quot;Set the current_app attribute of its request instead.&quot;</span><span class="p">,</span>
+                <span class="n">RemovedInDjango20Warning</span><span class="p">,</span> <span class="n">stacklevel</span><span class="o">=</span><span class="mi">2</span><span class="p">)</span>
+            <span class="n">request</span><span class="o">.</span><span class="n">current_app</span> <span class="o">=</span> <span class="n">current_app</span>
+        <span class="nb">super</span><span class="p">(</span><span class="n">TemplateResponse</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="n">__init__</span><span class="p">(</span>
+            <span class="n">template</span><span class="p">,</span> <span class="n">context</span><span class="p">,</span> <span class="n">content_type</span><span class="p">,</span> <span class="n">status</span><span class="p">,</span> <span class="n">charset</span><span class="p">,</span> <span class="n">using</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_request</span> <span class="o">=</span> <span class="n">request</span></div></div>
+</pre></div>
+
+          </div>
+        </div>
+      </div>
+      
+        
+          <div class="yui-b" id="sidebar">
+            
+      <div class="sphinxsidebar">
+        <div class="sphinxsidebarwrapper">
+  <h3>Browse</h3>
+  <ul>
+    
+    
+  </ul>
+  <h3>You are here:</h3>
+  <ul>
+      <li>
+        <a href="../../../index.html">Django 1.8.2.dev20150505153848 documentation</a>
+        
+          <ul><li><a href="../../index.html">Module code</a>
+        
+          <ul><li><a href="../../django.html">django</a>
+        
+          <ul><li><a href="../template.html">django.template</a>
+        
+        <ul><li>django.template.response</li></ul>
+        </li></ul></li></ul></li></ul>
+      </li>
+  </ul>
+
+<div id="searchbox" style="display: none">
+  <h3>Quick search</h3>
+    <form class="search" action="../../../search.html" method="get">
+      <input type="text" name="q" />
+      <input type="submit" value="Go" />
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+    <p class="searchtip" style="font-size: 90%">
+    Enter search terms or a module, class or function name.
+    </p>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+              <h3>Last update:</h3>
+              <p class="topless">May 06, 2015</p>
+          </div>
+        
+      
+    </div>
+
+    <div id="ft">
+      <div class="nav">
+    <a href="../../index.html" title="Module code" accesskey="U">up</a></div>
+    </div>
+  </div>
+
+      <div class="clearer"></div>
+    </div>
+  </body>
+</html>

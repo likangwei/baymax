@@ -1,0 +1,301 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>Simple mixins &mdash; Django 1.8.2.dev20150505153848 documentation</title>
+    
+    <link rel="stylesheet" href="../../_static/default.css" type="text/css" />
+    <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '../../',
+        VERSION:     '1.8.2.dev20150505153848',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="../../_static/jquery.js"></script>
+    <script type="text/javascript" src="../../_static/underscore.js"></script>
+    <script type="text/javascript" src="../../_static/doctools.js"></script>
+    <link rel="top" title="Django 1.8.2.dev20150505153848 documentation" href="../../index.html" />
+    <link rel="up" title="Class-based views mixins" href="mixins.html" />
+    <link rel="next" title="Single object mixins" href="mixins-single-object.html" />
+    <link rel="prev" title="Class-based views mixins" href="mixins.html" />
+
+
+
+ 
+<script type="text/javascript" src="../../templatebuiltins.js"></script>
+<script type="text/javascript">
+(function($) {
+    if (!django_template_builtins) {
+       // templatebuiltins.js missing, do nothing.
+       return;
+    }
+    $(document).ready(function() {
+        // Hyperlink Django template tags and filters
+        var base = "../templates/builtins.html";
+        if (base == "#") {
+            // Special case for builtins.html itself
+            base = "";
+        }
+        // Tags are keywords, class '.k'
+        $("div.highlight\\-html\\+django span.k").each(function(i, elem) {
+             var tagname = $(elem).text();
+             if ($.inArray(tagname, django_template_builtins.ttags) != -1) {
+                 var fragment = tagname.replace(/_/, '-');
+                 $(elem).html("<a href='" + base + "#" + fragment + "'>" + tagname + "</a>");
+             }
+        });
+        // Filters are functions, class '.nf'
+        $("div.highlight\\-html\\+django span.nf").each(function(i, elem) {
+             var filtername = $(elem).text();
+             if ($.inArray(filtername, django_template_builtins.tfilters) != -1) {
+                 var fragment = filtername.replace(/_/, '-');
+                 $(elem).html("<a href='" + base + "#" + fragment + "'>" + filtername + "</a>");
+             }
+        });
+    });
+})(jQuery);
+</script>
+
+
+  </head>
+  <body>
+
+    <div class="document">
+  <div id="custom-doc" class="yui-t6">
+    <div id="hd">
+      <h1><a href="../../index.html">Django 1.8.2.dev20150505153848 documentation</a></h1>
+      <div id="global-nav">
+        <a title="Home page" href="../../index.html">Home</a>  |
+        <a title="Table of contents" href="../../contents.html">Table of contents</a>  |
+        <a title="Global index" href="../../genindex.html">Index</a>  |
+        <a title="Module index" href="../../py-modindex.html">Modules</a>
+      </div>
+      <div class="nav">
+    &laquo; <a href="mixins.html" title="Class-based views mixins">previous</a>
+     |
+    <a href="../index.html" title="API Reference" accesskey="U">up</a>
+   |
+    <a href="mixins-single-object.html" title="Single object mixins">next</a> &raquo;</div>
+    </div>
+
+    <div id="bd">
+      <div id="yui-main">
+        <div class="yui-b">
+          <div class="yui-g" id="ref-class-based-views-mixins-simple">
+            
+  <div class="section" id="s-simple-mixins">
+<span id="simple-mixins"></span><h1>Simple mixins<a class="headerlink" href="#simple-mixins" title="Permalink to this headline">¶</a></h1>
+<div class="section" id="s-contextmixin">
+<span id="contextmixin"></span><h2>ContextMixin<a class="headerlink" href="#contextmixin" title="Permalink to this headline">¶</a></h2>
+<dl class="class">
+<dt id="django.views.generic.base.ContextMixin">
+<em class="property">class </em><tt class="descclassname">django.views.generic.base.</tt><tt class="descname">ContextMixin</tt><a class="headerlink" href="#django.views.generic.base.ContextMixin" title="Permalink to this definition">¶</a></dt>
+<dd><p><strong>Methods</strong></p>
+<dl class="method">
+<dt id="django.views.generic.base.ContextMixin.get_context_data">
+<tt class="descname">get_context_data</tt>(<em>**kwargs</em>)<a class="headerlink" href="#django.views.generic.base.ContextMixin.get_context_data" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns a dictionary representing the template context. The keyword
+arguments provided will make up the returned context. Example usage:</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="k">def</span> <span class="nf">get_context_data</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+    <span class="n">context</span> <span class="o">=</span> <span class="nb">super</span><span class="p">(</span><span class="n">RandomNumberView</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="n">get_context_data</span><span class="p">(</span><span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+    <span class="n">context</span><span class="p">[</span><span class="s">&#39;number&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">random</span><span class="o">.</span><span class="n">randrange</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">100</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">context</span>
+</pre></div>
+</div>
+<p>The template context of all class-based generic views include a
+<tt class="docutils literal"><span class="pre">view</span></tt> variable that points to the <tt class="docutils literal"><span class="pre">View</span></tt> instance.</p>
+<div class="admonition-use-alters-data-where-appropriate admonition">
+<p class="first admonition-title">Use <tt class="docutils literal"><span class="pre">alters_data</span></tt> where appropriate</p>
+<p class="last">Note that having the view instance in the template context may
+expose potentially hazardous methods to template authors.  To
+prevent methods like this from being called in the template, set
+<tt class="docutils literal"><span class="pre">alters_data=True</span></tt> on those methods.  For more information, read
+the documentation on <a class="reference internal" href="../templates/api.html#alters-data-description"><em>rendering a template context</em></a>.</p>
+</div>
+</dd></dl>
+
+</dd></dl>
+
+</div>
+<div class="section" id="s-templateresponsemixin">
+<span id="templateresponsemixin"></span><h2>TemplateResponseMixin<a class="headerlink" href="#templateresponsemixin" title="Permalink to this headline">¶</a></h2>
+<dl class="class">
+<dt id="django.views.generic.base.TemplateResponseMixin">
+<em class="property">class </em><tt class="descclassname">django.views.generic.base.</tt><tt class="descname">TemplateResponseMixin</tt><a class="headerlink" href="#django.views.generic.base.TemplateResponseMixin" title="Permalink to this definition">¶</a></dt>
+<dd><p>Provides a mechanism to construct a
+<a class="reference internal" href="../template-response.html#django.template.response.TemplateResponse" title="django.template.response.TemplateResponse"><tt class="xref py py-class docutils literal"><span class="pre">TemplateResponse</span></tt></a>, given
+suitable context. The template to use is configurable and can be
+further customized by subclasses.</p>
+<p><strong>Attributes</strong></p>
+<dl class="attribute">
+<dt id="django.views.generic.base.TemplateResponseMixin.template_name">
+<tt class="descname">template_name</tt><a class="headerlink" href="#django.views.generic.base.TemplateResponseMixin.template_name" title="Permalink to this definition">¶</a></dt>
+<dd><p>The full name of a template to use as defined by a string. Not defining
+a <tt class="docutils literal"><span class="pre">template_name</span></tt> will raise a
+<a class="reference internal" href="../exceptions.html#django.core.exceptions.ImproperlyConfigured" title="django.core.exceptions.ImproperlyConfigured"><tt class="xref py py-class docutils literal"><span class="pre">django.core.exceptions.ImproperlyConfigured</span></tt></a> exception.</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="django.views.generic.base.TemplateResponseMixin.template_engine">
+<tt class="descname">template_engine</tt><a class="headerlink" href="#django.views.generic.base.TemplateResponseMixin.template_engine" title="Permalink to this definition">¶</a></dt>
+<dd><div class="versionadded">
+<span class="title">New in Django 1.8.</span> </div>
+<p>The <a class="reference internal" href="../settings.html#std:setting-TEMPLATES-NAME"><tt class="xref std std-setting docutils literal"><span class="pre">NAME</span></tt></a> of a template engine to use for
+loading the template. <tt class="docutils literal"><span class="pre">template_engine</span></tt> is passed as the <tt class="docutils literal"><span class="pre">using</span></tt>
+keyword argument to <tt class="docutils literal"><span class="pre">response_class</span></tt>. Default is <tt class="docutils literal"><span class="pre">None</span></tt>, which
+tells Django to search for the template in all configured engines.</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="django.views.generic.base.TemplateResponseMixin.response_class">
+<tt class="descname">response_class</tt><a class="headerlink" href="#django.views.generic.base.TemplateResponseMixin.response_class" title="Permalink to this definition">¶</a></dt>
+<dd><p>The response class to be returned by <tt class="docutils literal"><span class="pre">render_to_response</span></tt> method.
+Default is
+<a class="reference internal" href="../template-response.html#django.template.response.TemplateResponse" title="django.template.response.TemplateResponse"><tt class="xref py py-class docutils literal"><span class="pre">TemplateResponse</span></tt></a>.
+The template and context of <tt class="docutils literal"><span class="pre">TemplateResponse</span></tt> instances can be
+altered later (e.g. in
+<a class="reference internal" href="../../topics/http/middleware.html#template-response-middleware"><em>template response middleware</em></a>).</p>
+<div class="versionchanged">
+<span class="title">Changed in Django 1.8:</span> <p>In older versions of Django, <tt class="docutils literal"><span class="pre">TemplateResponse</span></tt> used
+<a class="reference internal" href="../templates/api.html#django.template.RequestContext" title="django.template.RequestContext"><tt class="xref py py-class docutils literal"><span class="pre">RequestContext</span></tt></a> in such a way that values
+from template context processors would override template variables
+defined in your views. For example, if you subclassed
+<a class="reference internal" href="generic-display.html#django.views.generic.detail.DetailView" title="django.views.generic.detail.DetailView"><tt class="xref py py-class docutils literal"><span class="pre">DetailView</span></tt></a> and
+set <tt class="docutils literal"><span class="pre">context_object_name</span></tt> to <tt class="docutils literal"><span class="pre">user</span></tt>, the
+<tt class="docutils literal"><span class="pre">django.contrib.auth.context_processors.auth</span></tt> context processor
+would overwrite your variable with the current user. Now, for
+consistency with the <tt class="docutils literal"><span class="pre">render()</span></tt> shortcut, values in the context
+provided by the class override values from context processors.</p>
+</div>
+<p>If you need custom template loading or custom context object
+instantiation, create a <tt class="docutils literal"><span class="pre">TemplateResponse</span></tt> subclass and assign it to
+<tt class="docutils literal"><span class="pre">response_class</span></tt>.</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="django.views.generic.base.TemplateResponseMixin.content_type">
+<tt class="descname">content_type</tt><a class="headerlink" href="#django.views.generic.base.TemplateResponseMixin.content_type" title="Permalink to this definition">¶</a></dt>
+<dd><p>The content type to use for the response. <tt class="docutils literal"><span class="pre">content_type</span></tt> is passed
+as a keyword argument to <tt class="docutils literal"><span class="pre">response_class</span></tt>. Default is <tt class="docutils literal"><span class="pre">None</span></tt> &#8211;
+meaning that Django uses <a class="reference internal" href="../settings.html#std:setting-DEFAULT_CONTENT_TYPE"><tt class="xref std std-setting docutils literal"><span class="pre">DEFAULT_CONTENT_TYPE</span></tt></a>.</p>
+</dd></dl>
+
+<p><strong>Methods</strong></p>
+<dl class="method">
+<dt id="django.views.generic.base.TemplateResponseMixin.render_to_response">
+<tt class="descname">render_to_response</tt>(<em>context</em>, <em>**response_kwargs</em>)<a class="headerlink" href="#django.views.generic.base.TemplateResponseMixin.render_to_response" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns a <tt class="docutils literal"><span class="pre">self.response_class</span></tt> instance.</p>
+<p>If any keyword arguments are provided, they will be passed to the
+constructor of the response class.</p>
+<p>Calls <a class="reference internal" href="#django.views.generic.base.TemplateResponseMixin.get_template_names" title="django.views.generic.base.TemplateResponseMixin.get_template_names"><tt class="xref py py-meth docutils literal"><span class="pre">get_template_names()</span></tt></a> to obtain the list of template names
+that will be searched looking for an existent template.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="django.views.generic.base.TemplateResponseMixin.get_template_names">
+<tt class="descname">get_template_names</tt>()<a class="headerlink" href="#django.views.generic.base.TemplateResponseMixin.get_template_names" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns a list of template names to search for when rendering the
+template.</p>
+<p>If <a class="reference internal" href="#django.views.generic.base.TemplateResponseMixin.template_name" title="django.views.generic.base.TemplateResponseMixin.template_name"><tt class="xref py py-attr docutils literal"><span class="pre">template_name</span></tt></a> is specified, the default implementation will
+return a list containing <a class="reference internal" href="#django.views.generic.base.TemplateResponseMixin.template_name" title="django.views.generic.base.TemplateResponseMixin.template_name"><tt class="xref py py-attr docutils literal"><span class="pre">template_name</span></tt></a> (if it is specified).</p>
+</dd></dl>
+
+</dd></dl>
+
+</div>
+</div>
+
+
+          </div>
+        </div>
+      </div>
+      
+        
+          <div class="yui-b" id="sidebar">
+            
+      <div class="sphinxsidebar">
+        <div class="sphinxsidebarwrapper">
+  <h3><a href="../../contents.html">Table Of Contents</a></h3>
+  <ul>
+<li><a class="reference internal" href="#">Simple mixins</a><ul>
+<li><a class="reference internal" href="#contextmixin">ContextMixin</a></li>
+<li><a class="reference internal" href="#templateresponsemixin">TemplateResponseMixin</a></li>
+</ul>
+</li>
+</ul>
+
+  <h3>Browse</h3>
+  <ul>
+    
+      <li>Prev: <a href="mixins.html">Class-based views mixins</a></li>
+    
+    
+      <li>Next: <a href="mixins-single-object.html">Single object mixins</a></li>
+    
+  </ul>
+  <h3>You are here:</h3>
+  <ul>
+      <li>
+        <a href="../../index.html">Django 1.8.2.dev20150505153848 documentation</a>
+        
+          <ul><li><a href="../index.html">API Reference</a>
+        
+          <ul><li><a href="index.html">Built-in Class-based views API</a>
+        
+          <ul><li><a href="mixins.html">Class-based views mixins</a>
+        
+        <ul><li>Simple mixins</li></ul>
+        </li></ul></li></ul></li></ul>
+      </li>
+  </ul>
+
+  <h3>This Page</h3>
+  <ul class="this-page-menu">
+    <li><a href="../../_sources/ref/class-based-views/mixins-simple.txt"
+           rel="nofollow">Show Source</a></li>
+  </ul>
+<div id="searchbox" style="display: none">
+  <h3>Quick search</h3>
+    <form class="search" action="../../search.html" method="get">
+      <input type="text" name="q" />
+      <input type="submit" value="Go" />
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+    <p class="searchtip" style="font-size: 90%">
+    Enter search terms or a module, class or function name.
+    </p>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+              <h3>Last update:</h3>
+              <p class="topless">May 06, 2015</p>
+          </div>
+        
+      
+    </div>
+
+    <div id="ft">
+      <div class="nav">
+    &laquo; <a href="mixins.html" title="Class-based views mixins">previous</a>
+     |
+    <a href="../index.html" title="API Reference" accesskey="U">up</a>
+   |
+    <a href="mixins-single-object.html" title="Single object mixins">next</a> &raquo;</div>
+    </div>
+  </div>
+
+      <div class="clearer"></div>
+    </div>
+  </body>
+</html>

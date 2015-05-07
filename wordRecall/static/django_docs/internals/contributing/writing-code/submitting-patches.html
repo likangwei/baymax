@@ -1,0 +1,504 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>Submitting patches &mdash; Django 1.8.2.dev20150505153848 documentation</title>
+    
+    <link rel="stylesheet" href="../../../_static/default.css" type="text/css" />
+    <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '../../../',
+        VERSION:     '1.8.2.dev20150505153848',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="../../../_static/jquery.js"></script>
+    <script type="text/javascript" src="../../../_static/underscore.js"></script>
+    <script type="text/javascript" src="../../../_static/doctools.js"></script>
+    <link rel="top" title="Django 1.8.2.dev20150505153848 documentation" href="../../../index.html" />
+    <link rel="up" title="Writing code" href="index.html" />
+    <link rel="next" title="Working with Git and GitHub" href="working-with-git.html" />
+    <link rel="prev" title="Unit tests" href="unit-tests.html" />
+
+
+
+ 
+<script type="text/javascript" src="../../../templatebuiltins.js"></script>
+<script type="text/javascript">
+(function($) {
+    if (!django_template_builtins) {
+       // templatebuiltins.js missing, do nothing.
+       return;
+    }
+    $(document).ready(function() {
+        // Hyperlink Django template tags and filters
+        var base = "../../../ref/templates/builtins.html";
+        if (base == "#") {
+            // Special case for builtins.html itself
+            base = "";
+        }
+        // Tags are keywords, class '.k'
+        $("div.highlight\\-html\\+django span.k").each(function(i, elem) {
+             var tagname = $(elem).text();
+             if ($.inArray(tagname, django_template_builtins.ttags) != -1) {
+                 var fragment = tagname.replace(/_/, '-');
+                 $(elem).html("<a href='" + base + "#" + fragment + "'>" + tagname + "</a>");
+             }
+        });
+        // Filters are functions, class '.nf'
+        $("div.highlight\\-html\\+django span.nf").each(function(i, elem) {
+             var filtername = $(elem).text();
+             if ($.inArray(filtername, django_template_builtins.tfilters) != -1) {
+                 var fragment = filtername.replace(/_/, '-');
+                 $(elem).html("<a href='" + base + "#" + fragment + "'>" + filtername + "</a>");
+             }
+        });
+    });
+})(jQuery);
+</script>
+
+
+  </head>
+  <body>
+
+    <div class="document">
+  <div id="custom-doc" class="yui-t6">
+    <div id="hd">
+      <h1><a href="../../../index.html">Django 1.8.2.dev20150505153848 documentation</a></h1>
+      <div id="global-nav">
+        <a title="Home page" href="../../../index.html">Home</a>  |
+        <a title="Table of contents" href="../../../contents.html">Table of contents</a>  |
+        <a title="Global index" href="../../../genindex.html">Index</a>  |
+        <a title="Module index" href="../../../py-modindex.html">Modules</a>
+      </div>
+      <div class="nav">
+    &laquo; <a href="unit-tests.html" title="Unit tests">previous</a>
+     |
+    <a href="../../index.html" title="Django internals" accesskey="U">up</a>
+   |
+    <a href="working-with-git.html" title="Working with Git and GitHub">next</a> &raquo;</div>
+    </div>
+
+    <div id="bd">
+      <div id="yui-main">
+        <div class="yui-b">
+          <div class="yui-g" id="internals-contributing-writing-code-submitting-patches">
+            
+  <div class="section" id="s-submitting-patches">
+<span id="submitting-patches"></span><h1>Submitting patches<a class="headerlink" href="#submitting-patches" title="Permalink to this headline">¶</a></h1>
+<p>We&#8217;re always grateful for patches to Django&#8217;s code. Indeed, bug reports
+with associated patches will get fixed <em>far</em> more quickly than those
+without patches.</p>
+<div class="section" id="s-typo-fixes-and-trivial-documentation-changes">
+<span id="typo-fixes-and-trivial-documentation-changes"></span><h2>Typo fixes and trivial documentation changes<a class="headerlink" href="#typo-fixes-and-trivial-documentation-changes" title="Permalink to this headline">¶</a></h2>
+<p>If you are fixing a really trivial issue, for example changing a word in the
+documentation, the preferred way to provide the patch is using GitHub pull
+requests without a Trac ticket. Trac tickets are still acceptable.</p>
+<p>See the <a class="reference internal" href="working-with-git.html"><em>Working with Git and GitHub</em></a> for more details on how to use pull requests.</p>
+</div>
+<div class="section" id="s-claiming-tickets">
+<span id="claiming-tickets"></span><h2>&#8220;Claiming&#8221; tickets<a class="headerlink" href="#claiming-tickets" title="Permalink to this headline">¶</a></h2>
+<p>In an open-source project with hundreds of contributors around the world, it&#8217;s
+important to manage communication efficiently so that work doesn&#8217;t get
+duplicated and contributors can be as effective as possible.</p>
+<p>Hence, our policy is for contributors to &#8220;claim&#8221; tickets in order to let other
+developers know that a particular bug or feature is being worked on.</p>
+<p>If you have identified a contribution you want to make and you&#8217;re capable of
+fixing it (as measured by your coding ability, knowledge of Django internals
+and time availability), claim it by following these steps:</p>
+<ul class="simple">
+<li><a class="reference external" href="https://www.djangoproject.com/accounts/register/">Create an account</a> to use in our ticket system. If you have an account
+but have forgotten your password, you can reset it using the
+<a class="reference external" href="https://www.djangoproject.com/accounts/password/reset/">password reset page</a>.</li>
+<li>If a ticket for this issue doesn&#8217;t exist yet, create one in our
+<a class="reference external" href="https://code.djangoproject.com/newticket">ticket tracker</a>.</li>
+<li>If a ticket for this issue already exists, make sure nobody else has
+claimed it. To do this, look at the &#8220;Owned by&#8221; section of the ticket.
+If it&#8217;s assigned to &#8220;nobody,&#8221; then it&#8217;s available to be claimed.
+Otherwise, somebody else is working on this ticket, and you either find
+another bug/feature to work on, or contact the developer working on the
+ticket to offer your help.</li>
+<li>Log into your account, if you haven&#8217;t already, by clicking &#8220;Login&#8221; in
+the upper right of the ticket page.</li>
+<li>Claim the ticket:<ol class="arabic">
+<li>click the &#8220;assign to myself&#8221; radio button under &#8220;Action&#8221; near the bottom of the
+page,</li>
+<li>then click &#8220;Submit changes.&#8221;</li>
+</ol>
+</li>
+</ul>
+<div class="admonition note">
+<p class="first admonition-title">Note</p>
+<p class="last">The Django software foundation requests that anyone contributing more than
+a trivial patch to Django sign and submit a <a class="reference external" href="https://www.djangoproject.com/foundation/cla/">Contributor License
+Agreement</a>, this ensures that the Django Software Foundation has clear
+license to all contributions allowing for a clear license for all users.</p>
+</div>
+<div class="section" id="s-ticket-claimers-responsibility">
+<span id="ticket-claimers-responsibility"></span><h3>Ticket claimers&#8217; responsibility<a class="headerlink" href="#ticket-claimers-responsibility" title="Permalink to this headline">¶</a></h3>
+<p>Once you&#8217;ve claimed a ticket, you have a responsibility to work on that ticket
+in a reasonably timely fashion. If you don&#8217;t have time to work on it, either
+unclaim it or don&#8217;t claim it in the first place!</p>
+<p>If there&#8217;s no sign of progress on a particular claimed ticket for a week or
+two, another developer may ask you to relinquish the ticket claim so that it&#8217;s
+no longer monopolized and somebody else can claim it.</p>
+<p>If you&#8217;ve claimed a ticket and it&#8217;s taking a long time (days or weeks) to code,
+keep everybody updated by posting comments on the ticket. If you don&#8217;t provide
+regular updates, and you don&#8217;t respond to a request for a progress report,
+your claim on the ticket may be revoked.</p>
+<p>As always, more communication is better than less communication!</p>
+</div>
+<div class="section" id="s-which-tickets-should-be-claimed">
+<span id="which-tickets-should-be-claimed"></span><h3>Which tickets should be claimed?<a class="headerlink" href="#which-tickets-should-be-claimed" title="Permalink to this headline">¶</a></h3>
+<p>Of course, going through the steps of claiming tickets is overkill in some
+cases.</p>
+<p>In the case of small changes, such as typos in the documentation or
+small bugs that will only take a few minutes to fix, you don&#8217;t need to jump
+through the hoops of claiming tickets. Just submit your patch and be done with
+it.</p>
+<p>Of course, it is <em>always</em> acceptable, regardless whether someone has claimed it
+or not, to submit patches to a ticket if you happen to have a patch ready.</p>
+</div>
+</div>
+<div class="section" id="s-patch-style">
+<span id="s-id1"></span><span id="patch-style"></span><span id="id1"></span><h2>Patch style<a class="headerlink" href="#patch-style" title="Permalink to this headline">¶</a></h2>
+<p>Make sure that any contribution you do fulfills at least the following
+requirements:</p>
+<ul class="simple">
+<li>The code required to fix a problem or add a feature is an essential part
+of a patch, but it is not the only part. A good patch should also include a
+<a class="reference internal" href="unit-tests.html"><em>regression test</em></a> to validate the behavior that has been
+fixed and to prevent the problem from arising again. Also, if some tickets
+are relevant to the code that you&#8217;ve written, mention the ticket numbers in
+some comments in the test so that one can easily trace back the relevant
+discussions after your patch gets committed, and the tickets get closed.</li>
+<li>If the code associated with a patch adds a new feature, or modifies
+behavior of an existing feature, the patch should also contain
+documentation.</li>
+</ul>
+<p>You can use either GitHub branches and pull requests or direct patches
+to publish your work. If you use the Git workflow, then you should
+announce your branch in the ticket by including a link to your branch.
+When you think your work is ready to be merged in create a pull request.</p>
+<p>See the <a class="reference internal" href="working-with-git.html"><em>Working with Git and GitHub</em></a> documentation for more details.</p>
+<p>You can also use patches in Trac. When using this style, follow these
+guidelines.</p>
+<ul class="simple">
+<li>Submit patches in the format returned by the <tt class="docutils literal"><span class="pre">git</span> <span class="pre">diff</span></tt> command.
+An exception is for code changes that are described more clearly in
+plain English than in code. Indentation is the most common example; it&#8217;s
+hard to read patches when the only difference in code is that it&#8217;s
+indented.</li>
+<li>Attach patches to a ticket in the <a class="reference external" href="https://code.djangoproject.com/newticket">ticket tracker</a>, using the &#8220;attach
+file&#8221; button. Please <em>don&#8217;t</em> put the patch in the ticket description
+or comment unless it&#8217;s a single line patch.</li>
+<li>Name the patch file with a <tt class="docutils literal"><span class="pre">.diff</span></tt> extension; this will let the ticket
+tracker apply correct syntax highlighting, which is quite helpful.</li>
+</ul>
+<p>Regardless of the way you submit your work, follow these steps.</p>
+<ul class="simple">
+<li>Make sure your code matches our <a class="reference internal" href="coding-style.html"><em>Coding style</em></a>.</li>
+<li>Check the &#8220;Has patch&#8221; box on the ticket details. This will make it
+obvious that the ticket includes a patch, and it will add the ticket to
+the <a class="reference external" href="https://code.djangoproject.com/query?status=new&amp;status=assigned&amp;status=reopened&amp;has_patch=1&amp;order=priority">list of tickets with patches</a>.</li>
+</ul>
+</div>
+<div class="section" id="s-non-trivial-patches">
+<span id="non-trivial-patches"></span><h2>Non-trivial patches<a class="headerlink" href="#non-trivial-patches" title="Permalink to this headline">¶</a></h2>
+<p>A &#8220;non-trivial&#8221; patch is one that is more than a simple bug fix. It&#8217;s a patch
+that introduces Django functionality and makes some sort of design decision.</p>
+<p>If you provide a non-trivial patch, include evidence that alternatives have
+been discussed on <a class="reference internal" href="../../mailing-lists.html#django-developers-mailing-list"><em>django-developers</em></a>.</p>
+<p>If you&#8217;re not sure whether your patch should be considered non-trivial, just
+ask.</p>
+</div>
+<div class="section" id="s-deprecating-a-feature">
+<span id="s-id2"></span><span id="deprecating-a-feature"></span><span id="id2"></span><h2>Deprecating a feature<a class="headerlink" href="#deprecating-a-feature" title="Permalink to this headline">¶</a></h2>
+<p>There are a couple reasons that code in Django might be deprecated:</p>
+<ul class="simple">
+<li>If a feature has been improved or modified in a backwards-incompatible way,
+the old feature or behavior will be deprecated.</li>
+<li>Sometimes Django will include a backport of a Python library that&#8217;s not
+included in a version of Python that Django currently supports. When Django
+no longer needs to support the older version of Python that doesn&#8217;t include
+the library, the library will be deprecated in Django.</li>
+</ul>
+<p>As the <a class="reference internal" href="../../release-process.html#internal-release-deprecation-policy"><em>deprecation policy</em></a> describes,
+the first release of Django that deprecates a feature (<tt class="docutils literal"><span class="pre">A.B</span></tt>) should raise a
+<tt class="docutils literal"><span class="pre">RemovedInDjangoXXWarning</span></tt> (where XX is the Django version where the feature
+will be removed) when the deprecated feature is invoked. Assuming we have good
+test coverage, these warnings are converted to errors when <a class="reference internal" href="unit-tests.html#running-unit-tests"><em>running the
+test suite</em></a> with warnings enabled:
+<tt class="docutils literal"><span class="pre">python</span> <span class="pre">-Wall</span> <span class="pre">runtests.py</span></tt>. Thus, when adding a <tt class="docutils literal"><span class="pre">RemovedInDjangoXXWarning</span></tt>
+you need to eliminate or silence any warnings generated when running the tests.</p>
+<p>The first step is to remove any use of the deprecated behavior by Django itself.
+Next you can silence warnings in tests that actually test the deprecated
+behavior by using the <tt class="docutils literal"><span class="pre">ignore_warnings</span></tt> decorator, either at the test or class
+level:</p>
+<ol class="arabic">
+<li><p class="first">In a particular test:</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="kn">from</span> <span class="nn">django.test</span> <span class="kn">import</span> <span class="n">ignore_warnings</span>
+<span class="kn">from</span> <span class="nn">django.utils.deprecation</span> <span class="kn">import</span> <span class="n">RemovedInDjangoXXWarning</span>
+
+<span class="nd">@ignore_warnings</span><span class="p">(</span><span class="n">category</span><span class="o">=</span><span class="n">RemovedInDjangoXXWarning</span><span class="p">)</span>
+<span class="k">def</span> <span class="nf">test_foo</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+    <span class="o">...</span>
+</pre></div>
+</div>
+</li>
+<li><p class="first">For an entire test case:</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="kn">from</span> <span class="nn">django.test</span> <span class="kn">import</span> <span class="n">ignore_warnings</span>
+<span class="kn">from</span> <span class="nn">django.utils.deprecation</span> <span class="kn">import</span> <span class="n">RemovedInDjangoXXWarning</span>
+
+<span class="nd">@ignore_warnings</span><span class="p">(</span><span class="n">category</span><span class="o">=</span><span class="n">RemovedInDjangoXXWarning</span><span class="p">)</span>
+<span class="k">class</span> <span class="nc">MyDeprecatedTests</span><span class="p">(</span><span class="n">unittest</span><span class="o">.</span><span class="n">TestCase</span><span class="p">):</span>
+    <span class="o">...</span>
+</pre></div>
+</div>
+</li>
+</ol>
+<div class="versionchanged">
+<span class="title">Changed in Django 1.8:</span> <p>Previous versions of Django had some <tt class="docutils literal"><span class="pre">Ignore*DeprecationWarningsMixin</span></tt>
+classes to prevent warnings from appearing. These have been replaced by the
+<tt class="docutils literal"><span class="pre">ignore_warnings</span></tt> decorator.</p>
+</div>
+<p>You can also add a test for the deprecation warning. You&#8217;ll have to disable the
+&#8220;warning as error&#8221; behavior in your test by doing:</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="kn">import</span> <span class="nn">warnings</span>
+
+<span class="k">def</span> <span class="nf">test_foo_deprecation_warning</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+    <span class="k">with</span> <span class="n">warnings</span><span class="o">.</span><span class="n">catch_warnings</span><span class="p">(</span><span class="n">record</span><span class="o">=</span><span class="bp">True</span><span class="p">)</span> <span class="k">as</span> <span class="n">warns</span><span class="p">:</span>
+        <span class="n">warnings</span><span class="o">.</span><span class="n">simplefilter</span><span class="p">(</span><span class="s">&#39;always&#39;</span><span class="p">)</span>  <span class="c"># prevent warnings from appearing as errors</span>
+        <span class="c"># invoke deprecated behavior</span>
+
+    <span class="bp">self</span><span class="o">.</span><span class="n">assertEqual</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">warns</span><span class="p">),</span> <span class="mi">1</span><span class="p">)</span>
+    <span class="n">msg</span> <span class="o">=</span> <span class="nb">str</span><span class="p">(</span><span class="n">warns</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">message</span><span class="p">)</span>
+    <span class="bp">self</span><span class="o">.</span><span class="n">assertEqual</span><span class="p">(</span><span class="n">msg</span><span class="p">,</span> <span class="s">&#39;Expected deprecation message&#39;</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>Finally, there are a couple of updates to Django&#8217;s documentation to make:</p>
+<ol class="arabic simple">
+<li>If the existing feature is documented, mark it deprecated in documentation
+using the <tt class="docutils literal"><span class="pre">..</span> <span class="pre">deprecated::</span> <span class="pre">A.B</span></tt> annotation. Include a short description
+and a note about the upgrade path if applicable.</li>
+<li>Add a description of the deprecated behavior, and the upgrade path if
+applicable, to the current release notes (<tt class="docutils literal"><span class="pre">docs/releases/A.B.txt</span></tt>) under
+the &#8220;Features deprecated in A.B&#8221; heading.</li>
+<li>Add an entry in the deprecation timeline (<tt class="docutils literal"><span class="pre">docs/internals/deprecation.txt</span></tt>)
+under the <tt class="docutils literal"><span class="pre">A.B+2</span></tt> version describing what code will be removed.</li>
+</ol>
+<p>Once you have completed these steps, you are finished with the deprecation.
+In each major release, all <tt class="docutils literal"><span class="pre">RemovedInDjangoXXWarning</span></tt>s matching the new
+version are removed.</p>
+</div>
+<div class="section" id="s-javascript-patches">
+<span id="javascript-patches"></span><h2>JavaScript patches<a class="headerlink" href="#javascript-patches" title="Permalink to this headline">¶</a></h2>
+<p>Django&#8217;s admin system leverages the jQuery framework to increase the
+capabilities of the admin interface. In conjunction, there is an emphasis on
+admin JavaScript performance and minimizing overall admin media file size.
+Serving compressed or &#8220;minified&#8221; versions of JavaScript files is considered
+best practice in this regard.</p>
+<p>To that end, patches for JavaScript files should include both the original
+code for future development (e.g. <tt class="docutils literal"><span class="pre">foo.js</span></tt>), and a compressed version for
+production use (e.g. <tt class="docutils literal"><span class="pre">foo.min.js</span></tt>). Any links to the file in the codebase
+should point to the compressed version.</p>
+<div class="section" id="s-compressing-javascript">
+<span id="compressing-javascript"></span><h3>Compressing JavaScript<a class="headerlink" href="#compressing-javascript" title="Permalink to this headline">¶</a></h3>
+<p>To simplify the process of providing optimized JavaScript code, Django
+includes a handy python script which should be used to create a &#8220;minified&#8221;
+version. To run it:</p>
+<div class="highlight-python"><div class="highlight"><pre>python django/contrib/admin/bin/compress.py
+</pre></div>
+</div>
+<p>Behind the scenes, <tt class="docutils literal"><span class="pre">compress.py</span></tt> is a front-end for Google&#8217;s
+<a class="reference external" href="https://developers.google.com/closure/compiler/">Closure Compiler</a> which is written in Java. However, the Closure Compiler
+library is not bundled with Django directly, so those wishing to contribute
+complete JavaScript patches will need to download and install the library
+independently. The Closure Compiler library requires <a class="reference external" href="https://www.java.com">Java</a> 7 or higher.</p>
+<p>Please don&#8217;t forget to run <tt class="docutils literal"><span class="pre">compress.py</span></tt> and include the <tt class="docutils literal"><span class="pre">diff</span></tt> of the
+minified scripts when submitting patches for Django&#8217;s JavaScript.</p>
+</div>
+</div>
+<div class="section" id="s-patch-review-checklist">
+<span id="s-id3"></span><span id="patch-review-checklist"></span><span id="id3"></span><h2>Patch review checklist<a class="headerlink" href="#patch-review-checklist" title="Permalink to this headline">¶</a></h2>
+<p>Use this checklist to review a pull request. If you are reviewing a pull
+request that is not your own and it passes all the criteria below, please set
+the &#8220;Triage Stage&#8221; on the corresponding Trac ticket to &#8220;Ready for checkin&#8221;.
+If you&#8217;ve left comments for improvement on the pull request, please tick the
+appropriate flags on the Trac ticket based on the results of your review:
+&#8220;Patch needs improvement&#8221;, &#8220;Needs documentation&#8221;, and/or &#8220;Needs tests&#8221;. As time
+and interest permits, core developers do final reviews of &#8220;Ready for checkin&#8221;
+tickets and will either commit the patch or bump it back to &#8220;Accepted&#8221; if
+further works need to be done. If you&#8217;re looking to become a core developer,
+doing thorough reviews of patches is a great way to earn trust.</p>
+<p>Looking for a patch to review? Check out the &#8220;Patches needing review&#8221; section
+of the <a class="reference external" href="https://dashboard.djangoproject.com/">Django Development Dashboard</a>.
+Looking to get your patch reviewed? Ensure the Trac flags on the ticket are
+set so that the ticket appears in that queue.</p>
+<div class="section" id="s-documentation">
+<span id="documentation"></span><h3>Documentation<a class="headerlink" href="#documentation" title="Permalink to this headline">¶</a></h3>
+<ul class="simple">
+<li>Does the documentation build without any errors (<tt class="docutils literal"><span class="pre">make</span> <span class="pre">html</span></tt>, or
+<tt class="docutils literal"><span class="pre">make.bat</span> <span class="pre">html</span></tt> on Windows, from the <tt class="docutils literal"><span class="pre">docs</span></tt> directory)?</li>
+<li>Does the documentation follow the writing style guidelines in
+<a class="reference internal" href="../writing-documentation.html"><em>Writing documentation</em></a>?</li>
+<li>Are there any <a class="reference internal" href="../writing-documentation.html#documentation-spelling-check"><em>spelling errors</em></a>?</li>
+</ul>
+</div>
+<div class="section" id="s-bugs">
+<span id="bugs"></span><h3>Bugs<a class="headerlink" href="#bugs" title="Permalink to this headline">¶</a></h3>
+<ul class="simple">
+<li>Is there a proper regression test (the test should fail before the fix
+is applied)?</li>
+</ul>
+</div>
+<div class="section" id="s-new-features">
+<span id="new-features"></span><h3>New Features<a class="headerlink" href="#new-features" title="Permalink to this headline">¶</a></h3>
+<ul class="simple">
+<li>Are there tests to &#8220;exercise&#8221; all of the new code?</li>
+<li>Is there a release note in <tt class="docutils literal"><span class="pre">docs/releases/A.B.txt</span></tt>?</li>
+<li>Is there documentation for the feature and is it <a class="reference internal" href="../writing-documentation.html#documenting-new-features"><em>annotated
+appropriately</em></a> with
+<tt class="docutils literal"><span class="pre">..</span> <span class="pre">versionadded::</span> <span class="pre">A.B</span></tt> or <tt class="docutils literal"><span class="pre">..</span> <span class="pre">versionchanged::</span> <span class="pre">A.B</span></tt>?</li>
+</ul>
+</div>
+<div class="section" id="s-id4">
+<span id="id4"></span><h3>Deprecating a feature<a class="headerlink" href="#id4" title="Permalink to this headline">¶</a></h3>
+<p>See the <a class="reference internal" href="#deprecating-a-feature"><em>Deprecating a feature</em></a> guide.</p>
+</div>
+<div class="section" id="s-all-code-changes">
+<span id="all-code-changes"></span><h3>All code changes<a class="headerlink" href="#all-code-changes" title="Permalink to this headline">¶</a></h3>
+<ul class="simple">
+<li>Does the <a class="reference internal" href="coding-style.html"><em>coding style</em></a> conform to our
+guidelines? Are there any <tt class="docutils literal"><span class="pre">flake8</span></tt> errors?</li>
+<li>If the change is backwards incompatible in any way, is there a note
+in the release notes (<tt class="docutils literal"><span class="pre">docs/releases/A.B.txt</span></tt>)?</li>
+<li>Is Django&#8217;s test suite passing? Ask in <tt class="docutils literal"><span class="pre">#django-dev</span></tt> for a core dev
+to build the pull request against our continuous integration server.</li>
+</ul>
+</div>
+<div class="section" id="s-all-tickets">
+<span id="all-tickets"></span><h3>All tickets<a class="headerlink" href="#all-tickets" title="Permalink to this headline">¶</a></h3>
+<ul class="simple">
+<li>Is the pull request a single squashed commit with a message that follows our
+<a class="reference internal" href="../committing-code.html#committing-guidelines"><em>commit message format</em></a>?</li>
+<li>Are you the patch author and a new contributor? Please add yourself to the
+<tt class="docutils literal"><span class="pre">AUTHORS</span></tt> file and submit a <a class="reference external" href="https://www.djangoproject.com/foundation/cla/">Contributor License Agreement</a>.</li>
+</ul>
+</div>
+</div>
+</div>
+
+
+          </div>
+        </div>
+      </div>
+      
+        
+          <div class="yui-b" id="sidebar">
+            
+      <div class="sphinxsidebar">
+        <div class="sphinxsidebarwrapper">
+  <h3><a href="../../../contents.html">Table Of Contents</a></h3>
+  <ul>
+<li><a class="reference internal" href="#">Submitting patches</a><ul>
+<li><a class="reference internal" href="#typo-fixes-and-trivial-documentation-changes">Typo fixes and trivial documentation changes</a></li>
+<li><a class="reference internal" href="#claiming-tickets">&#8220;Claiming&#8221; tickets</a><ul>
+<li><a class="reference internal" href="#ticket-claimers-responsibility">Ticket claimers&#8217; responsibility</a></li>
+<li><a class="reference internal" href="#which-tickets-should-be-claimed">Which tickets should be claimed?</a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#patch-style">Patch style</a></li>
+<li><a class="reference internal" href="#non-trivial-patches">Non-trivial patches</a></li>
+<li><a class="reference internal" href="#deprecating-a-feature">Deprecating a feature</a></li>
+<li><a class="reference internal" href="#javascript-patches">JavaScript patches</a><ul>
+<li><a class="reference internal" href="#compressing-javascript">Compressing JavaScript</a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#patch-review-checklist">Patch review checklist</a><ul>
+<li><a class="reference internal" href="#documentation">Documentation</a></li>
+<li><a class="reference internal" href="#bugs">Bugs</a></li>
+<li><a class="reference internal" href="#new-features">New Features</a></li>
+<li><a class="reference internal" href="#id4">Deprecating a feature</a></li>
+<li><a class="reference internal" href="#all-code-changes">All code changes</a></li>
+<li><a class="reference internal" href="#all-tickets">All tickets</a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+
+  <h3>Browse</h3>
+  <ul>
+    
+      <li>Prev: <a href="unit-tests.html">Unit tests</a></li>
+    
+    
+      <li>Next: <a href="working-with-git.html">Working with Git and GitHub</a></li>
+    
+  </ul>
+  <h3>You are here:</h3>
+  <ul>
+      <li>
+        <a href="../../../index.html">Django 1.8.2.dev20150505153848 documentation</a>
+        
+          <ul><li><a href="../../index.html">Django internals</a>
+        
+          <ul><li><a href="../index.html">Contributing to Django</a>
+        
+          <ul><li><a href="index.html">Writing code</a>
+        
+        <ul><li>Submitting patches</li></ul>
+        </li></ul></li></ul></li></ul>
+      </li>
+  </ul>
+
+  <h3>This Page</h3>
+  <ul class="this-page-menu">
+    <li><a href="../../../_sources/internals/contributing/writing-code/submitting-patches.txt"
+           rel="nofollow">Show Source</a></li>
+  </ul>
+<div id="searchbox" style="display: none">
+  <h3>Quick search</h3>
+    <form class="search" action="../../../search.html" method="get">
+      <input type="text" name="q" />
+      <input type="submit" value="Go" />
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+    <p class="searchtip" style="font-size: 90%">
+    Enter search terms or a module, class or function name.
+    </p>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+              <h3>Last update:</h3>
+              <p class="topless">May 06, 2015</p>
+          </div>
+        
+      
+    </div>
+
+    <div id="ft">
+      <div class="nav">
+    &laquo; <a href="unit-tests.html" title="Unit tests">previous</a>
+     |
+    <a href="../../index.html" title="Django internals" accesskey="U">up</a>
+   |
+    <a href="working-with-git.html" title="Working with Git and GitHub">next</a> &raquo;</div>
+    </div>
+  </div>
+
+      <div class="clearer"></div>
+    </div>
+  </body>
+</html>

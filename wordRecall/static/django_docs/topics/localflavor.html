@@ -1,0 +1,218 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>The “local flavor” add-ons &mdash; Django 1.8.2.dev20150505153848 documentation</title>
+    
+    <link rel="stylesheet" href="../_static/default.css" type="text/css" />
+    <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '../',
+        VERSION:     '1.8.2.dev20150505153848',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="../_static/jquery.js"></script>
+    <script type="text/javascript" src="../_static/underscore.js"></script>
+    <script type="text/javascript" src="../_static/doctools.js"></script>
+    <link rel="top" title="Django 1.8.2.dev20150505153848 documentation" href="../index.html" />
+    <link rel="up" title="Using Django" href="index.html" />
+    <link rel="next" title="Logging" href="logging.html" />
+    <link rel="prev" title="Time zones" href="i18n/timezones.html" />
+
+
+
+ 
+<script type="text/javascript" src="../templatebuiltins.js"></script>
+<script type="text/javascript">
+(function($) {
+    if (!django_template_builtins) {
+       // templatebuiltins.js missing, do nothing.
+       return;
+    }
+    $(document).ready(function() {
+        // Hyperlink Django template tags and filters
+        var base = "../ref/templates/builtins.html";
+        if (base == "#") {
+            // Special case for builtins.html itself
+            base = "";
+        }
+        // Tags are keywords, class '.k'
+        $("div.highlight\\-html\\+django span.k").each(function(i, elem) {
+             var tagname = $(elem).text();
+             if ($.inArray(tagname, django_template_builtins.ttags) != -1) {
+                 var fragment = tagname.replace(/_/, '-');
+                 $(elem).html("<a href='" + base + "#" + fragment + "'>" + tagname + "</a>");
+             }
+        });
+        // Filters are functions, class '.nf'
+        $("div.highlight\\-html\\+django span.nf").each(function(i, elem) {
+             var filtername = $(elem).text();
+             if ($.inArray(filtername, django_template_builtins.tfilters) != -1) {
+                 var fragment = filtername.replace(/_/, '-');
+                 $(elem).html("<a href='" + base + "#" + fragment + "'>" + filtername + "</a>");
+             }
+        });
+    });
+})(jQuery);
+</script>
+
+
+  </head>
+  <body>
+
+    <div class="document">
+  <div id="custom-doc" class="yui-t6">
+    <div id="hd">
+      <h1><a href="../index.html">Django 1.8.2.dev20150505153848 documentation</a></h1>
+      <div id="global-nav">
+        <a title="Home page" href="../index.html">Home</a>  |
+        <a title="Table of contents" href="../contents.html">Table of contents</a>  |
+        <a title="Global index" href="../genindex.html">Index</a>  |
+        <a title="Module index" href="../py-modindex.html">Modules</a>
+      </div>
+      <div class="nav">
+    &laquo; <a href="i18n/timezones.html" title="Time zones">previous</a>
+     |
+    <a href="index.html" title="Using Django" accesskey="U">up</a>
+   |
+    <a href="logging.html" title="Logging">next</a> &raquo;</div>
+    </div>
+
+    <div id="bd">
+      <div id="yui-main">
+        <div class="yui-b">
+          <div class="yui-g" id="topics-localflavor">
+            
+  <div class="section" id="s-the-local-flavor-add-ons">
+<span id="the-local-flavor-add-ons"></span><h1>The &#8220;local flavor&#8221; add-ons<a class="headerlink" href="#the-local-flavor-add-ons" title="Permalink to this headline">¶</a></h1>
+<p>Historically, Django has shipped with <tt class="docutils literal"><span class="pre">django.contrib.localflavor</span></tt> &#8211;
+assorted pieces of code that are useful for particular countries or cultures.
+This code is now distributed separately from Django, for easier maintenance
+and to trim the size of Django&#8217;s codebase.</p>
+<p>See the official documentation for more information:</p>
+<blockquote>
+<div><a class="reference external" href="https://django-localflavor.readthedocs.org/">https://django-localflavor.readthedocs.org/</a></div></blockquote>
+<p id="localflavor-packages">Code is hosted on github at <a class="reference external" href="https://github.com/django/django-localflavor">https://github.com/django/django-localflavor</a>.</p>
+<div class="section" id="s-how-to-migrate">
+<span id="s-localflavor-how-to-migrate"></span><span id="how-to-migrate"></span><span id="localflavor-how-to-migrate"></span><h2>How to migrate<a class="headerlink" href="#how-to-migrate" title="Permalink to this headline">¶</a></h2>
+<p>If you&#8217;ve used the old <tt class="docutils literal"><span class="pre">django.contrib.localflavor</span></tt> package or one of the
+temporary <tt class="docutils literal"><span class="pre">django-localflavor-*</span></tt> releases, follow these two easy steps to
+update your code:</p>
+<ol class="arabic">
+<li><p class="first">Install the third-party <tt class="docutils literal"><span class="pre">django-localflavor</span></tt> package from PyPI.</p>
+</li>
+<li><p class="first">Change your app&#8217;s import statements to reference the new package.</p>
+<p>For example, change this:</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="kn">from</span> <span class="nn">django.contrib.localflavor.fr.forms</span> <span class="kn">import</span> <span class="n">FRPhoneNumberField</span>
+</pre></div>
+</div>
+<p>...to this:</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="kn">from</span> <span class="nn">localflavor.fr.forms</span> <span class="kn">import</span> <span class="n">FRPhoneNumberField</span>
+</pre></div>
+</div>
+</li>
+</ol>
+<p>The code in the new package is the same (it was copied directly from Django),
+so you don&#8217;t have to worry about backwards compatibility in terms of
+functionality. Only the imports have changed.</p>
+</div>
+<div class="section" id="s-deprecation-policy">
+<span id="s-localflavor-deprecation-policy"></span><span id="deprecation-policy"></span><span id="localflavor-deprecation-policy"></span><h2>Deprecation policy<a class="headerlink" href="#deprecation-policy" title="Permalink to this headline">¶</a></h2>
+<p>In Django 1.5, importing from <tt class="docutils literal"><span class="pre">django.contrib.localflavor</span></tt> will result in a
+<tt class="docutils literal"><span class="pre">DeprecationWarning</span></tt>. This means your code will still work, but you should
+change it as soon as possible.</p>
+<p>In Django 1.6, importing from <tt class="docutils literal"><span class="pre">django.contrib.localflavor</span></tt> will no longer
+work.</p>
+</div>
+</div>
+
+
+          </div>
+        </div>
+      </div>
+      
+        
+          <div class="yui-b" id="sidebar">
+            
+      <div class="sphinxsidebar">
+        <div class="sphinxsidebarwrapper">
+  <h3><a href="../contents.html">Table Of Contents</a></h3>
+  <ul>
+<li><a class="reference internal" href="#">The &#8220;local flavor&#8221; add-ons</a><ul>
+<li><a class="reference internal" href="#how-to-migrate">How to migrate</a></li>
+<li><a class="reference internal" href="#deprecation-policy">Deprecation policy</a></li>
+</ul>
+</li>
+</ul>
+
+  <h3>Browse</h3>
+  <ul>
+    
+      <li>Prev: <a href="i18n/timezones.html">Time zones</a></li>
+    
+    
+      <li>Next: <a href="logging.html">Logging</a></li>
+    
+  </ul>
+  <h3>You are here:</h3>
+  <ul>
+      <li>
+        <a href="../index.html">Django 1.8.2.dev20150505153848 documentation</a>
+        
+          <ul><li><a href="index.html">Using Django</a>
+        
+        <ul><li>The &#8220;local flavor&#8221; add-ons</li></ul>
+        </li></ul>
+      </li>
+  </ul>
+
+  <h3>This Page</h3>
+  <ul class="this-page-menu">
+    <li><a href="../_sources/topics/localflavor.txt"
+           rel="nofollow">Show Source</a></li>
+  </ul>
+<div id="searchbox" style="display: none">
+  <h3>Quick search</h3>
+    <form class="search" action="../search.html" method="get">
+      <input type="text" name="q" />
+      <input type="submit" value="Go" />
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+    <p class="searchtip" style="font-size: 90%">
+    Enter search terms or a module, class or function name.
+    </p>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+              <h3>Last update:</h3>
+              <p class="topless">May 06, 2015</p>
+          </div>
+        
+      
+    </div>
+
+    <div id="ft">
+      <div class="nav">
+    &laquo; <a href="i18n/timezones.html" title="Time zones">previous</a>
+     |
+    <a href="index.html" title="Using Django" accesskey="U">up</a>
+   |
+    <a href="logging.html" title="Logging">next</a> &raquo;</div>
+    </div>
+  </div>
+
+      <div class="clearer"></div>
+    </div>
+  </body>
+</html>

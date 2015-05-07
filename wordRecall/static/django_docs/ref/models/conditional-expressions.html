@@ -1,0 +1,397 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>Conditional Expressions &mdash; Django 1.8.2.dev20150505153848 documentation</title>
+    
+    <link rel="stylesheet" href="../../_static/default.css" type="text/css" />
+    <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '../../',
+        VERSION:     '1.8.2.dev20150505153848',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="../../_static/jquery.js"></script>
+    <script type="text/javascript" src="../../_static/underscore.js"></script>
+    <script type="text/javascript" src="../../_static/doctools.js"></script>
+    <link rel="top" title="Django 1.8.2.dev20150505153848 documentation" href="../../index.html" />
+    <link rel="up" title="Models" href="index.html" />
+    <link rel="next" title="Database Functions" href="database-functions.html" />
+    <link rel="prev" title="Query Expressions" href="expressions.html" />
+
+
+
+ 
+<script type="text/javascript" src="../../templatebuiltins.js"></script>
+<script type="text/javascript">
+(function($) {
+    if (!django_template_builtins) {
+       // templatebuiltins.js missing, do nothing.
+       return;
+    }
+    $(document).ready(function() {
+        // Hyperlink Django template tags and filters
+        var base = "../templates/builtins.html";
+        if (base == "#") {
+            // Special case for builtins.html itself
+            base = "";
+        }
+        // Tags are keywords, class '.k'
+        $("div.highlight\\-html\\+django span.k").each(function(i, elem) {
+             var tagname = $(elem).text();
+             if ($.inArray(tagname, django_template_builtins.ttags) != -1) {
+                 var fragment = tagname.replace(/_/, '-');
+                 $(elem).html("<a href='" + base + "#" + fragment + "'>" + tagname + "</a>");
+             }
+        });
+        // Filters are functions, class '.nf'
+        $("div.highlight\\-html\\+django span.nf").each(function(i, elem) {
+             var filtername = $(elem).text();
+             if ($.inArray(filtername, django_template_builtins.tfilters) != -1) {
+                 var fragment = filtername.replace(/_/, '-');
+                 $(elem).html("<a href='" + base + "#" + fragment + "'>" + filtername + "</a>");
+             }
+        });
+    });
+})(jQuery);
+</script>
+
+
+  </head>
+  <body>
+
+    <div class="document">
+  <div id="custom-doc" class="yui-t6">
+    <div id="hd">
+      <h1><a href="../../index.html">Django 1.8.2.dev20150505153848 documentation</a></h1>
+      <div id="global-nav">
+        <a title="Home page" href="../../index.html">Home</a>  |
+        <a title="Table of contents" href="../../contents.html">Table of contents</a>  |
+        <a title="Global index" href="../../genindex.html">Index</a>  |
+        <a title="Module index" href="../../py-modindex.html">Modules</a>
+      </div>
+      <div class="nav">
+    &laquo; <a href="expressions.html" title="Query Expressions">previous</a>
+     |
+    <a href="../index.html" title="API Reference" accesskey="U">up</a>
+   |
+    <a href="database-functions.html" title="Database Functions">next</a> &raquo;</div>
+    </div>
+
+    <div id="bd">
+      <div id="yui-main">
+        <div class="yui-b">
+          <div class="yui-g" id="ref-models-conditional-expressions">
+            
+  <div class="section" id="s-conditional-expressions">
+<span id="conditional-expressions"></span><h1>Conditional Expressions<a class="headerlink" href="#conditional-expressions" title="Permalink to this headline">¶</a></h1>
+<div class="versionadded">
+<span class="title">New in Django 1.8.</span> </div>
+<p>Conditional expressions let you use <a class="reference external" href="https://docs.python.org/3/reference/compound_stmts.html#if" title="(in Python v3.4)"><tt class="xref std std-keyword docutils literal"><span class="pre">if</span></tt></a> ... <a class="reference external" href="https://docs.python.org/3/reference/compound_stmts.html#elif" title="(in Python v3.4)"><tt class="xref std std-keyword docutils literal"><span class="pre">elif</span></tt></a> ...
+<a class="reference external" href="https://docs.python.org/3/reference/compound_stmts.html#else" title="(in Python v3.4)"><tt class="xref std std-keyword docutils literal"><span class="pre">else</span></tt></a> logic within filters, annotations, aggregations, and updates. A
+conditional expression evaluates a series of conditions for each row of a
+table and returns the matching result expression. Conditional expressions can
+also be combined and nested like other <a class="reference internal" href="expressions.html"><em>expressions</em></a>.</p>
+<div class="section" id="s-the-conditional-expression-classes">
+<span id="the-conditional-expression-classes"></span><h2>The conditional expression classes<a class="headerlink" href="#the-conditional-expression-classes" title="Permalink to this headline">¶</a></h2>
+<p>We&#8217;ll be using the following model in the subsequent examples:</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="kn">from</span> <span class="nn">django.db</span> <span class="kn">import</span> <span class="n">models</span>
+
+<span class="k">class</span> <span class="nc">Client</span><span class="p">(</span><span class="n">models</span><span class="o">.</span><span class="n">Model</span><span class="p">):</span>
+    <span class="n">REGULAR</span> <span class="o">=</span> <span class="s">&#39;R&#39;</span>
+    <span class="n">GOLD</span> <span class="o">=</span> <span class="s">&#39;G&#39;</span>
+    <span class="n">PLATINUM</span> <span class="o">=</span> <span class="s">&#39;P&#39;</span>
+    <span class="n">ACCOUNT_TYPE_CHOICES</span> <span class="o">=</span> <span class="p">(</span>
+        <span class="p">(</span><span class="n">REGULAR</span><span class="p">,</span> <span class="s">&#39;Regular&#39;</span><span class="p">),</span>
+        <span class="p">(</span><span class="n">GOLD</span><span class="p">,</span> <span class="s">&#39;Gold&#39;</span><span class="p">),</span>
+        <span class="p">(</span><span class="n">PLATINUM</span><span class="p">,</span> <span class="s">&#39;Platinum&#39;</span><span class="p">),</span>
+    <span class="p">)</span>
+    <span class="n">name</span> <span class="o">=</span> <span class="n">models</span><span class="o">.</span><span class="n">CharField</span><span class="p">(</span><span class="n">max_length</span><span class="o">=</span><span class="mi">50</span><span class="p">)</span>
+    <span class="n">registered_on</span> <span class="o">=</span> <span class="n">models</span><span class="o">.</span><span class="n">DateField</span><span class="p">()</span>
+    <span class="n">account_type</span> <span class="o">=</span> <span class="n">models</span><span class="o">.</span><span class="n">CharField</span><span class="p">(</span>
+        <span class="n">max_length</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span>
+        <span class="n">choices</span><span class="o">=</span><span class="n">ACCOUNT_TYPE_CHOICES</span><span class="p">,</span>
+        <span class="n">default</span><span class="o">=</span><span class="n">REGULAR</span><span class="p">,</span>
+    <span class="p">)</span>
+</pre></div>
+</div>
+<div class="section" id="s-when">
+<span id="when"></span><h3>When<a class="headerlink" href="#when" title="Permalink to this headline">¶</a></h3>
+<dl class="class">
+<dt id="django.db.models.expressions.When">
+<em class="property">class </em><tt class="descname">When</tt>(<em>condition=None</em>, <em>then=None</em>, <em>**lookups</em>)<a class="reference internal" href="../../_modules/django/db/models/expressions.html#When"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#django.db.models.expressions.When" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<p>A <tt class="docutils literal"><span class="pre">When()</span></tt> object is used to encapsulate a condition and its result for use
+in the conditional expression. Using a <tt class="docutils literal"><span class="pre">When()</span></tt> object is similar to using
+the <a class="reference internal" href="querysets.html#django.db.models.query.QuerySet.filter" title="django.db.models.query.QuerySet.filter"><tt class="xref py py-meth docutils literal"><span class="pre">filter()</span></tt></a> method. The condition can
+be specified using <a class="reference internal" href="querysets.html#field-lookups"><em>field lookups</em></a> or
+<a class="reference internal" href="querysets.html#django.db.models.Q" title="django.db.models.Q"><tt class="xref py py-class docutils literal"><span class="pre">Q</span></tt></a> objects. The result is provided using the <tt class="docutils literal"><span class="pre">then</span></tt>
+keyword.</p>
+<p>Some examples:</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">django.db.models</span> <span class="kn">import</span> <span class="n">When</span><span class="p">,</span> <span class="n">F</span><span class="p">,</span> <span class="n">Q</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="c"># String arguments refer to fields; the following two examples are equivalent:</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">When</span><span class="p">(</span><span class="n">account_type</span><span class="o">=</span><span class="n">Client</span><span class="o">.</span><span class="n">GOLD</span><span class="p">,</span> <span class="n">then</span><span class="o">=</span><span class="s">&#39;name&#39;</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">When</span><span class="p">(</span><span class="n">account_type</span><span class="o">=</span><span class="n">Client</span><span class="o">.</span><span class="n">GOLD</span><span class="p">,</span> <span class="n">then</span><span class="o">=</span><span class="n">F</span><span class="p">(</span><span class="s">&#39;name&#39;</span><span class="p">))</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="c"># You can use field lookups in the condition</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">datetime</span> <span class="kn">import</span> <span class="n">date</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">When</span><span class="p">(</span><span class="n">registered_on__gt</span><span class="o">=</span><span class="n">date</span><span class="p">(</span><span class="mi">2014</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">),</span>
+<span class="gp">... </span>     <span class="n">registered_on__lt</span><span class="o">=</span><span class="n">date</span><span class="p">(</span><span class="mi">2015</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">),</span>
+<span class="gp">... </span>     <span class="n">then</span><span class="o">=</span><span class="s">&#39;account_type&#39;</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="c"># Complex conditions can be created using Q objects</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">When</span><span class="p">(</span><span class="n">Q</span><span class="p">(</span><span class="n">name__startswith</span><span class="o">=</span><span class="s">&quot;John&quot;</span><span class="p">)</span> <span class="o">|</span> <span class="n">Q</span><span class="p">(</span><span class="n">name__startswith</span><span class="o">=</span><span class="s">&quot;Paul&quot;</span><span class="p">),</span>
+<span class="gp">... </span>     <span class="n">then</span><span class="o">=</span><span class="s">&#39;name&#39;</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>Keep in mind that each of these values can be an expression.</p>
+<div class="admonition note">
+<p class="first admonition-title">Note</p>
+<p>Since the <tt class="docutils literal"><span class="pre">then</span></tt> keyword argument is reserved for the result of the
+<tt class="docutils literal"><span class="pre">When()</span></tt>, there is a potential conflict if a
+<a class="reference internal" href="instances.html#django.db.models.Model" title="django.db.models.Model"><tt class="xref py py-class docutils literal"><span class="pre">Model</span></tt></a> has a field named <tt class="docutils literal"><span class="pre">then</span></tt>. This can be
+resolved in two ways:</p>
+<div class="last highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">django.db.models</span> <span class="kn">import</span> <span class="n">Value</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">When</span><span class="p">(</span><span class="n">then__exact</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">then</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">When</span><span class="p">(</span><span class="n">Q</span><span class="p">(</span><span class="n">then</span><span class="o">=</span><span class="mi">0</span><span class="p">),</span> <span class="n">then</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+</div>
+<div class="section" id="s-case">
+<span id="case"></span><h3>Case<a class="headerlink" href="#case" title="Permalink to this headline">¶</a></h3>
+<dl class="class">
+<dt id="django.db.models.expressions.Case">
+<em class="property">class </em><tt class="descname">Case</tt>(<em>*cases</em>, <em>**extra</em>)<a class="reference internal" href="../../_modules/django/db/models/expressions.html#Case"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#django.db.models.expressions.Case" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<p>A <tt class="docutils literal"><span class="pre">Case()</span></tt> expression is like the <a class="reference external" href="https://docs.python.org/3/reference/compound_stmts.html#if" title="(in Python v3.4)"><tt class="xref std std-keyword docutils literal"><span class="pre">if</span></tt></a> ... <a class="reference external" href="https://docs.python.org/3/reference/compound_stmts.html#elif" title="(in Python v3.4)"><tt class="xref std std-keyword docutils literal"><span class="pre">elif</span></tt></a> ...
+<a class="reference external" href="https://docs.python.org/3/reference/compound_stmts.html#else" title="(in Python v3.4)"><tt class="xref std std-keyword docutils literal"><span class="pre">else</span></tt></a> statement in <tt class="docutils literal"><span class="pre">Python</span></tt>. Each <tt class="docutils literal"><span class="pre">condition</span></tt> in the provided
+<tt class="docutils literal"><span class="pre">When()</span></tt> objects is evaluated in order, until one evaluates to a
+truthful value. The <tt class="docutils literal"><span class="pre">result</span></tt> expression from the matching <tt class="docutils literal"><span class="pre">When()</span></tt> object
+is returned.</p>
+<p>A simple example:</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="go">&gt;&gt;&gt;</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">datetime</span> <span class="kn">import</span> <span class="n">date</span><span class="p">,</span> <span class="n">timedelta</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">django.db.models</span> <span class="kn">import</span> <span class="n">CharField</span><span class="p">,</span> <span class="n">Case</span><span class="p">,</span> <span class="n">Value</span><span class="p">,</span> <span class="n">When</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">Client</span><span class="o">.</span><span class="n">objects</span><span class="o">.</span><span class="n">create</span><span class="p">(</span>
+<span class="gp">... </span>    <span class="n">name</span><span class="o">=</span><span class="s">&#39;Jane Doe&#39;</span><span class="p">,</span>
+<span class="gp">... </span>    <span class="n">account_type</span><span class="o">=</span><span class="n">Client</span><span class="o">.</span><span class="n">REGULAR</span><span class="p">,</span>
+<span class="gp">... </span>    <span class="n">registered_on</span><span class="o">=</span><span class="n">date</span><span class="o">.</span><span class="n">today</span><span class="p">()</span> <span class="o">-</span> <span class="n">timedelta</span><span class="p">(</span><span class="n">days</span><span class="o">=</span><span class="mi">36</span><span class="p">))</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">Client</span><span class="o">.</span><span class="n">objects</span><span class="o">.</span><span class="n">create</span><span class="p">(</span>
+<span class="gp">... </span>    <span class="n">name</span><span class="o">=</span><span class="s">&#39;James Smith&#39;</span><span class="p">,</span>
+<span class="gp">... </span>    <span class="n">account_type</span><span class="o">=</span><span class="n">Client</span><span class="o">.</span><span class="n">GOLD</span><span class="p">,</span>
+<span class="gp">... </span>    <span class="n">registered_on</span><span class="o">=</span><span class="n">date</span><span class="o">.</span><span class="n">today</span><span class="p">()</span> <span class="o">-</span> <span class="n">timedelta</span><span class="p">(</span><span class="n">days</span><span class="o">=</span><span class="mi">5</span><span class="p">))</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">Client</span><span class="o">.</span><span class="n">objects</span><span class="o">.</span><span class="n">create</span><span class="p">(</span>
+<span class="gp">... </span>    <span class="n">name</span><span class="o">=</span><span class="s">&#39;Jack Black&#39;</span><span class="p">,</span>
+<span class="gp">... </span>    <span class="n">account_type</span><span class="o">=</span><span class="n">Client</span><span class="o">.</span><span class="n">PLATINUM</span><span class="p">,</span>
+<span class="gp">... </span>    <span class="n">registered_on</span><span class="o">=</span><span class="n">date</span><span class="o">.</span><span class="n">today</span><span class="p">()</span> <span class="o">-</span> <span class="n">timedelta</span><span class="p">(</span><span class="n">days</span><span class="o">=</span><span class="mi">10</span> <span class="o">*</span> <span class="mi">365</span><span class="p">))</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="c"># Get the discount for each Client based on the account type</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">Client</span><span class="o">.</span><span class="n">objects</span><span class="o">.</span><span class="n">annotate</span><span class="p">(</span>
+<span class="gp">... </span>    <span class="n">discount</span><span class="o">=</span><span class="n">Case</span><span class="p">(</span>
+<span class="gp">... </span>        <span class="n">When</span><span class="p">(</span><span class="n">account_type</span><span class="o">=</span><span class="n">Client</span><span class="o">.</span><span class="n">GOLD</span><span class="p">,</span> <span class="n">then</span><span class="o">=</span><span class="n">Value</span><span class="p">(</span><span class="s">&#39;5%&#39;</span><span class="p">)),</span>
+<span class="gp">... </span>        <span class="n">When</span><span class="p">(</span><span class="n">account_type</span><span class="o">=</span><span class="n">Client</span><span class="o">.</span><span class="n">PLATINUM</span><span class="p">,</span> <span class="n">then</span><span class="o">=</span><span class="n">Value</span><span class="p">(</span><span class="s">&#39;10%&#39;</span><span class="p">)),</span>
+<span class="gp">... </span>        <span class="n">default</span><span class="o">=</span><span class="n">Value</span><span class="p">(</span><span class="s">&#39;0%&#39;</span><span class="p">),</span>
+<span class="gp">... </span>        <span class="n">output_field</span><span class="o">=</span><span class="n">CharField</span><span class="p">(),</span>
+<span class="gp">... </span>    <span class="p">),</span>
+<span class="gp">... </span><span class="p">)</span><span class="o">.</span><span class="n">values_list</span><span class="p">(</span><span class="s">&#39;name&#39;</span><span class="p">,</span> <span class="s">&#39;discount&#39;</span><span class="p">)</span>
+<span class="go">[(&#39;Jane Doe&#39;, &#39;0%&#39;), (&#39;James Smith&#39;, &#39;5%&#39;), (&#39;Jack Black&#39;, &#39;10%&#39;)]</span>
+</pre></div>
+</div>
+<p><tt class="docutils literal"><span class="pre">Case()</span></tt> accepts any number of <tt class="docutils literal"><span class="pre">When()</span></tt> objects as individual arguments.
+Other options are provided using keyword arguments. If none of the conditions
+evaluate to <tt class="docutils literal"><span class="pre">TRUE</span></tt>, then the expression given with the <tt class="docutils literal"><span class="pre">default</span></tt> keyword
+argument is returned. If no <tt class="docutils literal"><span class="pre">default</span></tt> argument is provided, <tt class="docutils literal"><span class="pre">Value(None)</span></tt>
+is used.</p>
+<p>If we wanted to change our previous query to get the discount based on how long
+the <tt class="docutils literal"><span class="pre">Client</span></tt> has been with us, we could do so using lookups:</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="n">a_month_ago</span> <span class="o">=</span> <span class="n">date</span><span class="o">.</span><span class="n">today</span><span class="p">()</span> <span class="o">-</span> <span class="n">timedelta</span><span class="p">(</span><span class="n">days</span><span class="o">=</span><span class="mi">30</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">a_year_ago</span> <span class="o">=</span> <span class="n">date</span><span class="o">.</span><span class="n">today</span><span class="p">()</span> <span class="o">-</span> <span class="n">timedelta</span><span class="p">(</span><span class="n">days</span><span class="o">=</span><span class="mi">365</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="c"># Get the discount for each Client based on the registration date</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">Client</span><span class="o">.</span><span class="n">objects</span><span class="o">.</span><span class="n">annotate</span><span class="p">(</span>
+<span class="gp">... </span>    <span class="n">discount</span><span class="o">=</span><span class="n">Case</span><span class="p">(</span>
+<span class="gp">... </span>        <span class="n">When</span><span class="p">(</span><span class="n">registered_on__lte</span><span class="o">=</span><span class="n">a_year_ago</span><span class="p">,</span> <span class="n">then</span><span class="o">=</span><span class="n">Value</span><span class="p">(</span><span class="s">&#39;10%&#39;</span><span class="p">)),</span>
+<span class="gp">... </span>        <span class="n">When</span><span class="p">(</span><span class="n">registered_on__lte</span><span class="o">=</span><span class="n">a_month_ago</span><span class="p">,</span> <span class="n">then</span><span class="o">=</span><span class="n">Value</span><span class="p">(</span><span class="s">&#39;5%&#39;</span><span class="p">)),</span>
+<span class="gp">... </span>        <span class="n">default</span><span class="o">=</span><span class="n">Value</span><span class="p">(</span><span class="s">&#39;0%&#39;</span><span class="p">),</span>
+<span class="gp">... </span>        <span class="n">output_field</span><span class="o">=</span><span class="n">CharField</span><span class="p">(),</span>
+<span class="gp">... </span>    <span class="p">)</span>
+<span class="gp">... </span><span class="p">)</span><span class="o">.</span><span class="n">values_list</span><span class="p">(</span><span class="s">&#39;name&#39;</span><span class="p">,</span> <span class="s">&#39;discount&#39;</span><span class="p">)</span>
+<span class="go">[(&#39;Jane Doe&#39;, &#39;5%&#39;), (&#39;James Smith&#39;, &#39;0%&#39;), (&#39;Jack Black&#39;, &#39;10%&#39;)]</span>
+</pre></div>
+</div>
+<div class="admonition note">
+<p class="first admonition-title">Note</p>
+<p class="last">Remember that the conditions are evaluated in order, so in the above
+example we get the correct result even though the second condition matches
+both Jane Doe and Jack Black. This works just like an <a class="reference external" href="https://docs.python.org/3/reference/compound_stmts.html#if" title="(in Python v3.4)"><tt class="xref std std-keyword docutils literal"><span class="pre">if</span></tt></a> ...
+<a class="reference external" href="https://docs.python.org/3/reference/compound_stmts.html#elif" title="(in Python v3.4)"><tt class="xref std std-keyword docutils literal"><span class="pre">elif</span></tt></a> ... <a class="reference external" href="https://docs.python.org/3/reference/compound_stmts.html#else" title="(in Python v3.4)"><tt class="xref std std-keyword docutils literal"><span class="pre">else</span></tt></a> statement in <tt class="docutils literal"><span class="pre">Python</span></tt>.</p>
+</div>
+</div>
+</div>
+<div class="section" id="s-advanced-queries">
+<span id="advanced-queries"></span><h2>Advanced queries<a class="headerlink" href="#advanced-queries" title="Permalink to this headline">¶</a></h2>
+<p>Conditional expressions can be used in annotations, aggregations, lookups, and
+updates. They can also be combined and nested with other expressions. This
+allows you to make powerful conditional queries.</p>
+<div class="section" id="s-conditional-update">
+<span id="conditional-update"></span><h3>Conditional update<a class="headerlink" href="#conditional-update" title="Permalink to this headline">¶</a></h3>
+<p>Let&#8217;s say we want to change the <tt class="docutils literal"><span class="pre">account_type</span></tt> for our clients to match
+their registration dates. We can do this using a conditional expression and the
+<a class="reference internal" href="querysets.html#django.db.models.query.QuerySet.update" title="django.db.models.query.QuerySet.update"><tt class="xref py py-meth docutils literal"><span class="pre">update()</span></tt></a> method:</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="n">a_month_ago</span> <span class="o">=</span> <span class="n">date</span><span class="o">.</span><span class="n">today</span><span class="p">()</span> <span class="o">-</span> <span class="n">timedelta</span><span class="p">(</span><span class="n">days</span><span class="o">=</span><span class="mi">30</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">a_year_ago</span> <span class="o">=</span> <span class="n">date</span><span class="o">.</span><span class="n">today</span><span class="p">()</span> <span class="o">-</span> <span class="n">timedelta</span><span class="p">(</span><span class="n">days</span><span class="o">=</span><span class="mi">365</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="c"># Update the account_type for each Client from the registration date</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">Client</span><span class="o">.</span><span class="n">objects</span><span class="o">.</span><span class="n">update</span><span class="p">(</span>
+<span class="gp">... </span>    <span class="n">account_type</span><span class="o">=</span><span class="n">Case</span><span class="p">(</span>
+<span class="gp">... </span>        <span class="n">When</span><span class="p">(</span><span class="n">registered_on__lte</span><span class="o">=</span><span class="n">a_year_ago</span><span class="p">,</span>
+<span class="gp">... </span>             <span class="n">then</span><span class="o">=</span><span class="n">Value</span><span class="p">(</span><span class="n">Client</span><span class="o">.</span><span class="n">PLATINUM</span><span class="p">)),</span>
+<span class="gp">... </span>        <span class="n">When</span><span class="p">(</span><span class="n">registered_on__lte</span><span class="o">=</span><span class="n">a_month_ago</span><span class="p">,</span>
+<span class="gp">... </span>             <span class="n">then</span><span class="o">=</span><span class="n">Value</span><span class="p">(</span><span class="n">Client</span><span class="o">.</span><span class="n">GOLD</span><span class="p">)),</span>
+<span class="gp">... </span>        <span class="n">default</span><span class="o">=</span><span class="n">Value</span><span class="p">(</span><span class="n">Client</span><span class="o">.</span><span class="n">REGULAR</span><span class="p">)</span>
+<span class="gp">... </span>    <span class="p">),</span>
+<span class="gp">... </span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">Client</span><span class="o">.</span><span class="n">objects</span><span class="o">.</span><span class="n">values_list</span><span class="p">(</span><span class="s">&#39;name&#39;</span><span class="p">,</span> <span class="s">&#39;account_type&#39;</span><span class="p">)</span>
+<span class="go">[(&#39;Jane Doe&#39;, &#39;G&#39;), (&#39;James Smith&#39;, &#39;R&#39;), (&#39;Jack Black&#39;, &#39;P&#39;)]</span>
+</pre></div>
+</div>
+</div>
+<div class="section" id="s-conditional-aggregation">
+<span id="conditional-aggregation"></span><h3>Conditional aggregation<a class="headerlink" href="#conditional-aggregation" title="Permalink to this headline">¶</a></h3>
+<p>What if we want to find out how many clients there are for each
+<tt class="docutils literal"><span class="pre">account_type</span></tt>? We can nest conditional expression within
+<a class="reference internal" href="querysets.html#aggregation-functions"><em>aggregate functions</em></a> to achieve this:</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="c"># Create some more Clients first so we can have something to count</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">Client</span><span class="o">.</span><span class="n">objects</span><span class="o">.</span><span class="n">create</span><span class="p">(</span>
+<span class="gp">... </span>    <span class="n">name</span><span class="o">=</span><span class="s">&#39;Jean Grey&#39;</span><span class="p">,</span>
+<span class="gp">... </span>    <span class="n">account_type</span><span class="o">=</span><span class="n">Client</span><span class="o">.</span><span class="n">REGULAR</span><span class="p">,</span>
+<span class="gp">... </span>    <span class="n">registered_on</span><span class="o">=</span><span class="n">date</span><span class="o">.</span><span class="n">today</span><span class="p">())</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">Client</span><span class="o">.</span><span class="n">objects</span><span class="o">.</span><span class="n">create</span><span class="p">(</span>
+<span class="gp">... </span>    <span class="n">name</span><span class="o">=</span><span class="s">&#39;James Bond&#39;</span><span class="p">,</span>
+<span class="gp">... </span>    <span class="n">account_type</span><span class="o">=</span><span class="n">Client</span><span class="o">.</span><span class="n">PLATINUM</span><span class="p">,</span>
+<span class="gp">... </span>    <span class="n">registered_on</span><span class="o">=</span><span class="n">date</span><span class="o">.</span><span class="n">today</span><span class="p">())</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">Client</span><span class="o">.</span><span class="n">objects</span><span class="o">.</span><span class="n">create</span><span class="p">(</span>
+<span class="gp">... </span>    <span class="n">name</span><span class="o">=</span><span class="s">&#39;Jane Porter&#39;</span><span class="p">,</span>
+<span class="gp">... </span>    <span class="n">account_type</span><span class="o">=</span><span class="n">Client</span><span class="o">.</span><span class="n">PLATINUM</span><span class="p">,</span>
+<span class="gp">... </span>    <span class="n">registered_on</span><span class="o">=</span><span class="n">date</span><span class="o">.</span><span class="n">today</span><span class="p">())</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="c"># Get counts for each value of account_type</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">django.db.models</span> <span class="kn">import</span> <span class="n">IntegerField</span><span class="p">,</span> <span class="n">Sum</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">Client</span><span class="o">.</span><span class="n">objects</span><span class="o">.</span><span class="n">aggregate</span><span class="p">(</span>
+<span class="gp">... </span>    <span class="n">regular</span><span class="o">=</span><span class="n">Sum</span><span class="p">(</span>
+<span class="gp">... </span>        <span class="n">Case</span><span class="p">(</span><span class="n">When</span><span class="p">(</span><span class="n">account_type</span><span class="o">=</span><span class="n">Client</span><span class="o">.</span><span class="n">REGULAR</span><span class="p">,</span> <span class="n">then</span><span class="o">=</span><span class="mi">1</span><span class="p">),</span>
+<span class="gp">... </span>             <span class="n">output_field</span><span class="o">=</span><span class="n">IntegerField</span><span class="p">())</span>
+<span class="gp">... </span>    <span class="p">),</span>
+<span class="gp">... </span>    <span class="n">gold</span><span class="o">=</span><span class="n">Sum</span><span class="p">(</span>
+<span class="gp">... </span>        <span class="n">Case</span><span class="p">(</span><span class="n">When</span><span class="p">(</span><span class="n">account_type</span><span class="o">=</span><span class="n">Client</span><span class="o">.</span><span class="n">GOLD</span><span class="p">,</span> <span class="n">then</span><span class="o">=</span><span class="mi">1</span><span class="p">),</span>
+<span class="gp">... </span>             <span class="n">output_field</span><span class="o">=</span><span class="n">IntegerField</span><span class="p">())</span>
+<span class="gp">... </span>    <span class="p">),</span>
+<span class="gp">... </span>    <span class="n">platinum</span><span class="o">=</span><span class="n">Sum</span><span class="p">(</span>
+<span class="gp">... </span>        <span class="n">Case</span><span class="p">(</span><span class="n">When</span><span class="p">(</span><span class="n">account_type</span><span class="o">=</span><span class="n">Client</span><span class="o">.</span><span class="n">PLATINUM</span><span class="p">,</span> <span class="n">then</span><span class="o">=</span><span class="mi">1</span><span class="p">),</span>
+<span class="gp">... </span>             <span class="n">output_field</span><span class="o">=</span><span class="n">IntegerField</span><span class="p">())</span>
+<span class="gp">... </span>    <span class="p">)</span>
+<span class="gp">... </span><span class="p">)</span>
+<span class="go">{&#39;regular&#39;: 2, &#39;gold&#39;: 1, &#39;platinum&#39;: 3}</span>
+</pre></div>
+</div>
+</div>
+</div>
+</div>
+
+
+          </div>
+        </div>
+      </div>
+      
+        
+          <div class="yui-b" id="sidebar">
+            
+      <div class="sphinxsidebar">
+        <div class="sphinxsidebarwrapper">
+  <h3><a href="../../contents.html">Table Of Contents</a></h3>
+  <ul>
+<li><a class="reference internal" href="#">Conditional Expressions</a><ul>
+<li><a class="reference internal" href="#the-conditional-expression-classes">The conditional expression classes</a><ul>
+<li><a class="reference internal" href="#when">When</a></li>
+<li><a class="reference internal" href="#case">Case</a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#advanced-queries">Advanced queries</a><ul>
+<li><a class="reference internal" href="#conditional-update">Conditional update</a></li>
+<li><a class="reference internal" href="#conditional-aggregation">Conditional aggregation</a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+
+  <h3>Browse</h3>
+  <ul>
+    
+      <li>Prev: <a href="expressions.html">Query Expressions</a></li>
+    
+    
+      <li>Next: <a href="database-functions.html">Database Functions</a></li>
+    
+  </ul>
+  <h3>You are here:</h3>
+  <ul>
+      <li>
+        <a href="../../index.html">Django 1.8.2.dev20150505153848 documentation</a>
+        
+          <ul><li><a href="../index.html">API Reference</a>
+        
+          <ul><li><a href="index.html">Models</a>
+        
+        <ul><li>Conditional Expressions</li></ul>
+        </li></ul></li></ul>
+      </li>
+  </ul>
+
+  <h3>This Page</h3>
+  <ul class="this-page-menu">
+    <li><a href="../../_sources/ref/models/conditional-expressions.txt"
+           rel="nofollow">Show Source</a></li>
+  </ul>
+<div id="searchbox" style="display: none">
+  <h3>Quick search</h3>
+    <form class="search" action="../../search.html" method="get">
+      <input type="text" name="q" />
+      <input type="submit" value="Go" />
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+    <p class="searchtip" style="font-size: 90%">
+    Enter search terms or a module, class or function name.
+    </p>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+              <h3>Last update:</h3>
+              <p class="topless">May 06, 2015</p>
+          </div>
+        
+      
+    </div>
+
+    <div id="ft">
+      <div class="nav">
+    &laquo; <a href="expressions.html" title="Query Expressions">previous</a>
+     |
+    <a href="../index.html" title="API Reference" accesskey="U">up</a>
+   |
+    <a href="database-functions.html" title="Database Functions">next</a> &raquo;</div>
+    </div>
+  </div>
+
+      <div class="clearer"></div>
+    </div>
+  </body>
+</html>

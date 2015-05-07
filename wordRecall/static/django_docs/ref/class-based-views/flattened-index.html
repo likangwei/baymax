@@ -1,0 +1,871 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>Class-based generic views - flattened index &mdash; Django 1.8.2.dev20150505153848 documentation</title>
+    
+    <link rel="stylesheet" href="../../_static/default.css" type="text/css" />
+    <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '../../',
+        VERSION:     '1.8.2.dev20150505153848',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="../../_static/jquery.js"></script>
+    <script type="text/javascript" src="../../_static/underscore.js"></script>
+    <script type="text/javascript" src="../../_static/doctools.js"></script>
+    <link rel="top" title="Django 1.8.2.dev20150505153848 documentation" href="../../index.html" />
+    <link rel="up" title="Built-in Class-based views API" href="index.html" />
+    <link rel="next" title="Clickjacking Protection" href="../clickjacking.html" />
+    <link rel="prev" title="Date-based mixins" href="mixins-date-based.html" />
+
+
+
+ 
+<script type="text/javascript" src="../../templatebuiltins.js"></script>
+<script type="text/javascript">
+(function($) {
+    if (!django_template_builtins) {
+       // templatebuiltins.js missing, do nothing.
+       return;
+    }
+    $(document).ready(function() {
+        // Hyperlink Django template tags and filters
+        var base = "../templates/builtins.html";
+        if (base == "#") {
+            // Special case for builtins.html itself
+            base = "";
+        }
+        // Tags are keywords, class '.k'
+        $("div.highlight\\-html\\+django span.k").each(function(i, elem) {
+             var tagname = $(elem).text();
+             if ($.inArray(tagname, django_template_builtins.ttags) != -1) {
+                 var fragment = tagname.replace(/_/, '-');
+                 $(elem).html("<a href='" + base + "#" + fragment + "'>" + tagname + "</a>");
+             }
+        });
+        // Filters are functions, class '.nf'
+        $("div.highlight\\-html\\+django span.nf").each(function(i, elem) {
+             var filtername = $(elem).text();
+             if ($.inArray(filtername, django_template_builtins.tfilters) != -1) {
+                 var fragment = filtername.replace(/_/, '-');
+                 $(elem).html("<a href='" + base + "#" + fragment + "'>" + filtername + "</a>");
+             }
+        });
+    });
+})(jQuery);
+</script>
+
+
+  </head>
+  <body>
+
+    <div class="document">
+  <div id="custom-doc" class="yui-t6">
+    <div id="hd">
+      <h1><a href="../../index.html">Django 1.8.2.dev20150505153848 documentation</a></h1>
+      <div id="global-nav">
+        <a title="Home page" href="../../index.html">Home</a>  |
+        <a title="Table of contents" href="../../contents.html">Table of contents</a>  |
+        <a title="Global index" href="../../genindex.html">Index</a>  |
+        <a title="Module index" href="../../py-modindex.html">Modules</a>
+      </div>
+      <div class="nav">
+    &laquo; <a href="mixins-date-based.html" title="Date-based mixins">previous</a>
+     |
+    <a href="../index.html" title="API Reference" accesskey="U">up</a>
+   |
+    <a href="../clickjacking.html" title="Clickjacking Protection">next</a> &raquo;</div>
+    </div>
+
+    <div id="bd">
+      <div id="yui-main">
+        <div class="yui-b">
+          <div class="yui-g" id="ref-class-based-views-flattened-index">
+            
+  <div class="section" id="s-class-based-generic-views-flattened-index">
+<span id="class-based-generic-views-flattened-index"></span><h1>Class-based generic views - flattened index<a class="headerlink" href="#class-based-generic-views-flattened-index" title="Permalink to this headline">¶</a></h1>
+<p>This index provides an alternate organization of the reference documentation
+for class-based views. For each view, the effective attributes and methods from
+the class tree are represented under that view. For the reference
+documentation organized by the class which defines the behavior, see
+<a class="reference internal" href="index.html"><em>Class-based views</em></a></p>
+<div class="section" id="s-simple-generic-views">
+<span id="simple-generic-views"></span><h2>Simple generic views<a class="headerlink" href="#simple-generic-views" title="Permalink to this headline">¶</a></h2>
+<div class="section" id="s-view">
+<span id="view"></span><h3>View<a class="headerlink" href="#view" title="Permalink to this headline">¶</a></h3>
+<dl class="class">
+<dt id="View">
+<em class="property">class </em><tt class="descname">View</tt><a class="headerlink" href="#View" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<p><strong>Attributes</strong> (with optional accessor):</p>
+<ul class="simple">
+<li><a class="reference internal" href="base.html#django.views.generic.base.View.http_method_names" title="django.views.generic.base.View.http_method_names"><tt class="xref py py-attr docutils literal"><span class="pre">http_method_names</span></tt></a></li>
+</ul>
+<p><strong>Methods</strong></p>
+<ul class="simple">
+<li><a class="reference internal" href="base.html#django.views.generic.base.View.as_view" title="django.views.generic.base.View.as_view"><tt class="xref py py-meth docutils literal"><span class="pre">as_view()</span></tt></a></li>
+<li><a class="reference internal" href="base.html#django.views.generic.base.View.dispatch" title="django.views.generic.base.View.dispatch"><tt class="xref py py-meth docutils literal"><span class="pre">dispatch()</span></tt></a></li>
+<li><tt class="docutils literal"><span class="pre">head()</span></tt></li>
+<li><a class="reference internal" href="base.html#django.views.generic.base.View.http_method_not_allowed" title="django.views.generic.base.View.http_method_not_allowed"><tt class="xref py py-meth docutils literal"><span class="pre">http_method_not_allowed()</span></tt></a></li>
+</ul>
+</div>
+<div class="section" id="s-templateview">
+<span id="templateview"></span><h3>TemplateView<a class="headerlink" href="#templateview" title="Permalink to this headline">¶</a></h3>
+<dl class="class">
+<dt id="TemplateView">
+<em class="property">class </em><tt class="descname">TemplateView</tt><a class="headerlink" href="#TemplateView" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<p><strong>Attributes</strong> (with optional accessor):</p>
+<ul class="simple">
+<li><a class="reference internal" href="mixins-simple.html#django.views.generic.base.TemplateResponseMixin.content_type" title="django.views.generic.base.TemplateResponseMixin.content_type"><tt class="xref py py-attr docutils literal"><span class="pre">content_type</span></tt></a></li>
+<li><a class="reference internal" href="base.html#django.views.generic.base.View.http_method_names" title="django.views.generic.base.View.http_method_names"><tt class="xref py py-attr docutils literal"><span class="pre">http_method_names</span></tt></a></li>
+<li><a class="reference internal" href="mixins-simple.html#django.views.generic.base.TemplateResponseMixin.response_class" title="django.views.generic.base.TemplateResponseMixin.response_class"><tt class="xref py py-attr docutils literal"><span class="pre">response_class</span></tt></a> [<a class="reference internal" href="mixins-simple.html#django.views.generic.base.TemplateResponseMixin.render_to_response" title="django.views.generic.base.TemplateResponseMixin.render_to_response"><tt class="xref py py-meth docutils literal"><span class="pre">render_to_response()</span></tt></a>]</li>
+<li><a class="reference internal" href="mixins-simple.html#django.views.generic.base.TemplateResponseMixin.template_engine" title="django.views.generic.base.TemplateResponseMixin.template_engine"><tt class="xref py py-attr docutils literal"><span class="pre">template_engine</span></tt></a></li>
+<li><a class="reference internal" href="mixins-simple.html#django.views.generic.base.TemplateResponseMixin.template_name" title="django.views.generic.base.TemplateResponseMixin.template_name"><tt class="xref py py-attr docutils literal"><span class="pre">template_name</span></tt></a> [<a class="reference internal" href="mixins-simple.html#django.views.generic.base.TemplateResponseMixin.get_template_names" title="django.views.generic.base.TemplateResponseMixin.get_template_names"><tt class="xref py py-meth docutils literal"><span class="pre">get_template_names()</span></tt></a>]</li>
+</ul>
+<p><strong>Methods</strong></p>
+<ul class="simple">
+<li><a class="reference internal" href="base.html#django.views.generic.base.View.as_view" title="django.views.generic.base.View.as_view"><tt class="xref py py-meth docutils literal"><span class="pre">as_view()</span></tt></a></li>
+<li><a class="reference internal" href="base.html#django.views.generic.base.View.dispatch" title="django.views.generic.base.View.dispatch"><tt class="xref py py-meth docutils literal"><span class="pre">dispatch()</span></tt></a></li>
+<li><tt class="docutils literal"><span class="pre">get()</span></tt></li>
+<li><a class="reference internal" href="mixins-simple.html#django.views.generic.base.ContextMixin.get_context_data" title="django.views.generic.base.ContextMixin.get_context_data"><tt class="xref py py-meth docutils literal"><span class="pre">get_context_data()</span></tt></a></li>
+<li><tt class="docutils literal"><span class="pre">head()</span></tt></li>
+<li><a class="reference internal" href="base.html#django.views.generic.base.View.http_method_not_allowed" title="django.views.generic.base.View.http_method_not_allowed"><tt class="xref py py-meth docutils literal"><span class="pre">http_method_not_allowed()</span></tt></a></li>
+<li><a class="reference internal" href="mixins-simple.html#django.views.generic.base.TemplateResponseMixin.render_to_response" title="django.views.generic.base.TemplateResponseMixin.render_to_response"><tt class="xref py py-meth docutils literal"><span class="pre">render_to_response()</span></tt></a></li>
+</ul>
+</div>
+<div class="section" id="s-redirectview">
+<span id="redirectview"></span><h3>RedirectView<a class="headerlink" href="#redirectview" title="Permalink to this headline">¶</a></h3>
+<dl class="class">
+<dt id="RedirectView">
+<em class="property">class </em><tt class="descname">RedirectView</tt><a class="headerlink" href="#RedirectView" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<p><strong>Attributes</strong> (with optional accessor):</p>
+<ul class="simple">
+<li><a class="reference internal" href="base.html#django.views.generic.base.View.http_method_names" title="django.views.generic.base.View.http_method_names"><tt class="xref py py-attr docutils literal"><span class="pre">http_method_names</span></tt></a></li>
+<li><a class="reference internal" href="base.html#django.views.generic.base.RedirectView.pattern_name" title="django.views.generic.base.RedirectView.pattern_name"><tt class="xref py py-attr docutils literal"><span class="pre">pattern_name</span></tt></a></li>
+<li><a class="reference internal" href="base.html#django.views.generic.base.RedirectView.permanent" title="django.views.generic.base.RedirectView.permanent"><tt class="xref py py-attr docutils literal"><span class="pre">permanent</span></tt></a></li>
+<li><a class="reference internal" href="base.html#django.views.generic.base.RedirectView.query_string" title="django.views.generic.base.RedirectView.query_string"><tt class="xref py py-attr docutils literal"><span class="pre">query_string</span></tt></a></li>
+<li><a class="reference internal" href="base.html#django.views.generic.base.RedirectView.url" title="django.views.generic.base.RedirectView.url"><tt class="xref py py-attr docutils literal"><span class="pre">url</span></tt></a> [<a class="reference internal" href="base.html#django.views.generic.base.RedirectView.get_redirect_url" title="django.views.generic.base.RedirectView.get_redirect_url"><tt class="xref py py-meth docutils literal"><span class="pre">get_redirect_url()</span></tt></a>]</li>
+</ul>
+<p><strong>Methods</strong></p>
+<ul class="simple">
+<li><a class="reference internal" href="base.html#django.views.generic.base.View.as_view" title="django.views.generic.base.View.as_view"><tt class="xref py py-meth docutils literal"><span class="pre">as_view()</span></tt></a></li>
+<li><tt class="docutils literal"><span class="pre">delete()</span></tt></li>
+<li><a class="reference internal" href="base.html#django.views.generic.base.View.dispatch" title="django.views.generic.base.View.dispatch"><tt class="xref py py-meth docutils literal"><span class="pre">dispatch()</span></tt></a></li>
+<li><tt class="docutils literal"><span class="pre">get()</span></tt></li>
+<li><tt class="docutils literal"><span class="pre">head()</span></tt></li>
+<li><a class="reference internal" href="base.html#django.views.generic.base.View.http_method_not_allowed" title="django.views.generic.base.View.http_method_not_allowed"><tt class="xref py py-meth docutils literal"><span class="pre">http_method_not_allowed()</span></tt></a></li>
+<li><tt class="docutils literal"><span class="pre">options()</span></tt></li>
+<li><tt class="docutils literal"><span class="pre">post()</span></tt></li>
+<li><tt class="docutils literal"><span class="pre">put()</span></tt></li>
+</ul>
+</div>
+</div>
+<div class="section" id="s-detail-views">
+<span id="detail-views"></span><h2>Detail Views<a class="headerlink" href="#detail-views" title="Permalink to this headline">¶</a></h2>
+<div class="section" id="s-detailview">
+<span id="detailview"></span><h3>DetailView<a class="headerlink" href="#detailview" title="Permalink to this headline">¶</a></h3>
+<dl class="class">
+<dt id="DetailView">
+<em class="property">class </em><tt class="descname">DetailView</tt><a class="headerlink" href="#DetailView" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<p><strong>Attributes</strong> (with optional accessor):</p>
+<ul class="simple">
+<li><a class="reference internal" href="mixins-simple.html#django.views.generic.base.TemplateResponseMixin.content_type" title="django.views.generic.base.TemplateResponseMixin.content_type"><tt class="xref py py-attr docutils literal"><span class="pre">content_type</span></tt></a></li>
+<li><a class="reference internal" href="mixins-single-object.html#django.views.generic.detail.SingleObjectMixin.context_object_name" title="django.views.generic.detail.SingleObjectMixin.context_object_name"><tt class="xref py py-attr docutils literal"><span class="pre">context_object_name</span></tt></a> [<a class="reference internal" href="mixins-single-object.html#django.views.generic.detail.SingleObjectMixin.get_context_object_name" title="django.views.generic.detail.SingleObjectMixin.get_context_object_name"><tt class="xref py py-meth docutils literal"><span class="pre">get_context_object_name()</span></tt></a>]</li>
+<li><a class="reference internal" href="base.html#django.views.generic.base.View.http_method_names" title="django.views.generic.base.View.http_method_names"><tt class="xref py py-attr docutils literal"><span class="pre">http_method_names</span></tt></a></li>
+<li><a class="reference internal" href="mixins-single-object.html#django.views.generic.detail.SingleObjectMixin.model" title="django.views.generic.detail.SingleObjectMixin.model"><tt class="xref py py-attr docutils literal"><span class="pre">model</span></tt></a></li>
+<li><a class="reference internal" href="mixins-single-object.html#django.views.generic.detail.SingleObjectMixin.pk_url_kwarg" title="django.views.generic.detail.SingleObjectMixin.pk_url_kwarg"><tt class="xref py py-attr docutils literal"><span class="pre">pk_url_kwarg</span></tt></a></li>
+<li><a class="reference internal" href="mixins-single-object.html#django.views.generic.detail.SingleObjectMixin.queryset" title="django.views.generic.detail.SingleObjectMixin.queryset"><tt class="xref py py-attr docutils literal"><span class="pre">queryset</span></tt></a> [<a class="reference internal" href="mixins-single-object.html#django.views.generic.detail.SingleObjectMixin.get_queryset" title="django.views.generic.detail.SingleObjectMixin.get_queryset"><tt class="xref py py-meth docutils literal"><span class="pre">get_queryset()</span></tt></a>]</li>
+<li><a class="reference internal" href="mixins-simple.html#django.views.generic.base.TemplateResponseMixin.response_class" title="django.views.generic.base.TemplateResponseMixin.response_class"><tt class="xref py py-attr docutils literal"><span class="pre">response_class</span></tt></a> [<a class="reference internal" href="mixins-simple.html#django.views.generic.base.TemplateResponseMixin.render_to_response" title="django.views.generic.base.TemplateResponseMixin.render_to_response"><tt class="xref py py-meth docutils literal"><span class="pre">render_to_response()</span></tt></a>]</li>
+<li><a class="reference internal" href="mixins-single-object.html#django.views.generic.detail.SingleObjectMixin.slug_field" title="django.views.generic.detail.SingleObjectMixin.slug_field"><tt class="xref py py-attr docutils literal"><span class="pre">slug_field</span></tt></a> [<a class="reference internal" href="mixins-single-object.html#django.views.generic.detail.SingleObjectMixin.get_slug_field" title="django.views.generic.detail.SingleObjectMixin.get_slug_field"><tt class="xref py py-meth docutils literal"><span class="pre">get_slug_field()</span></tt></a>]</li>
+<li><a class="reference internal" href="mixins-single-object.html#django.views.generic.detail.SingleObjectMixin.slug_url_kwarg" title="django.views.generic.detail.SingleObjectMixin.slug_url_kwarg"><tt class="xref py py-attr docutils literal"><span class="pre">slug_url_kwarg</span></tt></a></li>
+<li><a class="reference internal" href="mixins-simple.html#django.views.generic.base.TemplateResponseMixin.template_engine" title="django.views.generic.base.TemplateResponseMixin.template_engine"><tt class="xref py py-attr docutils literal"><span class="pre">template_engine</span></tt></a></li>
+<li><a class="reference internal" href="mixins-simple.html#django.views.generic.base.TemplateResponseMixin.template_name" title="django.views.generic.base.TemplateResponseMixin.template_name"><tt class="xref py py-attr docutils literal"><span class="pre">template_name</span></tt></a> [<a class="reference internal" href="mixins-simple.html#django.views.generic.base.TemplateResponseMixin.get_template_names" title="django.views.generic.base.TemplateResponseMixin.get_template_names"><tt class="xref py py-meth docutils literal"><span class="pre">get_template_names()</span></tt></a>]</li>
+<li><a class="reference internal" href="mixins-single-object.html#django.views.generic.detail.SingleObjectTemplateResponseMixin.template_name_field" title="django.views.generic.detail.SingleObjectTemplateResponseMixin.template_name_field"><tt class="xref py py-attr docutils literal"><span class="pre">template_name_field</span></tt></a></li>
+<li><a class="reference internal" href="mixins-single-object.html#django.views.generic.detail.SingleObjectTemplateResponseMixin.template_name_suffix" title="django.views.generic.detail.SingleObjectTemplateResponseMixin.template_name_suffix"><tt class="xref py py-attr docutils literal"><span class="pre">template_name_suffix</span></tt></a></li>
+</ul>
+<p><strong>Methods</strong></p>
+<ul class="simple">
+<li><a class="reference internal" href="base.html#django.views.generic.base.View.as_view" title="django.views.generic.base.View.as_view"><tt class="xref py py-meth docutils literal"><span class="pre">as_view()</span></tt></a></li>
+<li><a class="reference internal" href="base.html#django.views.generic.base.View.dispatch" title="django.views.generic.base.View.dispatch"><tt class="xref py py-meth docutils literal"><span class="pre">dispatch()</span></tt></a></li>
+<li><tt class="docutils literal"><span class="pre">get()</span></tt></li>
+<li><a class="reference internal" href="mixins-single-object.html#django.views.generic.detail.SingleObjectMixin.get_context_data" title="django.views.generic.detail.SingleObjectMixin.get_context_data"><tt class="xref py py-meth docutils literal"><span class="pre">get_context_data()</span></tt></a></li>
+<li><a class="reference internal" href="mixins-single-object.html#django.views.generic.detail.SingleObjectMixin.get_object" title="django.views.generic.detail.SingleObjectMixin.get_object"><tt class="xref py py-meth docutils literal"><span class="pre">get_object()</span></tt></a></li>
+<li><tt class="docutils literal"><span class="pre">head()</span></tt></li>
+<li><a class="reference internal" href="base.html#django.views.generic.base.View.http_method_not_allowed" title="django.views.generic.base.View.http_method_not_allowed"><tt class="xref py py-meth docutils literal"><span class="pre">http_method_not_allowed()</span></tt></a></li>
+<li><a class="reference internal" href="mixins-simple.html#django.views.generic.base.TemplateResponseMixin.render_to_response" title="django.views.generic.base.TemplateResponseMixin.render_to_response"><tt class="xref py py-meth docutils literal"><span class="pre">render_to_response()</span></tt></a></li>
+</ul>
+</div>
+</div>
+<div class="section" id="s-list-views">
+<span id="list-views"></span><h2>List Views<a class="headerlink" href="#list-views" title="Permalink to this headline">¶</a></h2>
+<div class="section" id="s-listview">
+<span id="listview"></span><h3>ListView<a class="headerlink" href="#listview" title="Permalink to this headline">¶</a></h3>
+<dl class="class">
+<dt id="ListView">
+<em class="property">class </em><tt class="descname">ListView</tt><a class="headerlink" href="#ListView" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<p><strong>Attributes</strong> (with optional accessor):</p>
+<ul class="simple">
+<li><a class="reference internal" href="mixins-multiple-object.html#django.views.generic.list.MultipleObjectMixin.allow_empty" title="django.views.generic.list.MultipleObjectMixin.allow_empty"><tt class="xref py py-attr docutils literal"><span class="pre">allow_empty</span></tt></a> [<a class="reference internal" href="mixins-multiple-object.html#django.views.generic.list.MultipleObjectMixin.get_allow_empty" title="django.views.generic.list.MultipleObjectMixin.get_allow_empty"><tt class="xref py py-meth docutils literal"><span class="pre">get_allow_empty()</span></tt></a>]</li>
+<li><a class="reference internal" href="mixins-simple.html#django.views.generic.base.TemplateResponseMixin.content_type" title="django.views.generic.base.TemplateResponseMixin.content_type"><tt class="xref py py-attr docutils literal"><span class="pre">content_type</span></tt></a></li>
+<li><a class="reference internal" href="mixins-multiple-object.html#django.views.generic.list.MultipleObjectMixin.context_object_name" title="django.views.generic.list.MultipleObjectMixin.context_object_name"><tt class="xref py py-attr docutils literal"><span class="pre">context_object_name</span></tt></a> [<a class="reference internal" href="mixins-multiple-object.html#django.views.generic.list.MultipleObjectMixin.get_context_object_name" title="django.views.generic.list.MultipleObjectMixin.get_context_object_name"><tt class="xref py py-meth docutils literal"><span class="pre">get_context_object_name()</span></tt></a>]</li>
+<li><a class="reference internal" href="base.html#django.views.generic.base.View.http_method_names" title="django.views.generic.base.View.http_method_names"><tt class="xref py py-attr docutils literal"><span class="pre">http_method_names</span></tt></a></li>
+<li><a class="reference internal" href="mixins-multiple-object.html#django.views.generic.list.MultipleObjectMixin.model" title="django.views.generic.list.MultipleObjectMixin.model"><tt class="xref py py-attr docutils literal"><span class="pre">model</span></tt></a></li>
+<li><a class="reference internal" href="mixins-multiple-object.html#django.views.generic.list.MultipleObjectMixin.ordering" title="django.views.generic.list.MultipleObjectMixin.ordering"><tt class="xref py py-attr docutils literal"><span class="pre">ordering</span></tt></a> [<a class="reference internal" href="mixins-multiple-object.html#django.views.generic.list.MultipleObjectMixin.get_ordering" title="django.views.generic.list.MultipleObjectMixin.get_ordering"><tt class="xref py py-meth docutils literal"><span class="pre">get_ordering()</span></tt></a>]</li>
+<li><a class="reference internal" href="mixins-multiple-object.html#django.views.generic.list.MultipleObjectMixin.paginate_by" title="django.views.generic.list.MultipleObjectMixin.paginate_by"><tt class="xref py py-attr docutils literal"><span class="pre">paginate_by</span></tt></a> [<a class="reference internal" href="mixins-multiple-object.html#django.views.generic.list.MultipleObjectMixin.get_paginate_by" title="django.views.generic.list.MultipleObjectMixin.get_paginate_by"><tt class="xref py py-meth docutils literal"><span class="pre">get_paginate_by()</span></tt></a>]</li>
+<li><a class="reference internal" href="mixins-multiple-object.html#django.views.generic.list.MultipleObjectMixin.paginate_orphans" title="django.views.generic.list.MultipleObjectMixin.paginate_orphans"><tt class="xref py py-attr docutils literal"><span class="pre">paginate_orphans</span></tt></a> [<a class="reference internal" href="mixins-multiple-object.html#django.views.generic.list.MultipleObjectMixin.get_paginate_orphans" title="django.views.generic.list.MultipleObjectMixin.get_paginate_orphans"><tt class="xref py py-meth docutils literal"><span class="pre">get_paginate_orphans()</span></tt></a>]</li>
+<li><a class="reference internal" href="mixins-multiple-object.html#django.views.generic.list.MultipleObjectMixin.paginator_class" title="django.views.generic.list.MultipleObjectMixin.paginator_class"><tt class="xref py py-attr docutils literal"><span class="pre">paginator_class</span></tt></a></li>
+<li><a class="reference internal" href="mixins-multiple-object.html#django.views.generic.list.MultipleObjectMixin.queryset" title="django.views.generic.list.MultipleObjectMixin.queryset"><tt class="xref py py-attr docutils literal"><span class="pre">queryset</span></tt></a> [<a class="reference internal" href="mixins-multiple-object.html#django.views.generic.list.MultipleObjectMixin.get_queryset" title="django.views.generic.list.MultipleObjectMixin.get_queryset"><tt class="xref py py-meth docutils literal"><span class="pre">get_queryset()</span></tt></a>]</li>
+<li><a class="reference internal" href="mixins-simple.html#django.views.generic.base.TemplateResponseMixin.response_class" title="django.views.generic.base.TemplateResponseMixin.response_class"><tt class="xref py py-attr docutils literal"><span class="pre">response_class</span></tt></a> [<a class="reference internal" href="mixins-simple.html#django.views.generic.base.TemplateResponseMixin.render_to_response" title="django.views.generic.base.TemplateResponseMixin.render_to_response"><tt class="xref py py-meth docutils literal"><span class="pre">render_to_response()</span></tt></a>]</li>
+<li><a class="reference internal" href="mixins-simple.html#django.views.generic.base.TemplateResponseMixin.template_engine" title="django.views.generic.base.TemplateResponseMixin.template_engine"><tt class="xref py py-attr docutils literal"><span class="pre">template_engine</span></tt></a></li>
+<li><a class="reference internal" href="mixins-simple.html#django.views.generic.base.TemplateResponseMixin.template_name" title="django.views.generic.base.TemplateResponseMixin.template_name"><tt class="xref py py-attr docutils literal"><span class="pre">template_name</span></tt></a> [<a class="reference internal" href="mixins-simple.html#django.views.generic.base.TemplateResponseMixin.get_template_names" title="django.views.generic.base.TemplateResponseMixin.get_template_names"><tt class="xref py py-meth docutils literal"><span class="pre">get_template_names()</span></tt></a>]</li>
+<li><a class="reference internal" href="mixins-multiple-object.html#django.views.generic.list.MultipleObjectTemplateResponseMixin.template_name_suffix" title="django.views.generic.list.MultipleObjectTemplateResponseMixin.template_name_suffix"><tt class="xref py py-attr docutils literal"><span class="pre">template_name_suffix</span></tt></a></li>
+</ul>
+<p><strong>Methods</strong></p>
+<ul class="simple">
+<li><a class="reference internal" href="base.html#django.views.generic.base.View.as_view" title="django.views.generic.base.View.as_view"><tt class="xref py py-meth docutils literal"><span class="pre">as_view()</span></tt></a></li>
+<li><a class="reference internal" href="base.html#django.views.generic.base.View.dispatch" title="django.views.generic.base.View.dispatch"><tt class="xref py py-meth docutils literal"><span class="pre">dispatch()</span></tt></a></li>
+<li><a class="reference internal" href="generic-display.html#django.views.generic.list.BaseListView.get" title="django.views.generic.list.BaseListView.get"><tt class="xref py py-meth docutils literal"><span class="pre">get()</span></tt></a></li>
+<li><a class="reference internal" href="mixins-multiple-object.html#django.views.generic.list.MultipleObjectMixin.get_context_data" title="django.views.generic.list.MultipleObjectMixin.get_context_data"><tt class="xref py py-meth docutils literal"><span class="pre">get_context_data()</span></tt></a></li>
+<li><a class="reference internal" href="mixins-multiple-object.html#django.views.generic.list.MultipleObjectMixin.get_paginator" title="django.views.generic.list.MultipleObjectMixin.get_paginator"><tt class="xref py py-meth docutils literal"><span class="pre">get_paginator()</span></tt></a></li>
+<li><tt class="docutils literal"><span class="pre">head()</span></tt></li>
+<li><a class="reference internal" href="base.html#django.views.generic.base.View.http_method_not_allowed" title="django.views.generic.base.View.http_method_not_allowed"><tt class="xref py py-meth docutils literal"><span class="pre">http_method_not_allowed()</span></tt></a></li>
+<li><a class="reference internal" href="mixins-multiple-object.html#django.views.generic.list.MultipleObjectMixin.paginate_queryset" title="django.views.generic.list.MultipleObjectMixin.paginate_queryset"><tt class="xref py py-meth docutils literal"><span class="pre">paginate_queryset()</span></tt></a></li>
+<li><a class="reference internal" href="mixins-simple.html#django.views.generic.base.TemplateResponseMixin.render_to_response" title="django.views.generic.base.TemplateResponseMixin.render_to_response"><tt class="xref py py-meth docutils literal"><span class="pre">render_to_response()</span></tt></a></li>
+</ul>
+</div>
+</div>
+<div class="section" id="s-editing-views">
+<span id="editing-views"></span><h2>Editing views<a class="headerlink" href="#editing-views" title="Permalink to this headline">¶</a></h2>
+<div class="section" id="s-formview">
+<span id="formview"></span><h3>FormView<a class="headerlink" href="#formview" title="Permalink to this headline">¶</a></h3>
+<dl class="class">
+<dt id="FormView">
+<em class="property">class </em><tt class="descname">FormView</tt><a class="headerlink" href="#FormView" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<p><strong>Attributes</strong> (with optional accessor):</p>
+<ul class="simple">
+<li><a class="reference internal" href="mixins-simple.html#django.views.generic.base.TemplateResponseMixin.content_type" title="django.views.generic.base.TemplateResponseMixin.content_type"><tt class="xref py py-attr docutils literal"><span class="pre">content_type</span></tt></a></li>
+<li><a class="reference internal" href="mixins-editing.html#django.views.generic.edit.FormMixin.form_class" title="django.views.generic.edit.FormMixin.form_class"><tt class="xref py py-attr docutils literal"><span class="pre">form_class</span></tt></a> [<a class="reference internal" href="mixins-editing.html#django.views.generic.edit.FormMixin.get_form_class" title="django.views.generic.edit.FormMixin.get_form_class"><tt class="xref py py-meth docutils literal"><span class="pre">get_form_class()</span></tt></a>]</li>
+<li><a class="reference internal" href="base.html#django.views.generic.base.View.http_method_names" title="django.views.generic.base.View.http_method_names"><tt class="xref py py-attr docutils literal"><span class="pre">http_method_names</span></tt></a></li>
+<li><a class="reference internal" href="mixins-editing.html#django.views.generic.edit.FormMixin.initial" title="django.views.generic.edit.FormMixin.initial"><tt class="xref py py-attr docutils literal"><span class="pre">initial</span></tt></a> [<a class="reference internal" href="mixins-editing.html#django.views.generic.edit.FormMixin.get_initial" title="django.views.generic.edit.FormMixin.get_initial"><tt class="xref py py-meth docutils literal"><span class="pre">get_initial()</span></tt></a>]</li>
+<li><a class="reference internal" href="mixins-editing.html#django.views.generic.edit.FormMixin.prefix" title="django.views.generic.edit.FormMixin.prefix"><tt class="xref py py-attr docutils literal"><span class="pre">prefix</span></tt></a> [<a class="reference internal" href="mixins-editing.html#django.views.generic.edit.FormMixin.get_prefix" title="django.views.generic.edit.FormMixin.get_prefix"><tt class="xref py py-meth docutils literal"><span class="pre">get_prefix()</span></tt></a>]</li>
+<li><a class="reference internal" href="mixins-simple.html#django.views.generic.base.TemplateResponseMixin.response_class" title="django.views.generic.base.TemplateResponseMixin.response_class"><tt class="xref py py-attr docutils literal"><span class="pre">response_class</span></tt></a> [<a class="reference internal" href="mixins-simple.html#django.views.generic.base.TemplateResponseMixin.render_to_response" title="django.views.generic.base.TemplateResponseMixin.render_to_response"><tt class="xref py py-meth docutils literal"><span class="pre">render_to_response()</span></tt></a>]</li>
+<li><a class="reference internal" href="mixins-editing.html#django.views.generic.edit.FormMixin.success_url" title="django.views.generic.edit.FormMixin.success_url"><tt class="xref py py-attr docutils literal"><span class="pre">success_url</span></tt></a> [<a class="reference internal" href="mixins-editing.html#django.views.generic.edit.FormMixin.get_success_url" title="django.views.generic.edit.FormMixin.get_success_url"><tt class="xref py py-meth docutils literal"><span class="pre">get_success_url()</span></tt></a>]</li>
+<li><a class="reference internal" href="mixins-simple.html#django.views.generic.base.TemplateResponseMixin.template_engine" title="django.views.generic.base.TemplateResponseMixin.template_engine"><tt class="xref py py-attr docutils literal"><span class="pre">template_engine</span></tt></a></li>
+<li><a class="reference internal" href="mixins-simple.html#django.views.generic.base.TemplateResponseMixin.template_name" title="django.views.generic.base.TemplateResponseMixin.template_name"><tt class="xref py py-attr docutils literal"><span class="pre">template_name</span></tt></a> [<a class="reference internal" href="mixins-simple.html#django.views.generic.base.TemplateResponseMixin.get_template_names" title="django.views.generic.base.TemplateResponseMixin.get_template_names"><tt class="xref py py-meth docutils literal"><span class="pre">get_template_names()</span></tt></a>]</li>
+</ul>
+<p><strong>Methods</strong></p>
+<ul class="simple">
+<li><a class="reference internal" href="base.html#django.views.generic.base.View.as_view" title="django.views.generic.base.View.as_view"><tt class="xref py py-meth docutils literal"><span class="pre">as_view()</span></tt></a></li>
+<li><a class="reference internal" href="base.html#django.views.generic.base.View.dispatch" title="django.views.generic.base.View.dispatch"><tt class="xref py py-meth docutils literal"><span class="pre">dispatch()</span></tt></a></li>
+<li><a class="reference internal" href="mixins-editing.html#django.views.generic.edit.FormMixin.form_invalid" title="django.views.generic.edit.FormMixin.form_invalid"><tt class="xref py py-meth docutils literal"><span class="pre">form_invalid()</span></tt></a></li>
+<li><a class="reference internal" href="mixins-editing.html#django.views.generic.edit.FormMixin.form_valid" title="django.views.generic.edit.FormMixin.form_valid"><tt class="xref py py-meth docutils literal"><span class="pre">form_valid()</span></tt></a></li>
+<li><a class="reference internal" href="mixins-editing.html#django.views.generic.edit.ProcessFormView.get" title="django.views.generic.edit.ProcessFormView.get"><tt class="xref py py-meth docutils literal"><span class="pre">get()</span></tt></a></li>
+<li><a class="reference internal" href="mixins-simple.html#django.views.generic.base.ContextMixin.get_context_data" title="django.views.generic.base.ContextMixin.get_context_data"><tt class="xref py py-meth docutils literal"><span class="pre">get_context_data()</span></tt></a></li>
+<li><a class="reference internal" href="mixins-editing.html#django.views.generic.edit.FormMixin.get_form" title="django.views.generic.edit.FormMixin.get_form"><tt class="xref py py-meth docutils literal"><span class="pre">get_form()</span></tt></a></li>
+<li><a class="reference internal" href="mixins-editing.html#django.views.generic.edit.FormMixin.get_form_kwargs" title="django.views.generic.edit.FormMixin.get_form_kwargs"><tt class="xref py py-meth docutils literal"><span class="pre">get_form_kwargs()</span></tt></a></li>
+<li><a class="reference internal" href="base.html#django.views.generic.base.View.http_method_not_allowed" title="django.views.generic.base.View.http_method_not_allowed"><tt class="xref py py-meth docutils literal"><span class="pre">http_method_not_allowed()</span></tt></a></li>
+<li><a class="reference internal" href="mixins-editing.html#django.views.generic.edit.ProcessFormView.post" title="django.views.generic.edit.ProcessFormView.post"><tt class="xref py py-meth docutils literal"><span class="pre">post()</span></tt></a></li>
+<li><a class="reference internal" href="mixins-editing.html#django.views.generic.edit.ProcessFormView.put" title="django.views.generic.edit.ProcessFormView.put"><tt class="xref py py-meth docutils literal"><span class="pre">put()</span></tt></a></li>
+</ul>
+</div>
+<div class="section" id="s-createview">
+<span id="createview"></span><h3>CreateView<a class="headerlink" href="#createview" title="Permalink to this headline">¶</a></h3>
+<dl class="class">
+<dt id="CreateView">
+<em class="property">class </em><tt class="descname">CreateView</tt><a class="headerlink" href="#CreateView" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<p><strong>Attributes</strong> (with optional accessor):</p>
+<ul class="simple">
+<li><a class="reference internal" href="mixins-simple.html#django.views.generic.base.TemplateResponseMixin.content_type" title="django.views.generic.base.TemplateResponseMixin.content_type"><tt class="xref py py-attr docutils literal"><span class="pre">content_type</span></tt></a></li>
+<li><a class="reference internal" href="mixins-single-object.html#django.views.generic.detail.SingleObjectMixin.context_object_name" title="django.views.generic.detail.SingleObjectMixin.context_object_name"><tt class="xref py py-attr docutils literal"><span class="pre">context_object_name</span></tt></a> [<a class="reference internal" href="mixins-single-object.html#django.views.generic.detail.SingleObjectMixin.get_context_object_name" title="django.views.generic.detail.SingleObjectMixin.get_context_object_name"><tt class="xref py py-meth docutils literal"><span class="pre">get_context_object_name()</span></tt></a>]</li>
+<li><a class="reference internal" href="mixins-editing.html#django.views.generic.edit.ModelFormMixin.fields" title="django.views.generic.edit.ModelFormMixin.fields"><tt class="xref py py-attr docutils literal"><span class="pre">fields</span></tt></a></li>
+<li><a class="reference internal" href="mixins-editing.html#django.views.generic.edit.FormMixin.form_class" title="django.views.generic.edit.FormMixin.form_class"><tt class="xref py py-attr docutils literal"><span class="pre">form_class</span></tt></a> [<a class="reference internal" href="mixins-editing.html#django.views.generic.edit.ModelFormMixin.get_form_class" title="django.views.generic.edit.ModelFormMixin.get_form_class"><tt class="xref py py-meth docutils literal"><span class="pre">get_form_class()</span></tt></a>]</li>
+<li><a class="reference internal" href="base.html#django.views.generic.base.View.http_method_names" title="django.views.generic.base.View.http_method_names"><tt class="xref py py-attr docutils literal"><span class="pre">http_method_names</span></tt></a></li>
+<li><a class="reference internal" href="mixins-editing.html#django.views.generic.edit.FormMixin.initial" title="django.views.generic.edit.FormMixin.initial"><tt class="xref py py-attr docutils literal"><span class="pre">initial</span></tt></a> [<a class="reference internal" href="mixins-editing.html#django.views.generic.edit.FormMixin.get_initial" title="django.views.generic.edit.FormMixin.get_initial"><tt class="xref py py-meth docutils literal"><span class="pre">get_initial()</span></tt></a>]</li>
+<li><a class="reference internal" href="mixins-single-object.html#django.views.generic.detail.SingleObjectMixin.model" title="django.views.generic.detail.SingleObjectMixin.model"><tt class="xref py py-attr docutils literal"><span class="pre">model</span></tt></a></li>
+<li><a class="reference internal" href="mixins-single-object.html#django.views.generic.detail.SingleObjectMixin.pk_url_kwarg" title="django.views.generic.detail.SingleObjectMixin.pk_url_kwarg"><tt class="xref py py-attr docutils literal"><span class="pre">pk_url_kwarg</span></tt></a></li>
+<li><a class="reference internal" href="mixins-editing.html#django.views.generic.edit.FormMixin.prefix" title="django.views.generic.edit.FormMixin.prefix"><tt class="xref py py-attr docutils literal"><span class="pre">prefix</span></tt></a> [<a class="reference internal" href="mixins-editing.html#django.views.generic.edit.FormMixin.get_prefix" title="django.views.generic.edit.FormMixin.get_prefix"><tt class="xref py py-meth docutils literal"><span class="pre">get_prefix()</span></tt></a>]</li>
+<li><a class="reference internal" href="mixins-single-object.html#django.views.generic.detail.SingleObjectMixin.queryset" title="django.views.generic.detail.SingleObjectMixin.queryset"><tt class="xref py py-attr docutils literal"><span class="pre">queryset</span></tt></a> [<a class="reference internal" href="mixins-single-object.html#django.views.generic.detail.SingleObjectMixin.get_queryset" title="django.views.generic.detail.SingleObjectMixin.get_queryset"><tt class="xref py py-meth docutils literal"><span class="pre">get_queryset()</span></tt></a>]</li>
+<li><a class="reference internal" href="mixins-simple.html#django.views.generic.base.TemplateResponseMixin.response_class" title="django.views.generic.base.TemplateResponseMixin.response_class"><tt class="xref py py-attr docutils literal"><span class="pre">response_class</span></tt></a> [<a class="reference internal" href="mixins-simple.html#django.views.generic.base.TemplateResponseMixin.render_to_response" title="django.views.generic.base.TemplateResponseMixin.render_to_response"><tt class="xref py py-meth docutils literal"><span class="pre">render_to_response()</span></tt></a>]</li>
+<li><a class="reference internal" href="mixins-single-object.html#django.views.generic.detail.SingleObjectMixin.slug_field" title="django.views.generic.detail.SingleObjectMixin.slug_field"><tt class="xref py py-attr docutils literal"><span class="pre">slug_field</span></tt></a> [<a class="reference internal" href="mixins-single-object.html#django.views.generic.detail.SingleObjectMixin.get_slug_field" title="django.views.generic.detail.SingleObjectMixin.get_slug_field"><tt class="xref py py-meth docutils literal"><span class="pre">get_slug_field()</span></tt></a>]</li>
+<li><a class="reference internal" href="mixins-single-object.html#django.views.generic.detail.SingleObjectMixin.slug_url_kwarg" title="django.views.generic.detail.SingleObjectMixin.slug_url_kwarg"><tt class="xref py py-attr docutils literal"><span class="pre">slug_url_kwarg</span></tt></a></li>
+<li><a class="reference internal" href="mixins-editing.html#django.views.generic.edit.FormMixin.success_url" title="django.views.generic.edit.FormMixin.success_url"><tt class="xref py py-attr docutils literal"><span class="pre">success_url</span></tt></a> [<a class="reference internal" href="mixins-editing.html#django.views.generic.edit.ModelFormMixin.get_success_url" title="django.views.generic.edit.ModelFormMixin.get_success_url"><tt class="xref py py-meth docutils literal"><span class="pre">get_success_url()</span></tt></a>]</li>
+<li><a class="reference internal" href="mixins-simple.html#django.views.generic.base.TemplateResponseMixin.template_engine" title="django.views.generic.base.TemplateResponseMixin.template_engine"><tt class="xref py py-attr docutils literal"><span class="pre">template_engine</span></tt></a></li>
+<li><a class="reference internal" href="mixins-simple.html#django.views.generic.base.TemplateResponseMixin.template_name" title="django.views.generic.base.TemplateResponseMixin.template_name"><tt class="xref py py-attr docutils literal"><span class="pre">template_name</span></tt></a> [<a class="reference internal" href="mixins-simple.html#django.views.generic.base.TemplateResponseMixin.get_template_names" title="django.views.generic.base.TemplateResponseMixin.get_template_names"><tt class="xref py py-meth docutils literal"><span class="pre">get_template_names()</span></tt></a>]</li>
+<li><a class="reference internal" href="mixins-single-object.html#django.views.generic.detail.SingleObjectTemplateResponseMixin.template_name_field" title="django.views.generic.detail.SingleObjectTemplateResponseMixin.template_name_field"><tt class="xref py py-attr docutils literal"><span class="pre">template_name_field</span></tt></a></li>
+<li><a class="reference internal" href="mixins-single-object.html#django.views.generic.detail.SingleObjectTemplateResponseMixin.template_name_suffix" title="django.views.generic.detail.SingleObjectTemplateResponseMixin.template_name_suffix"><tt class="xref py py-attr docutils literal"><span class="pre">template_name_suffix</span></tt></a></li>
+</ul>
+<p><strong>Methods</strong></p>
+<ul class="simple">
+<li><a class="reference internal" href="base.html#django.views.generic.base.View.as_view" title="django.views.generic.base.View.as_view"><tt class="xref py py-meth docutils literal"><span class="pre">as_view()</span></tt></a></li>
+<li><a class="reference internal" href="base.html#django.views.generic.base.View.dispatch" title="django.views.generic.base.View.dispatch"><tt class="xref py py-meth docutils literal"><span class="pre">dispatch()</span></tt></a></li>
+<li><a class="reference internal" href="mixins-editing.html#django.views.generic.edit.FormMixin.form_invalid" title="django.views.generic.edit.FormMixin.form_invalid"><tt class="xref py py-meth docutils literal"><span class="pre">form_invalid()</span></tt></a></li>
+<li><a class="reference internal" href="mixins-editing.html#django.views.generic.edit.ModelFormMixin.form_valid" title="django.views.generic.edit.ModelFormMixin.form_valid"><tt class="xref py py-meth docutils literal"><span class="pre">form_valid()</span></tt></a></li>
+<li><a class="reference internal" href="mixins-editing.html#django.views.generic.edit.ProcessFormView.get" title="django.views.generic.edit.ProcessFormView.get"><tt class="xref py py-meth docutils literal"><span class="pre">get()</span></tt></a></li>
+<li><a class="reference internal" href="mixins-simple.html#django.views.generic.base.ContextMixin.get_context_data" title="django.views.generic.base.ContextMixin.get_context_data"><tt class="xref py py-meth docutils literal"><span class="pre">get_context_data()</span></tt></a></li>
+<li><a class="reference internal" href="mixins-editing.html#django.views.generic.edit.FormMixin.get_form" title="django.views.generic.edit.FormMixin.get_form"><tt class="xref py py-meth docutils literal"><span class="pre">get_form()</span></tt></a></li>
+<li><a class="reference internal" href="mixins-editing.html#django.views.generic.edit.ModelFormMixin.get_form_kwargs" title="django.views.generic.edit.ModelFormMixin.get_form_kwargs"><tt class="xref py py-meth docutils literal"><span class="pre">get_form_kwargs()</span></tt></a></li>
+<li><a class="reference internal" href="mixins-single-object.html#django.views.generic.detail.SingleObjectMixin.get_object" title="django.views.generic.detail.SingleObjectMixin.get_object"><tt class="xref py py-meth docutils literal"><span class="pre">get_object()</span></tt></a></li>
+<li><tt class="docutils literal"><span class="pre">head()</span></tt></li>
+<li><a class="reference internal" href="base.html#django.views.generic.base.View.http_method_not_allowed" title="django.views.generic.base.View.http_method_not_allowed"><tt class="xref py py-meth docutils literal"><span class="pre">http_method_not_allowed()</span></tt></a></li>
+<li><a class="reference internal" href="mixins-editing.html#django.views.generic.edit.ProcessFormView.post" title="django.views.generic.edit.ProcessFormView.post"><tt class="xref py py-meth docutils literal"><span class="pre">post()</span></tt></a></li>
+<li><tt class="docutils literal"><span class="pre">put()</span></tt></li>
+<li><a class="reference internal" href="mixins-simple.html#django.views.generic.base.TemplateResponseMixin.render_to_response" title="django.views.generic.base.TemplateResponseMixin.render_to_response"><tt class="xref py py-meth docutils literal"><span class="pre">render_to_response()</span></tt></a></li>
+</ul>
+</div>
+<div class="section" id="s-updateview">
+<span id="updateview"></span><h3>UpdateView<a class="headerlink" href="#updateview" title="Permalink to this headline">¶</a></h3>
+<dl class="class">
+<dt id="UpdateView">
+<em class="property">class </em><tt class="descname">UpdateView</tt><a class="headerlink" href="#UpdateView" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<p><strong>Attributes</strong> (with optional accessor):</p>
+<ul class="simple">
+<li><a class="reference internal" href="mixins-simple.html#django.views.generic.base.TemplateResponseMixin.content_type" title="django.views.generic.base.TemplateResponseMixin.content_type"><tt class="xref py py-attr docutils literal"><span class="pre">content_type</span></tt></a></li>
+<li><a class="reference internal" href="mixins-single-object.html#django.views.generic.detail.SingleObjectMixin.context_object_name" title="django.views.generic.detail.SingleObjectMixin.context_object_name"><tt class="xref py py-attr docutils literal"><span class="pre">context_object_name</span></tt></a> [<a class="reference internal" href="mixins-single-object.html#django.views.generic.detail.SingleObjectMixin.get_context_object_name" title="django.views.generic.detail.SingleObjectMixin.get_context_object_name"><tt class="xref py py-meth docutils literal"><span class="pre">get_context_object_name()</span></tt></a>]</li>
+<li><a class="reference internal" href="mixins-editing.html#django.views.generic.edit.ModelFormMixin.fields" title="django.views.generic.edit.ModelFormMixin.fields"><tt class="xref py py-attr docutils literal"><span class="pre">fields</span></tt></a></li>
+<li><a class="reference internal" href="mixins-editing.html#django.views.generic.edit.FormMixin.form_class" title="django.views.generic.edit.FormMixin.form_class"><tt class="xref py py-attr docutils literal"><span class="pre">form_class</span></tt></a> [<a class="reference internal" href="mixins-editing.html#django.views.generic.edit.ModelFormMixin.get_form_class" title="django.views.generic.edit.ModelFormMixin.get_form_class"><tt class="xref py py-meth docutils literal"><span class="pre">get_form_class()</span></tt></a>]</li>
+<li><a class="reference internal" href="base.html#django.views.generic.base.View.http_method_names" title="django.views.generic.base.View.http_method_names"><tt class="xref py py-attr docutils literal"><span class="pre">http_method_names</span></tt></a></li>
+<li><a class="reference internal" href="mixins-editing.html#django.views.generic.edit.FormMixin.initial" title="django.views.generic.edit.FormMixin.initial"><tt class="xref py py-attr docutils literal"><span class="pre">initial</span></tt></a> [<a class="reference internal" href="mixins-editing.html#django.views.generic.edit.FormMixin.get_initial" title="django.views.generic.edit.FormMixin.get_initial"><tt class="xref py py-meth docutils literal"><span class="pre">get_initial()</span></tt></a>]</li>
+<li><a class="reference internal" href="mixins-single-object.html#django.views.generic.detail.SingleObjectMixin.model" title="django.views.generic.detail.SingleObjectMixin.model"><tt class="xref py py-attr docutils literal"><span class="pre">model</span></tt></a></li>
+<li><a class="reference internal" href="mixins-single-object.html#django.views.generic.detail.SingleObjectMixin.pk_url_kwarg" title="django.views.generic.detail.SingleObjectMixin.pk_url_kwarg"><tt class="xref py py-attr docutils literal"><span class="pre">pk_url_kwarg</span></tt></a></li>
+<li><a class="reference internal" href="mixins-editing.html#django.views.generic.edit.FormMixin.prefix" title="django.views.generic.edit.FormMixin.prefix"><tt class="xref py py-attr docutils literal"><span class="pre">prefix</span></tt></a> [<a class="reference internal" href="mixins-editing.html#django.views.generic.edit.FormMixin.get_prefix" title="django.views.generic.edit.FormMixin.get_prefix"><tt class="xref py py-meth docutils literal"><span class="pre">get_prefix()</span></tt></a>]</li>
+<li><a class="reference internal" href="mixins-single-object.html#django.views.generic.detail.SingleObjectMixin.queryset" title="django.views.generic.detail.SingleObjectMixin.queryset"><tt class="xref py py-attr docutils literal"><span class="pre">queryset</span></tt></a> [<a class="reference internal" href="mixins-single-object.html#django.views.generic.detail.SingleObjectMixin.get_queryset" title="django.views.generic.detail.SingleObjectMixin.get_queryset"><tt class="xref py py-meth docutils literal"><span class="pre">get_queryset()</span></tt></a>]</li>
+<li><a class="reference internal" href="mixins-simple.html#django.views.generic.base.TemplateResponseMixin.response_class" title="django.views.generic.base.TemplateResponseMixin.response_class"><tt class="xref py py-attr docutils literal"><span class="pre">response_class</span></tt></a> [<a class="reference internal" href="mixins-simple.html#django.views.generic.base.TemplateResponseMixin.render_to_response" title="django.views.generic.base.TemplateResponseMixin.render_to_response"><tt class="xref py py-meth docutils literal"><span class="pre">render_to_response()</span></tt></a>]</li>
+<li><a class="reference internal" href="mixins-single-object.html#django.views.generic.detail.SingleObjectMixin.slug_field" title="django.views.generic.detail.SingleObjectMixin.slug_field"><tt class="xref py py-attr docutils literal"><span class="pre">slug_field</span></tt></a> [<a class="reference internal" href="mixins-single-object.html#django.views.generic.detail.SingleObjectMixin.get_slug_field" title="django.views.generic.detail.SingleObjectMixin.get_slug_field"><tt class="xref py py-meth docutils literal"><span class="pre">get_slug_field()</span></tt></a>]</li>
+<li><a class="reference internal" href="mixins-single-object.html#django.views.generic.detail.SingleObjectMixin.slug_url_kwarg" title="django.views.generic.detail.SingleObjectMixin.slug_url_kwarg"><tt class="xref py py-attr docutils literal"><span class="pre">slug_url_kwarg</span></tt></a></li>
+<li><a class="reference internal" href="mixins-editing.html#django.views.generic.edit.FormMixin.success_url" title="django.views.generic.edit.FormMixin.success_url"><tt class="xref py py-attr docutils literal"><span class="pre">success_url</span></tt></a> [<a class="reference internal" href="mixins-editing.html#django.views.generic.edit.ModelFormMixin.get_success_url" title="django.views.generic.edit.ModelFormMixin.get_success_url"><tt class="xref py py-meth docutils literal"><span class="pre">get_success_url()</span></tt></a>]</li>
+<li><a class="reference internal" href="mixins-simple.html#django.views.generic.base.TemplateResponseMixin.template_engine" title="django.views.generic.base.TemplateResponseMixin.template_engine"><tt class="xref py py-attr docutils literal"><span class="pre">template_engine</span></tt></a></li>
+<li><a class="reference internal" href="mixins-simple.html#django.views.generic.base.TemplateResponseMixin.template_name" title="django.views.generic.base.TemplateResponseMixin.template_name"><tt class="xref py py-attr docutils literal"><span class="pre">template_name</span></tt></a> [<a class="reference internal" href="mixins-simple.html#django.views.generic.base.TemplateResponseMixin.get_template_names" title="django.views.generic.base.TemplateResponseMixin.get_template_names"><tt class="xref py py-meth docutils literal"><span class="pre">get_template_names()</span></tt></a>]</li>
+<li><a class="reference internal" href="mixins-single-object.html#django.views.generic.detail.SingleObjectTemplateResponseMixin.template_name_field" title="django.views.generic.detail.SingleObjectTemplateResponseMixin.template_name_field"><tt class="xref py py-attr docutils literal"><span class="pre">template_name_field</span></tt></a></li>
+<li><a class="reference internal" href="mixins-single-object.html#django.views.generic.detail.SingleObjectTemplateResponseMixin.template_name_suffix" title="django.views.generic.detail.SingleObjectTemplateResponseMixin.template_name_suffix"><tt class="xref py py-attr docutils literal"><span class="pre">template_name_suffix</span></tt></a></li>
+</ul>
+<p><strong>Methods</strong></p>
+<ul class="simple">
+<li><a class="reference internal" href="base.html#django.views.generic.base.View.as_view" title="django.views.generic.base.View.as_view"><tt class="xref py py-meth docutils literal"><span class="pre">as_view()</span></tt></a></li>
+<li><a class="reference internal" href="base.html#django.views.generic.base.View.dispatch" title="django.views.generic.base.View.dispatch"><tt class="xref py py-meth docutils literal"><span class="pre">dispatch()</span></tt></a></li>
+<li><a class="reference internal" href="mixins-editing.html#django.views.generic.edit.FormMixin.form_invalid" title="django.views.generic.edit.FormMixin.form_invalid"><tt class="xref py py-meth docutils literal"><span class="pre">form_invalid()</span></tt></a></li>
+<li><a class="reference internal" href="mixins-editing.html#django.views.generic.edit.ModelFormMixin.form_valid" title="django.views.generic.edit.ModelFormMixin.form_valid"><tt class="xref py py-meth docutils literal"><span class="pre">form_valid()</span></tt></a></li>
+<li><a class="reference internal" href="mixins-editing.html#django.views.generic.edit.ProcessFormView.get" title="django.views.generic.edit.ProcessFormView.get"><tt class="xref py py-meth docutils literal"><span class="pre">get()</span></tt></a></li>
+<li><a class="reference internal" href="mixins-simple.html#django.views.generic.base.ContextMixin.get_context_data" title="django.views.generic.base.ContextMixin.get_context_data"><tt class="xref py py-meth docutils literal"><span class="pre">get_context_data()</span></tt></a></li>
+<li><a class="reference internal" href="mixins-editing.html#django.views.generic.edit.FormMixin.get_form" title="django.views.generic.edit.FormMixin.get_form"><tt class="xref py py-meth docutils literal"><span class="pre">get_form()</span></tt></a></li>
+<li><a class="reference internal" href="mixins-editing.html#django.views.generic.edit.ModelFormMixin.get_form_kwargs" title="django.views.generic.edit.ModelFormMixin.get_form_kwargs"><tt class="xref py py-meth docutils literal"><span class="pre">get_form_kwargs()</span></tt></a></li>
+<li><a class="reference internal" href="mixins-single-object.html#django.views.generic.detail.SingleObjectMixin.get_object" title="django.views.generic.detail.SingleObjectMixin.get_object"><tt class="xref py py-meth docutils literal"><span class="pre">get_object()</span></tt></a></li>
+<li><tt class="docutils literal"><span class="pre">head()</span></tt></li>
+<li><a class="reference internal" href="base.html#django.views.generic.base.View.http_method_not_allowed" title="django.views.generic.base.View.http_method_not_allowed"><tt class="xref py py-meth docutils literal"><span class="pre">http_method_not_allowed()</span></tt></a></li>
+<li><a class="reference internal" href="mixins-editing.html#django.views.generic.edit.ProcessFormView.post" title="django.views.generic.edit.ProcessFormView.post"><tt class="xref py py-meth docutils literal"><span class="pre">post()</span></tt></a></li>
+<li><tt class="docutils literal"><span class="pre">put()</span></tt></li>
+<li><a class="reference internal" href="mixins-simple.html#django.views.generic.base.TemplateResponseMixin.render_to_response" title="django.views.generic.base.TemplateResponseMixin.render_to_response"><tt class="xref py py-meth docutils literal"><span class="pre">render_to_response()</span></tt></a></li>
+</ul>
+</div>
+<div class="section" id="s-deleteview">
+<span id="deleteview"></span><h3>DeleteView<a class="headerlink" href="#deleteview" title="Permalink to this headline">¶</a></h3>
+<dl class="class">
+<dt id="DeleteView">
+<em class="property">class </em><tt class="descname">DeleteView</tt><a class="headerlink" href="#DeleteView" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<p><strong>Attributes</strong> (with optional accessor):</p>
+<ul class="simple">
+<li><a class="reference internal" href="mixins-simple.html#django.views.generic.base.TemplateResponseMixin.content_type" title="django.views.generic.base.TemplateResponseMixin.content_type"><tt class="xref py py-attr docutils literal"><span class="pre">content_type</span></tt></a></li>
+<li><a class="reference internal" href="mixins-single-object.html#django.views.generic.detail.SingleObjectMixin.context_object_name" title="django.views.generic.detail.SingleObjectMixin.context_object_name"><tt class="xref py py-attr docutils literal"><span class="pre">context_object_name</span></tt></a> [<a class="reference internal" href="mixins-single-object.html#django.views.generic.detail.SingleObjectMixin.get_context_object_name" title="django.views.generic.detail.SingleObjectMixin.get_context_object_name"><tt class="xref py py-meth docutils literal"><span class="pre">get_context_object_name()</span></tt></a>]</li>
+<li><a class="reference internal" href="base.html#django.views.generic.base.View.http_method_names" title="django.views.generic.base.View.http_method_names"><tt class="xref py py-attr docutils literal"><span class="pre">http_method_names</span></tt></a></li>
+<li><a class="reference internal" href="mixins-single-object.html#django.views.generic.detail.SingleObjectMixin.model" title="django.views.generic.detail.SingleObjectMixin.model"><tt class="xref py py-attr docutils literal"><span class="pre">model</span></tt></a></li>
+<li><a class="reference internal" href="mixins-single-object.html#django.views.generic.detail.SingleObjectMixin.pk_url_kwarg" title="django.views.generic.detail.SingleObjectMixin.pk_url_kwarg"><tt class="xref py py-attr docutils literal"><span class="pre">pk_url_kwarg</span></tt></a></li>
+<li><a class="reference internal" href="mixins-single-object.html#django.views.generic.detail.SingleObjectMixin.queryset" title="django.views.generic.detail.SingleObjectMixin.queryset"><tt class="xref py py-attr docutils literal"><span class="pre">queryset</span></tt></a> [<a class="reference internal" href="mixins-single-object.html#django.views.generic.detail.SingleObjectMixin.get_queryset" title="django.views.generic.detail.SingleObjectMixin.get_queryset"><tt class="xref py py-meth docutils literal"><span class="pre">get_queryset()</span></tt></a>]</li>
+<li><a class="reference internal" href="mixins-simple.html#django.views.generic.base.TemplateResponseMixin.response_class" title="django.views.generic.base.TemplateResponseMixin.response_class"><tt class="xref py py-attr docutils literal"><span class="pre">response_class</span></tt></a> [<a class="reference internal" href="mixins-simple.html#django.views.generic.base.TemplateResponseMixin.render_to_response" title="django.views.generic.base.TemplateResponseMixin.render_to_response"><tt class="xref py py-meth docutils literal"><span class="pre">render_to_response()</span></tt></a>]</li>
+<li><a class="reference internal" href="mixins-single-object.html#django.views.generic.detail.SingleObjectMixin.slug_field" title="django.views.generic.detail.SingleObjectMixin.slug_field"><tt class="xref py py-attr docutils literal"><span class="pre">slug_field</span></tt></a> [<a class="reference internal" href="mixins-single-object.html#django.views.generic.detail.SingleObjectMixin.get_slug_field" title="django.views.generic.detail.SingleObjectMixin.get_slug_field"><tt class="xref py py-meth docutils literal"><span class="pre">get_slug_field()</span></tt></a>]</li>
+<li><a class="reference internal" href="mixins-single-object.html#django.views.generic.detail.SingleObjectMixin.slug_url_kwarg" title="django.views.generic.detail.SingleObjectMixin.slug_url_kwarg"><tt class="xref py py-attr docutils literal"><span class="pre">slug_url_kwarg</span></tt></a></li>
+<li><a class="reference internal" href="mixins-editing.html#django.views.generic.edit.DeletionMixin.success_url" title="django.views.generic.edit.DeletionMixin.success_url"><tt class="xref py py-attr docutils literal"><span class="pre">success_url</span></tt></a> [<a class="reference internal" href="mixins-editing.html#django.views.generic.edit.DeletionMixin.get_success_url" title="django.views.generic.edit.DeletionMixin.get_success_url"><tt class="xref py py-meth docutils literal"><span class="pre">get_success_url()</span></tt></a>]</li>
+<li><a class="reference internal" href="mixins-simple.html#django.views.generic.base.TemplateResponseMixin.template_engine" title="django.views.generic.base.TemplateResponseMixin.template_engine"><tt class="xref py py-attr docutils literal"><span class="pre">template_engine</span></tt></a></li>
+<li><a class="reference internal" href="mixins-simple.html#django.views.generic.base.TemplateResponseMixin.template_name" title="django.views.generic.base.TemplateResponseMixin.template_name"><tt class="xref py py-attr docutils literal"><span class="pre">template_name</span></tt></a> [<a class="reference internal" href="mixins-simple.html#django.views.generic.base.TemplateResponseMixin.get_template_names" title="django.views.generic.base.TemplateResponseMixin.get_template_names"><tt class="xref py py-meth docutils literal"><span class="pre">get_template_names()</span></tt></a>]</li>
+<li><a class="reference internal" href="mixins-single-object.html#django.views.generic.detail.SingleObjectTemplateResponseMixin.template_name_field" title="django.views.generic.detail.SingleObjectTemplateResponseMixin.template_name_field"><tt class="xref py py-attr docutils literal"><span class="pre">template_name_field</span></tt></a></li>
+<li><a class="reference internal" href="mixins-single-object.html#django.views.generic.detail.SingleObjectTemplateResponseMixin.template_name_suffix" title="django.views.generic.detail.SingleObjectTemplateResponseMixin.template_name_suffix"><tt class="xref py py-attr docutils literal"><span class="pre">template_name_suffix</span></tt></a></li>
+</ul>
+<p><strong>Methods</strong></p>
+<ul class="simple">
+<li><a class="reference internal" href="base.html#django.views.generic.base.View.as_view" title="django.views.generic.base.View.as_view"><tt class="xref py py-meth docutils literal"><span class="pre">as_view()</span></tt></a></li>
+<li><tt class="docutils literal"><span class="pre">delete()</span></tt></li>
+<li><a class="reference internal" href="base.html#django.views.generic.base.View.dispatch" title="django.views.generic.base.View.dispatch"><tt class="xref py py-meth docutils literal"><span class="pre">dispatch()</span></tt></a></li>
+<li><tt class="docutils literal"><span class="pre">get()</span></tt></li>
+<li><a class="reference internal" href="mixins-single-object.html#django.views.generic.detail.SingleObjectMixin.get_context_data" title="django.views.generic.detail.SingleObjectMixin.get_context_data"><tt class="xref py py-meth docutils literal"><span class="pre">get_context_data()</span></tt></a></li>
+<li><a class="reference internal" href="mixins-single-object.html#django.views.generic.detail.SingleObjectMixin.get_object" title="django.views.generic.detail.SingleObjectMixin.get_object"><tt class="xref py py-meth docutils literal"><span class="pre">get_object()</span></tt></a></li>
+<li><tt class="docutils literal"><span class="pre">head()</span></tt></li>
+<li><a class="reference internal" href="base.html#django.views.generic.base.View.http_method_not_allowed" title="django.views.generic.base.View.http_method_not_allowed"><tt class="xref py py-meth docutils literal"><span class="pre">http_method_not_allowed()</span></tt></a></li>
+<li><tt class="docutils literal"><span class="pre">post()</span></tt></li>
+<li><a class="reference internal" href="mixins-simple.html#django.views.generic.base.TemplateResponseMixin.render_to_response" title="django.views.generic.base.TemplateResponseMixin.render_to_response"><tt class="xref py py-meth docutils literal"><span class="pre">render_to_response()</span></tt></a></li>
+</ul>
+</div>
+</div>
+<div class="section" id="s-date-based-views">
+<span id="date-based-views"></span><h2>Date-based views<a class="headerlink" href="#date-based-views" title="Permalink to this headline">¶</a></h2>
+<div class="section" id="s-archiveindexview">
+<span id="archiveindexview"></span><h3>ArchiveIndexView<a class="headerlink" href="#archiveindexview" title="Permalink to this headline">¶</a></h3>
+<dl class="class">
+<dt id="ArchiveIndexView">
+<em class="property">class </em><tt class="descname">ArchiveIndexView</tt><a class="headerlink" href="#ArchiveIndexView" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<p><strong>Attributes</strong> (with optional accessor):</p>
+<ul class="simple">
+<li><a class="reference internal" href="mixins-multiple-object.html#django.views.generic.list.MultipleObjectMixin.allow_empty" title="django.views.generic.list.MultipleObjectMixin.allow_empty"><tt class="xref py py-attr docutils literal"><span class="pre">allow_empty</span></tt></a> [<a class="reference internal" href="mixins-multiple-object.html#django.views.generic.list.MultipleObjectMixin.get_allow_empty" title="django.views.generic.list.MultipleObjectMixin.get_allow_empty"><tt class="xref py py-meth docutils literal"><span class="pre">get_allow_empty()</span></tt></a>]</li>
+<li><a class="reference internal" href="mixins-date-based.html#django.views.generic.dates.DateMixin.allow_future" title="django.views.generic.dates.DateMixin.allow_future"><tt class="xref py py-attr docutils literal"><span class="pre">allow_future</span></tt></a> [<a class="reference internal" href="mixins-date-based.html#django.views.generic.dates.DateMixin.get_allow_future" title="django.views.generic.dates.DateMixin.get_allow_future"><tt class="xref py py-meth docutils literal"><span class="pre">get_allow_future()</span></tt></a>]</li>
+<li><a class="reference internal" href="mixins-simple.html#django.views.generic.base.TemplateResponseMixin.content_type" title="django.views.generic.base.TemplateResponseMixin.content_type"><tt class="xref py py-attr docutils literal"><span class="pre">content_type</span></tt></a></li>
+<li><a class="reference internal" href="mixins-multiple-object.html#django.views.generic.list.MultipleObjectMixin.context_object_name" title="django.views.generic.list.MultipleObjectMixin.context_object_name"><tt class="xref py py-attr docutils literal"><span class="pre">context_object_name</span></tt></a> [<a class="reference internal" href="mixins-multiple-object.html#django.views.generic.list.MultipleObjectMixin.get_context_object_name" title="django.views.generic.list.MultipleObjectMixin.get_context_object_name"><tt class="xref py py-meth docutils literal"><span class="pre">get_context_object_name()</span></tt></a>]</li>
+<li><a class="reference internal" href="mixins-date-based.html#django.views.generic.dates.DateMixin.date_field" title="django.views.generic.dates.DateMixin.date_field"><tt class="xref py py-attr docutils literal"><span class="pre">date_field</span></tt></a> [<a class="reference internal" href="mixins-date-based.html#django.views.generic.dates.DateMixin.get_date_field" title="django.views.generic.dates.DateMixin.get_date_field"><tt class="xref py py-meth docutils literal"><span class="pre">get_date_field()</span></tt></a>]</li>
+<li><a class="reference internal" href="base.html#django.views.generic.base.View.http_method_names" title="django.views.generic.base.View.http_method_names"><tt class="xref py py-attr docutils literal"><span class="pre">http_method_names</span></tt></a></li>
+<li><a class="reference internal" href="mixins-multiple-object.html#django.views.generic.list.MultipleObjectMixin.model" title="django.views.generic.list.MultipleObjectMixin.model"><tt class="xref py py-attr docutils literal"><span class="pre">model</span></tt></a></li>
+<li><a class="reference internal" href="mixins-multiple-object.html#django.views.generic.list.MultipleObjectMixin.ordering" title="django.views.generic.list.MultipleObjectMixin.ordering"><tt class="xref py py-attr docutils literal"><span class="pre">ordering</span></tt></a> [<a class="reference internal" href="mixins-multiple-object.html#django.views.generic.list.MultipleObjectMixin.get_ordering" title="django.views.generic.list.MultipleObjectMixin.get_ordering"><tt class="xref py py-meth docutils literal"><span class="pre">get_ordering()</span></tt></a>]</li>
+<li><a class="reference internal" href="mixins-multiple-object.html#django.views.generic.list.MultipleObjectMixin.paginate_by" title="django.views.generic.list.MultipleObjectMixin.paginate_by"><tt class="xref py py-attr docutils literal"><span class="pre">paginate_by</span></tt></a> [<a class="reference internal" href="mixins-multiple-object.html#django.views.generic.list.MultipleObjectMixin.get_paginate_by" title="django.views.generic.list.MultipleObjectMixin.get_paginate_by"><tt class="xref py py-meth docutils literal"><span class="pre">get_paginate_by()</span></tt></a>]</li>
+<li><a class="reference internal" href="mixins-multiple-object.html#django.views.generic.list.MultipleObjectMixin.paginate_orphans" title="django.views.generic.list.MultipleObjectMixin.paginate_orphans"><tt class="xref py py-attr docutils literal"><span class="pre">paginate_orphans</span></tt></a> [<a class="reference internal" href="mixins-multiple-object.html#django.views.generic.list.MultipleObjectMixin.get_paginate_orphans" title="django.views.generic.list.MultipleObjectMixin.get_paginate_orphans"><tt class="xref py py-meth docutils literal"><span class="pre">get_paginate_orphans()</span></tt></a>]</li>
+<li><a class="reference internal" href="mixins-multiple-object.html#django.views.generic.list.MultipleObjectMixin.paginator_class" title="django.views.generic.list.MultipleObjectMixin.paginator_class"><tt class="xref py py-attr docutils literal"><span class="pre">paginator_class</span></tt></a></li>
+<li><a class="reference internal" href="mixins-multiple-object.html#django.views.generic.list.MultipleObjectMixin.queryset" title="django.views.generic.list.MultipleObjectMixin.queryset"><tt class="xref py py-attr docutils literal"><span class="pre">queryset</span></tt></a> [<a class="reference internal" href="mixins-multiple-object.html#django.views.generic.list.MultipleObjectMixin.get_queryset" title="django.views.generic.list.MultipleObjectMixin.get_queryset"><tt class="xref py py-meth docutils literal"><span class="pre">get_queryset()</span></tt></a>]</li>
+<li><a class="reference internal" href="mixins-simple.html#django.views.generic.base.TemplateResponseMixin.response_class" title="django.views.generic.base.TemplateResponseMixin.response_class"><tt class="xref py py-attr docutils literal"><span class="pre">response_class</span></tt></a> [<a class="reference internal" href="mixins-simple.html#django.views.generic.base.TemplateResponseMixin.render_to_response" title="django.views.generic.base.TemplateResponseMixin.render_to_response"><tt class="xref py py-meth docutils literal"><span class="pre">render_to_response()</span></tt></a>]</li>
+<li><a class="reference internal" href="mixins-simple.html#django.views.generic.base.TemplateResponseMixin.template_engine" title="django.views.generic.base.TemplateResponseMixin.template_engine"><tt class="xref py py-attr docutils literal"><span class="pre">template_engine</span></tt></a></li>
+<li><a class="reference internal" href="mixins-simple.html#django.views.generic.base.TemplateResponseMixin.template_name" title="django.views.generic.base.TemplateResponseMixin.template_name"><tt class="xref py py-attr docutils literal"><span class="pre">template_name</span></tt></a> [<a class="reference internal" href="mixins-simple.html#django.views.generic.base.TemplateResponseMixin.get_template_names" title="django.views.generic.base.TemplateResponseMixin.get_template_names"><tt class="xref py py-meth docutils literal"><span class="pre">get_template_names()</span></tt></a>]</li>
+<li><a class="reference internal" href="mixins-multiple-object.html#django.views.generic.list.MultipleObjectTemplateResponseMixin.template_name_suffix" title="django.views.generic.list.MultipleObjectTemplateResponseMixin.template_name_suffix"><tt class="xref py py-attr docutils literal"><span class="pre">template_name_suffix</span></tt></a></li>
+</ul>
+<p><strong>Methods</strong></p>
+<ul class="simple">
+<li><a class="reference internal" href="base.html#django.views.generic.base.View.as_view" title="django.views.generic.base.View.as_view"><tt class="xref py py-meth docutils literal"><span class="pre">as_view()</span></tt></a></li>
+<li><a class="reference internal" href="base.html#django.views.generic.base.View.dispatch" title="django.views.generic.base.View.dispatch"><tt class="xref py py-meth docutils literal"><span class="pre">dispatch()</span></tt></a></li>
+<li><tt class="docutils literal"><span class="pre">get()</span></tt></li>
+<li><a class="reference internal" href="mixins-multiple-object.html#django.views.generic.list.MultipleObjectMixin.get_context_data" title="django.views.generic.list.MultipleObjectMixin.get_context_data"><tt class="xref py py-meth docutils literal"><span class="pre">get_context_data()</span></tt></a></li>
+<li><a class="reference internal" href="mixins-date-based.html#django.views.generic.dates.BaseDateListView.get_date_list" title="django.views.generic.dates.BaseDateListView.get_date_list"><tt class="xref py py-meth docutils literal"><span class="pre">get_date_list()</span></tt></a></li>
+<li><a class="reference internal" href="mixins-date-based.html#django.views.generic.dates.BaseDateListView.get_dated_items" title="django.views.generic.dates.BaseDateListView.get_dated_items"><tt class="xref py py-meth docutils literal"><span class="pre">get_dated_items()</span></tt></a></li>
+<li><a class="reference internal" href="mixins-date-based.html#django.views.generic.dates.BaseDateListView.get_dated_queryset" title="django.views.generic.dates.BaseDateListView.get_dated_queryset"><tt class="xref py py-meth docutils literal"><span class="pre">get_dated_queryset()</span></tt></a></li>
+<li><a class="reference internal" href="mixins-multiple-object.html#django.views.generic.list.MultipleObjectMixin.get_paginator" title="django.views.generic.list.MultipleObjectMixin.get_paginator"><tt class="xref py py-meth docutils literal"><span class="pre">get_paginator()</span></tt></a></li>
+<li><tt class="docutils literal"><span class="pre">head()</span></tt></li>
+<li><a class="reference internal" href="base.html#django.views.generic.base.View.http_method_not_allowed" title="django.views.generic.base.View.http_method_not_allowed"><tt class="xref py py-meth docutils literal"><span class="pre">http_method_not_allowed()</span></tt></a></li>
+<li><a class="reference internal" href="mixins-multiple-object.html#django.views.generic.list.MultipleObjectMixin.paginate_queryset" title="django.views.generic.list.MultipleObjectMixin.paginate_queryset"><tt class="xref py py-meth docutils literal"><span class="pre">paginate_queryset()</span></tt></a></li>
+<li><a class="reference internal" href="mixins-simple.html#django.views.generic.base.TemplateResponseMixin.render_to_response" title="django.views.generic.base.TemplateResponseMixin.render_to_response"><tt class="xref py py-meth docutils literal"><span class="pre">render_to_response()</span></tt></a></li>
+</ul>
+</div>
+<div class="section" id="s-yeararchiveview">
+<span id="yeararchiveview"></span><h3>YearArchiveView<a class="headerlink" href="#yeararchiveview" title="Permalink to this headline">¶</a></h3>
+<dl class="class">
+<dt id="YearArchiveView">
+<em class="property">class </em><tt class="descname">YearArchiveView</tt><a class="headerlink" href="#YearArchiveView" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<p><strong>Attributes</strong> (with optional accessor):</p>
+<ul class="simple">
+<li><a class="reference internal" href="mixins-multiple-object.html#django.views.generic.list.MultipleObjectMixin.allow_empty" title="django.views.generic.list.MultipleObjectMixin.allow_empty"><tt class="xref py py-attr docutils literal"><span class="pre">allow_empty</span></tt></a> [<a class="reference internal" href="mixins-multiple-object.html#django.views.generic.list.MultipleObjectMixin.get_allow_empty" title="django.views.generic.list.MultipleObjectMixin.get_allow_empty"><tt class="xref py py-meth docutils literal"><span class="pre">get_allow_empty()</span></tt></a>]</li>
+<li><a class="reference internal" href="mixins-date-based.html#django.views.generic.dates.DateMixin.allow_future" title="django.views.generic.dates.DateMixin.allow_future"><tt class="xref py py-attr docutils literal"><span class="pre">allow_future</span></tt></a> [<a class="reference internal" href="mixins-date-based.html#django.views.generic.dates.DateMixin.get_allow_future" title="django.views.generic.dates.DateMixin.get_allow_future"><tt class="xref py py-meth docutils literal"><span class="pre">get_allow_future()</span></tt></a>]</li>
+<li><a class="reference internal" href="mixins-simple.html#django.views.generic.base.TemplateResponseMixin.content_type" title="django.views.generic.base.TemplateResponseMixin.content_type"><tt class="xref py py-attr docutils literal"><span class="pre">content_type</span></tt></a></li>
+<li><a class="reference internal" href="mixins-multiple-object.html#django.views.generic.list.MultipleObjectMixin.context_object_name" title="django.views.generic.list.MultipleObjectMixin.context_object_name"><tt class="xref py py-attr docutils literal"><span class="pre">context_object_name</span></tt></a> [<a class="reference internal" href="mixins-multiple-object.html#django.views.generic.list.MultipleObjectMixin.get_context_object_name" title="django.views.generic.list.MultipleObjectMixin.get_context_object_name"><tt class="xref py py-meth docutils literal"><span class="pre">get_context_object_name()</span></tt></a>]</li>
+<li><a class="reference internal" href="mixins-date-based.html#django.views.generic.dates.DateMixin.date_field" title="django.views.generic.dates.DateMixin.date_field"><tt class="xref py py-attr docutils literal"><span class="pre">date_field</span></tt></a> [<a class="reference internal" href="mixins-date-based.html#django.views.generic.dates.DateMixin.get_date_field" title="django.views.generic.dates.DateMixin.get_date_field"><tt class="xref py py-meth docutils literal"><span class="pre">get_date_field()</span></tt></a>]</li>
+<li><a class="reference internal" href="base.html#django.views.generic.base.View.http_method_names" title="django.views.generic.base.View.http_method_names"><tt class="xref py py-attr docutils literal"><span class="pre">http_method_names</span></tt></a></li>
+<li><a class="reference internal" href="generic-date-based.html#django.views.generic.dates.YearArchiveView.make_object_list" title="django.views.generic.dates.YearArchiveView.make_object_list"><tt class="xref py py-attr docutils literal"><span class="pre">make_object_list</span></tt></a> [<a class="reference internal" href="generic-date-based.html#django.views.generic.dates.YearArchiveView.get_make_object_list" title="django.views.generic.dates.YearArchiveView.get_make_object_list"><tt class="xref py py-meth docutils literal"><span class="pre">get_make_object_list()</span></tt></a>]</li>
+<li><a class="reference internal" href="mixins-multiple-object.html#django.views.generic.list.MultipleObjectMixin.model" title="django.views.generic.list.MultipleObjectMixin.model"><tt class="xref py py-attr docutils literal"><span class="pre">model</span></tt></a></li>
+<li><a class="reference internal" href="mixins-multiple-object.html#django.views.generic.list.MultipleObjectMixin.ordering" title="django.views.generic.list.MultipleObjectMixin.ordering"><tt class="xref py py-attr docutils literal"><span class="pre">ordering</span></tt></a> [<a class="reference internal" href="mixins-multiple-object.html#django.views.generic.list.MultipleObjectMixin.get_ordering" title="django.views.generic.list.MultipleObjectMixin.get_ordering"><tt class="xref py py-meth docutils literal"><span class="pre">get_ordering()</span></tt></a>]</li>
+<li><a class="reference internal" href="mixins-multiple-object.html#django.views.generic.list.MultipleObjectMixin.paginate_by" title="django.views.generic.list.MultipleObjectMixin.paginate_by"><tt class="xref py py-attr docutils literal"><span class="pre">paginate_by</span></tt></a> [<a class="reference internal" href="mixins-multiple-object.html#django.views.generic.list.MultipleObjectMixin.get_paginate_by" title="django.views.generic.list.MultipleObjectMixin.get_paginate_by"><tt class="xref py py-meth docutils literal"><span class="pre">get_paginate_by()</span></tt></a>]</li>
+<li><a class="reference internal" href="mixins-multiple-object.html#django.views.generic.list.MultipleObjectMixin.paginate_orphans" title="django.views.generic.list.MultipleObjectMixin.paginate_orphans"><tt class="xref py py-attr docutils literal"><span class="pre">paginate_orphans</span></tt></a> [<a class="reference internal" href="mixins-multiple-object.html#django.views.generic.list.MultipleObjectMixin.get_paginate_orphans" title="django.views.generic.list.MultipleObjectMixin.get_paginate_orphans"><tt class="xref py py-meth docutils literal"><span class="pre">get_paginate_orphans()</span></tt></a>]</li>
+<li><a class="reference internal" href="mixins-multiple-object.html#django.views.generic.list.MultipleObjectMixin.paginator_class" title="django.views.generic.list.MultipleObjectMixin.paginator_class"><tt class="xref py py-attr docutils literal"><span class="pre">paginator_class</span></tt></a></li>
+<li><a class="reference internal" href="mixins-multiple-object.html#django.views.generic.list.MultipleObjectMixin.queryset" title="django.views.generic.list.MultipleObjectMixin.queryset"><tt class="xref py py-attr docutils literal"><span class="pre">queryset</span></tt></a> [<a class="reference internal" href="mixins-multiple-object.html#django.views.generic.list.MultipleObjectMixin.get_queryset" title="django.views.generic.list.MultipleObjectMixin.get_queryset"><tt class="xref py py-meth docutils literal"><span class="pre">get_queryset()</span></tt></a>]</li>
+<li><a class="reference internal" href="mixins-simple.html#django.views.generic.base.TemplateResponseMixin.response_class" title="django.views.generic.base.TemplateResponseMixin.response_class"><tt class="xref py py-attr docutils literal"><span class="pre">response_class</span></tt></a> [<a class="reference internal" href="mixins-simple.html#django.views.generic.base.TemplateResponseMixin.render_to_response" title="django.views.generic.base.TemplateResponseMixin.render_to_response"><tt class="xref py py-meth docutils literal"><span class="pre">render_to_response()</span></tt></a>]</li>
+<li><a class="reference internal" href="mixins-simple.html#django.views.generic.base.TemplateResponseMixin.template_engine" title="django.views.generic.base.TemplateResponseMixin.template_engine"><tt class="xref py py-attr docutils literal"><span class="pre">template_engine</span></tt></a></li>
+<li><a class="reference internal" href="mixins-simple.html#django.views.generic.base.TemplateResponseMixin.template_name" title="django.views.generic.base.TemplateResponseMixin.template_name"><tt class="xref py py-attr docutils literal"><span class="pre">template_name</span></tt></a> [<a class="reference internal" href="mixins-simple.html#django.views.generic.base.TemplateResponseMixin.get_template_names" title="django.views.generic.base.TemplateResponseMixin.get_template_names"><tt class="xref py py-meth docutils literal"><span class="pre">get_template_names()</span></tt></a>]</li>
+<li><a class="reference internal" href="mixins-multiple-object.html#django.views.generic.list.MultipleObjectTemplateResponseMixin.template_name_suffix" title="django.views.generic.list.MultipleObjectTemplateResponseMixin.template_name_suffix"><tt class="xref py py-attr docutils literal"><span class="pre">template_name_suffix</span></tt></a></li>
+<li><a class="reference internal" href="mixins-date-based.html#django.views.generic.dates.YearMixin.year" title="django.views.generic.dates.YearMixin.year"><tt class="xref py py-attr docutils literal"><span class="pre">year</span></tt></a> [<a class="reference internal" href="mixins-date-based.html#django.views.generic.dates.YearMixin.get_year" title="django.views.generic.dates.YearMixin.get_year"><tt class="xref py py-meth docutils literal"><span class="pre">get_year()</span></tt></a>]</li>
+<li><a class="reference internal" href="mixins-date-based.html#django.views.generic.dates.YearMixin.year_format" title="django.views.generic.dates.YearMixin.year_format"><tt class="xref py py-attr docutils literal"><span class="pre">year_format</span></tt></a> [<a class="reference internal" href="mixins-date-based.html#django.views.generic.dates.YearMixin.get_year_format" title="django.views.generic.dates.YearMixin.get_year_format"><tt class="xref py py-meth docutils literal"><span class="pre">get_year_format()</span></tt></a>]</li>
+</ul>
+<p><strong>Methods</strong></p>
+<ul class="simple">
+<li><a class="reference internal" href="base.html#django.views.generic.base.View.as_view" title="django.views.generic.base.View.as_view"><tt class="xref py py-meth docutils literal"><span class="pre">as_view()</span></tt></a></li>
+<li><a class="reference internal" href="base.html#django.views.generic.base.View.dispatch" title="django.views.generic.base.View.dispatch"><tt class="xref py py-meth docutils literal"><span class="pre">dispatch()</span></tt></a></li>
+<li><tt class="docutils literal"><span class="pre">get()</span></tt></li>
+<li><a class="reference internal" href="mixins-multiple-object.html#django.views.generic.list.MultipleObjectMixin.get_context_data" title="django.views.generic.list.MultipleObjectMixin.get_context_data"><tt class="xref py py-meth docutils literal"><span class="pre">get_context_data()</span></tt></a></li>
+<li><a class="reference internal" href="mixins-date-based.html#django.views.generic.dates.BaseDateListView.get_date_list" title="django.views.generic.dates.BaseDateListView.get_date_list"><tt class="xref py py-meth docutils literal"><span class="pre">get_date_list()</span></tt></a></li>
+<li><a class="reference internal" href="mixins-date-based.html#django.views.generic.dates.BaseDateListView.get_dated_items" title="django.views.generic.dates.BaseDateListView.get_dated_items"><tt class="xref py py-meth docutils literal"><span class="pre">get_dated_items()</span></tt></a></li>
+<li><a class="reference internal" href="mixins-date-based.html#django.views.generic.dates.BaseDateListView.get_dated_queryset" title="django.views.generic.dates.BaseDateListView.get_dated_queryset"><tt class="xref py py-meth docutils literal"><span class="pre">get_dated_queryset()</span></tt></a></li>
+<li><a class="reference internal" href="mixins-multiple-object.html#django.views.generic.list.MultipleObjectMixin.get_paginator" title="django.views.generic.list.MultipleObjectMixin.get_paginator"><tt class="xref py py-meth docutils literal"><span class="pre">get_paginator()</span></tt></a></li>
+<li><tt class="docutils literal"><span class="pre">head()</span></tt></li>
+<li><a class="reference internal" href="base.html#django.views.generic.base.View.http_method_not_allowed" title="django.views.generic.base.View.http_method_not_allowed"><tt class="xref py py-meth docutils literal"><span class="pre">http_method_not_allowed()</span></tt></a></li>
+<li><a class="reference internal" href="mixins-multiple-object.html#django.views.generic.list.MultipleObjectMixin.paginate_queryset" title="django.views.generic.list.MultipleObjectMixin.paginate_queryset"><tt class="xref py py-meth docutils literal"><span class="pre">paginate_queryset()</span></tt></a></li>
+<li><a class="reference internal" href="mixins-simple.html#django.views.generic.base.TemplateResponseMixin.render_to_response" title="django.views.generic.base.TemplateResponseMixin.render_to_response"><tt class="xref py py-meth docutils literal"><span class="pre">render_to_response()</span></tt></a></li>
+</ul>
+</div>
+<div class="section" id="s-montharchiveview">
+<span id="montharchiveview"></span><h3>MonthArchiveView<a class="headerlink" href="#montharchiveview" title="Permalink to this headline">¶</a></h3>
+<dl class="class">
+<dt id="MonthArchiveView">
+<em class="property">class </em><tt class="descname">MonthArchiveView</tt><a class="headerlink" href="#MonthArchiveView" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<p><strong>Attributes</strong> (with optional accessor):</p>
+<ul class="simple">
+<li><a class="reference internal" href="mixins-multiple-object.html#django.views.generic.list.MultipleObjectMixin.allow_empty" title="django.views.generic.list.MultipleObjectMixin.allow_empty"><tt class="xref py py-attr docutils literal"><span class="pre">allow_empty</span></tt></a> [<a class="reference internal" href="mixins-multiple-object.html#django.views.generic.list.MultipleObjectMixin.get_allow_empty" title="django.views.generic.list.MultipleObjectMixin.get_allow_empty"><tt class="xref py py-meth docutils literal"><span class="pre">get_allow_empty()</span></tt></a>]</li>
+<li><a class="reference internal" href="mixins-date-based.html#django.views.generic.dates.DateMixin.allow_future" title="django.views.generic.dates.DateMixin.allow_future"><tt class="xref py py-attr docutils literal"><span class="pre">allow_future</span></tt></a> [<a class="reference internal" href="mixins-date-based.html#django.views.generic.dates.DateMixin.get_allow_future" title="django.views.generic.dates.DateMixin.get_allow_future"><tt class="xref py py-meth docutils literal"><span class="pre">get_allow_future()</span></tt></a>]</li>
+<li><a class="reference internal" href="mixins-simple.html#django.views.generic.base.TemplateResponseMixin.content_type" title="django.views.generic.base.TemplateResponseMixin.content_type"><tt class="xref py py-attr docutils literal"><span class="pre">content_type</span></tt></a></li>
+<li><a class="reference internal" href="mixins-multiple-object.html#django.views.generic.list.MultipleObjectMixin.context_object_name" title="django.views.generic.list.MultipleObjectMixin.context_object_name"><tt class="xref py py-attr docutils literal"><span class="pre">context_object_name</span></tt></a> [<a class="reference internal" href="mixins-multiple-object.html#django.views.generic.list.MultipleObjectMixin.get_context_object_name" title="django.views.generic.list.MultipleObjectMixin.get_context_object_name"><tt class="xref py py-meth docutils literal"><span class="pre">get_context_object_name()</span></tt></a>]</li>
+<li><a class="reference internal" href="mixins-date-based.html#django.views.generic.dates.DateMixin.date_field" title="django.views.generic.dates.DateMixin.date_field"><tt class="xref py py-attr docutils literal"><span class="pre">date_field</span></tt></a> [<a class="reference internal" href="mixins-date-based.html#django.views.generic.dates.DateMixin.get_date_field" title="django.views.generic.dates.DateMixin.get_date_field"><tt class="xref py py-meth docutils literal"><span class="pre">get_date_field()</span></tt></a>]</li>
+<li><a class="reference internal" href="base.html#django.views.generic.base.View.http_method_names" title="django.views.generic.base.View.http_method_names"><tt class="xref py py-attr docutils literal"><span class="pre">http_method_names</span></tt></a></li>
+<li><a class="reference internal" href="mixins-multiple-object.html#django.views.generic.list.MultipleObjectMixin.model" title="django.views.generic.list.MultipleObjectMixin.model"><tt class="xref py py-attr docutils literal"><span class="pre">model</span></tt></a></li>
+<li><a class="reference internal" href="mixins-date-based.html#django.views.generic.dates.MonthMixin.month" title="django.views.generic.dates.MonthMixin.month"><tt class="xref py py-attr docutils literal"><span class="pre">month</span></tt></a> [<a class="reference internal" href="mixins-date-based.html#django.views.generic.dates.MonthMixin.get_month" title="django.views.generic.dates.MonthMixin.get_month"><tt class="xref py py-meth docutils literal"><span class="pre">get_month()</span></tt></a>]</li>
+<li><a class="reference internal" href="mixins-date-based.html#django.views.generic.dates.MonthMixin.month_format" title="django.views.generic.dates.MonthMixin.month_format"><tt class="xref py py-attr docutils literal"><span class="pre">month_format</span></tt></a> [<a class="reference internal" href="mixins-date-based.html#django.views.generic.dates.MonthMixin.get_month_format" title="django.views.generic.dates.MonthMixin.get_month_format"><tt class="xref py py-meth docutils literal"><span class="pre">get_month_format()</span></tt></a>]</li>
+<li><a class="reference internal" href="mixins-multiple-object.html#django.views.generic.list.MultipleObjectMixin.ordering" title="django.views.generic.list.MultipleObjectMixin.ordering"><tt class="xref py py-attr docutils literal"><span class="pre">ordering</span></tt></a> [<a class="reference internal" href="mixins-multiple-object.html#django.views.generic.list.MultipleObjectMixin.get_ordering" title="django.views.generic.list.MultipleObjectMixin.get_ordering"><tt class="xref py py-meth docutils literal"><span class="pre">get_ordering()</span></tt></a>]</li>
+<li><a class="reference internal" href="mixins-multiple-object.html#django.views.generic.list.MultipleObjectMixin.paginate_by" title="django.views.generic.list.MultipleObjectMixin.paginate_by"><tt class="xref py py-attr docutils literal"><span class="pre">paginate_by</span></tt></a> [<a class="reference internal" href="mixins-multiple-object.html#django.views.generic.list.MultipleObjectMixin.get_paginate_by" title="django.views.generic.list.MultipleObjectMixin.get_paginate_by"><tt class="xref py py-meth docutils literal"><span class="pre">get_paginate_by()</span></tt></a>]</li>
+<li><a class="reference internal" href="mixins-multiple-object.html#django.views.generic.list.MultipleObjectMixin.paginate_orphans" title="django.views.generic.list.MultipleObjectMixin.paginate_orphans"><tt class="xref py py-attr docutils literal"><span class="pre">paginate_orphans</span></tt></a> [<a class="reference internal" href="mixins-multiple-object.html#django.views.generic.list.MultipleObjectMixin.get_paginate_orphans" title="django.views.generic.list.MultipleObjectMixin.get_paginate_orphans"><tt class="xref py py-meth docutils literal"><span class="pre">get_paginate_orphans()</span></tt></a>]</li>
+<li><a class="reference internal" href="mixins-multiple-object.html#django.views.generic.list.MultipleObjectMixin.paginator_class" title="django.views.generic.list.MultipleObjectMixin.paginator_class"><tt class="xref py py-attr docutils literal"><span class="pre">paginator_class</span></tt></a></li>
+<li><a class="reference internal" href="mixins-multiple-object.html#django.views.generic.list.MultipleObjectMixin.queryset" title="django.views.generic.list.MultipleObjectMixin.queryset"><tt class="xref py py-attr docutils literal"><span class="pre">queryset</span></tt></a> [<a class="reference internal" href="mixins-multiple-object.html#django.views.generic.list.MultipleObjectMixin.get_queryset" title="django.views.generic.list.MultipleObjectMixin.get_queryset"><tt class="xref py py-meth docutils literal"><span class="pre">get_queryset()</span></tt></a>]</li>
+<li><a class="reference internal" href="mixins-simple.html#django.views.generic.base.TemplateResponseMixin.response_class" title="django.views.generic.base.TemplateResponseMixin.response_class"><tt class="xref py py-attr docutils literal"><span class="pre">response_class</span></tt></a> [<a class="reference internal" href="mixins-simple.html#django.views.generic.base.TemplateResponseMixin.render_to_response" title="django.views.generic.base.TemplateResponseMixin.render_to_response"><tt class="xref py py-meth docutils literal"><span class="pre">render_to_response()</span></tt></a>]</li>
+<li><a class="reference internal" href="mixins-simple.html#django.views.generic.base.TemplateResponseMixin.template_engine" title="django.views.generic.base.TemplateResponseMixin.template_engine"><tt class="xref py py-attr docutils literal"><span class="pre">template_engine</span></tt></a></li>
+<li><a class="reference internal" href="mixins-simple.html#django.views.generic.base.TemplateResponseMixin.template_name" title="django.views.generic.base.TemplateResponseMixin.template_name"><tt class="xref py py-attr docutils literal"><span class="pre">template_name</span></tt></a> [<a class="reference internal" href="mixins-simple.html#django.views.generic.base.TemplateResponseMixin.get_template_names" title="django.views.generic.base.TemplateResponseMixin.get_template_names"><tt class="xref py py-meth docutils literal"><span class="pre">get_template_names()</span></tt></a>]</li>
+<li><a class="reference internal" href="mixins-multiple-object.html#django.views.generic.list.MultipleObjectTemplateResponseMixin.template_name_suffix" title="django.views.generic.list.MultipleObjectTemplateResponseMixin.template_name_suffix"><tt class="xref py py-attr docutils literal"><span class="pre">template_name_suffix</span></tt></a></li>
+<li><a class="reference internal" href="mixins-date-based.html#django.views.generic.dates.YearMixin.year" title="django.views.generic.dates.YearMixin.year"><tt class="xref py py-attr docutils literal"><span class="pre">year</span></tt></a> [<a class="reference internal" href="mixins-date-based.html#django.views.generic.dates.YearMixin.get_year" title="django.views.generic.dates.YearMixin.get_year"><tt class="xref py py-meth docutils literal"><span class="pre">get_year()</span></tt></a>]</li>
+<li><a class="reference internal" href="mixins-date-based.html#django.views.generic.dates.YearMixin.year_format" title="django.views.generic.dates.YearMixin.year_format"><tt class="xref py py-attr docutils literal"><span class="pre">year_format</span></tt></a> [<a class="reference internal" href="mixins-date-based.html#django.views.generic.dates.YearMixin.get_year_format" title="django.views.generic.dates.YearMixin.get_year_format"><tt class="xref py py-meth docutils literal"><span class="pre">get_year_format()</span></tt></a>]</li>
+</ul>
+<p><strong>Methods</strong></p>
+<ul class="simple">
+<li><a class="reference internal" href="base.html#django.views.generic.base.View.as_view" title="django.views.generic.base.View.as_view"><tt class="xref py py-meth docutils literal"><span class="pre">as_view()</span></tt></a></li>
+<li><a class="reference internal" href="base.html#django.views.generic.base.View.dispatch" title="django.views.generic.base.View.dispatch"><tt class="xref py py-meth docutils literal"><span class="pre">dispatch()</span></tt></a></li>
+<li><tt class="docutils literal"><span class="pre">get()</span></tt></li>
+<li><a class="reference internal" href="mixins-multiple-object.html#django.views.generic.list.MultipleObjectMixin.get_context_data" title="django.views.generic.list.MultipleObjectMixin.get_context_data"><tt class="xref py py-meth docutils literal"><span class="pre">get_context_data()</span></tt></a></li>
+<li><a class="reference internal" href="mixins-date-based.html#django.views.generic.dates.BaseDateListView.get_date_list" title="django.views.generic.dates.BaseDateListView.get_date_list"><tt class="xref py py-meth docutils literal"><span class="pre">get_date_list()</span></tt></a></li>
+<li><a class="reference internal" href="mixins-date-based.html#django.views.generic.dates.BaseDateListView.get_dated_items" title="django.views.generic.dates.BaseDateListView.get_dated_items"><tt class="xref py py-meth docutils literal"><span class="pre">get_dated_items()</span></tt></a></li>
+<li><a class="reference internal" href="mixins-date-based.html#django.views.generic.dates.BaseDateListView.get_dated_queryset" title="django.views.generic.dates.BaseDateListView.get_dated_queryset"><tt class="xref py py-meth docutils literal"><span class="pre">get_dated_queryset()</span></tt></a></li>
+<li><a class="reference internal" href="mixins-date-based.html#django.views.generic.dates.MonthMixin.get_next_month" title="django.views.generic.dates.MonthMixin.get_next_month"><tt class="xref py py-meth docutils literal"><span class="pre">get_next_month()</span></tt></a></li>
+<li><a class="reference internal" href="mixins-multiple-object.html#django.views.generic.list.MultipleObjectMixin.get_paginator" title="django.views.generic.list.MultipleObjectMixin.get_paginator"><tt class="xref py py-meth docutils literal"><span class="pre">get_paginator()</span></tt></a></li>
+<li><a class="reference internal" href="mixins-date-based.html#django.views.generic.dates.MonthMixin.get_previous_month" title="django.views.generic.dates.MonthMixin.get_previous_month"><tt class="xref py py-meth docutils literal"><span class="pre">get_previous_month()</span></tt></a></li>
+<li><tt class="docutils literal"><span class="pre">head()</span></tt></li>
+<li><a class="reference internal" href="base.html#django.views.generic.base.View.http_method_not_allowed" title="django.views.generic.base.View.http_method_not_allowed"><tt class="xref py py-meth docutils literal"><span class="pre">http_method_not_allowed()</span></tt></a></li>
+<li><a class="reference internal" href="mixins-multiple-object.html#django.views.generic.list.MultipleObjectMixin.paginate_queryset" title="django.views.generic.list.MultipleObjectMixin.paginate_queryset"><tt class="xref py py-meth docutils literal"><span class="pre">paginate_queryset()</span></tt></a></li>
+<li><a class="reference internal" href="mixins-simple.html#django.views.generic.base.TemplateResponseMixin.render_to_response" title="django.views.generic.base.TemplateResponseMixin.render_to_response"><tt class="xref py py-meth docutils literal"><span class="pre">render_to_response()</span></tt></a></li>
+</ul>
+</div>
+<div class="section" id="s-weekarchiveview">
+<span id="weekarchiveview"></span><h3>WeekArchiveView<a class="headerlink" href="#weekarchiveview" title="Permalink to this headline">¶</a></h3>
+<dl class="class">
+<dt id="WeekArchiveView">
+<em class="property">class </em><tt class="descname">WeekArchiveView</tt><a class="headerlink" href="#WeekArchiveView" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<p><strong>Attributes</strong> (with optional accessor):</p>
+<ul class="simple">
+<li><a class="reference internal" href="mixins-multiple-object.html#django.views.generic.list.MultipleObjectMixin.allow_empty" title="django.views.generic.list.MultipleObjectMixin.allow_empty"><tt class="xref py py-attr docutils literal"><span class="pre">allow_empty</span></tt></a> [<a class="reference internal" href="mixins-multiple-object.html#django.views.generic.list.MultipleObjectMixin.get_allow_empty" title="django.views.generic.list.MultipleObjectMixin.get_allow_empty"><tt class="xref py py-meth docutils literal"><span class="pre">get_allow_empty()</span></tt></a>]</li>
+<li><a class="reference internal" href="mixins-date-based.html#django.views.generic.dates.DateMixin.allow_future" title="django.views.generic.dates.DateMixin.allow_future"><tt class="xref py py-attr docutils literal"><span class="pre">allow_future</span></tt></a> [<a class="reference internal" href="mixins-date-based.html#django.views.generic.dates.DateMixin.get_allow_future" title="django.views.generic.dates.DateMixin.get_allow_future"><tt class="xref py py-meth docutils literal"><span class="pre">get_allow_future()</span></tt></a>]</li>
+<li><a class="reference internal" href="mixins-simple.html#django.views.generic.base.TemplateResponseMixin.content_type" title="django.views.generic.base.TemplateResponseMixin.content_type"><tt class="xref py py-attr docutils literal"><span class="pre">content_type</span></tt></a></li>
+<li><a class="reference internal" href="mixins-multiple-object.html#django.views.generic.list.MultipleObjectMixin.context_object_name" title="django.views.generic.list.MultipleObjectMixin.context_object_name"><tt class="xref py py-attr docutils literal"><span class="pre">context_object_name</span></tt></a> [<a class="reference internal" href="mixins-multiple-object.html#django.views.generic.list.MultipleObjectMixin.get_context_object_name" title="django.views.generic.list.MultipleObjectMixin.get_context_object_name"><tt class="xref py py-meth docutils literal"><span class="pre">get_context_object_name()</span></tt></a>]</li>
+<li><a class="reference internal" href="mixins-date-based.html#django.views.generic.dates.DateMixin.date_field" title="django.views.generic.dates.DateMixin.date_field"><tt class="xref py py-attr docutils literal"><span class="pre">date_field</span></tt></a> [<a class="reference internal" href="mixins-date-based.html#django.views.generic.dates.DateMixin.get_date_field" title="django.views.generic.dates.DateMixin.get_date_field"><tt class="xref py py-meth docutils literal"><span class="pre">get_date_field()</span></tt></a>]</li>
+<li><a class="reference internal" href="base.html#django.views.generic.base.View.http_method_names" title="django.views.generic.base.View.http_method_names"><tt class="xref py py-attr docutils literal"><span class="pre">http_method_names</span></tt></a></li>
+<li><a class="reference internal" href="mixins-multiple-object.html#django.views.generic.list.MultipleObjectMixin.model" title="django.views.generic.list.MultipleObjectMixin.model"><tt class="xref py py-attr docutils literal"><span class="pre">model</span></tt></a></li>
+<li><a class="reference internal" href="mixins-multiple-object.html#django.views.generic.list.MultipleObjectMixin.ordering" title="django.views.generic.list.MultipleObjectMixin.ordering"><tt class="xref py py-attr docutils literal"><span class="pre">ordering</span></tt></a> [<a class="reference internal" href="mixins-multiple-object.html#django.views.generic.list.MultipleObjectMixin.get_ordering" title="django.views.generic.list.MultipleObjectMixin.get_ordering"><tt class="xref py py-meth docutils literal"><span class="pre">get_ordering()</span></tt></a>]</li>
+<li><a class="reference internal" href="mixins-multiple-object.html#django.views.generic.list.MultipleObjectMixin.paginate_by" title="django.views.generic.list.MultipleObjectMixin.paginate_by"><tt class="xref py py-attr docutils literal"><span class="pre">paginate_by</span></tt></a> [<a class="reference internal" href="mixins-multiple-object.html#django.views.generic.list.MultipleObjectMixin.get_paginate_by" title="django.views.generic.list.MultipleObjectMixin.get_paginate_by"><tt class="xref py py-meth docutils literal"><span class="pre">get_paginate_by()</span></tt></a>]</li>
+<li><a class="reference internal" href="mixins-multiple-object.html#django.views.generic.list.MultipleObjectMixin.paginate_orphans" title="django.views.generic.list.MultipleObjectMixin.paginate_orphans"><tt class="xref py py-attr docutils literal"><span class="pre">paginate_orphans</span></tt></a> [<a class="reference internal" href="mixins-multiple-object.html#django.views.generic.list.MultipleObjectMixin.get_paginate_orphans" title="django.views.generic.list.MultipleObjectMixin.get_paginate_orphans"><tt class="xref py py-meth docutils literal"><span class="pre">get_paginate_orphans()</span></tt></a>]</li>
+<li><a class="reference internal" href="mixins-multiple-object.html#django.views.generic.list.MultipleObjectMixin.paginator_class" title="django.views.generic.list.MultipleObjectMixin.paginator_class"><tt class="xref py py-attr docutils literal"><span class="pre">paginator_class</span></tt></a></li>
+<li><a class="reference internal" href="mixins-multiple-object.html#django.views.generic.list.MultipleObjectMixin.queryset" title="django.views.generic.list.MultipleObjectMixin.queryset"><tt class="xref py py-attr docutils literal"><span class="pre">queryset</span></tt></a> [<a class="reference internal" href="mixins-multiple-object.html#django.views.generic.list.MultipleObjectMixin.get_queryset" title="django.views.generic.list.MultipleObjectMixin.get_queryset"><tt class="xref py py-meth docutils literal"><span class="pre">get_queryset()</span></tt></a>]</li>
+<li><a class="reference internal" href="mixins-simple.html#django.views.generic.base.TemplateResponseMixin.response_class" title="django.views.generic.base.TemplateResponseMixin.response_class"><tt class="xref py py-attr docutils literal"><span class="pre">response_class</span></tt></a> [<a class="reference internal" href="mixins-simple.html#django.views.generic.base.TemplateResponseMixin.render_to_response" title="django.views.generic.base.TemplateResponseMixin.render_to_response"><tt class="xref py py-meth docutils literal"><span class="pre">render_to_response()</span></tt></a>]</li>
+<li><a class="reference internal" href="mixins-simple.html#django.views.generic.base.TemplateResponseMixin.template_engine" title="django.views.generic.base.TemplateResponseMixin.template_engine"><tt class="xref py py-attr docutils literal"><span class="pre">template_engine</span></tt></a></li>
+<li><a class="reference internal" href="mixins-simple.html#django.views.generic.base.TemplateResponseMixin.template_name" title="django.views.generic.base.TemplateResponseMixin.template_name"><tt class="xref py py-attr docutils literal"><span class="pre">template_name</span></tt></a> [<a class="reference internal" href="mixins-simple.html#django.views.generic.base.TemplateResponseMixin.get_template_names" title="django.views.generic.base.TemplateResponseMixin.get_template_names"><tt class="xref py py-meth docutils literal"><span class="pre">get_template_names()</span></tt></a>]</li>
+<li><a class="reference internal" href="mixins-multiple-object.html#django.views.generic.list.MultipleObjectTemplateResponseMixin.template_name_suffix" title="django.views.generic.list.MultipleObjectTemplateResponseMixin.template_name_suffix"><tt class="xref py py-attr docutils literal"><span class="pre">template_name_suffix</span></tt></a></li>
+<li><a class="reference internal" href="mixins-date-based.html#django.views.generic.dates.WeekMixin.week" title="django.views.generic.dates.WeekMixin.week"><tt class="xref py py-attr docutils literal"><span class="pre">week</span></tt></a> [<a class="reference internal" href="mixins-date-based.html#django.views.generic.dates.WeekMixin.get_week" title="django.views.generic.dates.WeekMixin.get_week"><tt class="xref py py-meth docutils literal"><span class="pre">get_week()</span></tt></a>]</li>
+<li><a class="reference internal" href="mixins-date-based.html#django.views.generic.dates.WeekMixin.week_format" title="django.views.generic.dates.WeekMixin.week_format"><tt class="xref py py-attr docutils literal"><span class="pre">week_format</span></tt></a> [<a class="reference internal" href="mixins-date-based.html#django.views.generic.dates.WeekMixin.get_week_format" title="django.views.generic.dates.WeekMixin.get_week_format"><tt class="xref py py-meth docutils literal"><span class="pre">get_week_format()</span></tt></a>]</li>
+<li><a class="reference internal" href="mixins-date-based.html#django.views.generic.dates.YearMixin.year" title="django.views.generic.dates.YearMixin.year"><tt class="xref py py-attr docutils literal"><span class="pre">year</span></tt></a> [<a class="reference internal" href="mixins-date-based.html#django.views.generic.dates.YearMixin.get_year" title="django.views.generic.dates.YearMixin.get_year"><tt class="xref py py-meth docutils literal"><span class="pre">get_year()</span></tt></a>]</li>
+<li><a class="reference internal" href="mixins-date-based.html#django.views.generic.dates.YearMixin.year_format" title="django.views.generic.dates.YearMixin.year_format"><tt class="xref py py-attr docutils literal"><span class="pre">year_format</span></tt></a> [<a class="reference internal" href="mixins-date-based.html#django.views.generic.dates.YearMixin.get_year_format" title="django.views.generic.dates.YearMixin.get_year_format"><tt class="xref py py-meth docutils literal"><span class="pre">get_year_format()</span></tt></a>]</li>
+</ul>
+<p><strong>Methods</strong></p>
+<ul class="simple">
+<li><a class="reference internal" href="base.html#django.views.generic.base.View.as_view" title="django.views.generic.base.View.as_view"><tt class="xref py py-meth docutils literal"><span class="pre">as_view()</span></tt></a></li>
+<li><a class="reference internal" href="base.html#django.views.generic.base.View.dispatch" title="django.views.generic.base.View.dispatch"><tt class="xref py py-meth docutils literal"><span class="pre">dispatch()</span></tt></a></li>
+<li><tt class="docutils literal"><span class="pre">get()</span></tt></li>
+<li><a class="reference internal" href="mixins-multiple-object.html#django.views.generic.list.MultipleObjectMixin.get_context_data" title="django.views.generic.list.MultipleObjectMixin.get_context_data"><tt class="xref py py-meth docutils literal"><span class="pre">get_context_data()</span></tt></a></li>
+<li><a class="reference internal" href="mixins-date-based.html#django.views.generic.dates.BaseDateListView.get_date_list" title="django.views.generic.dates.BaseDateListView.get_date_list"><tt class="xref py py-meth docutils literal"><span class="pre">get_date_list()</span></tt></a></li>
+<li><a class="reference internal" href="mixins-date-based.html#django.views.generic.dates.BaseDateListView.get_dated_items" title="django.views.generic.dates.BaseDateListView.get_dated_items"><tt class="xref py py-meth docutils literal"><span class="pre">get_dated_items()</span></tt></a></li>
+<li><a class="reference internal" href="mixins-date-based.html#django.views.generic.dates.BaseDateListView.get_dated_queryset" title="django.views.generic.dates.BaseDateListView.get_dated_queryset"><tt class="xref py py-meth docutils literal"><span class="pre">get_dated_queryset()</span></tt></a></li>
+<li><a class="reference internal" href="mixins-multiple-object.html#django.views.generic.list.MultipleObjectMixin.get_paginator" title="django.views.generic.list.MultipleObjectMixin.get_paginator"><tt class="xref py py-meth docutils literal"><span class="pre">get_paginator()</span></tt></a></li>
+<li><tt class="docutils literal"><span class="pre">head()</span></tt></li>
+<li><a class="reference internal" href="base.html#django.views.generic.base.View.http_method_not_allowed" title="django.views.generic.base.View.http_method_not_allowed"><tt class="xref py py-meth docutils literal"><span class="pre">http_method_not_allowed()</span></tt></a></li>
+<li><a class="reference internal" href="mixins-multiple-object.html#django.views.generic.list.MultipleObjectMixin.paginate_queryset" title="django.views.generic.list.MultipleObjectMixin.paginate_queryset"><tt class="xref py py-meth docutils literal"><span class="pre">paginate_queryset()</span></tt></a></li>
+<li><a class="reference internal" href="mixins-simple.html#django.views.generic.base.TemplateResponseMixin.render_to_response" title="django.views.generic.base.TemplateResponseMixin.render_to_response"><tt class="xref py py-meth docutils literal"><span class="pre">render_to_response()</span></tt></a></li>
+</ul>
+</div>
+<div class="section" id="s-dayarchiveview">
+<span id="dayarchiveview"></span><h3>DayArchiveView<a class="headerlink" href="#dayarchiveview" title="Permalink to this headline">¶</a></h3>
+<dl class="class">
+<dt id="DayArchiveView">
+<em class="property">class </em><tt class="descname">DayArchiveView</tt><a class="headerlink" href="#DayArchiveView" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<p><strong>Attributes</strong> (with optional accessor):</p>
+<ul class="simple">
+<li><a class="reference internal" href="mixins-multiple-object.html#django.views.generic.list.MultipleObjectMixin.allow_empty" title="django.views.generic.list.MultipleObjectMixin.allow_empty"><tt class="xref py py-attr docutils literal"><span class="pre">allow_empty</span></tt></a> [<a class="reference internal" href="mixins-multiple-object.html#django.views.generic.list.MultipleObjectMixin.get_allow_empty" title="django.views.generic.list.MultipleObjectMixin.get_allow_empty"><tt class="xref py py-meth docutils literal"><span class="pre">get_allow_empty()</span></tt></a>]</li>
+<li><a class="reference internal" href="mixins-date-based.html#django.views.generic.dates.DateMixin.allow_future" title="django.views.generic.dates.DateMixin.allow_future"><tt class="xref py py-attr docutils literal"><span class="pre">allow_future</span></tt></a> [<a class="reference internal" href="mixins-date-based.html#django.views.generic.dates.DateMixin.get_allow_future" title="django.views.generic.dates.DateMixin.get_allow_future"><tt class="xref py py-meth docutils literal"><span class="pre">get_allow_future()</span></tt></a>]</li>
+<li><a class="reference internal" href="mixins-simple.html#django.views.generic.base.TemplateResponseMixin.content_type" title="django.views.generic.base.TemplateResponseMixin.content_type"><tt class="xref py py-attr docutils literal"><span class="pre">content_type</span></tt></a></li>
+<li><a class="reference internal" href="mixins-multiple-object.html#django.views.generic.list.MultipleObjectMixin.context_object_name" title="django.views.generic.list.MultipleObjectMixin.context_object_name"><tt class="xref py py-attr docutils literal"><span class="pre">context_object_name</span></tt></a> [<a class="reference internal" href="mixins-multiple-object.html#django.views.generic.list.MultipleObjectMixin.get_context_object_name" title="django.views.generic.list.MultipleObjectMixin.get_context_object_name"><tt class="xref py py-meth docutils literal"><span class="pre">get_context_object_name()</span></tt></a>]</li>
+<li><a class="reference internal" href="mixins-date-based.html#django.views.generic.dates.DateMixin.date_field" title="django.views.generic.dates.DateMixin.date_field"><tt class="xref py py-attr docutils literal"><span class="pre">date_field</span></tt></a> [<a class="reference internal" href="mixins-date-based.html#django.views.generic.dates.DateMixin.get_date_field" title="django.views.generic.dates.DateMixin.get_date_field"><tt class="xref py py-meth docutils literal"><span class="pre">get_date_field()</span></tt></a>]</li>
+<li><a class="reference internal" href="mixins-date-based.html#django.views.generic.dates.DayMixin.day" title="django.views.generic.dates.DayMixin.day"><tt class="xref py py-attr docutils literal"><span class="pre">day</span></tt></a> [<a class="reference internal" href="mixins-date-based.html#django.views.generic.dates.DayMixin.get_day" title="django.views.generic.dates.DayMixin.get_day"><tt class="xref py py-meth docutils literal"><span class="pre">get_day()</span></tt></a>]</li>
+<li><a class="reference internal" href="mixins-date-based.html#django.views.generic.dates.DayMixin.day_format" title="django.views.generic.dates.DayMixin.day_format"><tt class="xref py py-attr docutils literal"><span class="pre">day_format</span></tt></a> [<a class="reference internal" href="mixins-date-based.html#django.views.generic.dates.DayMixin.get_day_format" title="django.views.generic.dates.DayMixin.get_day_format"><tt class="xref py py-meth docutils literal"><span class="pre">get_day_format()</span></tt></a>]</li>
+<li><a class="reference internal" href="base.html#django.views.generic.base.View.http_method_names" title="django.views.generic.base.View.http_method_names"><tt class="xref py py-attr docutils literal"><span class="pre">http_method_names</span></tt></a></li>
+<li><a class="reference internal" href="mixins-multiple-object.html#django.views.generic.list.MultipleObjectMixin.model" title="django.views.generic.list.MultipleObjectMixin.model"><tt class="xref py py-attr docutils literal"><span class="pre">model</span></tt></a></li>
+<li><a class="reference internal" href="mixins-date-based.html#django.views.generic.dates.MonthMixin.month" title="django.views.generic.dates.MonthMixin.month"><tt class="xref py py-attr docutils literal"><span class="pre">month</span></tt></a> [<a class="reference internal" href="mixins-date-based.html#django.views.generic.dates.MonthMixin.get_month" title="django.views.generic.dates.MonthMixin.get_month"><tt class="xref py py-meth docutils literal"><span class="pre">get_month()</span></tt></a>]</li>
+<li><a class="reference internal" href="mixins-date-based.html#django.views.generic.dates.MonthMixin.month_format" title="django.views.generic.dates.MonthMixin.month_format"><tt class="xref py py-attr docutils literal"><span class="pre">month_format</span></tt></a> [<a class="reference internal" href="mixins-date-based.html#django.views.generic.dates.MonthMixin.get_month_format" title="django.views.generic.dates.MonthMixin.get_month_format"><tt class="xref py py-meth docutils literal"><span class="pre">get_month_format()</span></tt></a>]</li>
+<li><a class="reference internal" href="mixins-multiple-object.html#django.views.generic.list.MultipleObjectMixin.ordering" title="django.views.generic.list.MultipleObjectMixin.ordering"><tt class="xref py py-attr docutils literal"><span class="pre">ordering</span></tt></a> [<a class="reference internal" href="mixins-multiple-object.html#django.views.generic.list.MultipleObjectMixin.get_ordering" title="django.views.generic.list.MultipleObjectMixin.get_ordering"><tt class="xref py py-meth docutils literal"><span class="pre">get_ordering()</span></tt></a>]</li>
+<li><a class="reference internal" href="mixins-multiple-object.html#django.views.generic.list.MultipleObjectMixin.paginate_by" title="django.views.generic.list.MultipleObjectMixin.paginate_by"><tt class="xref py py-attr docutils literal"><span class="pre">paginate_by</span></tt></a> [<a class="reference internal" href="mixins-multiple-object.html#django.views.generic.list.MultipleObjectMixin.get_paginate_by" title="django.views.generic.list.MultipleObjectMixin.get_paginate_by"><tt class="xref py py-meth docutils literal"><span class="pre">get_paginate_by()</span></tt></a>]</li>
+<li><a class="reference internal" href="mixins-multiple-object.html#django.views.generic.list.MultipleObjectMixin.paginate_orphans" title="django.views.generic.list.MultipleObjectMixin.paginate_orphans"><tt class="xref py py-attr docutils literal"><span class="pre">paginate_orphans</span></tt></a> [<a class="reference internal" href="mixins-multiple-object.html#django.views.generic.list.MultipleObjectMixin.get_paginate_orphans" title="django.views.generic.list.MultipleObjectMixin.get_paginate_orphans"><tt class="xref py py-meth docutils literal"><span class="pre">get_paginate_orphans()</span></tt></a>]</li>
+<li><a class="reference internal" href="mixins-multiple-object.html#django.views.generic.list.MultipleObjectMixin.paginator_class" title="django.views.generic.list.MultipleObjectMixin.paginator_class"><tt class="xref py py-attr docutils literal"><span class="pre">paginator_class</span></tt></a></li>
+<li><a class="reference internal" href="mixins-multiple-object.html#django.views.generic.list.MultipleObjectMixin.queryset" title="django.views.generic.list.MultipleObjectMixin.queryset"><tt class="xref py py-attr docutils literal"><span class="pre">queryset</span></tt></a> [<a class="reference internal" href="mixins-multiple-object.html#django.views.generic.list.MultipleObjectMixin.get_queryset" title="django.views.generic.list.MultipleObjectMixin.get_queryset"><tt class="xref py py-meth docutils literal"><span class="pre">get_queryset()</span></tt></a>]</li>
+<li><a class="reference internal" href="mixins-simple.html#django.views.generic.base.TemplateResponseMixin.response_class" title="django.views.generic.base.TemplateResponseMixin.response_class"><tt class="xref py py-attr docutils literal"><span class="pre">response_class</span></tt></a> [<a class="reference internal" href="mixins-simple.html#django.views.generic.base.TemplateResponseMixin.render_to_response" title="django.views.generic.base.TemplateResponseMixin.render_to_response"><tt class="xref py py-meth docutils literal"><span class="pre">render_to_response()</span></tt></a>]</li>
+<li><a class="reference internal" href="mixins-simple.html#django.views.generic.base.TemplateResponseMixin.template_engine" title="django.views.generic.base.TemplateResponseMixin.template_engine"><tt class="xref py py-attr docutils literal"><span class="pre">template_engine</span></tt></a></li>
+<li><a class="reference internal" href="mixins-simple.html#django.views.generic.base.TemplateResponseMixin.template_name" title="django.views.generic.base.TemplateResponseMixin.template_name"><tt class="xref py py-attr docutils literal"><span class="pre">template_name</span></tt></a> [<a class="reference internal" href="mixins-simple.html#django.views.generic.base.TemplateResponseMixin.get_template_names" title="django.views.generic.base.TemplateResponseMixin.get_template_names"><tt class="xref py py-meth docutils literal"><span class="pre">get_template_names()</span></tt></a>]</li>
+<li><a class="reference internal" href="mixins-multiple-object.html#django.views.generic.list.MultipleObjectTemplateResponseMixin.template_name_suffix" title="django.views.generic.list.MultipleObjectTemplateResponseMixin.template_name_suffix"><tt class="xref py py-attr docutils literal"><span class="pre">template_name_suffix</span></tt></a></li>
+<li><a class="reference internal" href="mixins-date-based.html#django.views.generic.dates.YearMixin.year" title="django.views.generic.dates.YearMixin.year"><tt class="xref py py-attr docutils literal"><span class="pre">year</span></tt></a> [<a class="reference internal" href="mixins-date-based.html#django.views.generic.dates.YearMixin.get_year" title="django.views.generic.dates.YearMixin.get_year"><tt class="xref py py-meth docutils literal"><span class="pre">get_year()</span></tt></a>]</li>
+<li><a class="reference internal" href="mixins-date-based.html#django.views.generic.dates.YearMixin.year_format" title="django.views.generic.dates.YearMixin.year_format"><tt class="xref py py-attr docutils literal"><span class="pre">year_format</span></tt></a> [<a class="reference internal" href="mixins-date-based.html#django.views.generic.dates.YearMixin.get_year_format" title="django.views.generic.dates.YearMixin.get_year_format"><tt class="xref py py-meth docutils literal"><span class="pre">get_year_format()</span></tt></a>]</li>
+</ul>
+<p><strong>Methods</strong></p>
+<ul class="simple">
+<li><a class="reference internal" href="base.html#django.views.generic.base.View.as_view" title="django.views.generic.base.View.as_view"><tt class="xref py py-meth docutils literal"><span class="pre">as_view()</span></tt></a></li>
+<li><a class="reference internal" href="base.html#django.views.generic.base.View.dispatch" title="django.views.generic.base.View.dispatch"><tt class="xref py py-meth docutils literal"><span class="pre">dispatch()</span></tt></a></li>
+<li><tt class="docutils literal"><span class="pre">get()</span></tt></li>
+<li><a class="reference internal" href="mixins-multiple-object.html#django.views.generic.list.MultipleObjectMixin.get_context_data" title="django.views.generic.list.MultipleObjectMixin.get_context_data"><tt class="xref py py-meth docutils literal"><span class="pre">get_context_data()</span></tt></a></li>
+<li><a class="reference internal" href="mixins-date-based.html#django.views.generic.dates.BaseDateListView.get_date_list" title="django.views.generic.dates.BaseDateListView.get_date_list"><tt class="xref py py-meth docutils literal"><span class="pre">get_date_list()</span></tt></a></li>
+<li><a class="reference internal" href="mixins-date-based.html#django.views.generic.dates.BaseDateListView.get_dated_items" title="django.views.generic.dates.BaseDateListView.get_dated_items"><tt class="xref py py-meth docutils literal"><span class="pre">get_dated_items()</span></tt></a></li>
+<li><a class="reference internal" href="mixins-date-based.html#django.views.generic.dates.BaseDateListView.get_dated_queryset" title="django.views.generic.dates.BaseDateListView.get_dated_queryset"><tt class="xref py py-meth docutils literal"><span class="pre">get_dated_queryset()</span></tt></a></li>
+<li><a class="reference internal" href="mixins-date-based.html#django.views.generic.dates.DayMixin.get_next_day" title="django.views.generic.dates.DayMixin.get_next_day"><tt class="xref py py-meth docutils literal"><span class="pre">get_next_day()</span></tt></a></li>
+<li><a class="reference internal" href="mixins-date-based.html#django.views.generic.dates.MonthMixin.get_next_month" title="django.views.generic.dates.MonthMixin.get_next_month"><tt class="xref py py-meth docutils literal"><span class="pre">get_next_month()</span></tt></a></li>
+<li><a class="reference internal" href="mixins-multiple-object.html#django.views.generic.list.MultipleObjectMixin.get_paginator" title="django.views.generic.list.MultipleObjectMixin.get_paginator"><tt class="xref py py-meth docutils literal"><span class="pre">get_paginator()</span></tt></a></li>
+<li><a class="reference internal" href="mixins-date-based.html#django.views.generic.dates.DayMixin.get_previous_day" title="django.views.generic.dates.DayMixin.get_previous_day"><tt class="xref py py-meth docutils literal"><span class="pre">get_previous_day()</span></tt></a></li>
+<li><a class="reference internal" href="mixins-date-based.html#django.views.generic.dates.MonthMixin.get_previous_month" title="django.views.generic.dates.MonthMixin.get_previous_month"><tt class="xref py py-meth docutils literal"><span class="pre">get_previous_month()</span></tt></a></li>
+<li><tt class="docutils literal"><span class="pre">head()</span></tt></li>
+<li><a class="reference internal" href="base.html#django.views.generic.base.View.http_method_not_allowed" title="django.views.generic.base.View.http_method_not_allowed"><tt class="xref py py-meth docutils literal"><span class="pre">http_method_not_allowed()</span></tt></a></li>
+<li><a class="reference internal" href="mixins-multiple-object.html#django.views.generic.list.MultipleObjectMixin.paginate_queryset" title="django.views.generic.list.MultipleObjectMixin.paginate_queryset"><tt class="xref py py-meth docutils literal"><span class="pre">paginate_queryset()</span></tt></a></li>
+<li><a class="reference internal" href="mixins-simple.html#django.views.generic.base.TemplateResponseMixin.render_to_response" title="django.views.generic.base.TemplateResponseMixin.render_to_response"><tt class="xref py py-meth docutils literal"><span class="pre">render_to_response()</span></tt></a></li>
+</ul>
+</div>
+<div class="section" id="s-todayarchiveview">
+<span id="todayarchiveview"></span><h3>TodayArchiveView<a class="headerlink" href="#todayarchiveview" title="Permalink to this headline">¶</a></h3>
+<dl class="class">
+<dt id="TodayArchiveView">
+<em class="property">class </em><tt class="descname">TodayArchiveView</tt><a class="headerlink" href="#TodayArchiveView" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<p><strong>Attributes</strong> (with optional accessor):</p>
+<ul class="simple">
+<li><a class="reference internal" href="mixins-multiple-object.html#django.views.generic.list.MultipleObjectMixin.allow_empty" title="django.views.generic.list.MultipleObjectMixin.allow_empty"><tt class="xref py py-attr docutils literal"><span class="pre">allow_empty</span></tt></a> [<a class="reference internal" href="mixins-multiple-object.html#django.views.generic.list.MultipleObjectMixin.get_allow_empty" title="django.views.generic.list.MultipleObjectMixin.get_allow_empty"><tt class="xref py py-meth docutils literal"><span class="pre">get_allow_empty()</span></tt></a>]</li>
+<li><a class="reference internal" href="mixins-date-based.html#django.views.generic.dates.DateMixin.allow_future" title="django.views.generic.dates.DateMixin.allow_future"><tt class="xref py py-attr docutils literal"><span class="pre">allow_future</span></tt></a> [<a class="reference internal" href="mixins-date-based.html#django.views.generic.dates.DateMixin.get_allow_future" title="django.views.generic.dates.DateMixin.get_allow_future"><tt class="xref py py-meth docutils literal"><span class="pre">get_allow_future()</span></tt></a>]</li>
+<li><a class="reference internal" href="mixins-simple.html#django.views.generic.base.TemplateResponseMixin.content_type" title="django.views.generic.base.TemplateResponseMixin.content_type"><tt class="xref py py-attr docutils literal"><span class="pre">content_type</span></tt></a></li>
+<li><a class="reference internal" href="mixins-multiple-object.html#django.views.generic.list.MultipleObjectMixin.context_object_name" title="django.views.generic.list.MultipleObjectMixin.context_object_name"><tt class="xref py py-attr docutils literal"><span class="pre">context_object_name</span></tt></a> [<a class="reference internal" href="mixins-multiple-object.html#django.views.generic.list.MultipleObjectMixin.get_context_object_name" title="django.views.generic.list.MultipleObjectMixin.get_context_object_name"><tt class="xref py py-meth docutils literal"><span class="pre">get_context_object_name()</span></tt></a>]</li>
+<li><a class="reference internal" href="mixins-date-based.html#django.views.generic.dates.DateMixin.date_field" title="django.views.generic.dates.DateMixin.date_field"><tt class="xref py py-attr docutils literal"><span class="pre">date_field</span></tt></a> [<a class="reference internal" href="mixins-date-based.html#django.views.generic.dates.DateMixin.get_date_field" title="django.views.generic.dates.DateMixin.get_date_field"><tt class="xref py py-meth docutils literal"><span class="pre">get_date_field()</span></tt></a>]</li>
+<li><a class="reference internal" href="mixins-date-based.html#django.views.generic.dates.DayMixin.day" title="django.views.generic.dates.DayMixin.day"><tt class="xref py py-attr docutils literal"><span class="pre">day</span></tt></a> [<a class="reference internal" href="mixins-date-based.html#django.views.generic.dates.DayMixin.get_day" title="django.views.generic.dates.DayMixin.get_day"><tt class="xref py py-meth docutils literal"><span class="pre">get_day()</span></tt></a>]</li>
+<li><a class="reference internal" href="mixins-date-based.html#django.views.generic.dates.DayMixin.day_format" title="django.views.generic.dates.DayMixin.day_format"><tt class="xref py py-attr docutils literal"><span class="pre">day_format</span></tt></a> [<a class="reference internal" href="mixins-date-based.html#django.views.generic.dates.DayMixin.get_day_format" title="django.views.generic.dates.DayMixin.get_day_format"><tt class="xref py py-meth docutils literal"><span class="pre">get_day_format()</span></tt></a>]</li>
+<li><a class="reference internal" href="base.html#django.views.generic.base.View.http_method_names" title="django.views.generic.base.View.http_method_names"><tt class="xref py py-attr docutils literal"><span class="pre">http_method_names</span></tt></a></li>
+<li><a class="reference internal" href="mixins-multiple-object.html#django.views.generic.list.MultipleObjectMixin.model" title="django.views.generic.list.MultipleObjectMixin.model"><tt class="xref py py-attr docutils literal"><span class="pre">model</span></tt></a></li>
+<li><a class="reference internal" href="mixins-date-based.html#django.views.generic.dates.MonthMixin.month" title="django.views.generic.dates.MonthMixin.month"><tt class="xref py py-attr docutils literal"><span class="pre">month</span></tt></a> [<a class="reference internal" href="mixins-date-based.html#django.views.generic.dates.MonthMixin.get_month" title="django.views.generic.dates.MonthMixin.get_month"><tt class="xref py py-meth docutils literal"><span class="pre">get_month()</span></tt></a>]</li>
+<li><a class="reference internal" href="mixins-date-based.html#django.views.generic.dates.MonthMixin.month_format" title="django.views.generic.dates.MonthMixin.month_format"><tt class="xref py py-attr docutils literal"><span class="pre">month_format</span></tt></a> [<a class="reference internal" href="mixins-date-based.html#django.views.generic.dates.MonthMixin.get_month_format" title="django.views.generic.dates.MonthMixin.get_month_format"><tt class="xref py py-meth docutils literal"><span class="pre">get_month_format()</span></tt></a>]</li>
+<li><a class="reference internal" href="mixins-multiple-object.html#django.views.generic.list.MultipleObjectMixin.ordering" title="django.views.generic.list.MultipleObjectMixin.ordering"><tt class="xref py py-attr docutils literal"><span class="pre">ordering</span></tt></a> [<a class="reference internal" href="mixins-multiple-object.html#django.views.generic.list.MultipleObjectMixin.get_ordering" title="django.views.generic.list.MultipleObjectMixin.get_ordering"><tt class="xref py py-meth docutils literal"><span class="pre">get_ordering()</span></tt></a>]</li>
+<li><a class="reference internal" href="mixins-multiple-object.html#django.views.generic.list.MultipleObjectMixin.paginate_by" title="django.views.generic.list.MultipleObjectMixin.paginate_by"><tt class="xref py py-attr docutils literal"><span class="pre">paginate_by</span></tt></a> [<a class="reference internal" href="mixins-multiple-object.html#django.views.generic.list.MultipleObjectMixin.get_paginate_by" title="django.views.generic.list.MultipleObjectMixin.get_paginate_by"><tt class="xref py py-meth docutils literal"><span class="pre">get_paginate_by()</span></tt></a>]</li>
+<li><a class="reference internal" href="mixins-multiple-object.html#django.views.generic.list.MultipleObjectMixin.paginate_orphans" title="django.views.generic.list.MultipleObjectMixin.paginate_orphans"><tt class="xref py py-attr docutils literal"><span class="pre">paginate_orphans</span></tt></a> [<a class="reference internal" href="mixins-multiple-object.html#django.views.generic.list.MultipleObjectMixin.get_paginate_orphans" title="django.views.generic.list.MultipleObjectMixin.get_paginate_orphans"><tt class="xref py py-meth docutils literal"><span class="pre">get_paginate_orphans()</span></tt></a>]</li>
+<li><a class="reference internal" href="mixins-multiple-object.html#django.views.generic.list.MultipleObjectMixin.paginator_class" title="django.views.generic.list.MultipleObjectMixin.paginator_class"><tt class="xref py py-attr docutils literal"><span class="pre">paginator_class</span></tt></a></li>
+<li><a class="reference internal" href="mixins-multiple-object.html#django.views.generic.list.MultipleObjectMixin.queryset" title="django.views.generic.list.MultipleObjectMixin.queryset"><tt class="xref py py-attr docutils literal"><span class="pre">queryset</span></tt></a> [<a class="reference internal" href="mixins-multiple-object.html#django.views.generic.list.MultipleObjectMixin.get_queryset" title="django.views.generic.list.MultipleObjectMixin.get_queryset"><tt class="xref py py-meth docutils literal"><span class="pre">get_queryset()</span></tt></a>]</li>
+<li><a class="reference internal" href="mixins-simple.html#django.views.generic.base.TemplateResponseMixin.response_class" title="django.views.generic.base.TemplateResponseMixin.response_class"><tt class="xref py py-attr docutils literal"><span class="pre">response_class</span></tt></a> [<a class="reference internal" href="mixins-simple.html#django.views.generic.base.TemplateResponseMixin.render_to_response" title="django.views.generic.base.TemplateResponseMixin.render_to_response"><tt class="xref py py-meth docutils literal"><span class="pre">render_to_response()</span></tt></a>]</li>
+<li><a class="reference internal" href="mixins-simple.html#django.views.generic.base.TemplateResponseMixin.template_engine" title="django.views.generic.base.TemplateResponseMixin.template_engine"><tt class="xref py py-attr docutils literal"><span class="pre">template_engine</span></tt></a></li>
+<li><a class="reference internal" href="mixins-simple.html#django.views.generic.base.TemplateResponseMixin.template_name" title="django.views.generic.base.TemplateResponseMixin.template_name"><tt class="xref py py-attr docutils literal"><span class="pre">template_name</span></tt></a> [<a class="reference internal" href="mixins-simple.html#django.views.generic.base.TemplateResponseMixin.get_template_names" title="django.views.generic.base.TemplateResponseMixin.get_template_names"><tt class="xref py py-meth docutils literal"><span class="pre">get_template_names()</span></tt></a>]</li>
+<li><a class="reference internal" href="mixins-multiple-object.html#django.views.generic.list.MultipleObjectTemplateResponseMixin.template_name_suffix" title="django.views.generic.list.MultipleObjectTemplateResponseMixin.template_name_suffix"><tt class="xref py py-attr docutils literal"><span class="pre">template_name_suffix</span></tt></a></li>
+<li><a class="reference internal" href="mixins-date-based.html#django.views.generic.dates.YearMixin.year" title="django.views.generic.dates.YearMixin.year"><tt class="xref py py-attr docutils literal"><span class="pre">year</span></tt></a> [<a class="reference internal" href="mixins-date-based.html#django.views.generic.dates.YearMixin.get_year" title="django.views.generic.dates.YearMixin.get_year"><tt class="xref py py-meth docutils literal"><span class="pre">get_year()</span></tt></a>]</li>
+<li><a class="reference internal" href="mixins-date-based.html#django.views.generic.dates.YearMixin.year_format" title="django.views.generic.dates.YearMixin.year_format"><tt class="xref py py-attr docutils literal"><span class="pre">year_format</span></tt></a> [<a class="reference internal" href="mixins-date-based.html#django.views.generic.dates.YearMixin.get_year_format" title="django.views.generic.dates.YearMixin.get_year_format"><tt class="xref py py-meth docutils literal"><span class="pre">get_year_format()</span></tt></a>]</li>
+</ul>
+<p><strong>Methods</strong></p>
+<ul class="simple">
+<li><a class="reference internal" href="base.html#django.views.generic.base.View.as_view" title="django.views.generic.base.View.as_view"><tt class="xref py py-meth docutils literal"><span class="pre">as_view()</span></tt></a></li>
+<li><a class="reference internal" href="base.html#django.views.generic.base.View.dispatch" title="django.views.generic.base.View.dispatch"><tt class="xref py py-meth docutils literal"><span class="pre">dispatch()</span></tt></a></li>
+<li><tt class="docutils literal"><span class="pre">get()</span></tt></li>
+<li><a class="reference internal" href="mixins-multiple-object.html#django.views.generic.list.MultipleObjectMixin.get_context_data" title="django.views.generic.list.MultipleObjectMixin.get_context_data"><tt class="xref py py-meth docutils literal"><span class="pre">get_context_data()</span></tt></a></li>
+<li><a class="reference internal" href="mixins-date-based.html#django.views.generic.dates.BaseDateListView.get_date_list" title="django.views.generic.dates.BaseDateListView.get_date_list"><tt class="xref py py-meth docutils literal"><span class="pre">get_date_list()</span></tt></a></li>
+<li><a class="reference internal" href="mixins-date-based.html#django.views.generic.dates.BaseDateListView.get_dated_items" title="django.views.generic.dates.BaseDateListView.get_dated_items"><tt class="xref py py-meth docutils literal"><span class="pre">get_dated_items()</span></tt></a></li>
+<li><a class="reference internal" href="mixins-date-based.html#django.views.generic.dates.BaseDateListView.get_dated_queryset" title="django.views.generic.dates.BaseDateListView.get_dated_queryset"><tt class="xref py py-meth docutils literal"><span class="pre">get_dated_queryset()</span></tt></a></li>
+<li><a class="reference internal" href="mixins-date-based.html#django.views.generic.dates.DayMixin.get_next_day" title="django.views.generic.dates.DayMixin.get_next_day"><tt class="xref py py-meth docutils literal"><span class="pre">get_next_day()</span></tt></a></li>
+<li><a class="reference internal" href="mixins-date-based.html#django.views.generic.dates.MonthMixin.get_next_month" title="django.views.generic.dates.MonthMixin.get_next_month"><tt class="xref py py-meth docutils literal"><span class="pre">get_next_month()</span></tt></a></li>
+<li><a class="reference internal" href="mixins-multiple-object.html#django.views.generic.list.MultipleObjectMixin.get_paginator" title="django.views.generic.list.MultipleObjectMixin.get_paginator"><tt class="xref py py-meth docutils literal"><span class="pre">get_paginator()</span></tt></a></li>
+<li><a class="reference internal" href="mixins-date-based.html#django.views.generic.dates.DayMixin.get_previous_day" title="django.views.generic.dates.DayMixin.get_previous_day"><tt class="xref py py-meth docutils literal"><span class="pre">get_previous_day()</span></tt></a></li>
+<li><a class="reference internal" href="mixins-date-based.html#django.views.generic.dates.MonthMixin.get_previous_month" title="django.views.generic.dates.MonthMixin.get_previous_month"><tt class="xref py py-meth docutils literal"><span class="pre">get_previous_month()</span></tt></a></li>
+<li><tt class="docutils literal"><span class="pre">head()</span></tt></li>
+<li><a class="reference internal" href="base.html#django.views.generic.base.View.http_method_not_allowed" title="django.views.generic.base.View.http_method_not_allowed"><tt class="xref py py-meth docutils literal"><span class="pre">http_method_not_allowed()</span></tt></a></li>
+<li><a class="reference internal" href="mixins-multiple-object.html#django.views.generic.list.MultipleObjectMixin.paginate_queryset" title="django.views.generic.list.MultipleObjectMixin.paginate_queryset"><tt class="xref py py-meth docutils literal"><span class="pre">paginate_queryset()</span></tt></a></li>
+<li><a class="reference internal" href="mixins-simple.html#django.views.generic.base.TemplateResponseMixin.render_to_response" title="django.views.generic.base.TemplateResponseMixin.render_to_response"><tt class="xref py py-meth docutils literal"><span class="pre">render_to_response()</span></tt></a></li>
+</ul>
+</div>
+<div class="section" id="s-datedetailview">
+<span id="datedetailview"></span><h3>DateDetailView<a class="headerlink" href="#datedetailview" title="Permalink to this headline">¶</a></h3>
+<dl class="class">
+<dt id="DateDetailView">
+<em class="property">class </em><tt class="descname">DateDetailView</tt><a class="headerlink" href="#DateDetailView" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<p><strong>Attributes</strong> (with optional accessor):</p>
+<ul class="simple">
+<li><a class="reference internal" href="mixins-date-based.html#django.views.generic.dates.DateMixin.allow_future" title="django.views.generic.dates.DateMixin.allow_future"><tt class="xref py py-attr docutils literal"><span class="pre">allow_future</span></tt></a> [<a class="reference internal" href="mixins-date-based.html#django.views.generic.dates.DateMixin.get_allow_future" title="django.views.generic.dates.DateMixin.get_allow_future"><tt class="xref py py-meth docutils literal"><span class="pre">get_allow_future()</span></tt></a>]</li>
+<li><a class="reference internal" href="mixins-simple.html#django.views.generic.base.TemplateResponseMixin.content_type" title="django.views.generic.base.TemplateResponseMixin.content_type"><tt class="xref py py-attr docutils literal"><span class="pre">content_type</span></tt></a></li>
+<li><a class="reference internal" href="mixins-single-object.html#django.views.generic.detail.SingleObjectMixin.context_object_name" title="django.views.generic.detail.SingleObjectMixin.context_object_name"><tt class="xref py py-attr docutils literal"><span class="pre">context_object_name</span></tt></a> [<a class="reference internal" href="mixins-single-object.html#django.views.generic.detail.SingleObjectMixin.get_context_object_name" title="django.views.generic.detail.SingleObjectMixin.get_context_object_name"><tt class="xref py py-meth docutils literal"><span class="pre">get_context_object_name()</span></tt></a>]</li>
+<li><a class="reference internal" href="mixins-date-based.html#django.views.generic.dates.DateMixin.date_field" title="django.views.generic.dates.DateMixin.date_field"><tt class="xref py py-attr docutils literal"><span class="pre">date_field</span></tt></a> [<a class="reference internal" href="mixins-date-based.html#django.views.generic.dates.DateMixin.get_date_field" title="django.views.generic.dates.DateMixin.get_date_field"><tt class="xref py py-meth docutils literal"><span class="pre">get_date_field()</span></tt></a>]</li>
+<li><a class="reference internal" href="mixins-date-based.html#django.views.generic.dates.DayMixin.day" title="django.views.generic.dates.DayMixin.day"><tt class="xref py py-attr docutils literal"><span class="pre">day</span></tt></a> [<a class="reference internal" href="mixins-date-based.html#django.views.generic.dates.DayMixin.get_day" title="django.views.generic.dates.DayMixin.get_day"><tt class="xref py py-meth docutils literal"><span class="pre">get_day()</span></tt></a>]</li>
+<li><a class="reference internal" href="mixins-date-based.html#django.views.generic.dates.DayMixin.day_format" title="django.views.generic.dates.DayMixin.day_format"><tt class="xref py py-attr docutils literal"><span class="pre">day_format</span></tt></a> [<a class="reference internal" href="mixins-date-based.html#django.views.generic.dates.DayMixin.get_day_format" title="django.views.generic.dates.DayMixin.get_day_format"><tt class="xref py py-meth docutils literal"><span class="pre">get_day_format()</span></tt></a>]</li>
+<li><a class="reference internal" href="base.html#django.views.generic.base.View.http_method_names" title="django.views.generic.base.View.http_method_names"><tt class="xref py py-attr docutils literal"><span class="pre">http_method_names</span></tt></a></li>
+<li><a class="reference internal" href="mixins-single-object.html#django.views.generic.detail.SingleObjectMixin.model" title="django.views.generic.detail.SingleObjectMixin.model"><tt class="xref py py-attr docutils literal"><span class="pre">model</span></tt></a></li>
+<li><a class="reference internal" href="mixins-date-based.html#django.views.generic.dates.MonthMixin.month" title="django.views.generic.dates.MonthMixin.month"><tt class="xref py py-attr docutils literal"><span class="pre">month</span></tt></a> [<a class="reference internal" href="mixins-date-based.html#django.views.generic.dates.MonthMixin.get_month" title="django.views.generic.dates.MonthMixin.get_month"><tt class="xref py py-meth docutils literal"><span class="pre">get_month()</span></tt></a>]</li>
+<li><a class="reference internal" href="mixins-date-based.html#django.views.generic.dates.MonthMixin.month_format" title="django.views.generic.dates.MonthMixin.month_format"><tt class="xref py py-attr docutils literal"><span class="pre">month_format</span></tt></a> [<a class="reference internal" href="mixins-date-based.html#django.views.generic.dates.MonthMixin.get_month_format" title="django.views.generic.dates.MonthMixin.get_month_format"><tt class="xref py py-meth docutils literal"><span class="pre">get_month_format()</span></tt></a>]</li>
+<li><a class="reference internal" href="mixins-single-object.html#django.views.generic.detail.SingleObjectMixin.pk_url_kwarg" title="django.views.generic.detail.SingleObjectMixin.pk_url_kwarg"><tt class="xref py py-attr docutils literal"><span class="pre">pk_url_kwarg</span></tt></a></li>
+<li><a class="reference internal" href="mixins-single-object.html#django.views.generic.detail.SingleObjectMixin.queryset" title="django.views.generic.detail.SingleObjectMixin.queryset"><tt class="xref py py-attr docutils literal"><span class="pre">queryset</span></tt></a> [<a class="reference internal" href="mixins-single-object.html#django.views.generic.detail.SingleObjectMixin.get_queryset" title="django.views.generic.detail.SingleObjectMixin.get_queryset"><tt class="xref py py-meth docutils literal"><span class="pre">get_queryset()</span></tt></a>]</li>
+<li><a class="reference internal" href="mixins-simple.html#django.views.generic.base.TemplateResponseMixin.response_class" title="django.views.generic.base.TemplateResponseMixin.response_class"><tt class="xref py py-attr docutils literal"><span class="pre">response_class</span></tt></a> [<a class="reference internal" href="mixins-simple.html#django.views.generic.base.TemplateResponseMixin.render_to_response" title="django.views.generic.base.TemplateResponseMixin.render_to_response"><tt class="xref py py-meth docutils literal"><span class="pre">render_to_response()</span></tt></a>]</li>
+<li><a class="reference internal" href="mixins-single-object.html#django.views.generic.detail.SingleObjectMixin.slug_field" title="django.views.generic.detail.SingleObjectMixin.slug_field"><tt class="xref py py-attr docutils literal"><span class="pre">slug_field</span></tt></a> [<a class="reference internal" href="mixins-single-object.html#django.views.generic.detail.SingleObjectMixin.get_slug_field" title="django.views.generic.detail.SingleObjectMixin.get_slug_field"><tt class="xref py py-meth docutils literal"><span class="pre">get_slug_field()</span></tt></a>]</li>
+<li><a class="reference internal" href="mixins-single-object.html#django.views.generic.detail.SingleObjectMixin.slug_url_kwarg" title="django.views.generic.detail.SingleObjectMixin.slug_url_kwarg"><tt class="xref py py-attr docutils literal"><span class="pre">slug_url_kwarg</span></tt></a></li>
+<li><a class="reference internal" href="mixins-simple.html#django.views.generic.base.TemplateResponseMixin.template_engine" title="django.views.generic.base.TemplateResponseMixin.template_engine"><tt class="xref py py-attr docutils literal"><span class="pre">template_engine</span></tt></a></li>
+<li><a class="reference internal" href="mixins-simple.html#django.views.generic.base.TemplateResponseMixin.template_name" title="django.views.generic.base.TemplateResponseMixin.template_name"><tt class="xref py py-attr docutils literal"><span class="pre">template_name</span></tt></a> [<a class="reference internal" href="mixins-simple.html#django.views.generic.base.TemplateResponseMixin.get_template_names" title="django.views.generic.base.TemplateResponseMixin.get_template_names"><tt class="xref py py-meth docutils literal"><span class="pre">get_template_names()</span></tt></a>]</li>
+<li><a class="reference internal" href="mixins-single-object.html#django.views.generic.detail.SingleObjectTemplateResponseMixin.template_name_field" title="django.views.generic.detail.SingleObjectTemplateResponseMixin.template_name_field"><tt class="xref py py-attr docutils literal"><span class="pre">template_name_field</span></tt></a></li>
+<li><a class="reference internal" href="mixins-single-object.html#django.views.generic.detail.SingleObjectTemplateResponseMixin.template_name_suffix" title="django.views.generic.detail.SingleObjectTemplateResponseMixin.template_name_suffix"><tt class="xref py py-attr docutils literal"><span class="pre">template_name_suffix</span></tt></a></li>
+<li><a class="reference internal" href="mixins-date-based.html#django.views.generic.dates.YearMixin.year" title="django.views.generic.dates.YearMixin.year"><tt class="xref py py-attr docutils literal"><span class="pre">year</span></tt></a> [<a class="reference internal" href="mixins-date-based.html#django.views.generic.dates.YearMixin.get_year" title="django.views.generic.dates.YearMixin.get_year"><tt class="xref py py-meth docutils literal"><span class="pre">get_year()</span></tt></a>]</li>
+<li><a class="reference internal" href="mixins-date-based.html#django.views.generic.dates.YearMixin.year_format" title="django.views.generic.dates.YearMixin.year_format"><tt class="xref py py-attr docutils literal"><span class="pre">year_format</span></tt></a> [<a class="reference internal" href="mixins-date-based.html#django.views.generic.dates.YearMixin.get_year_format" title="django.views.generic.dates.YearMixin.get_year_format"><tt class="xref py py-meth docutils literal"><span class="pre">get_year_format()</span></tt></a>]</li>
+</ul>
+<p><strong>Methods</strong></p>
+<ul class="simple">
+<li><a class="reference internal" href="base.html#django.views.generic.base.View.as_view" title="django.views.generic.base.View.as_view"><tt class="xref py py-meth docutils literal"><span class="pre">as_view()</span></tt></a></li>
+<li><a class="reference internal" href="base.html#django.views.generic.base.View.dispatch" title="django.views.generic.base.View.dispatch"><tt class="xref py py-meth docutils literal"><span class="pre">dispatch()</span></tt></a></li>
+<li><tt class="docutils literal"><span class="pre">get()</span></tt></li>
+<li><a class="reference internal" href="mixins-single-object.html#django.views.generic.detail.SingleObjectMixin.get_context_data" title="django.views.generic.detail.SingleObjectMixin.get_context_data"><tt class="xref py py-meth docutils literal"><span class="pre">get_context_data()</span></tt></a></li>
+<li><a class="reference internal" href="mixins-date-based.html#django.views.generic.dates.DayMixin.get_next_day" title="django.views.generic.dates.DayMixin.get_next_day"><tt class="xref py py-meth docutils literal"><span class="pre">get_next_day()</span></tt></a></li>
+<li><a class="reference internal" href="mixins-date-based.html#django.views.generic.dates.MonthMixin.get_next_month" title="django.views.generic.dates.MonthMixin.get_next_month"><tt class="xref py py-meth docutils literal"><span class="pre">get_next_month()</span></tt></a></li>
+<li><a class="reference internal" href="mixins-single-object.html#django.views.generic.detail.SingleObjectMixin.get_object" title="django.views.generic.detail.SingleObjectMixin.get_object"><tt class="xref py py-meth docutils literal"><span class="pre">get_object()</span></tt></a></li>
+<li><a class="reference internal" href="mixins-date-based.html#django.views.generic.dates.DayMixin.get_previous_day" title="django.views.generic.dates.DayMixin.get_previous_day"><tt class="xref py py-meth docutils literal"><span class="pre">get_previous_day()</span></tt></a></li>
+<li><a class="reference internal" href="mixins-date-based.html#django.views.generic.dates.MonthMixin.get_previous_month" title="django.views.generic.dates.MonthMixin.get_previous_month"><tt class="xref py py-meth docutils literal"><span class="pre">get_previous_month()</span></tt></a></li>
+<li><tt class="docutils literal"><span class="pre">head()</span></tt></li>
+<li><a class="reference internal" href="base.html#django.views.generic.base.View.http_method_not_allowed" title="django.views.generic.base.View.http_method_not_allowed"><tt class="xref py py-meth docutils literal"><span class="pre">http_method_not_allowed()</span></tt></a></li>
+<li><a class="reference internal" href="mixins-simple.html#django.views.generic.base.TemplateResponseMixin.render_to_response" title="django.views.generic.base.TemplateResponseMixin.render_to_response"><tt class="xref py py-meth docutils literal"><span class="pre">render_to_response()</span></tt></a></li>
+</ul>
+</div>
+</div>
+</div>
+
+
+          </div>
+        </div>
+      </div>
+      
+        
+          <div class="yui-b" id="sidebar">
+            
+      <div class="sphinxsidebar">
+        <div class="sphinxsidebarwrapper">
+  <h3><a href="../../contents.html">Table Of Contents</a></h3>
+  <ul>
+<li><a class="reference internal" href="#">Class-based generic views - flattened index</a><ul>
+<li><a class="reference internal" href="#simple-generic-views">Simple generic views</a><ul>
+<li><a class="reference internal" href="#view">View</a></li>
+<li><a class="reference internal" href="#templateview">TemplateView</a></li>
+<li><a class="reference internal" href="#redirectview">RedirectView</a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#detail-views">Detail Views</a><ul>
+<li><a class="reference internal" href="#detailview">DetailView</a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#list-views">List Views</a><ul>
+<li><a class="reference internal" href="#listview">ListView</a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#editing-views">Editing views</a><ul>
+<li><a class="reference internal" href="#formview">FormView</a></li>
+<li><a class="reference internal" href="#createview">CreateView</a></li>
+<li><a class="reference internal" href="#updateview">UpdateView</a></li>
+<li><a class="reference internal" href="#deleteview">DeleteView</a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#date-based-views">Date-based views</a><ul>
+<li><a class="reference internal" href="#archiveindexview">ArchiveIndexView</a></li>
+<li><a class="reference internal" href="#yeararchiveview">YearArchiveView</a></li>
+<li><a class="reference internal" href="#montharchiveview">MonthArchiveView</a></li>
+<li><a class="reference internal" href="#weekarchiveview">WeekArchiveView</a></li>
+<li><a class="reference internal" href="#dayarchiveview">DayArchiveView</a></li>
+<li><a class="reference internal" href="#todayarchiveview">TodayArchiveView</a></li>
+<li><a class="reference internal" href="#datedetailview">DateDetailView</a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+
+  <h3>Browse</h3>
+  <ul>
+    
+      <li>Prev: <a href="mixins-date-based.html">Date-based mixins</a></li>
+    
+    
+      <li>Next: <a href="../clickjacking.html">Clickjacking Protection</a></li>
+    
+  </ul>
+  <h3>You are here:</h3>
+  <ul>
+      <li>
+        <a href="../../index.html">Django 1.8.2.dev20150505153848 documentation</a>
+        
+          <ul><li><a href="../index.html">API Reference</a>
+        
+          <ul><li><a href="index.html">Built-in Class-based views API</a>
+        
+        <ul><li>Class-based generic views - flattened index</li></ul>
+        </li></ul></li></ul>
+      </li>
+  </ul>
+
+  <h3>This Page</h3>
+  <ul class="this-page-menu">
+    <li><a href="../../_sources/ref/class-based-views/flattened-index.txt"
+           rel="nofollow">Show Source</a></li>
+  </ul>
+<div id="searchbox" style="display: none">
+  <h3>Quick search</h3>
+    <form class="search" action="../../search.html" method="get">
+      <input type="text" name="q" />
+      <input type="submit" value="Go" />
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+    <p class="searchtip" style="font-size: 90%">
+    Enter search terms or a module, class or function name.
+    </p>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+              <h3>Last update:</h3>
+              <p class="topless">May 06, 2015</p>
+          </div>
+        
+      
+    </div>
+
+    <div id="ft">
+      <div class="nav">
+    &laquo; <a href="mixins-date-based.html" title="Date-based mixins">previous</a>
+     |
+    <a href="../index.html" title="API Reference" accesskey="U">up</a>
+   |
+    <a href="../clickjacking.html" title="Clickjacking Protection">next</a> &raquo;</div>
+    </div>
+  </div>
+
+      <div class="clearer"></div>
+    </div>
+  </body>
+</html>

@@ -14,11 +14,9 @@ from wordinfos import get_all_conversant_word_list
 
 def change_url(pre_url):
     un_change_patterns = ['css', 'png', 'js', 'ico', 'tgz', 'zip', 'rar', 'pdf', 'gif', 'git']
-
     for un_change_pattern in un_change_patterns:
         if pre_url.endswith(un_change_pattern):
             return pre_url
-
     params = urllib.urlencode({'tran_page': pre_url})
 
     return "%sword/tran?%s" % (HOST, params)

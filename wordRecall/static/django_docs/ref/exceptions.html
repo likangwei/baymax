@@ -1,0 +1,524 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>Django Exceptions &mdash; Django 1.8.2.dev20150505153848 documentation</title>
+    
+    <link rel="stylesheet" href="../_static/default.css" type="text/css" />
+    <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '../',
+        VERSION:     '1.8.2.dev20150505153848',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="../_static/jquery.js"></script>
+    <script type="text/javascript" src="../_static/underscore.js"></script>
+    <script type="text/javascript" src="../_static/doctools.js"></script>
+    <link rel="top" title="Django 1.8.2.dev20150505153848 documentation" href="../index.html" />
+    <link rel="up" title="API Reference" href="index.html" />
+    <link rel="next" title="File handling" href="files/index.html" />
+    <link rel="prev" title="django-admin and manage.py" href="django-admin.html" />
+
+
+
+ 
+<script type="text/javascript" src="../templatebuiltins.js"></script>
+<script type="text/javascript">
+(function($) {
+    if (!django_template_builtins) {
+       // templatebuiltins.js missing, do nothing.
+       return;
+    }
+    $(document).ready(function() {
+        // Hyperlink Django template tags and filters
+        var base = "templates/builtins.html";
+        if (base == "#") {
+            // Special case for builtins.html itself
+            base = "";
+        }
+        // Tags are keywords, class '.k'
+        $("div.highlight\\-html\\+django span.k").each(function(i, elem) {
+             var tagname = $(elem).text();
+             if ($.inArray(tagname, django_template_builtins.ttags) != -1) {
+                 var fragment = tagname.replace(/_/, '-');
+                 $(elem).html("<a href='" + base + "#" + fragment + "'>" + tagname + "</a>");
+             }
+        });
+        // Filters are functions, class '.nf'
+        $("div.highlight\\-html\\+django span.nf").each(function(i, elem) {
+             var filtername = $(elem).text();
+             if ($.inArray(filtername, django_template_builtins.tfilters) != -1) {
+                 var fragment = filtername.replace(/_/, '-');
+                 $(elem).html("<a href='" + base + "#" + fragment + "'>" + filtername + "</a>");
+             }
+        });
+    });
+})(jQuery);
+</script>
+
+
+  </head>
+  <body>
+
+    <div class="document">
+  <div id="custom-doc" class="yui-t6">
+    <div id="hd">
+      <h1><a href="../index.html">Django 1.8.2.dev20150505153848 documentation</a></h1>
+      <div id="global-nav">
+        <a title="Home page" href="../index.html">Home</a>  |
+        <a title="Table of contents" href="../contents.html">Table of contents</a>  |
+        <a title="Global index" href="../genindex.html">Index</a>  |
+        <a title="Module index" href="../py-modindex.html">Modules</a>
+      </div>
+      <div class="nav">
+    &laquo; <a href="django-admin.html" title="django-admin and manage.py">previous</a>
+     |
+    <a href="index.html" title="API Reference" accesskey="U">up</a>
+   |
+    <a href="files/index.html" title="File handling">next</a> &raquo;</div>
+    </div>
+
+    <div id="bd">
+      <div id="yui-main">
+        <div class="yui-b">
+          <div class="yui-g" id="ref-exceptions">
+            
+  <div class="section" id="s-django-exceptions">
+<span id="django-exceptions"></span><h1>Django Exceptions<a class="headerlink" href="#django-exceptions" title="Permalink to this headline">¶</a></h1>
+<p>Django raises some of its own exceptions as well as standard Python exceptions.</p>
+<div class="section" id="s-module-django.core.exceptions">
+<span id="s-django-core-exceptions"></span><span id="module-django.core.exceptions"></span><span id="django-core-exceptions"></span><h2>Django Core Exceptions<a class="headerlink" href="#module-django.core.exceptions" title="Permalink to this headline">¶</a></h2>
+<p>Django core exception classes are defined in <tt class="docutils literal"><span class="pre">django.core.exceptions</span></tt>.</p>
+<div class="section" id="s-objectdoesnotexist-and-doesnotexist">
+<span id="objectdoesnotexist-and-doesnotexist"></span><h3><tt class="docutils literal"><span class="pre">ObjectDoesNotExist</span></tt> and <tt class="docutils literal"><span class="pre">DoesNotExist</span></tt><a class="headerlink" href="#objectdoesnotexist-and-doesnotexist" title="Permalink to this headline">¶</a></h3>
+<dl class="exception">
+<dt id="django.core.exceptions.DoesNotExist">
+<em class="property">exception </em><tt class="descname">DoesNotExist</tt><a class="headerlink" href="#django.core.exceptions.DoesNotExist" title="Permalink to this definition">¶</a></dt>
+<dd><p>The <tt class="docutils literal"><span class="pre">DoesNotExist</span></tt> exception is raised when an object is not found for
+the given parameters of a query. Django provides a <tt class="docutils literal"><span class="pre">DoesNotExist</span></tt>
+exception as an attribute of each model class to identify the class of
+object that could not be found and to allow you to catch a particular model
+class with <tt class="docutils literal"><span class="pre">try/except</span></tt>.</p>
+</dd></dl>
+
+<dl class="exception">
+<dt id="django.core.exceptions.ObjectDoesNotExist">
+<em class="property">exception </em><tt class="descname">ObjectDoesNotExist</tt><a class="reference internal" href="../_modules/django/core/exceptions.html#ObjectDoesNotExist"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#django.core.exceptions.ObjectDoesNotExist" title="Permalink to this definition">¶</a></dt>
+<dd><p>The base class for <tt class="docutils literal"><span class="pre">DoesNotExist</span></tt> exceptions; a <tt class="docutils literal"><span class="pre">try/except</span></tt> for
+<tt class="docutils literal"><span class="pre">ObjectDoesNotExist</span></tt> will catch <tt class="docutils literal"><span class="pre">DoesNotExist</span></tt> exceptions for all
+models.</p>
+<p>See <a class="reference internal" href="models/querysets.html#django.db.models.query.QuerySet.get" title="django.db.models.query.QuerySet.get"><tt class="xref py py-meth docutils literal"><span class="pre">get()</span></tt></a> for further information
+on <a class="reference internal" href="#django.core.exceptions.ObjectDoesNotExist" title="django.core.exceptions.ObjectDoesNotExist"><tt class="xref py py-exc docutils literal"><span class="pre">ObjectDoesNotExist</span></tt></a> and <a class="reference internal" href="#django.core.exceptions.DoesNotExist" title="django.core.exceptions.DoesNotExist"><tt class="xref py py-exc docutils literal"><span class="pre">DoesNotExist</span></tt></a>.</p>
+</dd></dl>
+
+</div>
+<div class="section" id="s-fielddoesnotexist">
+<span id="fielddoesnotexist"></span><h3><tt class="docutils literal"><span class="pre">FieldDoesNotExist</span></tt><a class="headerlink" href="#fielddoesnotexist" title="Permalink to this headline">¶</a></h3>
+<dl class="exception">
+<dt id="django.core.exceptions.FieldDoesNotExist">
+<em class="property">exception </em><tt class="descname">FieldDoesNotExist</tt><a class="reference internal" href="../_modules/django/core/exceptions.html#FieldDoesNotExist"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#django.core.exceptions.FieldDoesNotExist" title="Permalink to this definition">¶</a></dt>
+<dd><p>The <tt class="docutils literal"><span class="pre">FieldDoesNotExist</span></tt> exception is raised by a model&#8217;s
+<tt class="docutils literal"><span class="pre">_meta.get_field()</span></tt> method when the requested field does not exist on the
+model or on the model&#8217;s parents.</p>
+<div class="versionchanged">
+<span class="title">Changed in Django 1.8:</span> <p>This exception was previously defined only in
+<tt class="docutils literal"><span class="pre">django.db.models.fields</span></tt> and wasn&#8217;t part of the public API.</p>
+</div>
+</dd></dl>
+
+</div>
+<div class="section" id="s-multipleobjectsreturned">
+<span id="multipleobjectsreturned"></span><h3><tt class="docutils literal"><span class="pre">MultipleObjectsReturned</span></tt><a class="headerlink" href="#multipleobjectsreturned" title="Permalink to this headline">¶</a></h3>
+<dl class="exception">
+<dt id="django.core.exceptions.MultipleObjectsReturned">
+<em class="property">exception </em><tt class="descname">MultipleObjectsReturned</tt><a class="reference internal" href="../_modules/django/core/exceptions.html#MultipleObjectsReturned"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#django.core.exceptions.MultipleObjectsReturned" title="Permalink to this definition">¶</a></dt>
+<dd><p>The <a class="reference internal" href="#django.core.exceptions.MultipleObjectsReturned" title="django.core.exceptions.MultipleObjectsReturned"><tt class="xref py py-exc docutils literal"><span class="pre">MultipleObjectsReturned</span></tt></a> exception is raised by a query if only
+one object is expected, but multiple objects are returned. A base version
+of this exception is provided in <a class="reference internal" href="#module-django.core.exceptions" title="django.core.exceptions: Django core exceptions"><tt class="xref py py-mod docutils literal"><span class="pre">django.core.exceptions</span></tt></a>; each model
+class contains a subclassed version that can be used to identify the
+specific object type that has returned multiple objects.</p>
+<p>See <a class="reference internal" href="models/querysets.html#django.db.models.query.QuerySet.get" title="django.db.models.query.QuerySet.get"><tt class="xref py py-meth docutils literal"><span class="pre">get()</span></tt></a> for further information.</p>
+</dd></dl>
+
+</div>
+<div class="section" id="s-suspiciousoperation">
+<span id="suspiciousoperation"></span><h3><tt class="docutils literal"><span class="pre">SuspiciousOperation</span></tt><a class="headerlink" href="#suspiciousoperation" title="Permalink to this headline">¶</a></h3>
+<dl class="exception">
+<dt id="django.core.exceptions.SuspiciousOperation">
+<em class="property">exception </em><tt class="descname">SuspiciousOperation</tt><a class="reference internal" href="../_modules/django/core/exceptions.html#SuspiciousOperation"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#django.core.exceptions.SuspiciousOperation" title="Permalink to this definition">¶</a></dt>
+<dd><p>The <a class="reference internal" href="#django.core.exceptions.SuspiciousOperation" title="django.core.exceptions.SuspiciousOperation"><tt class="xref py py-exc docutils literal"><span class="pre">SuspiciousOperation</span></tt></a> exception is raised when a user has
+performed an operation that should be considered suspicious from a security
+perspective, such as tampering with a session cookie. Subclasses of
+<tt class="docutils literal"><span class="pre">SuspiciousOperation</span></tt> include:</p>
+<ul class="simple">
+<li><tt class="docutils literal"><span class="pre">DisallowedHost</span></tt></li>
+<li><tt class="docutils literal"><span class="pre">DisallowedModelAdminLookup</span></tt></li>
+<li><tt class="docutils literal"><span class="pre">DisallowedModelAdminToField</span></tt></li>
+<li><tt class="docutils literal"><span class="pre">DisallowedRedirect</span></tt></li>
+<li><tt class="docutils literal"><span class="pre">InvalidSessionKey</span></tt></li>
+<li><tt class="docutils literal"><span class="pre">SuspiciousFileOperation</span></tt></li>
+<li><tt class="docutils literal"><span class="pre">SuspiciousMultipartForm</span></tt></li>
+<li><tt class="docutils literal"><span class="pre">SuspiciousSession</span></tt></li>
+</ul>
+<p>If a <tt class="docutils literal"><span class="pre">SuspiciousOperation</span></tt> exception reaches the WSGI handler level it is
+logged at the <tt class="docutils literal"><span class="pre">Error</span></tt> level and results in
+a <a class="reference internal" href="request-response.html#django.http.HttpResponseBadRequest" title="django.http.HttpResponseBadRequest"><tt class="xref py py-class docutils literal"><span class="pre">HttpResponseBadRequest</span></tt></a>. See the <a class="reference internal" href="../topics/logging.html"><em>logging
+documentation</em></a> for more information.</p>
+</dd></dl>
+
+</div>
+<div class="section" id="s-permissiondenied">
+<span id="permissiondenied"></span><h3><tt class="docutils literal"><span class="pre">PermissionDenied</span></tt><a class="headerlink" href="#permissiondenied" title="Permalink to this headline">¶</a></h3>
+<dl class="exception">
+<dt id="django.core.exceptions.PermissionDenied">
+<em class="property">exception </em><tt class="descname">PermissionDenied</tt><a class="reference internal" href="../_modules/django/core/exceptions.html#PermissionDenied"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#django.core.exceptions.PermissionDenied" title="Permalink to this definition">¶</a></dt>
+<dd><p>The <a class="reference internal" href="#django.core.exceptions.PermissionDenied" title="django.core.exceptions.PermissionDenied"><tt class="xref py py-exc docutils literal"><span class="pre">PermissionDenied</span></tt></a> exception is raised when a user does not have
+permission to perform the action requested.</p>
+</dd></dl>
+
+</div>
+<div class="section" id="s-viewdoesnotexist">
+<span id="viewdoesnotexist"></span><h3><tt class="docutils literal"><span class="pre">ViewDoesNotExist</span></tt><a class="headerlink" href="#viewdoesnotexist" title="Permalink to this headline">¶</a></h3>
+<dl class="exception">
+<dt id="django.core.exceptions.ViewDoesNotExist">
+<em class="property">exception </em><tt class="descname">ViewDoesNotExist</tt><a class="reference internal" href="../_modules/django/core/exceptions.html#ViewDoesNotExist"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#django.core.exceptions.ViewDoesNotExist" title="Permalink to this definition">¶</a></dt>
+<dd><p>The <a class="reference internal" href="#django.core.exceptions.ViewDoesNotExist" title="django.core.exceptions.ViewDoesNotExist"><tt class="xref py py-exc docutils literal"><span class="pre">ViewDoesNotExist</span></tt></a> exception is raised by
+<a class="reference internal" href="urlresolvers.html#module-django.core.urlresolvers" title="django.core.urlresolvers"><tt class="xref py py-mod docutils literal"><span class="pre">django.core.urlresolvers</span></tt></a> when a requested view does not exist.</p>
+</dd></dl>
+
+</div>
+<div class="section" id="s-middlewarenotused">
+<span id="middlewarenotused"></span><h3><tt class="docutils literal"><span class="pre">MiddlewareNotUsed</span></tt><a class="headerlink" href="#middlewarenotused" title="Permalink to this headline">¶</a></h3>
+<dl class="exception">
+<dt id="django.core.exceptions.MiddlewareNotUsed">
+<em class="property">exception </em><tt class="descname">MiddlewareNotUsed</tt><a class="reference internal" href="../_modules/django/core/exceptions.html#MiddlewareNotUsed"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#django.core.exceptions.MiddlewareNotUsed" title="Permalink to this definition">¶</a></dt>
+<dd><p>The <a class="reference internal" href="#django.core.exceptions.MiddlewareNotUsed" title="django.core.exceptions.MiddlewareNotUsed"><tt class="xref py py-exc docutils literal"><span class="pre">MiddlewareNotUsed</span></tt></a> exception is raised when a middleware is not
+used in the server configuration.</p>
+</dd></dl>
+
+</div>
+<div class="section" id="s-improperlyconfigured">
+<span id="improperlyconfigured"></span><h3><tt class="docutils literal"><span class="pre">ImproperlyConfigured</span></tt><a class="headerlink" href="#improperlyconfigured" title="Permalink to this headline">¶</a></h3>
+<dl class="exception">
+<dt id="django.core.exceptions.ImproperlyConfigured">
+<em class="property">exception </em><tt class="descname">ImproperlyConfigured</tt><a class="reference internal" href="../_modules/django/core/exceptions.html#ImproperlyConfigured"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#django.core.exceptions.ImproperlyConfigured" title="Permalink to this definition">¶</a></dt>
+<dd><p>The <a class="reference internal" href="#django.core.exceptions.ImproperlyConfigured" title="django.core.exceptions.ImproperlyConfigured"><tt class="xref py py-exc docutils literal"><span class="pre">ImproperlyConfigured</span></tt></a> exception is raised when Django is
+somehow improperly configured &#8211; for example, if a value in <tt class="docutils literal"><span class="pre">settings.py</span></tt>
+is incorrect or unparseable.</p>
+</dd></dl>
+
+</div>
+<div class="section" id="s-fielderror">
+<span id="fielderror"></span><h3><tt class="docutils literal"><span class="pre">FieldError</span></tt><a class="headerlink" href="#fielderror" title="Permalink to this headline">¶</a></h3>
+<dl class="exception">
+<dt id="django.core.exceptions.FieldError">
+<em class="property">exception </em><tt class="descname">FieldError</tt><a class="reference internal" href="../_modules/django/core/exceptions.html#FieldError"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#django.core.exceptions.FieldError" title="Permalink to this definition">¶</a></dt>
+<dd><p>The <a class="reference internal" href="#django.core.exceptions.FieldError" title="django.core.exceptions.FieldError"><tt class="xref py py-exc docutils literal"><span class="pre">FieldError</span></tt></a> exception is raised when there is a problem with a
+model field. This can happen for several reasons:</p>
+<ul class="simple">
+<li>A field in a model clashes with a field of the same name from an
+abstract base class</li>
+<li>An infinite loop is caused by ordering</li>
+<li>A keyword cannot be parsed from the filter parameters</li>
+<li>A field cannot be determined from a keyword in the query
+parameters</li>
+<li>A join is not permitted on the specified field</li>
+<li>A field name is invalid</li>
+<li>A query contains invalid order_by arguments</li>
+</ul>
+</dd></dl>
+
+</div>
+<div class="section" id="s-validationerror">
+<span id="validationerror"></span><h3><tt class="docutils literal"><span class="pre">ValidationError</span></tt><a class="headerlink" href="#validationerror" title="Permalink to this headline">¶</a></h3>
+<dl class="exception">
+<dt id="django.core.exceptions.ValidationError">
+<em class="property">exception </em><tt class="descname">ValidationError</tt><a class="reference internal" href="../_modules/django/core/exceptions.html#ValidationError"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#django.core.exceptions.ValidationError" title="Permalink to this definition">¶</a></dt>
+<dd><p>The <a class="reference internal" href="#django.core.exceptions.ValidationError" title="django.core.exceptions.ValidationError"><tt class="xref py py-exc docutils literal"><span class="pre">ValidationError</span></tt></a> exception is raised when data fails form or
+model field validation. For more information about validation, see
+<a class="reference internal" href="forms/validation.html"><em>Form and Field Validation</em></a>,
+<a class="reference internal" href="models/instances.html#validating-objects"><em>Model Field Validation</em></a> and the
+<a class="reference internal" href="validators.html"><em>Validator Reference</em></a>.</p>
+</dd></dl>
+
+<div class="section" id="s-non-field-errors">
+<span id="non-field-errors"></span><h4><tt class="docutils literal"><span class="pre">NON_FIELD_ERRORS</span></tt><a class="headerlink" href="#non-field-errors" title="Permalink to this headline">¶</a></h4>
+<dl class="data">
+<dt id="django.core.exceptions.NON_FIELD_ERRORS">
+<tt class="descname">NON_FIELD_ERRORS</tt><a class="headerlink" href="#django.core.exceptions.NON_FIELD_ERRORS" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<p><tt class="docutils literal"><span class="pre">ValidationError</span></tt>s that don&#8217;t belong to a particular field in a form
+or model are classified as <tt class="docutils literal"><span class="pre">NON_FIELD_ERRORS</span></tt>. This constant is used
+as a key in dictionaries that otherwise map fields to their respective
+list of errors.</p>
+</div>
+</div>
+</div>
+<div class="section" id="s-url-resolver-exceptions">
+<span id="url-resolver-exceptions"></span><h2>URL Resolver exceptions<a class="headerlink" href="#url-resolver-exceptions" title="Permalink to this headline">¶</a></h2>
+<p>URL Resolver exceptions are defined in <tt class="docutils literal"><span class="pre">django.core.urlresolvers</span></tt>.</p>
+<div class="section" id="s-resolver404">
+<span id="resolver404"></span><h3><tt class="docutils literal"><span class="pre">Resolver404</span></tt><a class="headerlink" href="#resolver404" title="Permalink to this headline">¶</a></h3>
+<dl class="exception">
+<dt id="django.core.urlresolvers.Resolver404">
+<em class="property">exception </em><tt class="descname">Resolver404</tt><a class="reference internal" href="../_modules/django/core/urlresolvers.html#Resolver404"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#django.core.urlresolvers.Resolver404" title="Permalink to this definition">¶</a></dt>
+<dd><p>The <a class="reference internal" href="#django.core.urlresolvers.Resolver404" title="django.core.urlresolvers.Resolver404"><tt class="xref py py-exc docutils literal"><span class="pre">Resolver404</span></tt></a> exception is raised by
+<a class="reference internal" href="urlresolvers.html#django.core.urlresolvers.resolve" title="django.core.urlresolvers.resolve"><tt class="xref py py-func docutils literal"><span class="pre">django.core.urlresolvers.resolve()</span></tt></a> if the path passed to
+<tt class="docutils literal"><span class="pre">resolve()</span></tt> doesn&#8217;t map to a view. It&#8217;s a subclass of
+<a class="reference internal" href="../topics/http/views.html#django.http.Http404" title="django.http.Http404"><tt class="xref py py-class docutils literal"><span class="pre">django.http.Http404</span></tt></a>.</p>
+</dd></dl>
+
+</div>
+<div class="section" id="s-noreversematch">
+<span id="noreversematch"></span><h3><tt class="docutils literal"><span class="pre">NoReverseMatch</span></tt><a class="headerlink" href="#noreversematch" title="Permalink to this headline">¶</a></h3>
+<dl class="exception">
+<dt id="django.core.urlresolvers.NoReverseMatch">
+<em class="property">exception </em><tt class="descname">NoReverseMatch</tt><a class="reference internal" href="../_modules/django/core/urlresolvers.html#NoReverseMatch"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#django.core.urlresolvers.NoReverseMatch" title="Permalink to this definition">¶</a></dt>
+<dd><p>The <a class="reference internal" href="#django.core.urlresolvers.NoReverseMatch" title="django.core.urlresolvers.NoReverseMatch"><tt class="xref py py-exc docutils literal"><span class="pre">NoReverseMatch</span></tt></a> exception is raised by
+<a class="reference internal" href="urlresolvers.html#module-django.core.urlresolvers" title="django.core.urlresolvers"><tt class="xref py py-mod docutils literal"><span class="pre">django.core.urlresolvers</span></tt></a> when a matching URL in your URLconf
+cannot be identified based on the parameters supplied.</p>
+</dd></dl>
+
+</div>
+</div>
+<div class="section" id="s-database-exceptions">
+<span id="database-exceptions"></span><h2>Database Exceptions<a class="headerlink" href="#database-exceptions" title="Permalink to this headline">¶</a></h2>
+<p>Database exceptions may be imported from <tt class="docutils literal"><span class="pre">django.db</span></tt>.</p>
+<p>Django wraps the standard database exceptions so that your Django code has a
+guaranteed common implementation of these classes.</p>
+<dl class="exception">
+<dt id="django.db.Error">
+<em class="property">exception </em><tt class="descname">Error</tt><a class="headerlink" href="#django.db.Error" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="exception">
+<dt id="django.db.InterfaceError">
+<em class="property">exception </em><tt class="descname">InterfaceError</tt><a class="headerlink" href="#django.db.InterfaceError" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="exception">
+<dt id="django.db.DatabaseError">
+<em class="property">exception </em><tt class="descname">DatabaseError</tt><a class="headerlink" href="#django.db.DatabaseError" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="exception">
+<dt id="django.db.DataError">
+<em class="property">exception </em><tt class="descname">DataError</tt><a class="headerlink" href="#django.db.DataError" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="exception">
+<dt id="django.db.OperationalError">
+<em class="property">exception </em><tt class="descname">OperationalError</tt><a class="headerlink" href="#django.db.OperationalError" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="exception">
+<dt id="django.db.IntegrityError">
+<em class="property">exception </em><tt class="descname">IntegrityError</tt><a class="headerlink" href="#django.db.IntegrityError" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="exception">
+<dt id="django.db.InternalError">
+<em class="property">exception </em><tt class="descname">InternalError</tt><a class="headerlink" href="#django.db.InternalError" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="exception">
+<dt id="django.db.ProgrammingError">
+<em class="property">exception </em><tt class="descname">ProgrammingError</tt><a class="headerlink" href="#django.db.ProgrammingError" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="exception">
+<dt id="django.db.NotSupportedError">
+<em class="property">exception </em><tt class="descname">NotSupportedError</tt><a class="headerlink" href="#django.db.NotSupportedError" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<p>The Django wrappers for database exceptions behave exactly the same as
+the underlying database exceptions. See <span class="target" id="index-0"></span><a class="pep reference external" href="http://www.python.org/dev/peps/pep-0249"><strong>PEP 249</strong></a>, the Python Database API
+Specification v2.0, for further information.</p>
+<p>As per <span class="target" id="index-1"></span><a class="pep reference external" href="http://www.python.org/dev/peps/pep-3134"><strong>PEP 3134</strong></a>, a <tt class="docutils literal"><span class="pre">__cause__</span></tt> attribute is set with the original
+(underlying) database exception, allowing access to any additional
+information provided. (Note that this attribute is available under
+both Python 2 and Python 3, although <span class="target" id="index-2"></span><a class="pep reference external" href="http://www.python.org/dev/peps/pep-3134"><strong>PEP 3134</strong></a> normally only applies
+to Python 3.)</p>
+<dl class="exception">
+<dt id="django.db.models.ProtectedError">
+<em class="property">exception </em><tt class="descclassname">models.</tt><tt class="descname">ProtectedError</tt><a class="headerlink" href="#django.db.models.ProtectedError" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<p>Raised to prevent deletion of referenced objects when using
+<a class="reference internal" href="models/fields.html#django.db.models.PROTECT" title="django.db.models.PROTECT"><tt class="xref py py-attr docutils literal"><span class="pre">django.db.models.PROTECT</span></tt></a>. <a class="reference internal" href="#django.db.models.ProtectedError" title="django.db.models.ProtectedError"><tt class="xref py py-exc docutils literal"><span class="pre">models.ProtectedError</span></tt></a> is a subclass
+of <a class="reference internal" href="#django.db.IntegrityError" title="django.db.IntegrityError"><tt class="xref py py-exc docutils literal"><span class="pre">IntegrityError</span></tt></a>.</p>
+</div>
+<div class="section" id="s-http-exceptions">
+<span id="http-exceptions"></span><h2>Http Exceptions<a class="headerlink" href="#http-exceptions" title="Permalink to this headline">¶</a></h2>
+<p>Http exceptions may be imported from <tt class="docutils literal"><span class="pre">django.http</span></tt>.</p>
+<div class="section" id="s-unreadableposterror">
+<span id="unreadableposterror"></span><h3><tt class="docutils literal"><span class="pre">UnreadablePostError</span></tt><a class="headerlink" href="#unreadableposterror" title="Permalink to this headline">¶</a></h3>
+<dl class="exception">
+<dt id="django.http.UnreadablePostError">
+<em class="property">exception </em><tt class="descname">UnreadablePostError</tt><a class="headerlink" href="#django.http.UnreadablePostError" title="Permalink to this definition">¶</a></dt>
+<dd><p><a class="reference internal" href="#django.http.UnreadablePostError" title="django.http.UnreadablePostError"><tt class="xref py py-exc docutils literal"><span class="pre">UnreadablePostError</span></tt></a> is raised when a user cancels an upload.</p>
+</dd></dl>
+
+</div>
+</div>
+<div class="section" id="s-transaction-exceptions">
+<span id="transaction-exceptions"></span><h2>Transaction Exceptions<a class="headerlink" href="#transaction-exceptions" title="Permalink to this headline">¶</a></h2>
+<p>Transaction exceptions are defined in <tt class="docutils literal"><span class="pre">django.db.transaction</span></tt>.</p>
+<div class="section" id="s-transactionmanagementerror">
+<span id="transactionmanagementerror"></span><h3><tt class="docutils literal"><span class="pre">TransactionManagementError</span></tt><a class="headerlink" href="#transactionmanagementerror" title="Permalink to this headline">¶</a></h3>
+<dl class="exception">
+<dt id="django.db.transaction.TransactionManagementError">
+<em class="property">exception </em><tt class="descname">TransactionManagementError</tt><a class="reference internal" href="../_modules/django/db/transaction.html#TransactionManagementError"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#django.db.transaction.TransactionManagementError" title="Permalink to this definition">¶</a></dt>
+<dd><p><a class="reference internal" href="#django.db.transaction.TransactionManagementError" title="django.db.transaction.TransactionManagementError"><tt class="xref py py-exc docutils literal"><span class="pre">TransactionManagementError</span></tt></a> is raised for any and all problems
+related to database transactions.</p>
+</dd></dl>
+
+</div>
+</div>
+<div class="section" id="s-testing-framework-exceptions">
+<span id="testing-framework-exceptions"></span><h2>Testing Framework Exceptions<a class="headerlink" href="#testing-framework-exceptions" title="Permalink to this headline">¶</a></h2>
+<p>Exceptions provided by the <tt class="docutils literal"><span class="pre">django.test</span></tt> package.</p>
+<div class="section" id="s-redirectcycleerror">
+<span id="redirectcycleerror"></span><h3><tt class="docutils literal"><span class="pre">RedirectCycleError</span></tt><a class="headerlink" href="#redirectcycleerror" title="Permalink to this headline">¶</a></h3>
+<dl class="exception">
+<dt id="django.test.client.RedirectCycleError">
+<em class="property">exception </em><tt class="descclassname">client.</tt><tt class="descname">RedirectCycleError</tt><a class="headerlink" href="#django.test.client.RedirectCycleError" title="Permalink to this definition">¶</a></dt>
+<dd><div class="versionadded">
+<span class="title">New in Django 1.8.</span> </div>
+<p><a class="reference internal" href="#django.test.client.RedirectCycleError" title="django.test.client.RedirectCycleError"><tt class="xref py py-exc docutils literal"><span class="pre">RedirectCycleError</span></tt></a> is raised when the test client detects a
+loop or an overly long chain of redirects.</p>
+</dd></dl>
+
+</div>
+</div>
+<div class="section" id="s-python-exceptions">
+<span id="python-exceptions"></span><h2>Python Exceptions<a class="headerlink" href="#python-exceptions" title="Permalink to this headline">¶</a></h2>
+<p>Django raises built-in Python exceptions when appropriate as well. See the
+Python documentation for further information on the <a class="reference external" href="https://docs.python.org/3/library/exceptions.html#bltin-exceptions" title="(in Python v3.4)"><em>Built-in Exceptions</em></a>.</p>
+</div>
+</div>
+
+
+          </div>
+        </div>
+      </div>
+      
+        
+          <div class="yui-b" id="sidebar">
+            
+      <div class="sphinxsidebar">
+        <div class="sphinxsidebarwrapper">
+  <h3><a href="../contents.html">Table Of Contents</a></h3>
+  <ul>
+<li><a class="reference internal" href="#">Django Exceptions</a><ul>
+<li><a class="reference internal" href="#module-django.core.exceptions">Django Core Exceptions</a><ul>
+<li><a class="reference internal" href="#objectdoesnotexist-and-doesnotexist"><tt class="docutils literal"><span class="pre">ObjectDoesNotExist</span></tt> and <tt class="docutils literal"><span class="pre">DoesNotExist</span></tt></a></li>
+<li><a class="reference internal" href="#fielddoesnotexist"><tt class="docutils literal"><span class="pre">FieldDoesNotExist</span></tt></a></li>
+<li><a class="reference internal" href="#multipleobjectsreturned"><tt class="docutils literal"><span class="pre">MultipleObjectsReturned</span></tt></a></li>
+<li><a class="reference internal" href="#suspiciousoperation"><tt class="docutils literal"><span class="pre">SuspiciousOperation</span></tt></a></li>
+<li><a class="reference internal" href="#permissiondenied"><tt class="docutils literal"><span class="pre">PermissionDenied</span></tt></a></li>
+<li><a class="reference internal" href="#viewdoesnotexist"><tt class="docutils literal"><span class="pre">ViewDoesNotExist</span></tt></a></li>
+<li><a class="reference internal" href="#middlewarenotused"><tt class="docutils literal"><span class="pre">MiddlewareNotUsed</span></tt></a></li>
+<li><a class="reference internal" href="#improperlyconfigured"><tt class="docutils literal"><span class="pre">ImproperlyConfigured</span></tt></a></li>
+<li><a class="reference internal" href="#fielderror"><tt class="docutils literal"><span class="pre">FieldError</span></tt></a></li>
+<li><a class="reference internal" href="#validationerror"><tt class="docutils literal"><span class="pre">ValidationError</span></tt></a><ul>
+<li><a class="reference internal" href="#non-field-errors"><tt class="docutils literal"><span class="pre">NON_FIELD_ERRORS</span></tt></a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li><a class="reference internal" href="#url-resolver-exceptions">URL Resolver exceptions</a><ul>
+<li><a class="reference internal" href="#resolver404"><tt class="docutils literal"><span class="pre">Resolver404</span></tt></a></li>
+<li><a class="reference internal" href="#noreversematch"><tt class="docutils literal"><span class="pre">NoReverseMatch</span></tt></a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#database-exceptions">Database Exceptions</a></li>
+<li><a class="reference internal" href="#http-exceptions">Http Exceptions</a><ul>
+<li><a class="reference internal" href="#unreadableposterror"><tt class="docutils literal"><span class="pre">UnreadablePostError</span></tt></a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#transaction-exceptions">Transaction Exceptions</a><ul>
+<li><a class="reference internal" href="#transactionmanagementerror"><tt class="docutils literal"><span class="pre">TransactionManagementError</span></tt></a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#testing-framework-exceptions">Testing Framework Exceptions</a><ul>
+<li><a class="reference internal" href="#redirectcycleerror"><tt class="docutils literal"><span class="pre">RedirectCycleError</span></tt></a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#python-exceptions">Python Exceptions</a></li>
+</ul>
+</li>
+</ul>
+
+  <h3>Browse</h3>
+  <ul>
+    
+      <li>Prev: <a href="django-admin.html">django-admin and manage.py</a></li>
+    
+    
+      <li>Next: <a href="files/index.html">File handling</a></li>
+    
+  </ul>
+  <h3>You are here:</h3>
+  <ul>
+      <li>
+        <a href="../index.html">Django 1.8.2.dev20150505153848 documentation</a>
+        
+          <ul><li><a href="index.html">API Reference</a>
+        
+        <ul><li>Django Exceptions</li></ul>
+        </li></ul>
+      </li>
+  </ul>
+
+  <h3>This Page</h3>
+  <ul class="this-page-menu">
+    <li><a href="../_sources/ref/exceptions.txt"
+           rel="nofollow">Show Source</a></li>
+  </ul>
+<div id="searchbox" style="display: none">
+  <h3>Quick search</h3>
+    <form class="search" action="../search.html" method="get">
+      <input type="text" name="q" />
+      <input type="submit" value="Go" />
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+    <p class="searchtip" style="font-size: 90%">
+    Enter search terms or a module, class or function name.
+    </p>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+              <h3>Last update:</h3>
+              <p class="topless">May 06, 2015</p>
+          </div>
+        
+      
+    </div>
+
+    <div id="ft">
+      <div class="nav">
+    &laquo; <a href="django-admin.html" title="django-admin and manage.py">previous</a>
+     |
+    <a href="index.html" title="API Reference" accesskey="U">up</a>
+   |
+    <a href="files/index.html" title="File handling">next</a> &raquo;</div>
+    </div>
+  </div>
+
+      <div class="clearer"></div>
+    </div>
+  </body>
+</html>

@@ -15,7 +15,7 @@ from django.http import HttpResponseRedirect
 import json
 from parser import get_html_word_repeated_info
 from wordinfos import get_all_conversant_word_list
-
+from wordinfos import change_word_to_conversant
 
 class TransPageForm(forms.Form):
     tran_page = forms.CharField(label='tran_page', max_length=100)
@@ -55,11 +55,17 @@ def get_recall_word(request):
     return _get_words(request, models.CHOICE_REMEMBER_UNACQUAINTED)
 
 def get_word_infos(request):
+    """
+    获取要变更状态为熟悉的单词
+    """
     print request
+    if request.GET.has_key('conversant_words'):
+        conversant_words = request.GET['conversant_words']
+        conversant_words = conversant_words.split(",")
+        change_word_to_conversant(conversant_words)
     data = {}
-    data['something'] = 'useful'
+    data['result'] = 'Success'
     return HttpResponse(json.dumps(data), content_type = "application/json")
-    return HttpResponse(json.dumps(a), content_type='application/json')
 
 def get_tran_page(request):
 
@@ -107,7 +113,6 @@ def translate_word(request):
     word_sort_list = word_map.items()
     word_sort_list.sort(cmp=lambda x, y: cmp(y[1], x[1]))
     return render(request, 'recall/translateword.html', {"word": word, "word_sort_list": word_sort_list})
-
 
 def init():
 

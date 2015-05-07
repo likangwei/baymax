@@ -1,0 +1,370 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>SchemaEditor &mdash; Django 1.8.2.dev20150505153848 documentation</title>
+    
+    <link rel="stylesheet" href="../_static/default.css" type="text/css" />
+    <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '../',
+        VERSION:     '1.8.2.dev20150505153848',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="../_static/jquery.js"></script>
+    <script type="text/javascript" src="../_static/underscore.js"></script>
+    <script type="text/javascript" src="../_static/doctools.js"></script>
+    <link rel="top" title="Django 1.8.2.dev20150505153848 documentation" href="../index.html" />
+    <link rel="up" title="API Reference" href="index.html" />
+    <link rel="next" title="Settings" href="settings.html" />
+    <link rel="prev" title="Request and response objects" href="request-response.html" />
+
+
+
+ 
+<script type="text/javascript" src="../templatebuiltins.js"></script>
+<script type="text/javascript">
+(function($) {
+    if (!django_template_builtins) {
+       // templatebuiltins.js missing, do nothing.
+       return;
+    }
+    $(document).ready(function() {
+        // Hyperlink Django template tags and filters
+        var base = "templates/builtins.html";
+        if (base == "#") {
+            // Special case for builtins.html itself
+            base = "";
+        }
+        // Tags are keywords, class '.k'
+        $("div.highlight\\-html\\+django span.k").each(function(i, elem) {
+             var tagname = $(elem).text();
+             if ($.inArray(tagname, django_template_builtins.ttags) != -1) {
+                 var fragment = tagname.replace(/_/, '-');
+                 $(elem).html("<a href='" + base + "#" + fragment + "'>" + tagname + "</a>");
+             }
+        });
+        // Filters are functions, class '.nf'
+        $("div.highlight\\-html\\+django span.nf").each(function(i, elem) {
+             var filtername = $(elem).text();
+             if ($.inArray(filtername, django_template_builtins.tfilters) != -1) {
+                 var fragment = filtername.replace(/_/, '-');
+                 $(elem).html("<a href='" + base + "#" + fragment + "'>" + filtername + "</a>");
+             }
+        });
+    });
+})(jQuery);
+</script>
+
+
+  </head>
+  <body>
+
+    <div class="document">
+  <div id="custom-doc" class="yui-t6">
+    <div id="hd">
+      <h1><a href="../index.html">Django 1.8.2.dev20150505153848 documentation</a></h1>
+      <div id="global-nav">
+        <a title="Home page" href="../index.html">Home</a>  |
+        <a title="Table of contents" href="../contents.html">Table of contents</a>  |
+        <a title="Global index" href="../genindex.html">Index</a>  |
+        <a title="Module index" href="../py-modindex.html">Modules</a>
+      </div>
+      <div class="nav">
+    &laquo; <a href="request-response.html" title="Request and response objects">previous</a>
+     |
+    <a href="index.html" title="API Reference" accesskey="U">up</a>
+   |
+    <a href="settings.html" title="Settings">next</a> &raquo;</div>
+    </div>
+
+    <div id="bd">
+      <div id="yui-main">
+        <div class="yui-b">
+          <div class="yui-g" id="ref-schema-editor">
+            
+  <div class="section" id="s-module-django.db.backends.base.schema">
+<span id="s-schemaeditor"></span><span id="module-django.db.backends.base.schema"></span><span id="schemaeditor"></span><h1><tt class="docutils literal"><span class="pre">SchemaEditor</span></tt><a class="headerlink" href="#module-django.db.backends.base.schema" title="Permalink to this headline">¶</a></h1>
+<dl class="class">
+<dt id="django.db.backends.base.schema.BaseDatabaseSchemaEditor">
+<em class="property">class </em><tt class="descname">BaseDatabaseSchemaEditor</tt><a class="reference internal" href="../_modules/django/db/backends/base/schema.html#BaseDatabaseSchemaEditor"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#django.db.backends.base.schema.BaseDatabaseSchemaEditor" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<p>Django&#8217;s migration system is split into two parts; the logic for calculating
+and storing what operations should be run (<tt class="docutils literal"><span class="pre">django.db.migrations</span></tt>), and the
+database abstraction layer that turns things like &#8220;create a model&#8221; or
+&#8220;delete a field&#8221; into SQL - which is the job of the <tt class="docutils literal"><span class="pre">SchemaEditor</span></tt>.</p>
+<p>It&#8217;s unlikely that you will want to interact directly with <tt class="docutils literal"><span class="pre">SchemaEditor</span></tt> as
+a normal developer using Django, but if you want to write your own migration
+system, or have more advanced needs, it&#8217;s a lot nicer than writing SQL.</p>
+<p>Each database backend in Django supplies its own version of <tt class="docutils literal"><span class="pre">SchemaEditor</span></tt>,
+and it&#8217;s always accessible via the <tt class="docutils literal"><span class="pre">connection.schema_editor()</span></tt> context
+manager:</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="k">with</span> <span class="n">connection</span><span class="o">.</span><span class="n">schema_editor</span><span class="p">()</span> <span class="k">as</span> <span class="n">schema_editor</span><span class="p">:</span>
+    <span class="n">schema_editor</span><span class="o">.</span><span class="n">delete_model</span><span class="p">(</span><span class="n">MyModel</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>It must be used via the context manager as this allows it to manage things
+like transactions and deferred SQL (like creating <tt class="docutils literal"><span class="pre">ForeignKey</span></tt> constraints).</p>
+<p>It exposes all possible operations as methods, that should be called in
+the order you wish changes to be applied. Some possible operations or types
+of change are not possible on all databases - for example, MyISAM does not
+support foreign key constraints.</p>
+<p>If you are writing or maintaining a third-party database backend for Django,
+you will need to provide a <tt class="docutils literal"><span class="pre">SchemaEditor</span></tt> implementation in order to work with
+1.7&#8217;s migration functionality - however, as long as your database is relatively
+standard in its use of SQL and relational design, you should be able to
+subclass one of the built-in Django <tt class="docutils literal"><span class="pre">SchemaEditor</span></tt> classes and just tweak the
+syntax a little. Also note that there are a few new database features that
+migrations will look for: <tt class="docutils literal"><span class="pre">can_rollback_ddl</span></tt> and
+<tt class="docutils literal"><span class="pre">supports_combined_alters</span></tt> are the most important.</p>
+<div class="section" id="s-methods">
+<span id="methods"></span><h2>Methods<a class="headerlink" href="#methods" title="Permalink to this headline">¶</a></h2>
+<div class="section" id="s-execute">
+<span id="execute"></span><h3>execute<a class="headerlink" href="#execute" title="Permalink to this headline">¶</a></h3>
+<dl class="method">
+<dt id="django.db.backends.base.schema.BaseDatabaseSchemaEditor.execute">
+<tt class="descclassname">BaseDatabaseSchemaEditor.</tt><tt class="descname">execute</tt>(<em>sql</em>, <em>params=[]</em>)<a class="reference internal" href="../_modules/django/db/backends/base/schema.html#BaseDatabaseSchemaEditor.execute"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#django.db.backends.base.schema.BaseDatabaseSchemaEditor.execute" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<p>Executes the SQL statement passed in, with parameters if supplied. This
+is a simple wrapper around the normal database cursors that allows
+capture of the SQL to a <tt class="docutils literal"><span class="pre">.sql</span></tt> file if the user wishes.</p>
+</div>
+<div class="section" id="s-create-model">
+<span id="create-model"></span><h3>create_model<a class="headerlink" href="#create-model" title="Permalink to this headline">¶</a></h3>
+<dl class="method">
+<dt id="django.db.backends.base.schema.BaseDatabaseSchemaEditor.create_model">
+<tt class="descclassname">BaseDatabaseSchemaEditor.</tt><tt class="descname">create_model</tt>(<em>model</em>)<a class="reference internal" href="../_modules/django/db/backends/base/schema.html#BaseDatabaseSchemaEditor.create_model"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#django.db.backends.base.schema.BaseDatabaseSchemaEditor.create_model" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<p>Creates a new table in the database for the provided model, along with any
+unique constraints or indexes it requires.</p>
+</div>
+<div class="section" id="s-delete-model">
+<span id="delete-model"></span><h3>delete_model<a class="headerlink" href="#delete-model" title="Permalink to this headline">¶</a></h3>
+<dl class="method">
+<dt id="django.db.backends.base.schema.BaseDatabaseSchemaEditor.delete_model">
+<tt class="descclassname">BaseDatabaseSchemaEditor.</tt><tt class="descname">delete_model</tt>(<em>model</em>)<a class="reference internal" href="../_modules/django/db/backends/base/schema.html#BaseDatabaseSchemaEditor.delete_model"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#django.db.backends.base.schema.BaseDatabaseSchemaEditor.delete_model" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<p>Drops the model&#8217;s table in the database along with any unique constraints
+or indexes it has.</p>
+</div>
+<div class="section" id="s-alter-unique-together">
+<span id="alter-unique-together"></span><h3>alter_unique_together<a class="headerlink" href="#alter-unique-together" title="Permalink to this headline">¶</a></h3>
+<dl class="method">
+<dt id="django.db.backends.base.schema.BaseDatabaseSchemaEditor.alter_unique_together">
+<tt class="descclassname">BaseDatabaseSchemaEditor.</tt><tt class="descname">alter_unique_together</tt>(<em>model</em>, <em>old_unique_together</em>, <em>new_unique_together</em>)<a class="reference internal" href="../_modules/django/db/backends/base/schema.html#BaseDatabaseSchemaEditor.alter_unique_together"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#django.db.backends.base.schema.BaseDatabaseSchemaEditor.alter_unique_together" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<p>Changes a model&#8217;s <a class="reference internal" href="models/options.html#django.db.models.Options.unique_together" title="django.db.models.Options.unique_together"><tt class="xref py py-attr docutils literal"><span class="pre">unique_together</span></tt></a> value; this
+will add or remove unique constraints from the model&#8217;s table until they match
+the new value.</p>
+</div>
+<div class="section" id="s-alter-index-together">
+<span id="alter-index-together"></span><h3>alter_index_together<a class="headerlink" href="#alter-index-together" title="Permalink to this headline">¶</a></h3>
+<dl class="method">
+<dt id="django.db.backends.base.schema.BaseDatabaseSchemaEditor.alter_index_together">
+<tt class="descclassname">BaseDatabaseSchemaEditor.</tt><tt class="descname">alter_index_together</tt>(<em>model</em>, <em>old_index_together</em>, <em>new_index_together</em>)<a class="reference internal" href="../_modules/django/db/backends/base/schema.html#BaseDatabaseSchemaEditor.alter_index_together"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#django.db.backends.base.schema.BaseDatabaseSchemaEditor.alter_index_together" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<p>Changes a model&#8217;s <a class="reference internal" href="models/options.html#django.db.models.Options.index_together" title="django.db.models.Options.index_together"><tt class="xref py py-attr docutils literal"><span class="pre">index_together</span></tt></a> value; this
+will add or remove indexes from the model&#8217;s table until they match the new
+value.</p>
+</div>
+<div class="section" id="s-alter-db-table">
+<span id="alter-db-table"></span><h3>alter_db_table<a class="headerlink" href="#alter-db-table" title="Permalink to this headline">¶</a></h3>
+<dl class="method">
+<dt id="django.db.backends.base.schema.BaseDatabaseSchemaEditor.alter_db_table">
+<tt class="descclassname">BaseDatabaseSchemaEditor.</tt><tt class="descname">alter_db_table</tt>(<em>model</em>, <em>old_db_table</em>, <em>new_db_table</em>)<a class="reference internal" href="../_modules/django/db/backends/base/schema.html#BaseDatabaseSchemaEditor.alter_db_table"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#django.db.backends.base.schema.BaseDatabaseSchemaEditor.alter_db_table" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<p>Renames the model&#8217;s table from <tt class="docutils literal"><span class="pre">old_db_table</span></tt> to <tt class="docutils literal"><span class="pre">new_db_table</span></tt>.</p>
+</div>
+<div class="section" id="s-alter-db-tablespace">
+<span id="alter-db-tablespace"></span><h3>alter_db_tablespace<a class="headerlink" href="#alter-db-tablespace" title="Permalink to this headline">¶</a></h3>
+<dl class="method">
+<dt id="django.db.backends.base.schema.BaseDatabaseSchemaEditor.alter_db_tablespace">
+<tt class="descclassname">BaseDatabaseSchemaEditor.</tt><tt class="descname">alter_db_tablespace</tt>(<em>model</em>, <em>old_db_tablespace</em>, <em>new_db_tablespace</em>)<a class="reference internal" href="../_modules/django/db/backends/base/schema.html#BaseDatabaseSchemaEditor.alter_db_tablespace"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#django.db.backends.base.schema.BaseDatabaseSchemaEditor.alter_db_tablespace" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<p>Moves the model&#8217;s table from one tablespace to another.</p>
+</div>
+<div class="section" id="s-add-field">
+<span id="add-field"></span><h3>add_field<a class="headerlink" href="#add-field" title="Permalink to this headline">¶</a></h3>
+<dl class="method">
+<dt id="django.db.backends.base.schema.BaseDatabaseSchemaEditor.add_field">
+<tt class="descclassname">BaseDatabaseSchemaEditor.</tt><tt class="descname">add_field</tt>(<em>model</em>, <em>field</em>)<a class="reference internal" href="../_modules/django/db/backends/base/schema.html#BaseDatabaseSchemaEditor.add_field"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#django.db.backends.base.schema.BaseDatabaseSchemaEditor.add_field" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<p>Adds a column (or sometimes multiple) to the model&#8217;s table to represent the
+field. This will also add indexes or a unique constraint
+if the field has <tt class="docutils literal"><span class="pre">db_index=True</span></tt> or <tt class="docutils literal"><span class="pre">unique=True</span></tt>.</p>
+<p>If the field is a <tt class="docutils literal"><span class="pre">ManyToManyField</span></tt> without a value for <tt class="docutils literal"><span class="pre">through</span></tt>, instead
+of creating a column, it will make a table to represent the relationship. If
+<tt class="docutils literal"><span class="pre">through</span></tt> is provided, it is a no-op.</p>
+<p>If the field is a <tt class="docutils literal"><span class="pre">ForeignKey</span></tt>, this will also add the foreign key
+constraint to the column.</p>
+</div>
+<div class="section" id="s-remove-field">
+<span id="remove-field"></span><h3>remove_field<a class="headerlink" href="#remove-field" title="Permalink to this headline">¶</a></h3>
+<dl class="method">
+<dt id="django.db.backends.base.schema.BaseDatabaseSchemaEditor.remove_field">
+<tt class="descclassname">BaseDatabaseSchemaEditor.</tt><tt class="descname">remove_field</tt>(<em>model</em>, <em>field</em>)<a class="reference internal" href="../_modules/django/db/backends/base/schema.html#BaseDatabaseSchemaEditor.remove_field"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#django.db.backends.base.schema.BaseDatabaseSchemaEditor.remove_field" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<p>Removes the column(s) representing the field from the model&#8217;s table, along
+with any unique constraints, foreign key constraints, or indexes caused by
+that field.</p>
+<p>If the field is a ManyToManyField without a value for <tt class="docutils literal"><span class="pre">through</span></tt>, it will
+remove the table created to track the relationship. If
+<tt class="docutils literal"><span class="pre">through</span></tt> is provided, it is a no-op.</p>
+</div>
+<div class="section" id="s-alter-field">
+<span id="alter-field"></span><h3>alter_field<a class="headerlink" href="#alter-field" title="Permalink to this headline">¶</a></h3>
+<dl class="method">
+<dt id="django.db.backends.base.schema.BaseDatabaseSchemaEditor.alter_field">
+<tt class="descclassname">BaseDatabaseSchemaEditor.</tt><tt class="descname">alter_field</tt>(<em>model</em>, <em>old_field</em>, <em>new_field</em>, <em>strict=False</em>)<a class="reference internal" href="../_modules/django/db/backends/base/schema.html#BaseDatabaseSchemaEditor.alter_field"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#django.db.backends.base.schema.BaseDatabaseSchemaEditor.alter_field" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<p>This transforms the field on the model from the old field to the new one. This
+includes changing the name of the column (the
+<a class="reference internal" href="models/fields.html#django.db.models.Field.db_column" title="django.db.models.Field.db_column"><tt class="xref py py-attr docutils literal"><span class="pre">db_column</span></tt></a> attribute), changing the type of the
+field (if the field class changes), changing the <tt class="docutils literal"><span class="pre">NULL</span></tt> status of the field,
+adding or removing field-only unique constraints and indexes, changing primary
+key, and changing the destination of <tt class="docutils literal"><span class="pre">ForeignKey</span></tt> constraints.</p>
+<p>The most common transformation this cannot do is transforming a
+<tt class="docutils literal"><span class="pre">ManyToManyField</span></tt> into a normal Field or vice-versa; Django cannot do this
+without losing data, and so it will refuse to do it. Instead,
+<a class="reference internal" href="#django.db.backends.base.schema.BaseDatabaseSchemaEditor.remove_field" title="django.db.backends.base.schema.BaseDatabaseSchemaEditor.remove_field"><tt class="xref py py-meth docutils literal"><span class="pre">remove_field()</span></tt></a> and <a class="reference internal" href="#django.db.backends.base.schema.BaseDatabaseSchemaEditor.add_field" title="django.db.backends.base.schema.BaseDatabaseSchemaEditor.add_field"><tt class="xref py py-meth docutils literal"><span class="pre">add_field()</span></tt></a> should be called separately.</p>
+<p>If the database has the <tt class="docutils literal"><span class="pre">supports_combined_alters</span></tt>, Django will try and
+do as many of these in a single database call as possible; otherwise, it will
+issue a separate ALTER statement for each change, but will not issue ALTERs
+where no change is required (as South often did).</p>
+</div>
+</div>
+<div class="section" id="s-attributes">
+<span id="attributes"></span><h2>Attributes<a class="headerlink" href="#attributes" title="Permalink to this headline">¶</a></h2>
+<p>All attributes should be considered read-only unless stated otherwise.</p>
+<div class="section" id="s-connection">
+<span id="connection"></span><h3>connection<a class="headerlink" href="#connection" title="Permalink to this headline">¶</a></h3>
+<dl class="attribute">
+<dt id="django.db.backends.base.schema.SchemaEditor.connection">
+<tt class="descclassname">SchemaEditor.</tt><tt class="descname">connection</tt><a class="headerlink" href="#django.db.backends.base.schema.SchemaEditor.connection" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<p>A connection object to the database. A useful attribute of the connection is
+<tt class="docutils literal"><span class="pre">alias</span></tt> which can be used to determine the name of the database being
+accessed.</p>
+<p>This is useful when doing data migrations for <a class="reference internal" href="../howto/writing-migrations.html#data-migrations-and-multiple-databases"><em>migrations with multiple
+databases</em></a>.</p>
+</div>
+</div>
+</div>
+
+
+          </div>
+        </div>
+      </div>
+      
+        
+          <div class="yui-b" id="sidebar">
+            
+      <div class="sphinxsidebar">
+        <div class="sphinxsidebarwrapper">
+  <h3><a href="../contents.html">Table Of Contents</a></h3>
+  <ul>
+<li><a class="reference internal" href="#"><tt class="docutils literal"><span class="pre">SchemaEditor</span></tt></a><ul>
+<li><a class="reference internal" href="#methods">Methods</a><ul>
+<li><a class="reference internal" href="#execute">execute</a></li>
+<li><a class="reference internal" href="#create-model">create_model</a></li>
+<li><a class="reference internal" href="#delete-model">delete_model</a></li>
+<li><a class="reference internal" href="#alter-unique-together">alter_unique_together</a></li>
+<li><a class="reference internal" href="#alter-index-together">alter_index_together</a></li>
+<li><a class="reference internal" href="#alter-db-table">alter_db_table</a></li>
+<li><a class="reference internal" href="#alter-db-tablespace">alter_db_tablespace</a></li>
+<li><a class="reference internal" href="#add-field">add_field</a></li>
+<li><a class="reference internal" href="#remove-field">remove_field</a></li>
+<li><a class="reference internal" href="#alter-field">alter_field</a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#attributes">Attributes</a><ul>
+<li><a class="reference internal" href="#connection">connection</a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+
+  <h3>Browse</h3>
+  <ul>
+    
+      <li>Prev: <a href="request-response.html">Request and response objects</a></li>
+    
+    
+      <li>Next: <a href="settings.html">Settings</a></li>
+    
+  </ul>
+  <h3>You are here:</h3>
+  <ul>
+      <li>
+        <a href="../index.html">Django 1.8.2.dev20150505153848 documentation</a>
+        
+          <ul><li><a href="index.html">API Reference</a>
+        
+        <ul><li><tt class="docutils literal"><span class="pre">SchemaEditor</span></tt></li></ul>
+        </li></ul>
+      </li>
+  </ul>
+
+  <h3>This Page</h3>
+  <ul class="this-page-menu">
+    <li><a href="../_sources/ref/schema-editor.txt"
+           rel="nofollow">Show Source</a></li>
+  </ul>
+<div id="searchbox" style="display: none">
+  <h3>Quick search</h3>
+    <form class="search" action="../search.html" method="get">
+      <input type="text" name="q" />
+      <input type="submit" value="Go" />
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+    <p class="searchtip" style="font-size: 90%">
+    Enter search terms or a module, class or function name.
+    </p>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+              <h3>Last update:</h3>
+              <p class="topless">May 06, 2015</p>
+          </div>
+        
+      
+    </div>
+
+    <div id="ft">
+      <div class="nav">
+    &laquo; <a href="request-response.html" title="Request and response objects">previous</a>
+     |
+    <a href="index.html" title="API Reference" accesskey="U">up</a>
+   |
+    <a href="settings.html" title="Settings">next</a> &raquo;</div>
+    </div>
+  </div>
+
+      <div class="clearer"></div>
+    </div>
+  </body>
+</html>

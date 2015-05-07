@@ -1,0 +1,984 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>django.db.models.options &mdash; Django 1.8.2.dev20150505153848 documentation</title>
+    
+    <link rel="stylesheet" href="../../../../_static/default.css" type="text/css" />
+    <link rel="stylesheet" href="../../../../_static/pygments.css" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '../../../../',
+        VERSION:     '1.8.2.dev20150505153848',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="../../../../_static/jquery.js"></script>
+    <script type="text/javascript" src="../../../../_static/underscore.js"></script>
+    <script type="text/javascript" src="../../../../_static/doctools.js"></script>
+    <link rel="top" title="Django 1.8.2.dev20150505153848 documentation" href="../../../../index.html" />
+    <link rel="up" title="django.db.models" href="../models.html" />
+
+
+
+ 
+<script type="text/javascript" src="../../../../templatebuiltins.js"></script>
+<script type="text/javascript">
+(function($) {
+    if (!django_template_builtins) {
+       // templatebuiltins.js missing, do nothing.
+       return;
+    }
+    $(document).ready(function() {
+        // Hyperlink Django template tags and filters
+        var base = "../../../../ref/templates/builtins.html";
+        if (base == "#") {
+            // Special case for builtins.html itself
+            base = "";
+        }
+        // Tags are keywords, class '.k'
+        $("div.highlight\\-html\\+django span.k").each(function(i, elem) {
+             var tagname = $(elem).text();
+             if ($.inArray(tagname, django_template_builtins.ttags) != -1) {
+                 var fragment = tagname.replace(/_/, '-');
+                 $(elem).html("<a href='" + base + "#" + fragment + "'>" + tagname + "</a>");
+             }
+        });
+        // Filters are functions, class '.nf'
+        $("div.highlight\\-html\\+django span.nf").each(function(i, elem) {
+             var filtername = $(elem).text();
+             if ($.inArray(filtername, django_template_builtins.tfilters) != -1) {
+                 var fragment = filtername.replace(/_/, '-');
+                 $(elem).html("<a href='" + base + "#" + fragment + "'>" + filtername + "</a>");
+             }
+        });
+    });
+})(jQuery);
+</script>
+
+
+  </head>
+  <body>
+
+    <div class="document">
+  <div id="custom-doc" class="yui-t6">
+    <div id="hd">
+      <h1><a href="../../../../index.html">Django 1.8.2.dev20150505153848 documentation</a></h1>
+      <div id="global-nav">
+        <a title="Home page" href="../../../../index.html">Home</a>  |
+        <a title="Table of contents" href="../../../../contents.html">Table of contents</a>  |
+        <a title="Global index" href="../../../../genindex.html">Index</a>  |
+        <a title="Module index" href="../../../../py-modindex.html">Modules</a>
+      </div>
+      <div class="nav">
+    <a href="../../../index.html" title="Module code" accesskey="U">up</a></div>
+    </div>
+
+    <div id="bd">
+      <div id="yui-main">
+        <div class="yui-b">
+          <div class="yui-g" id="_modules-django-db-models-options">
+            
+  <h1>Source code for django.db.models.options</h1><div class="highlight"><pre>
+<span class="kn">from</span> <span class="nn">__future__</span> <span class="kn">import</span> <span class="n">unicode_literals</span>
+
+<span class="kn">import</span> <span class="nn">warnings</span>
+<span class="kn">from</span> <span class="nn">bisect</span> <span class="kn">import</span> <span class="n">bisect</span>
+<span class="kn">from</span> <span class="nn">collections</span> <span class="kn">import</span> <span class="n">OrderedDict</span><span class="p">,</span> <span class="n">defaultdict</span>
+<span class="kn">from</span> <span class="nn">itertools</span> <span class="kn">import</span> <span class="n">chain</span>
+
+<span class="kn">from</span> <span class="nn">django.apps</span> <span class="kn">import</span> <span class="n">apps</span>
+<span class="kn">from</span> <span class="nn">django.conf</span> <span class="kn">import</span> <span class="n">settings</span>
+<span class="kn">from</span> <span class="nn">django.core.exceptions</span> <span class="kn">import</span> <span class="n">FieldDoesNotExist</span>
+<span class="kn">from</span> <span class="nn">django.db.models.fields</span> <span class="kn">import</span> <span class="n">AutoField</span>
+<span class="kn">from</span> <span class="nn">django.db.models.fields.proxy</span> <span class="kn">import</span> <span class="n">OrderWrt</span>
+<span class="kn">from</span> <span class="nn">django.db.models.fields.related</span> <span class="kn">import</span> <span class="n">ManyToManyField</span>
+<span class="kn">from</span> <span class="nn">django.utils</span> <span class="kn">import</span> <span class="n">six</span>
+<span class="kn">from</span> <span class="nn">django.utils.datastructures</span> <span class="kn">import</span> <span class="n">ImmutableList</span><span class="p">,</span> <span class="n">OrderedSet</span>
+<span class="kn">from</span> <span class="nn">django.utils.deprecation</span> <span class="kn">import</span> <span class="n">RemovedInDjango20Warning</span>
+<span class="kn">from</span> <span class="nn">django.utils.encoding</span> <span class="kn">import</span> <span class="p">(</span>
+    <span class="n">force_text</span><span class="p">,</span> <span class="n">python_2_unicode_compatible</span><span class="p">,</span> <span class="n">smart_text</span><span class="p">,</span>
+<span class="p">)</span>
+<span class="kn">from</span> <span class="nn">django.utils.functional</span> <span class="kn">import</span> <span class="n">cached_property</span>
+<span class="kn">from</span> <span class="nn">django.utils.lru_cache</span> <span class="kn">import</span> <span class="n">lru_cache</span>
+<span class="kn">from</span> <span class="nn">django.utils.text</span> <span class="kn">import</span> <span class="n">camel_case_to_spaces</span>
+<span class="kn">from</span> <span class="nn">django.utils.translation</span> <span class="kn">import</span> <span class="n">override</span><span class="p">,</span> <span class="n">string_concat</span>
+
+<span class="n">PROXY_PARENTS</span> <span class="o">=</span> <span class="nb">object</span><span class="p">()</span>
+
+<span class="n">EMPTY_RELATION_TREE</span> <span class="o">=</span> <span class="nb">tuple</span><span class="p">()</span>
+
+<span class="n">IMMUTABLE_WARNING</span> <span class="o">=</span> <span class="p">(</span>
+    <span class="s">&quot;The return type of &#39;</span><span class="si">%s</span><span class="s">&#39; should never be mutated. If you want to manipulate this list &quot;</span>
+    <span class="s">&quot;for your own use, make a copy first.&quot;</span>
+<span class="p">)</span>
+
+<span class="n">DEFAULT_NAMES</span> <span class="o">=</span> <span class="p">(</span><span class="s">&#39;verbose_name&#39;</span><span class="p">,</span> <span class="s">&#39;verbose_name_plural&#39;</span><span class="p">,</span> <span class="s">&#39;db_table&#39;</span><span class="p">,</span> <span class="s">&#39;ordering&#39;</span><span class="p">,</span>
+                 <span class="s">&#39;unique_together&#39;</span><span class="p">,</span> <span class="s">&#39;permissions&#39;</span><span class="p">,</span> <span class="s">&#39;get_latest_by&#39;</span><span class="p">,</span>
+                 <span class="s">&#39;order_with_respect_to&#39;</span><span class="p">,</span> <span class="s">&#39;app_label&#39;</span><span class="p">,</span> <span class="s">&#39;db_tablespace&#39;</span><span class="p">,</span>
+                 <span class="s">&#39;abstract&#39;</span><span class="p">,</span> <span class="s">&#39;managed&#39;</span><span class="p">,</span> <span class="s">&#39;proxy&#39;</span><span class="p">,</span> <span class="s">&#39;swappable&#39;</span><span class="p">,</span> <span class="s">&#39;auto_created&#39;</span><span class="p">,</span>
+                 <span class="s">&#39;index_together&#39;</span><span class="p">,</span> <span class="s">&#39;apps&#39;</span><span class="p">,</span> <span class="s">&#39;default_permissions&#39;</span><span class="p">,</span>
+                 <span class="s">&#39;select_on_save&#39;</span><span class="p">,</span> <span class="s">&#39;default_related_name&#39;</span><span class="p">)</span>
+
+
+<span class="k">class</span> <span class="nc">raise_deprecation</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">suggested_alternative</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">suggested_alternative</span> <span class="o">=</span> <span class="n">suggested_alternative</span>
+
+    <span class="k">def</span> <span class="nf">__call__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">fn</span><span class="p">):</span>
+        <span class="k">def</span> <span class="nf">wrapper</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+            <span class="n">warnings</span><span class="o">.</span><span class="n">warn</span><span class="p">(</span>
+                <span class="s">&quot;&#39;</span><span class="si">%s</span><span class="s"> is an unofficial API that has been deprecated. &quot;</span>
+                <span class="s">&quot;You may be able to replace it with &#39;</span><span class="si">%s</span><span class="s">&#39;&quot;</span> <span class="o">%</span> <span class="p">(</span>
+                    <span class="n">fn</span><span class="o">.</span><span class="n">__name__</span><span class="p">,</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">suggested_alternative</span><span class="p">,</span>
+                <span class="p">),</span>
+                <span class="n">RemovedInDjango20Warning</span><span class="p">,</span> <span class="n">stacklevel</span><span class="o">=</span><span class="mi">2</span>
+            <span class="p">)</span>
+            <span class="k">return</span> <span class="n">fn</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">wrapper</span>
+
+
+<span class="k">def</span> <span class="nf">normalize_together</span><span class="p">(</span><span class="n">option_together</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    option_together can be either a tuple of tuples, or a single</span>
+<span class="sd">    tuple of two strings. Normalize it to a tuple of tuples, so that</span>
+<span class="sd">    calling code can uniformly expect that.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">try</span><span class="p">:</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">option_together</span><span class="p">:</span>
+            <span class="k">return</span> <span class="p">()</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">option_together</span><span class="p">,</span> <span class="p">(</span><span class="nb">tuple</span><span class="p">,</span> <span class="nb">list</span><span class="p">)):</span>
+            <span class="k">raise</span> <span class="ne">TypeError</span>
+        <span class="n">first_element</span> <span class="o">=</span> <span class="nb">next</span><span class="p">(</span><span class="nb">iter</span><span class="p">(</span><span class="n">option_together</span><span class="p">))</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">first_element</span><span class="p">,</span> <span class="p">(</span><span class="nb">tuple</span><span class="p">,</span> <span class="nb">list</span><span class="p">)):</span>
+            <span class="n">option_together</span> <span class="o">=</span> <span class="p">(</span><span class="n">option_together</span><span class="p">,)</span>
+        <span class="c"># Normalize everything to tuples</span>
+        <span class="k">return</span> <span class="nb">tuple</span><span class="p">(</span><span class="nb">tuple</span><span class="p">(</span><span class="n">ot</span><span class="p">)</span> <span class="k">for</span> <span class="n">ot</span> <span class="ow">in</span> <span class="n">option_together</span><span class="p">)</span>
+    <span class="k">except</span> <span class="ne">TypeError</span><span class="p">:</span>
+        <span class="c"># If the value of option_together isn&#39;t valid, return it</span>
+        <span class="c"># verbatim; this will be picked up by the check framework later.</span>
+        <span class="k">return</span> <span class="n">option_together</span>
+
+
+<span class="k">def</span> <span class="nf">make_immutable_fields_list</span><span class="p">(</span><span class="n">name</span><span class="p">,</span> <span class="n">data</span><span class="p">):</span>
+    <span class="k">return</span> <span class="n">ImmutableList</span><span class="p">(</span><span class="n">data</span><span class="p">,</span> <span class="n">warning</span><span class="o">=</span><span class="n">IMMUTABLE_WARNING</span> <span class="o">%</span> <span class="n">name</span><span class="p">)</span>
+
+
+<span class="nd">@python_2_unicode_compatible</span>
+<div class="viewcode-block" id="Options"><a class="viewcode-back" href="../../../../ref/models/meta.html#django.db.models.options.Options">[docs]</a><span class="k">class</span> <span class="nc">Options</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
+    <span class="n">FORWARD_PROPERTIES</span> <span class="o">=</span> <span class="p">(</span><span class="s">&#39;fields&#39;</span><span class="p">,</span> <span class="s">&#39;many_to_many&#39;</span><span class="p">,</span> <span class="s">&#39;concrete_fields&#39;</span><span class="p">,</span>
+                          <span class="s">&#39;local_concrete_fields&#39;</span><span class="p">,</span> <span class="s">&#39;_forward_fields_map&#39;</span><span class="p">)</span>
+    <span class="n">REVERSE_PROPERTIES</span> <span class="o">=</span> <span class="p">(</span><span class="s">&#39;related_objects&#39;</span><span class="p">,</span> <span class="s">&#39;fields_map&#39;</span><span class="p">,</span> <span class="s">&#39;_relation_tree&#39;</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">meta</span><span class="p">,</span> <span class="n">app_label</span><span class="o">=</span><span class="bp">None</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_get_fields_cache</span> <span class="o">=</span> <span class="p">{}</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">proxied_children</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">local_fields</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">local_many_to_many</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">virtual_fields</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">model_name</span> <span class="o">=</span> <span class="bp">None</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">verbose_name</span> <span class="o">=</span> <span class="bp">None</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">verbose_name_plural</span> <span class="o">=</span> <span class="bp">None</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">db_table</span> <span class="o">=</span> <span class="s">&#39;&#39;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">ordering</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">unique_together</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">index_together</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">select_on_save</span> <span class="o">=</span> <span class="bp">False</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">default_permissions</span> <span class="o">=</span> <span class="p">(</span><span class="s">&#39;add&#39;</span><span class="p">,</span> <span class="s">&#39;change&#39;</span><span class="p">,</span> <span class="s">&#39;delete&#39;</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">permissions</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">object_name</span> <span class="o">=</span> <span class="bp">None</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">app_label</span> <span class="o">=</span> <span class="n">app_label</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">get_latest_by</span> <span class="o">=</span> <span class="bp">None</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">order_with_respect_to</span> <span class="o">=</span> <span class="bp">None</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">db_tablespace</span> <span class="o">=</span> <span class="n">settings</span><span class="o">.</span><span class="n">DEFAULT_TABLESPACE</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">meta</span> <span class="o">=</span> <span class="n">meta</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">pk</span> <span class="o">=</span> <span class="bp">None</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">has_auto_field</span> <span class="o">=</span> <span class="bp">False</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">auto_field</span> <span class="o">=</span> <span class="bp">None</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">abstract</span> <span class="o">=</span> <span class="bp">False</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">managed</span> <span class="o">=</span> <span class="bp">True</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">proxy</span> <span class="o">=</span> <span class="bp">False</span>
+        <span class="c"># For any class that is a proxy (including automatically created</span>
+        <span class="c"># classes for deferred object loading), proxy_for_model tells us</span>
+        <span class="c"># which class this model is proxying. Note that proxy_for_model</span>
+        <span class="c"># can create a chain of proxy models. For non-proxy models, the</span>
+        <span class="c"># variable is always None.</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">proxy_for_model</span> <span class="o">=</span> <span class="bp">None</span>
+        <span class="c"># For any non-abstract class, the concrete class is the model</span>
+        <span class="c"># in the end of the proxy_for_model chain. In particular, for</span>
+        <span class="c"># concrete models, the concrete_model is always the class itself.</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">concrete_model</span> <span class="o">=</span> <span class="bp">None</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">swappable</span> <span class="o">=</span> <span class="bp">None</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">parents</span> <span class="o">=</span> <span class="n">OrderedDict</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">auto_created</span> <span class="o">=</span> <span class="bp">False</span>
+
+        <span class="c"># To handle various inheritance situations, we need to track where</span>
+        <span class="c"># managers came from (concrete or abstract base classes). `managers`</span>
+        <span class="c"># keeps a list of 3-tuples of the form:</span>
+        <span class="c"># (creation_counter, instance, abstract(=True))</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">managers</span> <span class="o">=</span> <span class="p">[]</span>
+
+        <span class="c"># List of all lookups defined in ForeignKey &#39;limit_choices_to&#39; options</span>
+        <span class="c"># from *other* models. Needed for some admin checks. Internal use only.</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">related_fkey_lookups</span> <span class="o">=</span> <span class="p">[]</span>
+
+        <span class="c"># A custom app registry to use, if you&#39;re making a separate model set.</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">apps</span> <span class="o">=</span> <span class="n">apps</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">default_related_name</span> <span class="o">=</span> <span class="bp">None</span>
+
+    <span class="nd">@lru_cache</span><span class="p">(</span><span class="n">maxsize</span><span class="o">=</span><span class="bp">None</span><span class="p">)</span>
+    <span class="k">def</span> <span class="nf">_map_model</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">link</span><span class="p">):</span>
+        <span class="c"># This helper function is used to allow backwards compatibility with</span>
+        <span class="c"># the previous API. No future methods should use this function.</span>
+        <span class="c"># It maps a field to (field, model or related_model,) depending on the</span>
+        <span class="c"># field type.</span>
+        <span class="n">model</span> <span class="o">=</span> <span class="n">link</span><span class="o">.</span><span class="n">model</span><span class="o">.</span><span class="n">_meta</span><span class="o">.</span><span class="n">concrete_model</span>
+        <span class="k">if</span> <span class="n">model</span> <span class="ow">is</span> <span class="bp">self</span><span class="o">.</span><span class="n">model</span><span class="p">:</span>
+            <span class="n">model</span> <span class="o">=</span> <span class="bp">None</span>
+        <span class="k">return</span> <span class="n">link</span><span class="p">,</span> <span class="n">model</span>
+
+    <span class="nd">@lru_cache</span><span class="p">(</span><span class="n">maxsize</span><span class="o">=</span><span class="bp">None</span><span class="p">)</span>
+    <span class="k">def</span> <span class="nf">_map_model_details</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">link</span><span class="p">):</span>
+        <span class="c"># This helper function is used to allow backwards compatibility with</span>
+        <span class="c"># the previous API. No future methods should use this function.</span>
+        <span class="c"># This function maps a field to a tuple of:</span>
+        <span class="c">#  (field, model or related_model, direct, is_m2m) depending on the</span>
+        <span class="c"># field type.</span>
+        <span class="n">direct</span> <span class="o">=</span> <span class="ow">not</span> <span class="n">link</span><span class="o">.</span><span class="n">auto_created</span> <span class="ow">or</span> <span class="n">link</span><span class="o">.</span><span class="n">concrete</span>
+        <span class="n">model</span> <span class="o">=</span> <span class="n">link</span><span class="o">.</span><span class="n">model</span><span class="o">.</span><span class="n">_meta</span><span class="o">.</span><span class="n">concrete_model</span>
+        <span class="k">if</span> <span class="n">model</span> <span class="ow">is</span> <span class="bp">self</span><span class="o">.</span><span class="n">model</span><span class="p">:</span>
+            <span class="n">model</span> <span class="o">=</span> <span class="bp">None</span>
+        <span class="n">m2m</span> <span class="o">=</span> <span class="n">link</span><span class="o">.</span><span class="n">is_relation</span> <span class="ow">and</span> <span class="n">link</span><span class="o">.</span><span class="n">many_to_many</span>
+        <span class="k">return</span> <span class="n">link</span><span class="p">,</span> <span class="n">model</span><span class="p">,</span> <span class="n">direct</span><span class="p">,</span> <span class="n">m2m</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">app_config</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="c"># Don&#39;t go through get_app_config to avoid triggering imports.</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">apps</span><span class="o">.</span><span class="n">app_configs</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">app_label</span><span class="p">)</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">installed</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">app_config</span> <span class="ow">is</span> <span class="ow">not</span> <span class="bp">None</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">abstract_managers</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="p">[</span>
+            <span class="p">(</span><span class="n">counter</span><span class="p">,</span> <span class="n">instance</span><span class="o">.</span><span class="n">name</span><span class="p">,</span> <span class="n">instance</span><span class="p">)</span> <span class="k">for</span> <span class="n">counter</span><span class="p">,</span> <span class="n">instance</span><span class="p">,</span> <span class="n">abstract</span>
+            <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">managers</span> <span class="k">if</span> <span class="n">abstract</span>
+        <span class="p">]</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">concrete_managers</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="p">[</span>
+            <span class="p">(</span><span class="n">counter</span><span class="p">,</span> <span class="n">instance</span><span class="o">.</span><span class="n">name</span><span class="p">,</span> <span class="n">instance</span><span class="p">)</span> <span class="k">for</span> <span class="n">counter</span><span class="p">,</span> <span class="n">instance</span><span class="p">,</span> <span class="n">abstract</span>
+            <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">managers</span> <span class="k">if</span> <span class="ow">not</span> <span class="n">abstract</span>
+        <span class="p">]</span>
+
+    <span class="k">def</span> <span class="nf">contribute_to_class</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">cls</span><span class="p">,</span> <span class="n">name</span><span class="p">):</span>
+        <span class="kn">from</span> <span class="nn">django.db</span> <span class="kn">import</span> <span class="n">connection</span>
+        <span class="kn">from</span> <span class="nn">django.db.backends.utils</span> <span class="kn">import</span> <span class="n">truncate_name</span>
+
+        <span class="n">cls</span><span class="o">.</span><span class="n">_meta</span> <span class="o">=</span> <span class="bp">self</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">model</span> <span class="o">=</span> <span class="n">cls</span>
+        <span class="c"># First, construct the default values for these options.</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">object_name</span> <span class="o">=</span> <span class="n">cls</span><span class="o">.</span><span class="n">__name__</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">model_name</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">object_name</span><span class="o">.</span><span class="n">lower</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">verbose_name</span> <span class="o">=</span> <span class="n">camel_case_to_spaces</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">object_name</span><span class="p">)</span>
+
+        <span class="c"># Store the original user-defined values for each option,</span>
+        <span class="c"># for use when serializing the model definition</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">original_attrs</span> <span class="o">=</span> <span class="p">{}</span>
+
+        <span class="c"># Next, apply any overridden values from &#39;class Meta&#39;.</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">meta</span><span class="p">:</span>
+            <span class="n">meta_attrs</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">meta</span><span class="o">.</span><span class="n">__dict__</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span>
+            <span class="k">for</span> <span class="n">name</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">meta</span><span class="o">.</span><span class="n">__dict__</span><span class="p">:</span>
+                <span class="c"># Ignore any private attributes that Django doesn&#39;t care about.</span>
+                <span class="c"># NOTE: We can&#39;t modify a dictionary&#39;s contents while looping</span>
+                <span class="c"># over it, so we loop over the *original* dictionary instead.</span>
+                <span class="k">if</span> <span class="n">name</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span><span class="s">&#39;_&#39;</span><span class="p">):</span>
+                    <span class="k">del</span> <span class="n">meta_attrs</span><span class="p">[</span><span class="n">name</span><span class="p">]</span>
+            <span class="k">for</span> <span class="n">attr_name</span> <span class="ow">in</span> <span class="n">DEFAULT_NAMES</span><span class="p">:</span>
+                <span class="k">if</span> <span class="n">attr_name</span> <span class="ow">in</span> <span class="n">meta_attrs</span><span class="p">:</span>
+                    <span class="nb">setattr</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">attr_name</span><span class="p">,</span> <span class="n">meta_attrs</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="n">attr_name</span><span class="p">))</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">original_attrs</span><span class="p">[</span><span class="n">attr_name</span><span class="p">]</span> <span class="o">=</span> <span class="nb">getattr</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">attr_name</span><span class="p">)</span>
+                <span class="k">elif</span> <span class="nb">hasattr</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">meta</span><span class="p">,</span> <span class="n">attr_name</span><span class="p">):</span>
+                    <span class="nb">setattr</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">attr_name</span><span class="p">,</span> <span class="nb">getattr</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">meta</span><span class="p">,</span> <span class="n">attr_name</span><span class="p">))</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">original_attrs</span><span class="p">[</span><span class="n">attr_name</span><span class="p">]</span> <span class="o">=</span> <span class="nb">getattr</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">attr_name</span><span class="p">)</span>
+
+            <span class="n">ut</span> <span class="o">=</span> <span class="n">meta_attrs</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="s">&#39;unique_together&#39;</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">unique_together</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">unique_together</span> <span class="o">=</span> <span class="n">normalize_together</span><span class="p">(</span><span class="n">ut</span><span class="p">)</span>
+
+            <span class="n">it</span> <span class="o">=</span> <span class="n">meta_attrs</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="s">&#39;index_together&#39;</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">index_together</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">index_together</span> <span class="o">=</span> <span class="n">normalize_together</span><span class="p">(</span><span class="n">it</span><span class="p">)</span>
+
+            <span class="c"># verbose_name_plural is a special case because it uses a &#39;s&#39;</span>
+            <span class="c"># by default.</span>
+            <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">verbose_name_plural</span> <span class="ow">is</span> <span class="bp">None</span><span class="p">:</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">verbose_name_plural</span> <span class="o">=</span> <span class="n">string_concat</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">verbose_name</span><span class="p">,</span> <span class="s">&#39;s&#39;</span><span class="p">)</span>
+
+            <span class="c"># Any leftover attributes must be invalid.</span>
+            <span class="k">if</span> <span class="n">meta_attrs</span> <span class="o">!=</span> <span class="p">{}:</span>
+                <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span><span class="s">&quot;&#39;class Meta&#39; got invalid attribute(s): </span><span class="si">%s</span><span class="s">&quot;</span> <span class="o">%</span> <span class="s">&#39;,&#39;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">meta_attrs</span><span class="o">.</span><span class="n">keys</span><span class="p">()))</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">verbose_name_plural</span> <span class="o">=</span> <span class="n">string_concat</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">verbose_name</span><span class="p">,</span> <span class="s">&#39;s&#39;</span><span class="p">)</span>
+        <span class="k">del</span> <span class="bp">self</span><span class="o">.</span><span class="n">meta</span>
+
+        <span class="c"># If the db_table wasn&#39;t provided, use the app_label + model_name.</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">db_table</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">db_table</span> <span class="o">=</span> <span class="s">&quot;</span><span class="si">%s</span><span class="s">_</span><span class="si">%s</span><span class="s">&quot;</span> <span class="o">%</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">app_label</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">model_name</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">db_table</span> <span class="o">=</span> <span class="n">truncate_name</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">db_table</span><span class="p">,</span> <span class="n">connection</span><span class="o">.</span><span class="n">ops</span><span class="o">.</span><span class="n">max_name_length</span><span class="p">())</span>
+
+    <span class="k">def</span> <span class="nf">_prepare</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">model</span><span class="p">):</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">order_with_respect_to</span><span class="p">:</span>
+            <span class="c"># The app registry will not be ready at this point, so we cannot</span>
+            <span class="c"># use get_field().</span>
+            <span class="n">query</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">order_with_respect_to</span>
+            <span class="k">try</span><span class="p">:</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">order_with_respect_to</span> <span class="o">=</span> <span class="nb">next</span><span class="p">(</span>
+                    <span class="n">f</span> <span class="k">for</span> <span class="n">f</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_get_fields</span><span class="p">(</span><span class="n">reverse</span><span class="o">=</span><span class="bp">False</span><span class="p">)</span>
+                    <span class="k">if</span> <span class="n">f</span><span class="o">.</span><span class="n">name</span> <span class="o">==</span> <span class="n">query</span> <span class="ow">or</span> <span class="n">f</span><span class="o">.</span><span class="n">attname</span> <span class="o">==</span> <span class="n">query</span>
+                <span class="p">)</span>
+            <span class="k">except</span> <span class="ne">StopIteration</span><span class="p">:</span>
+                <span class="k">raise</span> <span class="n">FieldDoesNotExist</span><span class="p">(</span><span class="s">&#39;</span><span class="si">%s</span><span class="s"> has no field named </span><span class="si">%r</span><span class="s">&#39;</span> <span class="o">%</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">object_name</span><span class="p">,</span> <span class="n">query</span><span class="p">))</span>
+
+            <span class="bp">self</span><span class="o">.</span><span class="n">ordering</span> <span class="o">=</span> <span class="p">(</span><span class="s">&#39;_order&#39;</span><span class="p">,)</span>
+            <span class="k">if</span> <span class="ow">not</span> <span class="nb">any</span><span class="p">(</span><span class="nb">isinstance</span><span class="p">(</span><span class="n">field</span><span class="p">,</span> <span class="n">OrderWrt</span><span class="p">)</span> <span class="k">for</span> <span class="n">field</span> <span class="ow">in</span> <span class="n">model</span><span class="o">.</span><span class="n">_meta</span><span class="o">.</span><span class="n">local_fields</span><span class="p">):</span>
+                <span class="n">model</span><span class="o">.</span><span class="n">add_to_class</span><span class="p">(</span><span class="s">&#39;_order&#39;</span><span class="p">,</span> <span class="n">OrderWrt</span><span class="p">())</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">order_with_respect_to</span> <span class="o">=</span> <span class="bp">None</span>
+
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">pk</span> <span class="ow">is</span> <span class="bp">None</span><span class="p">:</span>
+            <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">parents</span><span class="p">:</span>
+                <span class="c"># Promote the first parent link in lieu of adding yet another</span>
+                <span class="c"># field.</span>
+                <span class="n">field</span> <span class="o">=</span> <span class="nb">next</span><span class="p">(</span><span class="n">six</span><span class="o">.</span><span class="n">itervalues</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">parents</span><span class="p">))</span>
+                <span class="c"># Look for a local field with the same name as the</span>
+                <span class="c"># first parent link. If a local field has already been</span>
+                <span class="c"># created, use it instead of promoting the parent</span>
+                <span class="n">already_created</span> <span class="o">=</span> <span class="p">[</span><span class="n">fld</span> <span class="k">for</span> <span class="n">fld</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">local_fields</span> <span class="k">if</span> <span class="n">fld</span><span class="o">.</span><span class="n">name</span> <span class="o">==</span> <span class="n">field</span><span class="o">.</span><span class="n">name</span><span class="p">]</span>
+                <span class="k">if</span> <span class="n">already_created</span><span class="p">:</span>
+                    <span class="n">field</span> <span class="o">=</span> <span class="n">already_created</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+                <span class="n">field</span><span class="o">.</span><span class="n">primary_key</span> <span class="o">=</span> <span class="bp">True</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">setup_pk</span><span class="p">(</span><span class="n">field</span><span class="p">)</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">auto</span> <span class="o">=</span> <span class="n">AutoField</span><span class="p">(</span><span class="n">verbose_name</span><span class="o">=</span><span class="s">&#39;ID&#39;</span><span class="p">,</span> <span class="n">primary_key</span><span class="o">=</span><span class="bp">True</span><span class="p">,</span>
+                        <span class="n">auto_created</span><span class="o">=</span><span class="bp">True</span><span class="p">)</span>
+                <span class="n">model</span><span class="o">.</span><span class="n">add_to_class</span><span class="p">(</span><span class="s">&#39;id&#39;</span><span class="p">,</span> <span class="n">auto</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">add_field</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">field</span><span class="p">,</span> <span class="n">virtual</span><span class="o">=</span><span class="bp">False</span><span class="p">):</span>
+        <span class="c"># Insert the given field in the order in which it was created, using</span>
+        <span class="c"># the &quot;creation_counter&quot; attribute of the field.</span>
+        <span class="c"># Move many-to-many related fields from self.fields into</span>
+        <span class="c"># self.many_to_many.</span>
+        <span class="k">if</span> <span class="n">virtual</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">virtual_fields</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">field</span><span class="p">)</span>
+        <span class="k">elif</span> <span class="n">field</span><span class="o">.</span><span class="n">is_relation</span> <span class="ow">and</span> <span class="n">field</span><span class="o">.</span><span class="n">many_to_many</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">local_many_to_many</span><span class="o">.</span><span class="n">insert</span><span class="p">(</span><span class="n">bisect</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">local_many_to_many</span><span class="p">,</span> <span class="n">field</span><span class="p">),</span> <span class="n">field</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">local_fields</span><span class="o">.</span><span class="n">insert</span><span class="p">(</span><span class="n">bisect</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">local_fields</span><span class="p">,</span> <span class="n">field</span><span class="p">),</span> <span class="n">field</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">setup_pk</span><span class="p">(</span><span class="n">field</span><span class="p">)</span>
+
+        <span class="c"># If the field being added is a relation to another known field,</span>
+        <span class="c"># expire the cache on this field and the forward cache on the field</span>
+        <span class="c"># being referenced, because there will be new relationships in the</span>
+        <span class="c"># cache. Otherwise, expire the cache of references *to* this field.</span>
+        <span class="c"># The mechanism for getting at the related model is slightly odd -</span>
+        <span class="c"># ideally, we&#39;d just ask for field.related_model. However, related_model</span>
+        <span class="c"># is a cached property, and all the models haven&#39;t been loaded yet, so</span>
+        <span class="c"># we need to make sure we don&#39;t cache a string reference.</span>
+        <span class="k">if</span> <span class="n">field</span><span class="o">.</span><span class="n">is_relation</span> <span class="ow">and</span> <span class="nb">hasattr</span><span class="p">(</span><span class="n">field</span><span class="o">.</span><span class="n">rel</span><span class="p">,</span> <span class="s">&#39;to&#39;</span><span class="p">)</span> <span class="ow">and</span> <span class="n">field</span><span class="o">.</span><span class="n">rel</span><span class="o">.</span><span class="n">to</span><span class="p">:</span>
+            <span class="k">try</span><span class="p">:</span>
+                <span class="n">field</span><span class="o">.</span><span class="n">rel</span><span class="o">.</span><span class="n">to</span><span class="o">.</span><span class="n">_meta</span><span class="o">.</span><span class="n">_expire_cache</span><span class="p">(</span><span class="n">forward</span><span class="o">=</span><span class="bp">False</span><span class="p">)</span>
+            <span class="k">except</span> <span class="ne">AttributeError</span><span class="p">:</span>
+                <span class="k">pass</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_expire_cache</span><span class="p">()</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_expire_cache</span><span class="p">(</span><span class="n">reverse</span><span class="o">=</span><span class="bp">False</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">setup_pk</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">field</span><span class="p">):</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">pk</span> <span class="ow">and</span> <span class="n">field</span><span class="o">.</span><span class="n">primary_key</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">pk</span> <span class="o">=</span> <span class="n">field</span>
+            <span class="n">field</span><span class="o">.</span><span class="n">serialize</span> <span class="o">=</span> <span class="bp">False</span>
+
+    <span class="k">def</span> <span class="nf">setup_proxy</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">target</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Does the internal setup so that the current model is a proxy for</span>
+<span class="sd">        &quot;target&quot;.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">pk</span> <span class="o">=</span> <span class="n">target</span><span class="o">.</span><span class="n">_meta</span><span class="o">.</span><span class="n">pk</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">proxy_for_model</span> <span class="o">=</span> <span class="n">target</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">db_table</span> <span class="o">=</span> <span class="n">target</span><span class="o">.</span><span class="n">_meta</span><span class="o">.</span><span class="n">db_table</span>
+
+    <span class="k">def</span> <span class="nf">__repr__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="s">&#39;&lt;Options for </span><span class="si">%s</span><span class="s">&gt;&#39;</span> <span class="o">%</span> <span class="bp">self</span><span class="o">.</span><span class="n">object_name</span>
+
+    <span class="k">def</span> <span class="nf">__str__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="s">&quot;</span><span class="si">%s</span><span class="s">.</span><span class="si">%s</span><span class="s">&quot;</span> <span class="o">%</span> <span class="p">(</span><span class="n">smart_text</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">app_label</span><span class="p">),</span> <span class="n">smart_text</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">model_name</span><span class="p">))</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">verbose_name_raw</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        There are a few places where the untranslated verbose name is needed</span>
+<span class="sd">        (so that we get the same value regardless of currently active</span>
+<span class="sd">        locale).</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">with</span> <span class="n">override</span><span class="p">(</span><span class="bp">None</span><span class="p">):</span>
+            <span class="k">return</span> <span class="n">force_text</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">verbose_name</span><span class="p">)</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">swapped</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Has this model been swapped out for another? If so, return the model</span>
+<span class="sd">        name of the replacement; otherwise, return None.</span>
+
+<span class="sd">        For historical reasons, model name lookups using get_model() are</span>
+<span class="sd">        case insensitive, so we make sure we are case insensitive here.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">swappable</span><span class="p">:</span>
+            <span class="n">model_label</span> <span class="o">=</span> <span class="s">&#39;</span><span class="si">%s</span><span class="s">.</span><span class="si">%s</span><span class="s">&#39;</span> <span class="o">%</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">app_label</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">model_name</span><span class="p">)</span>
+            <span class="n">swapped_for</span> <span class="o">=</span> <span class="nb">getattr</span><span class="p">(</span><span class="n">settings</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">swappable</span><span class="p">,</span> <span class="bp">None</span><span class="p">)</span>
+            <span class="k">if</span> <span class="n">swapped_for</span><span class="p">:</span>
+                <span class="k">try</span><span class="p">:</span>
+                    <span class="n">swapped_label</span><span class="p">,</span> <span class="n">swapped_object</span> <span class="o">=</span> <span class="n">swapped_for</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s">&#39;.&#39;</span><span class="p">)</span>
+                <span class="k">except</span> <span class="ne">ValueError</span><span class="p">:</span>
+                    <span class="c"># setting not in the format app_label.model_name</span>
+                    <span class="c"># raising ImproperlyConfigured here causes problems with</span>
+                    <span class="c"># test cleanup code - instead it is raised in get_user_model</span>
+                    <span class="c"># or as part of validation.</span>
+                    <span class="k">return</span> <span class="n">swapped_for</span>
+
+                <span class="k">if</span> <span class="s">&#39;</span><span class="si">%s</span><span class="s">.</span><span class="si">%s</span><span class="s">&#39;</span> <span class="o">%</span> <span class="p">(</span><span class="n">swapped_label</span><span class="p">,</span> <span class="n">swapped_object</span><span class="o">.</span><span class="n">lower</span><span class="p">())</span> <span class="ow">not</span> <span class="ow">in</span> <span class="p">(</span><span class="bp">None</span><span class="p">,</span> <span class="n">model_label</span><span class="p">):</span>
+                    <span class="k">return</span> <span class="n">swapped_for</span>
+        <span class="k">return</span> <span class="bp">None</span>
+
+    <span class="nd">@cached_property</span>
+    <span class="k">def</span> <span class="nf">fields</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Returns a list of all forward fields on the model and its parents,</span>
+<span class="sd">        excluding ManyToManyFields.</span>
+
+<span class="sd">        Private API intended only to be used by Django itself; get_fields()</span>
+<span class="sd">        combined with filtering of field properties is the public API for</span>
+<span class="sd">        obtaining this field list.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="c"># For legacy reasons, the fields property should only contain forward</span>
+        <span class="c"># fields that are not virtual or with a m2m cardinality. Therefore we</span>
+        <span class="c"># pass these three filters as filters to the generator.</span>
+        <span class="c"># The third lambda is a longwinded way of checking f.related_model - we don&#39;t</span>
+        <span class="c"># use that property directly because related_model is a cached property,</span>
+        <span class="c"># and all the models may not have been loaded yet; we don&#39;t want to cache</span>
+        <span class="c"># the string reference to the related_model.</span>
+        <span class="n">is_not_an_m2m_field</span> <span class="o">=</span> <span class="k">lambda</span> <span class="n">f</span><span class="p">:</span> <span class="ow">not</span> <span class="p">(</span><span class="n">f</span><span class="o">.</span><span class="n">is_relation</span> <span class="ow">and</span> <span class="n">f</span><span class="o">.</span><span class="n">many_to_many</span><span class="p">)</span>
+        <span class="n">is_not_a_generic_relation</span> <span class="o">=</span> <span class="k">lambda</span> <span class="n">f</span><span class="p">:</span> <span class="ow">not</span> <span class="p">(</span><span class="n">f</span><span class="o">.</span><span class="n">is_relation</span> <span class="ow">and</span> <span class="n">f</span><span class="o">.</span><span class="n">one_to_many</span><span class="p">)</span>
+        <span class="n">is_not_a_generic_foreign_key</span> <span class="o">=</span> <span class="k">lambda</span> <span class="n">f</span><span class="p">:</span> <span class="ow">not</span> <span class="p">(</span>
+            <span class="n">f</span><span class="o">.</span><span class="n">is_relation</span> <span class="ow">and</span> <span class="n">f</span><span class="o">.</span><span class="n">many_to_one</span> <span class="ow">and</span> <span class="ow">not</span> <span class="p">(</span><span class="nb">hasattr</span><span class="p">(</span><span class="n">f</span><span class="o">.</span><span class="n">rel</span><span class="p">,</span> <span class="s">&#39;to&#39;</span><span class="p">)</span> <span class="ow">and</span> <span class="n">f</span><span class="o">.</span><span class="n">rel</span><span class="o">.</span><span class="n">to</span><span class="p">)</span>
+        <span class="p">)</span>
+        <span class="k">return</span> <span class="n">make_immutable_fields_list</span><span class="p">(</span>
+            <span class="s">&quot;fields&quot;</span><span class="p">,</span>
+            <span class="p">(</span><span class="n">f</span> <span class="k">for</span> <span class="n">f</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_get_fields</span><span class="p">(</span><span class="n">reverse</span><span class="o">=</span><span class="bp">False</span><span class="p">)</span> <span class="k">if</span>
+            <span class="n">is_not_an_m2m_field</span><span class="p">(</span><span class="n">f</span><span class="p">)</span> <span class="ow">and</span> <span class="n">is_not_a_generic_relation</span><span class="p">(</span><span class="n">f</span><span class="p">)</span>
+            <span class="ow">and</span> <span class="n">is_not_a_generic_foreign_key</span><span class="p">(</span><span class="n">f</span><span class="p">))</span>
+        <span class="p">)</span>
+
+    <span class="nd">@cached_property</span>
+    <span class="k">def</span> <span class="nf">concrete_fields</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Returns a list of all concrete fields on the model and its parents.</span>
+
+<span class="sd">        Private API intended only to be used by Django itself; get_fields()</span>
+<span class="sd">        combined with filtering of field properties is the public API for</span>
+<span class="sd">        obtaining this field list.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="n">make_immutable_fields_list</span><span class="p">(</span>
+            <span class="s">&quot;concrete_fields&quot;</span><span class="p">,</span> <span class="p">(</span><span class="n">f</span> <span class="k">for</span> <span class="n">f</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">fields</span> <span class="k">if</span> <span class="n">f</span><span class="o">.</span><span class="n">concrete</span><span class="p">)</span>
+        <span class="p">)</span>
+
+    <span class="nd">@cached_property</span>
+    <span class="k">def</span> <span class="nf">local_concrete_fields</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Returns a list of all concrete fields on the model.</span>
+
+<span class="sd">        Private API intended only to be used by Django itself; get_fields()</span>
+<span class="sd">        combined with filtering of field properties is the public API for</span>
+<span class="sd">        obtaining this field list.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="n">make_immutable_fields_list</span><span class="p">(</span>
+            <span class="s">&quot;local_concrete_fields&quot;</span><span class="p">,</span> <span class="p">(</span><span class="n">f</span> <span class="k">for</span> <span class="n">f</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">local_fields</span> <span class="k">if</span> <span class="n">f</span><span class="o">.</span><span class="n">concrete</span><span class="p">)</span>
+        <span class="p">)</span>
+
+    <span class="nd">@raise_deprecation</span><span class="p">(</span><span class="n">suggested_alternative</span><span class="o">=</span><span class="s">&quot;get_fields()&quot;</span><span class="p">)</span>
+    <span class="k">def</span> <span class="nf">get_fields_with_model</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">_map_model</span><span class="p">(</span><span class="n">f</span><span class="p">)</span> <span class="k">for</span> <span class="n">f</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_fields</span><span class="p">()]</span>
+
+    <span class="nd">@raise_deprecation</span><span class="p">(</span><span class="n">suggested_alternative</span><span class="o">=</span><span class="s">&quot;get_fields()&quot;</span><span class="p">)</span>
+    <span class="k">def</span> <span class="nf">get_concrete_fields_with_model</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">_map_model</span><span class="p">(</span><span class="n">f</span><span class="p">)</span> <span class="k">for</span> <span class="n">f</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">concrete_fields</span><span class="p">]</span>
+
+    <span class="nd">@cached_property</span>
+    <span class="k">def</span> <span class="nf">many_to_many</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Returns a list of all many to many fields on the model and its parents.</span>
+
+<span class="sd">        Private API intended only to be used by Django itself; get_fields()</span>
+<span class="sd">        combined with filtering of field properties is the public API for</span>
+<span class="sd">        obtaining this list.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="n">make_immutable_fields_list</span><span class="p">(</span>
+            <span class="s">&quot;many_to_many&quot;</span><span class="p">,</span>
+            <span class="p">(</span><span class="n">f</span> <span class="k">for</span> <span class="n">f</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_get_fields</span><span class="p">(</span><span class="n">reverse</span><span class="o">=</span><span class="bp">False</span><span class="p">)</span>
+            <span class="k">if</span> <span class="n">f</span><span class="o">.</span><span class="n">is_relation</span> <span class="ow">and</span> <span class="n">f</span><span class="o">.</span><span class="n">many_to_many</span><span class="p">)</span>
+        <span class="p">)</span>
+
+    <span class="nd">@cached_property</span>
+    <span class="k">def</span> <span class="nf">related_objects</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Returns all related objects pointing to the current model. The related</span>
+<span class="sd">        objects can come from a one-to-one, one-to-many, or many-to-many field</span>
+<span class="sd">        relation type.</span>
+
+<span class="sd">        Private API intended only to be used by Django itself; get_fields()</span>
+<span class="sd">        combined with filtering of field properties is the public API for</span>
+<span class="sd">        obtaining this field list.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">all_related_fields</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_get_fields</span><span class="p">(</span><span class="n">forward</span><span class="o">=</span><span class="bp">False</span><span class="p">,</span> <span class="n">reverse</span><span class="o">=</span><span class="bp">True</span><span class="p">,</span> <span class="n">include_hidden</span><span class="o">=</span><span class="bp">True</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">make_immutable_fields_list</span><span class="p">(</span>
+            <span class="s">&quot;related_objects&quot;</span><span class="p">,</span>
+            <span class="p">(</span><span class="n">obj</span> <span class="k">for</span> <span class="n">obj</span> <span class="ow">in</span> <span class="n">all_related_fields</span>
+            <span class="k">if</span> <span class="ow">not</span> <span class="n">obj</span><span class="o">.</span><span class="n">hidden</span> <span class="ow">or</span> <span class="n">obj</span><span class="o">.</span><span class="n">field</span><span class="o">.</span><span class="n">many_to_many</span><span class="p">)</span>
+        <span class="p">)</span>
+
+    <span class="nd">@raise_deprecation</span><span class="p">(</span><span class="n">suggested_alternative</span><span class="o">=</span><span class="s">&quot;get_fields()&quot;</span><span class="p">)</span>
+    <span class="k">def</span> <span class="nf">get_m2m_with_model</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">_map_model</span><span class="p">(</span><span class="n">f</span><span class="p">)</span> <span class="k">for</span> <span class="n">f</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">many_to_many</span><span class="p">]</span>
+
+    <span class="nd">@cached_property</span>
+    <span class="k">def</span> <span class="nf">_forward_fields_map</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="n">res</span> <span class="o">=</span> <span class="p">{}</span>
+        <span class="n">fields</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_get_fields</span><span class="p">(</span><span class="n">reverse</span><span class="o">=</span><span class="bp">False</span><span class="p">)</span>
+        <span class="k">for</span> <span class="n">field</span> <span class="ow">in</span> <span class="n">fields</span><span class="p">:</span>
+            <span class="n">res</span><span class="p">[</span><span class="n">field</span><span class="o">.</span><span class="n">name</span><span class="p">]</span> <span class="o">=</span> <span class="n">field</span>
+            <span class="c"># Due to the way Django&#39;s internals work, get_field() should also</span>
+            <span class="c"># be able to fetch a field by attname. In the case of a concrete</span>
+            <span class="c"># field with relation, includes the *_id name too</span>
+            <span class="k">try</span><span class="p">:</span>
+                <span class="n">res</span><span class="p">[</span><span class="n">field</span><span class="o">.</span><span class="n">attname</span><span class="p">]</span> <span class="o">=</span> <span class="n">field</span>
+            <span class="k">except</span> <span class="ne">AttributeError</span><span class="p">:</span>
+                <span class="k">pass</span>
+        <span class="k">return</span> <span class="n">res</span>
+
+    <span class="nd">@cached_property</span>
+    <span class="k">def</span> <span class="nf">fields_map</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="n">res</span> <span class="o">=</span> <span class="p">{}</span>
+        <span class="n">fields</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_get_fields</span><span class="p">(</span><span class="n">forward</span><span class="o">=</span><span class="bp">False</span><span class="p">,</span> <span class="n">include_hidden</span><span class="o">=</span><span class="bp">True</span><span class="p">)</span>
+        <span class="k">for</span> <span class="n">field</span> <span class="ow">in</span> <span class="n">fields</span><span class="p">:</span>
+            <span class="n">res</span><span class="p">[</span><span class="n">field</span><span class="o">.</span><span class="n">name</span><span class="p">]</span> <span class="o">=</span> <span class="n">field</span>
+            <span class="c"># Due to the way Django&#39;s internals work, get_field() should also</span>
+            <span class="c"># be able to fetch a field by attname. In the case of a concrete</span>
+            <span class="c"># field with relation, includes the *_id name too</span>
+            <span class="k">try</span><span class="p">:</span>
+                <span class="n">res</span><span class="p">[</span><span class="n">field</span><span class="o">.</span><span class="n">attname</span><span class="p">]</span> <span class="o">=</span> <span class="n">field</span>
+            <span class="k">except</span> <span class="ne">AttributeError</span><span class="p">:</span>
+                <span class="k">pass</span>
+        <span class="k">return</span> <span class="n">res</span>
+
+<div class="viewcode-block" id="Options.get_field"><a class="viewcode-back" href="../../../../ref/models/meta.html#django.db.models.options.Options.get_field">[docs]</a>    <span class="k">def</span> <span class="nf">get_field</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">field_name</span><span class="p">,</span> <span class="n">many_to_many</span><span class="o">=</span><span class="bp">None</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Returns a field instance given a field name. The field can be either a</span>
+<span class="sd">        forward or reverse field, unless many_to_many is specified; if it is,</span>
+<span class="sd">        only forward fields will be returned.</span>
+
+<span class="sd">        The many_to_many argument exists for backwards compatibility reasons;</span>
+<span class="sd">        it has been deprecated and will be removed in Django 2.0.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">m2m_in_kwargs</span> <span class="o">=</span> <span class="n">many_to_many</span> <span class="ow">is</span> <span class="ow">not</span> <span class="bp">None</span>
+        <span class="k">if</span> <span class="n">m2m_in_kwargs</span><span class="p">:</span>
+            <span class="c"># Always throw a warning if many_to_many is used regardless of</span>
+            <span class="c"># whether it alters the return type or not.</span>
+            <span class="n">warnings</span><span class="o">.</span><span class="n">warn</span><span class="p">(</span>
+                <span class="s">&quot;The &#39;many_to_many&#39; argument on get_field() is deprecated; &quot;</span>
+                <span class="s">&quot;use a filter on field.many_to_many instead.&quot;</span><span class="p">,</span>
+                <span class="n">RemovedInDjango20Warning</span>
+            <span class="p">)</span>
+
+        <span class="k">try</span><span class="p">:</span>
+            <span class="c"># In order to avoid premature loading of the relation tree</span>
+            <span class="c"># (expensive) we prefer checking if the field is a forward field.</span>
+            <span class="n">field</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_forward_fields_map</span><span class="p">[</span><span class="n">field_name</span><span class="p">]</span>
+
+            <span class="k">if</span> <span class="n">many_to_many</span> <span class="ow">is</span> <span class="bp">False</span> <span class="ow">and</span> <span class="n">field</span><span class="o">.</span><span class="n">many_to_many</span><span class="p">:</span>
+                <span class="k">raise</span> <span class="n">FieldDoesNotExist</span><span class="p">(</span>
+                    <span class="s">&#39;</span><span class="si">%s</span><span class="s"> has no field named </span><span class="si">%r</span><span class="s">&#39;</span> <span class="o">%</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">object_name</span><span class="p">,</span> <span class="n">field_name</span><span class="p">)</span>
+                <span class="p">)</span>
+
+            <span class="k">return</span> <span class="n">field</span>
+        <span class="k">except</span> <span class="ne">KeyError</span><span class="p">:</span>
+            <span class="c"># If the app registry is not ready, reverse fields are</span>
+            <span class="c"># unavailable, therefore we throw a FieldDoesNotExist exception.</span>
+            <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">apps</span><span class="o">.</span><span class="n">models_ready</span><span class="p">:</span>
+                <span class="k">raise</span> <span class="n">FieldDoesNotExist</span><span class="p">(</span>
+                    <span class="s">&quot;</span><span class="si">%s</span><span class="s"> has no field named </span><span class="si">%r</span><span class="s">. The app cache isn&#39;t ready yet, &quot;</span>
+                    <span class="s">&quot;so if this is an auto-created related field, it won&#39;t &quot;</span>
+                    <span class="s">&quot;be available yet.&quot;</span> <span class="o">%</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">object_name</span><span class="p">,</span> <span class="n">field_name</span><span class="p">)</span>
+                <span class="p">)</span>
+
+        <span class="k">try</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">m2m_in_kwargs</span><span class="p">:</span>
+                <span class="c"># Previous API does not allow searching reverse fields.</span>
+                <span class="k">raise</span> <span class="n">FieldDoesNotExist</span><span class="p">(</span><span class="s">&#39;</span><span class="si">%s</span><span class="s"> has no field named </span><span class="si">%r</span><span class="s">&#39;</span> <span class="o">%</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">object_name</span><span class="p">,</span> <span class="n">field_name</span><span class="p">))</span>
+
+            <span class="c"># Retrieve field instance by name from cached or just-computed</span>
+            <span class="c"># field map.</span>
+            <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">fields_map</span><span class="p">[</span><span class="n">field_name</span><span class="p">]</span>
+        <span class="k">except</span> <span class="ne">KeyError</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="n">FieldDoesNotExist</span><span class="p">(</span><span class="s">&#39;</span><span class="si">%s</span><span class="s"> has no field named </span><span class="si">%r</span><span class="s">&#39;</span> <span class="o">%</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">object_name</span><span class="p">,</span> <span class="n">field_name</span><span class="p">))</span>
+</div>
+    <span class="nd">@raise_deprecation</span><span class="p">(</span><span class="n">suggested_alternative</span><span class="o">=</span><span class="s">&quot;get_field()&quot;</span><span class="p">)</span>
+    <span class="k">def</span> <span class="nf">get_field_by_name</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">name</span><span class="p">):</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_map_model_details</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">get_field</span><span class="p">(</span><span class="n">name</span><span class="p">))</span>
+
+    <span class="nd">@raise_deprecation</span><span class="p">(</span><span class="n">suggested_alternative</span><span class="o">=</span><span class="s">&quot;get_fields()&quot;</span><span class="p">)</span>
+    <span class="k">def</span> <span class="nf">get_all_field_names</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="n">names</span> <span class="o">=</span> <span class="nb">set</span><span class="p">()</span>
+        <span class="n">fields</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_fields</span><span class="p">()</span>
+        <span class="k">for</span> <span class="n">field</span> <span class="ow">in</span> <span class="n">fields</span><span class="p">:</span>
+            <span class="c"># For backwards compatibility GenericForeignKey should not be</span>
+            <span class="c"># included in the results.</span>
+            <span class="k">if</span> <span class="n">field</span><span class="o">.</span><span class="n">is_relation</span> <span class="ow">and</span> <span class="n">field</span><span class="o">.</span><span class="n">many_to_one</span> <span class="ow">and</span> <span class="n">field</span><span class="o">.</span><span class="n">related_model</span> <span class="ow">is</span> <span class="bp">None</span><span class="p">:</span>
+                <span class="k">continue</span>
+            <span class="c"># Relations to child proxy models should not be included.</span>
+            <span class="k">if</span> <span class="p">(</span><span class="n">field</span><span class="o">.</span><span class="n">model</span> <span class="o">!=</span> <span class="bp">self</span><span class="o">.</span><span class="n">model</span> <span class="ow">and</span>
+                    <span class="n">field</span><span class="o">.</span><span class="n">model</span><span class="o">.</span><span class="n">_meta</span><span class="o">.</span><span class="n">concrete_model</span> <span class="o">==</span> <span class="bp">self</span><span class="o">.</span><span class="n">concrete_model</span><span class="p">):</span>
+                <span class="k">continue</span>
+
+            <span class="n">names</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">field</span><span class="o">.</span><span class="n">name</span><span class="p">)</span>
+            <span class="k">if</span> <span class="nb">hasattr</span><span class="p">(</span><span class="n">field</span><span class="p">,</span> <span class="s">&#39;attname&#39;</span><span class="p">):</span>
+                <span class="n">names</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">field</span><span class="o">.</span><span class="n">attname</span><span class="p">)</span>
+        <span class="k">return</span> <span class="nb">list</span><span class="p">(</span><span class="n">names</span><span class="p">)</span>
+
+    <span class="nd">@raise_deprecation</span><span class="p">(</span><span class="n">suggested_alternative</span><span class="o">=</span><span class="s">&quot;get_fields()&quot;</span><span class="p">)</span>
+    <span class="k">def</span> <span class="nf">get_all_related_objects</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">local_only</span><span class="o">=</span><span class="bp">False</span><span class="p">,</span> <span class="n">include_hidden</span><span class="o">=</span><span class="bp">False</span><span class="p">,</span>
+                                <span class="n">include_proxy_eq</span><span class="o">=</span><span class="bp">False</span><span class="p">):</span>
+
+        <span class="n">include_parents</span> <span class="o">=</span> <span class="bp">True</span> <span class="k">if</span> <span class="n">local_only</span> <span class="ow">is</span> <span class="bp">False</span> <span class="k">else</span> <span class="n">PROXY_PARENTS</span>
+        <span class="n">fields</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_get_fields</span><span class="p">(</span>
+            <span class="n">forward</span><span class="o">=</span><span class="bp">False</span><span class="p">,</span> <span class="n">reverse</span><span class="o">=</span><span class="bp">True</span><span class="p">,</span>
+            <span class="n">include_parents</span><span class="o">=</span><span class="n">include_parents</span><span class="p">,</span>
+            <span class="n">include_hidden</span><span class="o">=</span><span class="n">include_hidden</span><span class="p">,</span>
+        <span class="p">)</span>
+        <span class="n">fields</span> <span class="o">=</span> <span class="p">(</span><span class="n">obj</span> <span class="k">for</span> <span class="n">obj</span> <span class="ow">in</span> <span class="n">fields</span> <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">obj</span><span class="o">.</span><span class="n">field</span><span class="p">,</span> <span class="n">ManyToManyField</span><span class="p">))</span>
+        <span class="k">if</span> <span class="n">include_proxy_eq</span><span class="p">:</span>
+            <span class="n">children</span> <span class="o">=</span> <span class="n">chain</span><span class="o">.</span><span class="n">from_iterable</span><span class="p">(</span><span class="n">c</span><span class="o">.</span><span class="n">_relation_tree</span>
+                                           <span class="k">for</span> <span class="n">c</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">concrete_model</span><span class="o">.</span><span class="n">_meta</span><span class="o">.</span><span class="n">proxied_children</span>
+                                           <span class="k">if</span> <span class="n">c</span> <span class="ow">is</span> <span class="ow">not</span> <span class="bp">self</span><span class="p">)</span>
+            <span class="n">relations</span> <span class="o">=</span> <span class="p">(</span><span class="n">f</span><span class="o">.</span><span class="n">rel</span> <span class="k">for</span> <span class="n">f</span> <span class="ow">in</span> <span class="n">children</span>
+                         <span class="k">if</span> <span class="n">include_hidden</span> <span class="ow">or</span> <span class="ow">not</span> <span class="n">f</span><span class="o">.</span><span class="n">rel</span><span class="o">.</span><span class="n">field</span><span class="o">.</span><span class="n">rel</span><span class="o">.</span><span class="n">is_hidden</span><span class="p">())</span>
+            <span class="n">fields</span> <span class="o">=</span> <span class="n">chain</span><span class="p">(</span><span class="n">fields</span><span class="p">,</span> <span class="n">relations</span><span class="p">)</span>
+        <span class="k">return</span> <span class="nb">list</span><span class="p">(</span><span class="n">fields</span><span class="p">)</span>
+
+    <span class="nd">@raise_deprecation</span><span class="p">(</span><span class="n">suggested_alternative</span><span class="o">=</span><span class="s">&quot;get_fields()&quot;</span><span class="p">)</span>
+    <span class="k">def</span> <span class="nf">get_all_related_objects_with_model</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">local_only</span><span class="o">=</span><span class="bp">False</span><span class="p">,</span> <span class="n">include_hidden</span><span class="o">=</span><span class="bp">False</span><span class="p">,</span>
+                                           <span class="n">include_proxy_eq</span><span class="o">=</span><span class="bp">False</span><span class="p">):</span>
+        <span class="k">return</span> <span class="p">[</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_map_model</span><span class="p">(</span><span class="n">f</span><span class="p">)</span> <span class="k">for</span> <span class="n">f</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_all_related_objects</span><span class="p">(</span>
+                <span class="n">local_only</span><span class="o">=</span><span class="n">local_only</span><span class="p">,</span>
+                <span class="n">include_hidden</span><span class="o">=</span><span class="n">include_hidden</span><span class="p">,</span>
+                <span class="n">include_proxy_eq</span><span class="o">=</span><span class="n">include_proxy_eq</span><span class="p">,</span>
+            <span class="p">)</span>
+        <span class="p">]</span>
+
+    <span class="nd">@raise_deprecation</span><span class="p">(</span><span class="n">suggested_alternative</span><span class="o">=</span><span class="s">&quot;get_fields()&quot;</span><span class="p">)</span>
+    <span class="k">def</span> <span class="nf">get_all_related_many_to_many_objects</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">local_only</span><span class="o">=</span><span class="bp">False</span><span class="p">):</span>
+        <span class="n">include_parents</span> <span class="o">=</span> <span class="bp">True</span> <span class="k">if</span> <span class="n">local_only</span> <span class="ow">is</span> <span class="ow">not</span> <span class="bp">True</span> <span class="k">else</span> <span class="n">PROXY_PARENTS</span>
+        <span class="n">fields</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_get_fields</span><span class="p">(</span>
+            <span class="n">forward</span><span class="o">=</span><span class="bp">False</span><span class="p">,</span> <span class="n">reverse</span><span class="o">=</span><span class="bp">True</span><span class="p">,</span>
+            <span class="n">include_parents</span><span class="o">=</span><span class="n">include_parents</span><span class="p">,</span> <span class="n">include_hidden</span><span class="o">=</span><span class="bp">True</span>
+        <span class="p">)</span>
+        <span class="k">return</span> <span class="p">[</span><span class="n">obj</span> <span class="k">for</span> <span class="n">obj</span> <span class="ow">in</span> <span class="n">fields</span> <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">obj</span><span class="o">.</span><span class="n">field</span><span class="p">,</span> <span class="n">ManyToManyField</span><span class="p">)]</span>
+
+    <span class="nd">@raise_deprecation</span><span class="p">(</span><span class="n">suggested_alternative</span><span class="o">=</span><span class="s">&quot;get_fields()&quot;</span><span class="p">)</span>
+    <span class="k">def</span> <span class="nf">get_all_related_m2m_objects_with_model</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="n">fields</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_get_fields</span><span class="p">(</span><span class="n">forward</span><span class="o">=</span><span class="bp">False</span><span class="p">,</span> <span class="n">reverse</span><span class="o">=</span><span class="bp">True</span><span class="p">,</span> <span class="n">include_hidden</span><span class="o">=</span><span class="bp">True</span><span class="p">)</span>
+        <span class="k">return</span> <span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">_map_model</span><span class="p">(</span><span class="n">obj</span><span class="p">)</span> <span class="k">for</span> <span class="n">obj</span> <span class="ow">in</span> <span class="n">fields</span> <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">obj</span><span class="o">.</span><span class="n">field</span><span class="p">,</span> <span class="n">ManyToManyField</span><span class="p">)]</span>
+
+    <span class="k">def</span> <span class="nf">get_base_chain</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">model</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Returns a list of parent classes leading to &#39;model&#39; (order from closet</span>
+<span class="sd">        to most distant ancestor). This has to handle the case were &#39;model&#39; is</span>
+<span class="sd">        a grandparent or even more distant relation.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">parents</span><span class="p">:</span>
+            <span class="k">return</span> <span class="bp">None</span>
+        <span class="k">if</span> <span class="n">model</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">parents</span><span class="p">:</span>
+            <span class="k">return</span> <span class="p">[</span><span class="n">model</span><span class="p">]</span>
+        <span class="k">for</span> <span class="n">parent</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">parents</span><span class="p">:</span>
+            <span class="n">res</span> <span class="o">=</span> <span class="n">parent</span><span class="o">.</span><span class="n">_meta</span><span class="o">.</span><span class="n">get_base_chain</span><span class="p">(</span><span class="n">model</span><span class="p">)</span>
+            <span class="k">if</span> <span class="n">res</span><span class="p">:</span>
+                <span class="n">res</span><span class="o">.</span><span class="n">insert</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="n">parent</span><span class="p">)</span>
+                <span class="k">return</span> <span class="n">res</span>
+        <span class="k">return</span> <span class="bp">None</span>
+
+    <span class="k">def</span> <span class="nf">get_parent_list</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Returns all the ancestors of this model as a list ordered by MRO.</span>
+<span class="sd">        Useful for determining if something is an ancestor, regardless of lineage.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">result</span> <span class="o">=</span> <span class="n">OrderedSet</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">parents</span><span class="p">)</span>
+        <span class="k">for</span> <span class="n">parent</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">parents</span><span class="p">:</span>
+            <span class="k">for</span> <span class="n">ancestor</span> <span class="ow">in</span> <span class="n">parent</span><span class="o">.</span><span class="n">_meta</span><span class="o">.</span><span class="n">get_parent_list</span><span class="p">():</span>
+                <span class="n">result</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">ancestor</span><span class="p">)</span>
+        <span class="k">return</span> <span class="nb">list</span><span class="p">(</span><span class="n">result</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">get_ancestor_link</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">ancestor</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Returns the field on the current model which points to the given</span>
+<span class="sd">        &quot;ancestor&quot;. This is possible an indirect link (a pointer to a parent</span>
+<span class="sd">        model, which points, eventually, to the ancestor). Used when</span>
+<span class="sd">        constructing table joins for model inheritance.</span>
+
+<span class="sd">        Returns None if the model isn&#39;t an ancestor of this one.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="n">ancestor</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">parents</span><span class="p">:</span>
+            <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">parents</span><span class="p">[</span><span class="n">ancestor</span><span class="p">]</span>
+        <span class="k">for</span> <span class="n">parent</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">parents</span><span class="p">:</span>
+            <span class="c"># Tries to get a link field from the immediate parent</span>
+            <span class="n">parent_link</span> <span class="o">=</span> <span class="n">parent</span><span class="o">.</span><span class="n">_meta</span><span class="o">.</span><span class="n">get_ancestor_link</span><span class="p">(</span><span class="n">ancestor</span><span class="p">)</span>
+            <span class="k">if</span> <span class="n">parent_link</span><span class="p">:</span>
+                <span class="c"># In case of a proxied model, the first link</span>
+                <span class="c"># of the chain to the ancestor is that parent</span>
+                <span class="c"># links</span>
+                <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">parents</span><span class="p">[</span><span class="n">parent</span><span class="p">]</span> <span class="ow">or</span> <span class="n">parent_link</span>
+
+    <span class="k">def</span> <span class="nf">_populate_directed_relation_graph</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        This method is used by each model to find its reverse objects. As this</span>
+<span class="sd">        method is very expensive and is accessed frequently (it looks up every</span>
+<span class="sd">        field in a model, in every app), it is computed on first access and then</span>
+<span class="sd">        is set as a property on every model.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">related_objects_graph</span> <span class="o">=</span> <span class="n">defaultdict</span><span class="p">(</span><span class="nb">list</span><span class="p">)</span>
+
+        <span class="n">all_models</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">apps</span><span class="o">.</span><span class="n">get_models</span><span class="p">(</span><span class="n">include_auto_created</span><span class="o">=</span><span class="bp">True</span><span class="p">)</span>
+        <span class="k">for</span> <span class="n">model</span> <span class="ow">in</span> <span class="n">all_models</span><span class="p">:</span>
+            <span class="c"># Abstract model&#39;s fields are copied to child models, hence we will</span>
+            <span class="c"># see the fields from the child models.</span>
+            <span class="k">if</span> <span class="n">model</span><span class="o">.</span><span class="n">_meta</span><span class="o">.</span><span class="n">abstract</span><span class="p">:</span>
+                <span class="k">continue</span>
+            <span class="n">fields_with_relations</span> <span class="o">=</span> <span class="p">(</span>
+                <span class="n">f</span> <span class="k">for</span> <span class="n">f</span> <span class="ow">in</span> <span class="n">model</span><span class="o">.</span><span class="n">_meta</span><span class="o">.</span><span class="n">_get_fields</span><span class="p">(</span><span class="n">reverse</span><span class="o">=</span><span class="bp">False</span><span class="p">,</span> <span class="n">include_parents</span><span class="o">=</span><span class="bp">False</span><span class="p">)</span>
+                <span class="k">if</span> <span class="n">f</span><span class="o">.</span><span class="n">is_relation</span> <span class="ow">and</span> <span class="n">f</span><span class="o">.</span><span class="n">related_model</span> <span class="ow">is</span> <span class="ow">not</span> <span class="bp">None</span>
+            <span class="p">)</span>
+            <span class="k">for</span> <span class="n">f</span> <span class="ow">in</span> <span class="n">fields_with_relations</span><span class="p">:</span>
+                <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">f</span><span class="o">.</span><span class="n">rel</span><span class="o">.</span><span class="n">to</span><span class="p">,</span> <span class="n">six</span><span class="o">.</span><span class="n">string_types</span><span class="p">):</span>
+                    <span class="n">related_objects_graph</span><span class="p">[</span><span class="n">f</span><span class="o">.</span><span class="n">rel</span><span class="o">.</span><span class="n">to</span><span class="o">.</span><span class="n">_meta</span><span class="p">]</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">f</span><span class="p">)</span>
+
+        <span class="k">for</span> <span class="n">model</span> <span class="ow">in</span> <span class="n">all_models</span><span class="p">:</span>
+            <span class="c"># Set the relation_tree using the internal __dict__. In this way</span>
+            <span class="c"># we avoid calling the cached property. In attribute lookup,</span>
+            <span class="c"># __dict__ takes precedence over a data descriptor (such as</span>
+            <span class="c"># @cached_property). This means that the _meta._relation_tree is</span>
+            <span class="c"># only called if related_objects is not in __dict__.</span>
+            <span class="n">related_objects</span> <span class="o">=</span> <span class="n">related_objects_graph</span><span class="p">[</span><span class="n">model</span><span class="o">.</span><span class="n">_meta</span><span class="p">]</span>
+            <span class="n">model</span><span class="o">.</span><span class="n">_meta</span><span class="o">.</span><span class="n">__dict__</span><span class="p">[</span><span class="s">&#39;_relation_tree&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">related_objects</span>
+        <span class="c"># It seems it is possible that self is not in all_models, so guard</span>
+        <span class="c"># against that with default for get().</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">__dict__</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s">&#39;_relation_tree&#39;</span><span class="p">,</span> <span class="n">EMPTY_RELATION_TREE</span><span class="p">)</span>
+
+    <span class="nd">@cached_property</span>
+    <span class="k">def</span> <span class="nf">_relation_tree</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_populate_directed_relation_graph</span><span class="p">()</span>
+
+    <span class="k">def</span> <span class="nf">_expire_cache</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">forward</span><span class="o">=</span><span class="bp">True</span><span class="p">,</span> <span class="n">reverse</span><span class="o">=</span><span class="bp">True</span><span class="p">):</span>
+        <span class="c"># This method is usually called by apps.cache_clear(), when the</span>
+        <span class="c"># registry is finalized, or when a new field is added.</span>
+        <span class="n">properties_to_expire</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="k">if</span> <span class="n">forward</span><span class="p">:</span>
+            <span class="n">properties_to_expire</span><span class="o">.</span><span class="n">extend</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">FORWARD_PROPERTIES</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">reverse</span> <span class="ow">and</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">abstract</span><span class="p">:</span>
+            <span class="n">properties_to_expire</span><span class="o">.</span><span class="n">extend</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">REVERSE_PROPERTIES</span><span class="p">)</span>
+
+        <span class="k">for</span> <span class="n">cache_key</span> <span class="ow">in</span> <span class="n">properties_to_expire</span><span class="p">:</span>
+            <span class="k">try</span><span class="p">:</span>
+                <span class="nb">delattr</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">cache_key</span><span class="p">)</span>
+            <span class="k">except</span> <span class="ne">AttributeError</span><span class="p">:</span>
+                <span class="k">pass</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">_get_fields_cache</span> <span class="o">=</span> <span class="p">{}</span>
+
+<div class="viewcode-block" id="Options.get_fields"><a class="viewcode-back" href="../../../../ref/models/meta.html#django.db.models.options.Options.get_fields">[docs]</a>    <span class="k">def</span> <span class="nf">get_fields</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">include_parents</span><span class="o">=</span><span class="bp">True</span><span class="p">,</span> <span class="n">include_hidden</span><span class="o">=</span><span class="bp">False</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Returns a list of fields associated to the model. By default will only</span>
+<span class="sd">        return forward fields. This can be changed by enabling or disabling</span>
+<span class="sd">        field types using the parameters:</span>
+
+<span class="sd">        - include_parents: include fields derived from inheritance</span>
+<span class="sd">        - include_hidden:  include fields that have a related_name that</span>
+<span class="sd">                           starts with a &quot;+&quot;</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="n">include_parents</span> <span class="ow">is</span> <span class="bp">False</span><span class="p">:</span>
+            <span class="n">include_parents</span> <span class="o">=</span> <span class="n">PROXY_PARENTS</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_get_fields</span><span class="p">(</span><span class="n">include_parents</span><span class="o">=</span><span class="n">include_parents</span><span class="p">,</span> <span class="n">include_hidden</span><span class="o">=</span><span class="n">include_hidden</span><span class="p">)</span>
+</div>
+    <span class="k">def</span> <span class="nf">_get_fields</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">forward</span><span class="o">=</span><span class="bp">True</span><span class="p">,</span> <span class="n">reverse</span><span class="o">=</span><span class="bp">True</span><span class="p">,</span> <span class="n">include_parents</span><span class="o">=</span><span class="bp">True</span><span class="p">,</span> <span class="n">include_hidden</span><span class="o">=</span><span class="bp">False</span><span class="p">,</span>
+                    <span class="n">seen_models</span><span class="o">=</span><span class="bp">None</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Internal helper function to return fields of the model.</span>
+<span class="sd">        * If forward=True, then fields defined on this model are returned.</span>
+<span class="sd">        * If reverse=True, then relations pointing to this model are returned.</span>
+<span class="sd">        * If include_hidden=True, then fields with is_hidden=True are returned.</span>
+<span class="sd">        * The include_parents argument toggles if fields from parent models</span>
+<span class="sd">          should be included. It has three values: True, False, and</span>
+<span class="sd">          PROXY_PARENTS. When set to PROXY_PARENTS, the call will return all</span>
+<span class="sd">          fields defined for the current model or any of its parents in the</span>
+<span class="sd">          parent chain to the model&#39;s concrete model.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="n">include_parents</span> <span class="ow">not</span> <span class="ow">in</span> <span class="p">(</span><span class="bp">True</span><span class="p">,</span> <span class="bp">False</span><span class="p">,</span> <span class="n">PROXY_PARENTS</span><span class="p">):</span>
+            <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span><span class="s">&quot;Invalid argument for include_parents: </span><span class="si">%s</span><span class="s">&quot;</span> <span class="o">%</span> <span class="p">(</span><span class="n">include_parents</span><span class="p">,))</span>
+        <span class="c"># This helper function is used to allow recursion in ``get_fields()``</span>
+        <span class="c"># implementation and to provide a fast way for Django&#39;s internals to</span>
+        <span class="c"># access specific subsets of fields.</span>
+
+        <span class="c"># We must keep track of which models we have already seen. Otherwise we</span>
+        <span class="c"># could include the same field multiple times from different models.</span>
+        <span class="n">topmost_call</span> <span class="o">=</span> <span class="bp">False</span>
+        <span class="k">if</span> <span class="n">seen_models</span> <span class="ow">is</span> <span class="bp">None</span><span class="p">:</span>
+            <span class="n">seen_models</span> <span class="o">=</span> <span class="nb">set</span><span class="p">()</span>
+            <span class="n">topmost_call</span> <span class="o">=</span> <span class="bp">True</span>
+        <span class="n">seen_models</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">model</span><span class="p">)</span>
+
+        <span class="c"># Creates a cache key composed of all arguments</span>
+        <span class="n">cache_key</span> <span class="o">=</span> <span class="p">(</span><span class="n">forward</span><span class="p">,</span> <span class="n">reverse</span><span class="p">,</span> <span class="n">include_parents</span><span class="p">,</span> <span class="n">include_hidden</span><span class="p">,</span> <span class="n">topmost_call</span><span class="p">)</span>
+
+        <span class="k">try</span><span class="p">:</span>
+            <span class="c"># In order to avoid list manipulation. Always return a shallow copy</span>
+            <span class="c"># of the results.</span>
+            <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_get_fields_cache</span><span class="p">[</span><span class="n">cache_key</span><span class="p">]</span>
+        <span class="k">except</span> <span class="ne">KeyError</span><span class="p">:</span>
+            <span class="k">pass</span>
+
+        <span class="n">fields</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="c"># Recursively call _get_fields() on each parent, with the same</span>
+        <span class="c"># options provided in this call.</span>
+        <span class="k">if</span> <span class="n">include_parents</span> <span class="ow">is</span> <span class="ow">not</span> <span class="bp">False</span><span class="p">:</span>
+            <span class="k">for</span> <span class="n">parent</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">parents</span><span class="p">:</span>
+                <span class="c"># In diamond inheritance it is possible that we see the same</span>
+                <span class="c"># model from two different routes. In that case, avoid adding</span>
+                <span class="c"># fields from the same parent again.</span>
+                <span class="k">if</span> <span class="n">parent</span> <span class="ow">in</span> <span class="n">seen_models</span><span class="p">:</span>
+                    <span class="k">continue</span>
+                <span class="k">if</span> <span class="p">(</span><span class="n">parent</span><span class="o">.</span><span class="n">_meta</span><span class="o">.</span><span class="n">concrete_model</span> <span class="o">!=</span> <span class="bp">self</span><span class="o">.</span><span class="n">concrete_model</span> <span class="ow">and</span>
+                        <span class="n">include_parents</span> <span class="o">==</span> <span class="n">PROXY_PARENTS</span><span class="p">):</span>
+                    <span class="k">continue</span>
+                <span class="k">for</span> <span class="n">obj</span> <span class="ow">in</span> <span class="n">parent</span><span class="o">.</span><span class="n">_meta</span><span class="o">.</span><span class="n">_get_fields</span><span class="p">(</span>
+                        <span class="n">forward</span><span class="o">=</span><span class="n">forward</span><span class="p">,</span> <span class="n">reverse</span><span class="o">=</span><span class="n">reverse</span><span class="p">,</span> <span class="n">include_parents</span><span class="o">=</span><span class="n">include_parents</span><span class="p">,</span>
+                        <span class="n">include_hidden</span><span class="o">=</span><span class="n">include_hidden</span><span class="p">,</span> <span class="n">seen_models</span><span class="o">=</span><span class="n">seen_models</span><span class="p">):</span>
+                    <span class="k">if</span> <span class="nb">hasattr</span><span class="p">(</span><span class="n">obj</span><span class="p">,</span> <span class="s">&#39;parent_link&#39;</span><span class="p">)</span> <span class="ow">and</span> <span class="n">obj</span><span class="o">.</span><span class="n">parent_link</span><span class="p">:</span>
+                        <span class="k">continue</span>
+                    <span class="n">fields</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">obj</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">reverse</span><span class="p">:</span>
+            <span class="c"># Tree is computed once and cached until the app cache is expired.</span>
+            <span class="c"># It is composed of a list of fields pointing to the current model</span>
+            <span class="c"># from other models.</span>
+            <span class="n">all_fields</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_relation_tree</span>
+            <span class="k">for</span> <span class="n">field</span> <span class="ow">in</span> <span class="n">all_fields</span><span class="p">:</span>
+                <span class="c"># If hidden fields should be included or the relation is not</span>
+                <span class="c"># intentionally hidden, add to the fields dict.</span>
+                <span class="k">if</span> <span class="n">include_hidden</span> <span class="ow">or</span> <span class="ow">not</span> <span class="n">field</span><span class="o">.</span><span class="n">rel</span><span class="o">.</span><span class="n">hidden</span><span class="p">:</span>
+                    <span class="n">fields</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">field</span><span class="o">.</span><span class="n">rel</span><span class="p">)</span>
+
+        <span class="k">if</span> <span class="n">forward</span><span class="p">:</span>
+            <span class="n">fields</span><span class="o">.</span><span class="n">extend</span><span class="p">(</span>
+                <span class="n">field</span> <span class="k">for</span> <span class="n">field</span> <span class="ow">in</span> <span class="n">chain</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">local_fields</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">local_many_to_many</span><span class="p">)</span>
+            <span class="p">)</span>
+            <span class="c"># Virtual fields are recopied to each child model, and they get a</span>
+            <span class="c"># different model as field.model in each child. Hence we have to</span>
+            <span class="c"># add the virtual fields separately from the topmost call. If we</span>
+            <span class="c"># did this recursively similar to local_fields, we would get field</span>
+            <span class="c"># instances with field.model != self.model.</span>
+            <span class="k">if</span> <span class="n">topmost_call</span><span class="p">:</span>
+                <span class="n">fields</span><span class="o">.</span><span class="n">extend</span><span class="p">(</span>
+                    <span class="n">f</span> <span class="k">for</span> <span class="n">f</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">virtual_fields</span>
+                <span class="p">)</span>
+
+        <span class="c"># In order to avoid list manipulation. Always</span>
+        <span class="c"># return a shallow copy of the results</span>
+        <span class="n">fields</span> <span class="o">=</span> <span class="n">make_immutable_fields_list</span><span class="p">(</span><span class="s">&quot;get_fields()&quot;</span><span class="p">,</span> <span class="n">fields</span><span class="p">)</span>
+
+        <span class="c"># Store result into cache for later access</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_get_fields_cache</span><span class="p">[</span><span class="n">cache_key</span><span class="p">]</span> <span class="o">=</span> <span class="n">fields</span>
+        <span class="k">return</span> <span class="n">fields</span></div>
+</pre></div>
+
+          </div>
+        </div>
+      </div>
+      
+        
+          <div class="yui-b" id="sidebar">
+            
+      <div class="sphinxsidebar">
+        <div class="sphinxsidebarwrapper">
+  <h3>Browse</h3>
+  <ul>
+    
+    
+  </ul>
+  <h3>You are here:</h3>
+  <ul>
+      <li>
+        <a href="../../../../index.html">Django 1.8.2.dev20150505153848 documentation</a>
+        
+          <ul><li><a href="../../../index.html">Module code</a>
+        
+          <ul><li><a href="../../../django.html">django</a>
+        
+          <ul><li><a href="../../db.html">django.db</a>
+        
+          <ul><li><a href="../models.html">django.db.models</a>
+        
+        <ul><li>django.db.models.options</li></ul>
+        </li></ul></li></ul></li></ul></li></ul>
+      </li>
+  </ul>
+
+<div id="searchbox" style="display: none">
+  <h3>Quick search</h3>
+    <form class="search" action="../../../../search.html" method="get">
+      <input type="text" name="q" />
+      <input type="submit" value="Go" />
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+    <p class="searchtip" style="font-size: 90%">
+    Enter search terms or a module, class or function name.
+    </p>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+              <h3>Last update:</h3>
+              <p class="topless">May 06, 2015</p>
+          </div>
+        
+      
+    </div>
+
+    <div id="ft">
+      <div class="nav">
+    <a href="../../../index.html" title="Module code" accesskey="U">up</a></div>
+    </div>
+  </div>
+
+      <div class="clearer"></div>
+    </div>
+  </body>
+</html>

@@ -1,0 +1,259 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>Upgrading Django to a newer version &mdash; Django 1.8.2.dev20150505153848 documentation</title>
+    
+    <link rel="stylesheet" href="../_static/default.css" type="text/css" />
+    <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '../',
+        VERSION:     '1.8.2.dev20150505153848',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="../_static/jquery.js"></script>
+    <script type="text/javascript" src="../_static/underscore.js"></script>
+    <script type="text/javascript" src="../_static/doctools.js"></script>
+    <link rel="top" title="Django 1.8.2.dev20150505153848 documentation" href="../index.html" />
+    <link rel="up" title="“How-to” guides" href="index.html" />
+    <link rel="next" title="Error reporting" href="error-reporting.html" />
+    <link rel="prev" title="How to use Django with FastCGI, SCGI, or AJP" href="deployment/fastcgi.html" />
+
+
+
+ 
+<script type="text/javascript" src="../templatebuiltins.js"></script>
+<script type="text/javascript">
+(function($) {
+    if (!django_template_builtins) {
+       // templatebuiltins.js missing, do nothing.
+       return;
+    }
+    $(document).ready(function() {
+        // Hyperlink Django template tags and filters
+        var base = "../ref/templates/builtins.html";
+        if (base == "#") {
+            // Special case for builtins.html itself
+            base = "";
+        }
+        // Tags are keywords, class '.k'
+        $("div.highlight\\-html\\+django span.k").each(function(i, elem) {
+             var tagname = $(elem).text();
+             if ($.inArray(tagname, django_template_builtins.ttags) != -1) {
+                 var fragment = tagname.replace(/_/, '-');
+                 $(elem).html("<a href='" + base + "#" + fragment + "'>" + tagname + "</a>");
+             }
+        });
+        // Filters are functions, class '.nf'
+        $("div.highlight\\-html\\+django span.nf").each(function(i, elem) {
+             var filtername = $(elem).text();
+             if ($.inArray(filtername, django_template_builtins.tfilters) != -1) {
+                 var fragment = filtername.replace(/_/, '-');
+                 $(elem).html("<a href='" + base + "#" + fragment + "'>" + filtername + "</a>");
+             }
+        });
+    });
+})(jQuery);
+</script>
+
+
+  </head>
+  <body>
+
+    <div class="document">
+  <div id="custom-doc" class="yui-t6">
+    <div id="hd">
+      <h1><a href="../index.html">Django 1.8.2.dev20150505153848 documentation</a></h1>
+      <div id="global-nav">
+        <a title="Home page" href="../index.html">Home</a>  |
+        <a title="Table of contents" href="../contents.html">Table of contents</a>  |
+        <a title="Global index" href="../genindex.html">Index</a>  |
+        <a title="Module index" href="../py-modindex.html">Modules</a>
+      </div>
+      <div class="nav">
+    &laquo; <a href="deployment/fastcgi.html" title="How to use Django with FastCGI, SCGI, or AJP">previous</a>
+     |
+    <a href="index.html" title="&amp;#8220;How-to&amp;#8221; guides" accesskey="U">up</a>
+   |
+    <a href="error-reporting.html" title="Error reporting">next</a> &raquo;</div>
+    </div>
+
+    <div id="bd">
+      <div id="yui-main">
+        <div class="yui-b">
+          <div class="yui-g" id="howto-upgrade-version">
+            
+  <div class="section" id="s-upgrading-django-to-a-newer-version">
+<span id="upgrading-django-to-a-newer-version"></span><h1>Upgrading Django to a newer version<a class="headerlink" href="#upgrading-django-to-a-newer-version" title="Permalink to this headline">¶</a></h1>
+<p>While it can be a complex process at times, upgrading to the latest Django
+version has several benefits:</p>
+<ul class="simple">
+<li>New features and improvements are added.</li>
+<li>Bugs are fixed.</li>
+<li>Older version of Django will eventually no longer receive security updates.
+(see <a class="reference internal" href="../internals/release-process.html#backwards-compatibility-policy"><em>Supported versions</em></a>).</li>
+<li>Upgrading as each new Django release is available makes future upgrades less
+painful by keeping your code base up to date.</li>
+</ul>
+<p>Here are some things to consider to help make your upgrade process as smooth as
+possible.</p>
+<div class="section" id="s-required-reading">
+<span id="required-reading"></span><h2>Required Reading<a class="headerlink" href="#required-reading" title="Permalink to this headline">¶</a></h2>
+<p>If it&#8217;s your first time doing an upgrade, it is useful to read the <a class="reference internal" href="../internals/release-process.html"><em>guide
+on the different release processes</em></a>.</p>
+<p>Afterwards, you should familiarize yourself with the changes that were made in
+the new Django version(s):</p>
+<ul class="simple">
+<li>Read the <a class="reference internal" href="../releases/index.html"><em>release notes</em></a> for each &#8216;final&#8217; release from
+the one after your current Django version, up to and including the version to
+which you plan to upgrade.</li>
+<li>Look at the <a class="reference internal" href="../internals/deprecation.html"><em>deprecation timeline</em></a> for the
+relevant versions.</li>
+</ul>
+<p>Pay particular attention to backwards incompatible changes to get a clear idea
+of what will be needed for a successful upgrade.</p>
+</div>
+<div class="section" id="s-dependencies">
+<span id="dependencies"></span><h2>Dependencies<a class="headerlink" href="#dependencies" title="Permalink to this headline">¶</a></h2>
+<p>In most cases it will be necessary to upgrade to the latest version of your
+Django-related dependencies as well. If the Django version was recently
+released or if some of your dependencies are not well-maintained, some of your
+dependencies may not yet support the new Django version. In these cases you may
+have to wait until new versions of your dependencies are released.</p>
+</div>
+<div class="section" id="s-installation">
+<span id="installation"></span><h2>Installation<a class="headerlink" href="#installation" title="Permalink to this headline">¶</a></h2>
+<p>Once you&#8217;re ready, it is time to <a class="reference internal" href="../topics/install.html"><em>install the new Django version</em></a>. If you are using <a class="reference external" href="http://www.virtualenv.org/">virtualenv</a> and it is a major upgrade, you
+might want to set up a new environment with all the dependencies first.</p>
+<p>Exactly which steps you will need to take depends on your installation process.
+The most convenient way is to use <a class="reference external" href="http://www.pip-installer.org/">pip</a> with the <tt class="docutils literal"><span class="pre">--upgrade</span></tt> or <tt class="docutils literal"><span class="pre">-U</span></tt> flag:</p>
+<div class="highlight-console"><div class="highlight"><pre><span class="gp">$</span> pip install -U Django
+</pre></div>
+</div>
+<p><a class="reference external" href="http://www.pip-installer.org/">pip</a> also automatically uninstalls the previous version of Django.</p>
+<p>If you use some other installation process, you might have to manually
+<a class="reference internal" href="../topics/install.html#removing-old-versions-of-django"><em>uninstall the old Django version</em></a> and
+should look at the complete installation instructions.</p>
+</div>
+<div class="section" id="s-testing">
+<span id="testing"></span><h2>Testing<a class="headerlink" href="#testing" title="Permalink to this headline">¶</a></h2>
+<p>When the new environment is set up, <a class="reference internal" href="../topics/testing/overview.html"><em>run the full test suite</em></a> for your application. In Python 2.7+, deprecation
+warnings are silenced by default. It is useful to turn the warnings on so they
+are shown in the test output (you can also use the flag if you test your app
+manually using <tt class="docutils literal"><span class="pre">manage.py</span> <span class="pre">runserver</span></tt>):</p>
+<div class="highlight-console"><div class="highlight"><pre><span class="gp">$</span> python -Wall manage.py <span class="nb">test</span>
+</pre></div>
+</div>
+<p>After you have run the tests, fix any failures. While you have the release
+notes fresh in your mind, it may also be a good time to take advantage of new
+features in Django by refactoring your code to eliminate any deprecation
+warnings.</p>
+</div>
+<div class="section" id="s-deployment">
+<span id="deployment"></span><h2>Deployment<a class="headerlink" href="#deployment" title="Permalink to this headline">¶</a></h2>
+<p>When you are sufficiently confident your app works with the new version of
+Django, you&#8217;re ready to go ahead and <a class="reference internal" href="deployment/index.html"><em>deploy</em></a>
+your upgraded Django project.</p>
+<p>If you are using caching provided by Django, you should consider clearing your
+cache after upgrading. Otherwise you may run into problems, for example, if you
+are caching pickled objects as these objects are not guaranteed to be
+pickle-compatible across Django versions. A past instance of incompatibility
+was caching pickled <a class="reference internal" href="../ref/request-response.html#django.http.HttpResponse" title="django.http.HttpResponse"><tt class="xref py py-class docutils literal"><span class="pre">HttpResponse</span></tt></a> objects, either
+directly or indirectly via the <a class="reference internal" href="../topics/cache.html#django.views.decorators.cache.cache_page" title="django.views.decorators.cache.cache_page"><tt class="xref py py-func docutils literal"><span class="pre">cache_page()</span></tt></a>
+decorator.</p>
+</div>
+</div>
+
+
+          </div>
+        </div>
+      </div>
+      
+        
+          <div class="yui-b" id="sidebar">
+            
+      <div class="sphinxsidebar">
+        <div class="sphinxsidebarwrapper">
+  <h3><a href="../contents.html">Table Of Contents</a></h3>
+  <ul>
+<li><a class="reference internal" href="#">Upgrading Django to a newer version</a><ul>
+<li><a class="reference internal" href="#required-reading">Required Reading</a></li>
+<li><a class="reference internal" href="#dependencies">Dependencies</a></li>
+<li><a class="reference internal" href="#installation">Installation</a></li>
+<li><a class="reference internal" href="#testing">Testing</a></li>
+<li><a class="reference internal" href="#deployment">Deployment</a></li>
+</ul>
+</li>
+</ul>
+
+  <h3>Browse</h3>
+  <ul>
+    
+      <li>Prev: <a href="deployment/fastcgi.html">How to use Django with FastCGI, SCGI, or AJP</a></li>
+    
+    
+      <li>Next: <a href="error-reporting.html">Error reporting</a></li>
+    
+  </ul>
+  <h3>You are here:</h3>
+  <ul>
+      <li>
+        <a href="../index.html">Django 1.8.2.dev20150505153848 documentation</a>
+        
+          <ul><li><a href="index.html">&#8220;How-to&#8221; guides</a>
+        
+        <ul><li>Upgrading Django to a newer version</li></ul>
+        </li></ul>
+      </li>
+  </ul>
+
+  <h3>This Page</h3>
+  <ul class="this-page-menu">
+    <li><a href="../_sources/howto/upgrade-version.txt"
+           rel="nofollow">Show Source</a></li>
+  </ul>
+<div id="searchbox" style="display: none">
+  <h3>Quick search</h3>
+    <form class="search" action="../search.html" method="get">
+      <input type="text" name="q" />
+      <input type="submit" value="Go" />
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+    <p class="searchtip" style="font-size: 90%">
+    Enter search terms or a module, class or function name.
+    </p>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+              <h3>Last update:</h3>
+              <p class="topless">May 06, 2015</p>
+          </div>
+        
+      
+    </div>
+
+    <div id="ft">
+      <div class="nav">
+    &laquo; <a href="deployment/fastcgi.html" title="How to use Django with FastCGI, SCGI, or AJP">previous</a>
+     |
+    <a href="index.html" title="&amp;#8220;How-to&amp;#8221; guides" accesskey="U">up</a>
+   |
+    <a href="error-reporting.html" title="Error reporting">next</a> &raquo;</div>
+    </div>
+  </div>
+
+      <div class="clearer"></div>
+    </div>
+  </body>
+</html>

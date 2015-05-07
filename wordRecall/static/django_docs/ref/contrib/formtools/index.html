@@ -1,0 +1,213 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>django.contrib.formtools &mdash; Django 1.8.2.dev20150505153848 documentation</title>
+    
+    <link rel="stylesheet" href="../../../_static/default.css" type="text/css" />
+    <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '../../../',
+        VERSION:     '1.8.2.dev20150505153848',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="../../../_static/jquery.js"></script>
+    <script type="text/javascript" src="../../../_static/underscore.js"></script>
+    <script type="text/javascript" src="../../../_static/doctools.js"></script>
+    <link rel="top" title="Django 1.8.2.dev20150505153848 documentation" href="../../../index.html" />
+    <link rel="up" title="contrib packages" href="../index.html" />
+    <link rel="next" title="GeoDjango" href="../gis/index.html" />
+    <link rel="prev" title="The flatpages app" href="../flatpages.html" />
+
+
+
+ 
+<script type="text/javascript" src="../../../templatebuiltins.js"></script>
+<script type="text/javascript">
+(function($) {
+    if (!django_template_builtins) {
+       // templatebuiltins.js missing, do nothing.
+       return;
+    }
+    $(document).ready(function() {
+        // Hyperlink Django template tags and filters
+        var base = "../../templates/builtins.html";
+        if (base == "#") {
+            // Special case for builtins.html itself
+            base = "";
+        }
+        // Tags are keywords, class '.k'
+        $("div.highlight\\-html\\+django span.k").each(function(i, elem) {
+             var tagname = $(elem).text();
+             if ($.inArray(tagname, django_template_builtins.ttags) != -1) {
+                 var fragment = tagname.replace(/_/, '-');
+                 $(elem).html("<a href='" + base + "#" + fragment + "'>" + tagname + "</a>");
+             }
+        });
+        // Filters are functions, class '.nf'
+        $("div.highlight\\-html\\+django span.nf").each(function(i, elem) {
+             var filtername = $(elem).text();
+             if ($.inArray(filtername, django_template_builtins.tfilters) != -1) {
+                 var fragment = filtername.replace(/_/, '-');
+                 $(elem).html("<a href='" + base + "#" + fragment + "'>" + filtername + "</a>");
+             }
+        });
+    });
+})(jQuery);
+</script>
+
+
+  </head>
+  <body>
+
+    <div class="document">
+  <div id="custom-doc" class="yui-t6">
+    <div id="hd">
+      <h1><a href="../../../index.html">Django 1.8.2.dev20150505153848 documentation</a></h1>
+      <div id="global-nav">
+        <a title="Home page" href="../../../index.html">Home</a>  |
+        <a title="Table of contents" href="../../../contents.html">Table of contents</a>  |
+        <a title="Global index" href="../../../genindex.html">Index</a>  |
+        <a title="Module index" href="../../../py-modindex.html">Modules</a>
+      </div>
+      <div class="nav">
+    &laquo; <a href="../flatpages.html" title="The flatpages app">previous</a>
+     |
+    <a href="../../index.html" title="API Reference" accesskey="U">up</a>
+   |
+    <a href="../gis/index.html" title="GeoDjango">next</a> &raquo;</div>
+    </div>
+
+    <div id="bd">
+      <div id="yui-main">
+        <div class="yui-b">
+          <div class="yui-g" id="ref-contrib-formtools-index">
+            
+  <div class="section" id="s-django-contrib-formtools">
+<span id="django-contrib-formtools"></span><h1>django.contrib.formtools<a class="headerlink" href="#django-contrib-formtools" title="Permalink to this headline">¶</a></h1>
+<p>A set of high-level abstractions for Django forms (<a class="reference internal" href="../../forms/api.html#module-django.forms" title="django.forms"><tt class="xref py py-mod docutils literal"><span class="pre">django.forms</span></tt></a>).</p>
+<p>Historically, Django shipped with <tt class="docutils literal"><span class="pre">django.contrib.formtools</span></tt> &#8211; a collection
+of assorted utilities that are useful for specific form use cases. This code is
+now distributed separately from Django, for easier maintenance and to trim the
+size of Django&#8217;s codebase. In Django 1.8, importing from
+<tt class="docutils literal"><span class="pre">django.contrib.formtools</span></tt> will no longer work.</p>
+<p>The new formtools package is named <tt class="docutils literal"><span class="pre">django-formtools</span></tt>, with a main module
+called <tt class="docutils literal"><span class="pre">formtools</span></tt>. Version 1.0 includes the same two primary features that
+the code included when it shipped with Django: a helper for form previews and a
+form wizard view.</p>
+<p>See the <a class="reference external" href="http://django-formtools.readthedocs.org/">official documentation</a> for more information.</p>
+<div class="section" id="s-how-to-migrate">
+<span id="s-formtools-how-to-migrate"></span><span id="how-to-migrate"></span><span id="formtools-how-to-migrate"></span><h2>How to migrate<a class="headerlink" href="#how-to-migrate" title="Permalink to this headline">¶</a></h2>
+<p>If you&#8217;ve used the old <tt class="docutils literal"><span class="pre">django.contrib.formtools</span></tt> package follow these
+two easy steps to update your code:</p>
+<ol class="arabic">
+<li><p class="first">Install version 1.0 of the third-party <tt class="docutils literal"><span class="pre">django-formtools</span></tt> package.</p>
+</li>
+<li><p class="first">Change your app&#8217;s import statements to reference the new packages.</p>
+<p>For example, change:</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="kn">from</span> <span class="nn">django.contrib.formtools.wizard.views</span> <span class="kn">import</span> <span class="n">WizardView</span>
+</pre></div>
+</div>
+<p>to:</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="kn">from</span> <span class="nn">formtools.wizard.views</span> <span class="kn">import</span> <span class="n">WizardView</span>
+</pre></div>
+</div>
+</li>
+</ol>
+<p>The code in version 1.0 of the new package is the same (it was copied directly
+from Django), so you don&#8217;t have to worry about backwards compatibility in terms
+of functionality. Only the imports have changed.</p>
+</div>
+</div>
+
+
+          </div>
+        </div>
+      </div>
+      
+        
+          <div class="yui-b" id="sidebar">
+            
+      <div class="sphinxsidebar">
+        <div class="sphinxsidebarwrapper">
+  <h3><a href="../../../contents.html">Table Of Contents</a></h3>
+  <ul>
+<li><a class="reference internal" href="#">django.contrib.formtools</a><ul>
+<li><a class="reference internal" href="#how-to-migrate">How to migrate</a></li>
+</ul>
+</li>
+</ul>
+
+  <h3>Browse</h3>
+  <ul>
+    
+      <li>Prev: <a href="../flatpages.html">The flatpages app</a></li>
+    
+    
+      <li>Next: <a href="../gis/index.html">GeoDjango</a></li>
+    
+  </ul>
+  <h3>You are here:</h3>
+  <ul>
+      <li>
+        <a href="../../../index.html">Django 1.8.2.dev20150505153848 documentation</a>
+        
+          <ul><li><a href="../../index.html">API Reference</a>
+        
+          <ul><li><a href="../index.html"><tt class="docutils literal"><span class="pre">contrib</span></tt> packages</a>
+        
+        <ul><li>django.contrib.formtools</li></ul>
+        </li></ul></li></ul>
+      </li>
+  </ul>
+
+  <h3>This Page</h3>
+  <ul class="this-page-menu">
+    <li><a href="../../../_sources/ref/contrib/formtools/index.txt"
+           rel="nofollow">Show Source</a></li>
+  </ul>
+<div id="searchbox" style="display: none">
+  <h3>Quick search</h3>
+    <form class="search" action="../../../search.html" method="get">
+      <input type="text" name="q" />
+      <input type="submit" value="Go" />
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+    <p class="searchtip" style="font-size: 90%">
+    Enter search terms or a module, class or function name.
+    </p>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+              <h3>Last update:</h3>
+              <p class="topless">May 06, 2015</p>
+          </div>
+        
+      
+    </div>
+
+    <div id="ft">
+      <div class="nav">
+    &laquo; <a href="../flatpages.html" title="The flatpages app">previous</a>
+     |
+    <a href="../../index.html" title="API Reference" accesskey="U">up</a>
+   |
+    <a href="../gis/index.html" title="GeoDjango">next</a> &raquo;</div>
+    </div>
+  </div>
+
+      <div class="clearer"></div>
+    </div>
+  </body>
+</html>

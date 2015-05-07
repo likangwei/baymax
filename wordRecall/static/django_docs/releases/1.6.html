@@ -1,0 +1,1275 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>Django 1.6 release notes &mdash; Django 1.8.2.dev20150505153848 documentation</title>
+    
+    <link rel="stylesheet" href="../_static/default.css" type="text/css" />
+    <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '../',
+        VERSION:     '1.8.2.dev20150505153848',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="../_static/jquery.js"></script>
+    <script type="text/javascript" src="../_static/underscore.js"></script>
+    <script type="text/javascript" src="../_static/doctools.js"></script>
+    <link rel="top" title="Django 1.8.2.dev20150505153848 documentation" href="../index.html" />
+    <link rel="up" title="Release notes" href="index.html" />
+    <link rel="next" title="Django 1.5.12 release notes" href="1.5.12.html" />
+    <link rel="prev" title="Django 1.6.1 release notes" href="1.6.1.html" />
+
+
+
+ 
+<script type="text/javascript" src="../templatebuiltins.js"></script>
+<script type="text/javascript">
+(function($) {
+    if (!django_template_builtins) {
+       // templatebuiltins.js missing, do nothing.
+       return;
+    }
+    $(document).ready(function() {
+        // Hyperlink Django template tags and filters
+        var base = "../ref/templates/builtins.html";
+        if (base == "#") {
+            // Special case for builtins.html itself
+            base = "";
+        }
+        // Tags are keywords, class '.k'
+        $("div.highlight\\-html\\+django span.k").each(function(i, elem) {
+             var tagname = $(elem).text();
+             if ($.inArray(tagname, django_template_builtins.ttags) != -1) {
+                 var fragment = tagname.replace(/_/, '-');
+                 $(elem).html("<a href='" + base + "#" + fragment + "'>" + tagname + "</a>");
+             }
+        });
+        // Filters are functions, class '.nf'
+        $("div.highlight\\-html\\+django span.nf").each(function(i, elem) {
+             var filtername = $(elem).text();
+             if ($.inArray(filtername, django_template_builtins.tfilters) != -1) {
+                 var fragment = filtername.replace(/_/, '-');
+                 $(elem).html("<a href='" + base + "#" + fragment + "'>" + filtername + "</a>");
+             }
+        });
+    });
+})(jQuery);
+</script>
+
+
+  </head>
+  <body>
+
+    <div class="document">
+  <div id="custom-doc" class="yui-t6">
+    <div id="hd">
+      <h1><a href="../index.html">Django 1.8.2.dev20150505153848 documentation</a></h1>
+      <div id="global-nav">
+        <a title="Home page" href="../index.html">Home</a>  |
+        <a title="Table of contents" href="../contents.html">Table of contents</a>  |
+        <a title="Global index" href="../genindex.html">Index</a>  |
+        <a title="Module index" href="../py-modindex.html">Modules</a>
+      </div>
+      <div class="nav">
+    &laquo; <a href="1.6.1.html" title="Django 1.6.1 release notes">previous</a>
+     |
+    <a href="index.html" title="Release notes" accesskey="U">up</a>
+   |
+    <a href="1.5.12.html" title="Django 1.5.12 release notes">next</a> &raquo;</div>
+    </div>
+
+    <div id="bd">
+      <div id="yui-main">
+        <div class="yui-b">
+          <div class="yui-g" id="releases-1.6">
+            
+  <div class="section" id="s-django-1-6-release-notes">
+<span id="django-1-6-release-notes"></span><h1>Django 1.6 release notes<a class="headerlink" href="#django-1-6-release-notes" title="Permalink to this headline">¶</a></h1>
+<div class="admonition note">
+<p class="first admonition-title">Note</p>
+<p>Dedicated to Malcolm Tredinnick</p>
+<p>On March 17, 2013, the Django project and the free software community lost
+a very dear friend and developer.</p>
+<p>Malcolm was a long-time contributor to Django, a model community member, a
+brilliant mind, and a friend. His contributions to Django — and to many other
+open source projects — are nearly impossible to enumerate. Many on the core
+Django team had their first patches reviewed by him; his mentorship enriched
+us. His consideration, patience, and dedication will always be an inspiration
+to us.</p>
+<p>This release of Django is for Malcolm.</p>
+<p class="last">&#8211; The Django Developers</p>
+</div>
+<p><em>November 6, 2013</em></p>
+<p>Welcome to Django 1.6!</p>
+<p>These release notes cover the <a class="reference internal" href="#what-s-new-in-django-1-6">new features</a>, as well as some <a class="reference internal" href="#backwards-incompatible-changes-in-1-6">backwards
+incompatible changes</a> you&#8217;ll want to be aware of when upgrading from Django
+1.5 or older versions. We&#8217;ve also dropped some features, which are detailed in
+<a class="reference internal" href="../internals/deprecation.html#deprecation-removed-in-1-6"><em>our deprecation plan</em></a>, and we&#8217;ve <a class="reference internal" href="#features-deprecated-in-1-6">begun the
+deprecation process for some features</a>.</p>
+<div class="section" id="s-python-compatibility">
+<span id="python-compatibility"></span><h2>Python compatibility<a class="headerlink" href="#python-compatibility" title="Permalink to this headline">¶</a></h2>
+<p>Django 1.6, like Django 1.5, requires Python 2.6.5 or above. Python 3 is also
+officially supported. We <strong>highly recommend</strong> the latest minor release for each
+supported Python series (2.6.X, 2.7.X, 3.2.X, and 3.3.X).</p>
+<p>Django 1.6 will be the final release series to support Python 2.6; beginning
+with Django 1.7, the minimum supported Python version will be 2.7.</p>
+<p>Python 3.4 is not supported, but support will be added in Django 1.7.</p>
+</div>
+<div class="section" id="s-what-s-new-in-django-1-6">
+<span id="what-s-new-in-django-1-6"></span><h2>What&#8217;s new in Django 1.6<a class="headerlink" href="#what-s-new-in-django-1-6" title="Permalink to this headline">¶</a></h2>
+<div class="section" id="s-simplified-default-project-and-app-templates">
+<span id="simplified-default-project-and-app-templates"></span><h3>Simplified default project and app templates<a class="headerlink" href="#simplified-default-project-and-app-templates" title="Permalink to this headline">¶</a></h3>
+<p>The default templates used by <a class="reference internal" href="../ref/django-admin.html#django-admin-startproject"><tt class="xref std std-djadmin docutils literal"><span class="pre">startproject</span></tt></a> and <a class="reference internal" href="../ref/django-admin.html#django-admin-startapp"><tt class="xref std std-djadmin docutils literal"><span class="pre">startapp</span></tt></a>
+have been simplified and modernized. The <a class="reference internal" href="../ref/contrib/admin/index.html"><em>admin</em></a> is now enabled by default in new projects; the
+<a class="reference internal" href="../ref/contrib/sites.html"><em>sites</em></a> framework no longer is. <a class="reference internal" href="../ref/clickjacking.html#clickjacking-prevention"><em>clickjacking
+prevention</em></a> is now on and the database defaults to
+SQLite.</p>
+<p>If the default templates don&#8217;t suit your tastes, you can use <a class="reference internal" href="../ref/django-admin.html#custom-app-and-project-templates"><em>custom
+project and app templates</em></a>.</p>
+</div>
+<div class="section" id="s-improved-transaction-management">
+<span id="improved-transaction-management"></span><h3>Improved transaction management<a class="headerlink" href="#improved-transaction-management" title="Permalink to this headline">¶</a></h3>
+<p>Django&#8217;s transaction management was overhauled. Database-level autocommit is
+now turned on by default. This makes transaction handling more explicit and
+should improve performance. The existing APIs were deprecated, and new APIs
+were introduced, as described in the <a class="reference internal" href="../topics/db/transactions.html"><em>transaction management docs</em></a>.</p>
+</div>
+<div class="section" id="s-persistent-database-connections">
+<span id="persistent-database-connections"></span><h3>Persistent database connections<a class="headerlink" href="#persistent-database-connections" title="Permalink to this headline">¶</a></h3>
+<p>Django now supports reusing the same database connection for several requests.
+This avoids the overhead of re-establishing a connection at the beginning of
+each request. For backwards compatibility, this feature is disabled by
+default. See <a class="reference internal" href="../ref/databases.html#persistent-database-connections"><em>Persistent connections</em></a> for details.</p>
+</div>
+<div class="section" id="s-discovery-of-tests-in-any-test-module">
+<span id="discovery-of-tests-in-any-test-module"></span><h3>Discovery of tests in any test module<a class="headerlink" href="#discovery-of-tests-in-any-test-module" title="Permalink to this headline">¶</a></h3>
+<p>Django 1.6 ships with a new test runner that allows more flexibility in the
+location of tests. The previous runner
+(<tt class="docutils literal"><span class="pre">django.test.simple.DjangoTestSuiteRunner</span></tt>) found tests only in the
+<tt class="docutils literal"><span class="pre">models.py</span></tt> and <tt class="docutils literal"><span class="pre">tests.py</span></tt> modules of a Python package in
+<a class="reference internal" href="../ref/settings.html#std:setting-INSTALLED_APPS"><tt class="xref std std-setting docutils literal"><span class="pre">INSTALLED_APPS</span></tt></a>.</p>
+<p>The new runner (<tt class="docutils literal"><span class="pre">django.test.runner.DiscoverRunner</span></tt>) uses the test discovery
+features built into <tt class="docutils literal"><span class="pre">unittest2</span></tt> (the version of <tt class="docutils literal"><span class="pre">unittest</span></tt> in the
+Python 2.7+ standard library, and bundled with Django). With test discovery,
+tests can be located in any module whose name matches the pattern <tt class="docutils literal"><span class="pre">test*.py</span></tt>.</p>
+<p>In addition, the test labels provided to <tt class="docutils literal"><span class="pre">./manage.py</span> <span class="pre">test</span></tt> to nominate
+specific tests to run must now be full Python dotted paths (or directory
+paths), rather than <tt class="docutils literal"><span class="pre">applabel.TestCase.test_method_name</span></tt> pseudo-paths. This
+allows running tests located anywhere in your codebase, rather than only in
+<a class="reference internal" href="../ref/settings.html#std:setting-INSTALLED_APPS"><tt class="xref std std-setting docutils literal"><span class="pre">INSTALLED_APPS</span></tt></a>. For more details, see <a class="reference internal" href="../topics/testing/index.html"><em>Testing in Django</em></a>.</p>
+<p>This change is backwards-incompatible; see the <a class="reference internal" href="#new-test-runner"><em>backwards-incompatibility
+notes</em></a>.</p>
+</div>
+<div class="section" id="s-time-zone-aware-aggregation">
+<span id="time-zone-aware-aggregation"></span><h3>Time zone aware aggregation<a class="headerlink" href="#time-zone-aware-aggregation" title="Permalink to this headline">¶</a></h3>
+<p>The support for <a class="reference internal" href="../topics/i18n/timezones.html"><em>time zones</em></a> introduced in
+Django 1.4 didn&#8217;t work well with <a class="reference internal" href="../ref/models/querysets.html#django.db.models.query.QuerySet.dates" title="django.db.models.query.QuerySet.dates"><tt class="xref py py-meth docutils literal"><span class="pre">QuerySet.dates()</span></tt></a>: aggregation was always performed in
+UTC. This limitation was lifted in Django 1.6. Use <a class="reference internal" href="../ref/models/querysets.html#django.db.models.query.QuerySet.datetimes" title="django.db.models.query.QuerySet.datetimes"><tt class="xref py py-meth docutils literal"><span class="pre">QuerySet.datetimes()</span></tt></a> to perform time zone aware
+aggregation on a <a class="reference internal" href="../ref/models/fields.html#django.db.models.DateTimeField" title="django.db.models.DateTimeField"><tt class="xref py py-class docutils literal"><span class="pre">DateTimeField</span></tt></a>.</p>
+</div>
+<div class="section" id="s-support-for-savepoints-in-sqlite">
+<span id="support-for-savepoints-in-sqlite"></span><h3>Support for savepoints in SQLite<a class="headerlink" href="#support-for-savepoints-in-sqlite" title="Permalink to this headline">¶</a></h3>
+<p>Django 1.6 adds support for savepoints in SQLite, with some <a class="reference internal" href="../topics/db/transactions.html#savepoints-in-sqlite"><em>limitations</em></a>.</p>
+</div>
+<div class="section" id="s-binaryfield-model-field">
+<span id="binaryfield-model-field"></span><h3><tt class="docutils literal"><span class="pre">BinaryField</span></tt> model field<a class="headerlink" href="#binaryfield-model-field" title="Permalink to this headline">¶</a></h3>
+<p>A new <a class="reference internal" href="../ref/models/fields.html#django.db.models.BinaryField" title="django.db.models.BinaryField"><tt class="xref py py-class docutils literal"><span class="pre">django.db.models.BinaryField</span></tt></a> model field allows storage of raw
+binary data in the database.</p>
+</div>
+<div class="section" id="s-geodjango-form-widgets">
+<span id="geodjango-form-widgets"></span><h3>GeoDjango form widgets<a class="headerlink" href="#geodjango-form-widgets" title="Permalink to this headline">¶</a></h3>
+<p>GeoDjango now provides <a class="reference internal" href="../ref/contrib/gis/forms-api.html"><em>form fields and widgets</em></a>
+for its geo-specialized fields. They are OpenLayers-based by default, but they
+can be customized to use any other JS framework.</p>
+</div>
+<div class="section" id="s-check-management-command-added-for-verifying-compatibility">
+<span id="check-management-command-added-for-verifying-compatibility"></span><h3><tt class="docutils literal"><span class="pre">check</span></tt> management command added for verifying compatibility<a class="headerlink" href="#check-management-command-added-for-verifying-compatibility" title="Permalink to this headline">¶</a></h3>
+<p>A <a class="reference internal" href="../ref/django-admin.html#django-admin-check"><tt class="xref std std-djadmin docutils literal"><span class="pre">check</span></tt></a> management command was added, enabling you to verify if your
+current configuration (currently oriented at settings) is compatible with the
+current version of Django.</p>
+</div>
+<div class="section" id="s-model-save-algorithm-changed">
+<span id="model-save-algorithm-changed"></span><h3><a class="reference internal" href="../ref/models/instances.html#django.db.models.Model.save" title="django.db.models.Model.save"><tt class="xref py py-meth docutils literal"><span class="pre">Model.save()</span></tt></a> algorithm changed<a class="headerlink" href="#model-save-algorithm-changed" title="Permalink to this headline">¶</a></h3>
+<p>The <a class="reference internal" href="../ref/models/instances.html#django.db.models.Model.save" title="django.db.models.Model.save"><tt class="xref py py-meth docutils literal"><span class="pre">Model.save()</span></tt></a> method now
+tries to directly <tt class="docutils literal"><span class="pre">UPDATE</span></tt> the database if the instance has a primary
+key value. Previously <tt class="docutils literal"><span class="pre">SELECT</span></tt> was performed to determine if <tt class="docutils literal"><span class="pre">UPDATE</span></tt>
+or <tt class="docutils literal"><span class="pre">INSERT</span></tt> were needed. The new algorithm needs only one query for
+updating an existing row while the old algorithm needed two. See
+<a class="reference internal" href="../ref/models/instances.html#django.db.models.Model.save" title="django.db.models.Model.save"><tt class="xref py py-meth docutils literal"><span class="pre">Model.save()</span></tt></a> for more details.</p>
+<p>In some rare cases the database doesn&#8217;t report that a matching row was
+found when doing an <tt class="docutils literal"><span class="pre">UPDATE</span></tt>. An example is the PostgreSQL <tt class="docutils literal"><span class="pre">ON</span> <span class="pre">UPDATE</span></tt>
+trigger which returns <tt class="docutils literal"><span class="pre">NULL</span></tt>. In such cases it is possible to set
+<a class="reference internal" href="../ref/models/options.html#django.db.models.Options.select_on_save" title="django.db.models.Options.select_on_save"><tt class="xref py py-attr docutils literal"><span class="pre">django.db.models.Options.select_on_save</span></tt></a> flag to force saving to
+use the old algorithm.</p>
+</div>
+<div class="section" id="s-minor-features">
+<span id="minor-features"></span><h3>Minor features<a class="headerlink" href="#minor-features" title="Permalink to this headline">¶</a></h3>
+<ul class="simple">
+<li>Authentication backends can raise <tt class="docutils literal"><span class="pre">PermissionDenied</span></tt> to immediately fail
+the authentication chain.</li>
+<li>The <tt class="docutils literal"><span class="pre">HttpOnly</span></tt> flag can be set on the CSRF cookie with
+<a class="reference internal" href="../ref/settings.html#std:setting-CSRF_COOKIE_HTTPONLY"><tt class="xref std std-setting docutils literal"><span class="pre">CSRF_COOKIE_HTTPONLY</span></tt></a>.</li>
+<li>The <a class="reference internal" href="../topics/testing/tools.html#django.test.TransactionTestCase.assertQuerysetEqual" title="django.test.TransactionTestCase.assertQuerysetEqual"><tt class="xref py py-meth docutils literal"><span class="pre">assertQuerysetEqual()</span></tt></a> now checks
+for undefined order and raises <a class="reference external" href="https://docs.python.org/3/library/exceptions.html#ValueError" title="(in Python v3.4)"><tt class="xref py py-exc docutils literal"><span class="pre">ValueError</span></tt></a> if undefined
+order is spotted. The order is seen as undefined if the given <tt class="docutils literal"><span class="pre">QuerySet</span></tt>
+isn&#8217;t ordered and there are more than one ordered values to compare against.</li>
+<li>Added <a class="reference internal" href="../ref/models/querysets.html#django.db.models.query.QuerySet.earliest" title="django.db.models.query.QuerySet.earliest"><tt class="xref py py-meth docutils literal"><span class="pre">earliest()</span></tt></a> for symmetry with
+<a class="reference internal" href="../ref/models/querysets.html#django.db.models.query.QuerySet.latest" title="django.db.models.query.QuerySet.latest"><tt class="xref py py-meth docutils literal"><span class="pre">latest()</span></tt></a>.</li>
+<li>In addition to <a class="reference internal" href="../ref/models/querysets.html#std:fieldlookup-year"><tt class="xref std std-lookup docutils literal"><span class="pre">year</span></tt></a>, <a class="reference internal" href="../ref/models/querysets.html#std:fieldlookup-month"><tt class="xref std std-lookup docutils literal"><span class="pre">month</span></tt></a> and <a class="reference internal" href="../ref/models/querysets.html#std:fieldlookup-day"><tt class="xref std std-lookup docutils literal"><span class="pre">day</span></tt></a>, the ORM
+now supports <a class="reference internal" href="../ref/models/querysets.html#std:fieldlookup-hour"><tt class="xref std std-lookup docutils literal"><span class="pre">hour</span></tt></a>, <a class="reference internal" href="../ref/models/querysets.html#std:fieldlookup-minute"><tt class="xref std std-lookup docutils literal"><span class="pre">minute</span></tt></a> and <a class="reference internal" href="../ref/models/querysets.html#std:fieldlookup-second"><tt class="xref std std-lookup docutils literal"><span class="pre">second</span></tt></a> lookups.</li>
+<li>Django now wraps all PEP-249 exceptions.</li>
+<li>The default widgets for <a class="reference internal" href="../ref/forms/fields.html#django.forms.EmailField" title="django.forms.EmailField"><tt class="xref py py-class docutils literal"><span class="pre">EmailField</span></tt></a>,
+<a class="reference internal" href="../ref/forms/fields.html#django.forms.URLField" title="django.forms.URLField"><tt class="xref py py-class docutils literal"><span class="pre">URLField</span></tt></a>, <a class="reference internal" href="../ref/forms/fields.html#django.forms.IntegerField" title="django.forms.IntegerField"><tt class="xref py py-class docutils literal"><span class="pre">IntegerField</span></tt></a>,
+<a class="reference internal" href="../ref/forms/fields.html#django.forms.FloatField" title="django.forms.FloatField"><tt class="xref py py-class docutils literal"><span class="pre">FloatField</span></tt></a> and <a class="reference internal" href="../ref/forms/fields.html#django.forms.DecimalField" title="django.forms.DecimalField"><tt class="xref py py-class docutils literal"><span class="pre">DecimalField</span></tt></a> use
+the new type attributes available in HTML5 (<tt class="docutils literal"><span class="pre">type='email'</span></tt>, <tt class="docutils literal"><span class="pre">type='url'</span></tt>,
+<tt class="docutils literal"><span class="pre">type='number'</span></tt>). Note that due to erratic support of the <tt class="docutils literal"><span class="pre">number</span></tt>
+input type with localized numbers in current browsers, Django only uses it
+when numeric fields are not localized.</li>
+<li>The <tt class="docutils literal"><span class="pre">number</span></tt> argument for <a class="reference internal" href="../topics/i18n/translation.html#lazy-plural-translations"><em>lazy plural translations</em></a> can be provided at translation time rather than
+at definition time.</li>
+<li>For custom management commands: Verification of the presence of valid
+settings in commands that ask for it by using the
+<a class="reference internal" href="../howto/custom-management-commands.html#django.core.management.BaseCommand.can_import_settings" title="django.core.management.BaseCommand.can_import_settings"><tt class="xref py py-attr docutils literal"><span class="pre">can_import_settings</span></tt></a> internal
+option is now performed independently from handling of the locale that
+should be active during the execution of the command. The latter can now be
+influenced by the new
+<a class="reference internal" href="../howto/custom-management-commands.html#django.core.management.BaseCommand.leave_locale_alone" title="django.core.management.BaseCommand.leave_locale_alone"><tt class="xref py py-attr docutils literal"><span class="pre">leave_locale_alone</span></tt></a> internal
+option. See <a class="reference internal" href="../howto/custom-management-commands.html#management-commands-and-locales"><em>Management commands and locales</em></a> for more details.</li>
+<li>The <a class="reference internal" href="../ref/class-based-views/mixins-editing.html#django.views.generic.edit.DeletionMixin.success_url" title="django.views.generic.edit.DeletionMixin.success_url"><tt class="xref py py-attr docutils literal"><span class="pre">success_url</span></tt></a> of
+<a class="reference internal" href="../ref/class-based-views/mixins-editing.html#django.views.generic.edit.DeletionMixin" title="django.views.generic.edit.DeletionMixin"><tt class="xref py py-class docutils literal"><span class="pre">DeletionMixin</span></tt></a> is now interpolated with
+its <tt class="docutils literal"><span class="pre">object</span></tt>’s <tt class="docutils literal"><span class="pre">__dict__</span></tt>.</li>
+<li><a class="reference internal" href="../ref/request-response.html#django.http.HttpResponseRedirect" title="django.http.HttpResponseRedirect"><tt class="xref py py-class docutils literal"><span class="pre">HttpResponseRedirect</span></tt></a> and
+<a class="reference internal" href="../ref/request-response.html#django.http.HttpResponsePermanentRedirect" title="django.http.HttpResponsePermanentRedirect"><tt class="xref py py-class docutils literal"><span class="pre">HttpResponsePermanentRedirect</span></tt></a> now provide an <tt class="docutils literal"><span class="pre">url</span></tt>
+attribute (equivalent to the URL the response will redirect to).</li>
+<li>The <tt class="docutils literal"><span class="pre">MemcachedCache</span></tt> cache backend now uses the latest <a class="reference external" href="https://docs.python.org/3/library/pickle.html#module-pickle" title="(in Python v3.4)"><tt class="xref py py-mod docutils literal"><span class="pre">pickle</span></tt></a>
+protocol available.</li>
+<li>Added <a class="reference internal" href="../ref/contrib/messages.html#django.contrib.messages.views.SuccessMessageMixin" title="django.contrib.messages.views.SuccessMessageMixin"><tt class="xref py py-class docutils literal"><span class="pre">SuccessMessageMixin</span></tt></a> which
+provides a <tt class="docutils literal"><span class="pre">success_message</span></tt> attribute for
+<a class="reference internal" href="../ref/class-based-views/generic-editing.html#django.views.generic.edit.FormView" title="django.views.generic.edit.FormView"><tt class="xref py py-class docutils literal"><span class="pre">FormView</span></tt></a> based classes.</li>
+<li>Added the <a class="reference internal" href="../ref/models/fields.html#django.db.models.ForeignKey.db_constraint" title="django.db.models.ForeignKey.db_constraint"><tt class="xref py py-attr docutils literal"><span class="pre">django.db.models.ForeignKey.db_constraint</span></tt></a> and
+<a class="reference internal" href="../ref/models/fields.html#django.db.models.ManyToManyField.db_constraint" title="django.db.models.ManyToManyField.db_constraint"><tt class="xref py py-attr docutils literal"><span class="pre">django.db.models.ManyToManyField.db_constraint</span></tt></a> options.</li>
+<li>The jQuery library embedded in the admin has been upgraded to version 1.9.1.</li>
+<li>Syndication feeds (<a class="reference internal" href="../ref/contrib/syndication.html#module-django.contrib.syndication" title="django.contrib.syndication: A framework for generating syndication feeds, in RSS and Atom, quite easily."><tt class="xref py py-mod docutils literal"><span class="pre">django.contrib.syndication</span></tt></a>) can now pass extra
+context through to feed templates using a new
+<a class="reference internal" href="../ref/contrib/syndication.html#django.contrib.syndication.Feed.get_context_data" title="django.contrib.syndication.Feed.get_context_data"><tt class="xref py py-meth docutils literal"><span class="pre">Feed.get_context_data()</span></tt></a> callback.</li>
+<li>The admin list columns have a <tt class="docutils literal"><span class="pre">column-&lt;field_name&gt;</span></tt> class in the HTML
+so the columns header can be styled with CSS, e.g. to set a column width.</li>
+<li>The <a class="reference internal" href="../ref/databases.html#database-isolation-level"><em>isolation level</em></a> can be customized under
+PostgreSQL.</li>
+<li>The <a class="reference internal" href="../topics/i18n/translation.html#std:templatetag-blocktrans"><tt class="xref std std-ttag docutils literal"><span class="pre">blocktrans</span></tt></a> template tag now respects
+<tt class="docutils literal"><span class="pre">TEMPLATE_STRING_IF_INVALID</span></tt> for variables not present in the
+context, just like other template constructs.</li>
+<li><tt class="docutils literal"><span class="pre">SimpleLazyObject</span></tt>s will now present more helpful representations in shell
+debugging situations.</li>
+<li>Generic <a class="reference internal" href="../ref/contrib/gis/model-api.html#django.contrib.gis.db.models.GeometryField" title="django.contrib.gis.db.models.GeometryField"><tt class="xref py py-class docutils literal"><span class="pre">GeometryField</span></tt></a> is now editable
+with the OpenLayers widget in the admin.</li>
+<li>The documentation contains a <a class="reference internal" href="../howto/deployment/checklist.html"><em>deployment checklist</em></a>.</li>
+<li>The <a class="reference internal" href="../ref/django-admin.html#django-admin-diffsettings"><tt class="xref std std-djadmin docutils literal"><span class="pre">diffsettings</span></tt></a> command gained a <tt class="docutils literal"><span class="pre">--all</span></tt> option.</li>
+<li><tt class="docutils literal"><span class="pre">django.forms.fields.Field.__init__</span></tt> now calls <tt class="docutils literal"><span class="pre">super()</span></tt>, allowing
+field mixins to implement <tt class="docutils literal"><span class="pre">__init__()</span></tt> methods that will reliably be
+called.</li>
+<li>The <tt class="docutils literal"><span class="pre">validate_max</span></tt> parameter was added to <tt class="docutils literal"><span class="pre">BaseFormSet</span></tt> and
+<a class="reference internal" href="../ref/forms/formsets.html#django.forms.formsets.formset_factory" title="django.forms.formsets.formset_factory"><tt class="xref py py-func docutils literal"><span class="pre">formset_factory()</span></tt></a>, and <tt class="docutils literal"><span class="pre">ModelForm</span></tt> and inline
+versions of the same.  The behavior of validation for formsets with
+<tt class="docutils literal"><span class="pre">max_num</span></tt> was clarified.  The previously undocumented behavior that
+hardened formsets against memory exhaustion attacks was documented,
+and the undocumented limit of the higher of 1000 or <tt class="docutils literal"><span class="pre">max_num</span></tt> forms
+was changed so it is always 1000 more than <tt class="docutils literal"><span class="pre">max_num</span></tt>.</li>
+<li>Added <tt class="docutils literal"><span class="pre">BCryptSHA256PasswordHasher</span></tt> to resolve the password truncation issue
+with bcrypt.</li>
+<li><a class="reference external" href="https://pypi.python.org/pypi/Pillow">Pillow</a> is now the preferred image manipulation library to use with Django.
+<a class="reference external" href="https://pypi.python.org/pypi/PIL">PIL</a> is pending deprecation (support to be removed in Django 1.8).
+To upgrade, you should <strong>first</strong> uninstall PIL, <strong>then</strong> install Pillow.</li>
+</ul>
+<ul class="simple">
+<li><a class="reference internal" href="../topics/forms/modelforms.html#django.forms.ModelForm" title="django.forms.ModelForm"><tt class="xref py py-class docutils literal"><span class="pre">ModelForm</span></tt></a> accepts several new <tt class="docutils literal"><span class="pre">Meta</span></tt>
+options.<ul>
+<li>Fields included in the <tt class="docutils literal"><span class="pre">localized_fields</span></tt> list will be localized
+(by setting <tt class="docutils literal"><span class="pre">localize</span></tt> on the form field).</li>
+<li>The  <tt class="docutils literal"><span class="pre">labels</span></tt>, <tt class="docutils literal"><span class="pre">help_texts</span></tt> and <tt class="docutils literal"><span class="pre">error_messages</span></tt> options may be used
+to customize the default fields, see
+<a class="reference internal" href="../topics/forms/modelforms.html#modelforms-overriding-default-fields"><em>Overriding the default fields</em></a> for details.</li>
+</ul>
+</li>
+<li>The <tt class="docutils literal"><span class="pre">choices</span></tt> argument to model fields now accepts an iterable of iterables
+instead of requiring an iterable of lists or tuples.</li>
+<li>The reason phrase can be customized in HTTP responses using
+<a class="reference internal" href="../ref/request-response.html#django.http.HttpResponse.reason_phrase" title="django.http.HttpResponse.reason_phrase"><tt class="xref py py-attr docutils literal"><span class="pre">reason_phrase</span></tt></a>.</li>
+<li>When giving the URL of the next page for
+<a class="reference internal" href="../topics/auth/default.html#django.contrib.auth.views.logout" title="django.contrib.auth.views.logout"><tt class="xref py py-func docutils literal"><span class="pre">logout()</span></tt></a>,
+<a class="reference internal" href="../topics/auth/default.html#django.contrib.auth.views.password_reset" title="django.contrib.auth.views.password_reset"><tt class="xref py py-func docutils literal"><span class="pre">password_reset()</span></tt></a>,
+<a class="reference internal" href="../topics/auth/default.html#django.contrib.auth.views.password_reset_confirm" title="django.contrib.auth.views.password_reset_confirm"><tt class="xref py py-func docutils literal"><span class="pre">password_reset_confirm()</span></tt></a>,
+and <a class="reference internal" href="../topics/auth/default.html#django.contrib.auth.views.password_change" title="django.contrib.auth.views.password_change"><tt class="xref py py-func docutils literal"><span class="pre">password_change()</span></tt></a>, you can now pass
+URL names and they will be resolved.</li>
+<li>The <a class="reference internal" href="../ref/django-admin.html#django-admin-dumpdata"><tt class="xref std std-djadmin docutils literal"><span class="pre">dumpdata</span></tt></a> <tt class="docutils literal"><span class="pre">manage.py</span></tt> command now has a <a class="reference internal" href="../ref/django-admin.html#django-admin-option---pks"><tt class="xref std std-djadminopt docutils literal"><span class="pre">--pks</span></tt></a>
+option which will allow users to specify the primary keys of objects they
+want to dump. This option can only be used with one model.</li>
+<li>Added <tt class="docutils literal"><span class="pre">QuerySet</span></tt> methods <a class="reference internal" href="../ref/models/querysets.html#django.db.models.query.QuerySet.first" title="django.db.models.query.QuerySet.first"><tt class="xref py py-meth docutils literal"><span class="pre">first()</span></tt></a>
+and <a class="reference internal" href="../ref/models/querysets.html#django.db.models.query.QuerySet.last" title="django.db.models.query.QuerySet.last"><tt class="xref py py-meth docutils literal"><span class="pre">last()</span></tt></a> which are convenience
+methods returning the first or last object matching the filters. Returns
+<tt class="docutils literal"><span class="pre">None</span></tt> if there are no objects matching.</li>
+<li><a class="reference internal" href="../ref/class-based-views/base.html#django.views.generic.base.View" title="django.views.generic.base.View"><tt class="xref py py-class docutils literal"><span class="pre">View</span></tt></a> and
+<a class="reference internal" href="../ref/class-based-views/base.html#django.views.generic.base.RedirectView" title="django.views.generic.base.RedirectView"><tt class="xref py py-class docutils literal"><span class="pre">RedirectView</span></tt></a> now support HTTP <tt class="docutils literal"><span class="pre">PATCH</span></tt>
+method.</li>
+<li><tt class="docutils literal"><span class="pre">GenericForeignKey</span></tt> now takes an optional <tt class="docutils literal"><span class="pre">for_concrete_model</span></tt> argument,
+which when set to <tt class="docutils literal"><span class="pre">False</span></tt> allows the field to reference proxy models. The
+default is <tt class="docutils literal"><span class="pre">True</span></tt> to retain the old behavior.</li>
+<li>The <a class="reference internal" href="../ref/middleware.html#django.middleware.locale.LocaleMiddleware" title="django.middleware.locale.LocaleMiddleware"><tt class="xref py py-class docutils literal"><span class="pre">LocaleMiddleware</span></tt></a> now stores the active
+language in session if it is not present there. This prevents loss of
+language settings after session flush, e.g. logout.</li>
+<li><a class="reference internal" href="../ref/exceptions.html#django.core.exceptions.SuspiciousOperation" title="django.core.exceptions.SuspiciousOperation"><tt class="xref py py-exc docutils literal"><span class="pre">SuspiciousOperation</span></tt></a> has been differentiated
+into a number of subclasses, and each will log to a matching named logger
+under the <tt class="docutils literal"><span class="pre">django.security</span></tt> logging hierarchy. Along with this change,
+a <tt class="docutils literal"><span class="pre">handler400</span></tt> mechanism and default view are used whenever
+a <tt class="docutils literal"><span class="pre">SuspiciousOperation</span></tt> reaches the WSGI handler to return an
+<tt class="docutils literal"><span class="pre">HttpResponseBadRequest</span></tt>.</li>
+<li>The <a class="reference internal" href="../ref/exceptions.html#django.core.exceptions.DoesNotExist" title="django.core.exceptions.DoesNotExist"><tt class="xref py py-exc docutils literal"><span class="pre">DoesNotExist</span></tt></a> exception now includes a
+message indicating the name of the attribute used for the lookup.</li>
+<li>The <a class="reference internal" href="../ref/models/querysets.html#django.db.models.query.QuerySet.get_or_create" title="django.db.models.query.QuerySet.get_or_create"><tt class="xref py py-meth docutils literal"><span class="pre">get_or_create()</span></tt></a> method no longer
+requires at least one keyword argument.</li>
+<li>The <a class="reference internal" href="../topics/testing/tools.html#django.test.SimpleTestCase" title="django.test.SimpleTestCase"><tt class="xref py py-class docutils literal"><span class="pre">SimpleTestCase</span></tt></a> class includes a new assertion
+helper for testing formset errors:
+<a class="reference internal" href="../topics/testing/tools.html#django.test.SimpleTestCase.assertFormsetError" title="django.test.SimpleTestCase.assertFormsetError"><tt class="xref py py-meth docutils literal"><span class="pre">assertFormsetError()</span></tt></a>.</li>
+<li>The list of related fields added to a
+<a class="reference internal" href="../ref/models/querysets.html#django.db.models.query.QuerySet" title="django.db.models.query.QuerySet"><tt class="xref py py-class docutils literal"><span class="pre">QuerySet</span></tt></a> by
+<a class="reference internal" href="../ref/models/querysets.html#django.db.models.query.QuerySet.select_related" title="django.db.models.query.QuerySet.select_related"><tt class="xref py py-meth docutils literal"><span class="pre">select_related()</span></tt></a> can be cleared using
+<tt class="docutils literal"><span class="pre">select_related(None)</span></tt>.</li>
+<li>The <a class="reference internal" href="../ref/contrib/admin/index.html#django.contrib.admin.InlineModelAdmin.get_extra" title="django.contrib.admin.InlineModelAdmin.get_extra"><tt class="xref py py-meth docutils literal"><span class="pre">get_extra()</span></tt></a> and
+<a class="reference internal" href="../ref/contrib/admin/index.html#django.contrib.admin.InlineModelAdmin.get_max_num" title="django.contrib.admin.InlineModelAdmin.get_max_num"><tt class="xref py py-meth docutils literal"><span class="pre">get_max_num()</span></tt></a> methods on
+<a class="reference internal" href="../ref/contrib/admin/index.html#django.contrib.admin.InlineModelAdmin" title="django.contrib.admin.InlineModelAdmin"><tt class="xref py py-class docutils literal"><span class="pre">InlineModelAdmin</span></tt></a> may be overridden to
+customize the extra and maximum number of inline forms.</li>
+<li>Formsets now have a
+<a class="reference internal" href="../topics/forms/formsets.html#django.forms.formsets.BaseFormSet.total_error_count" title="django.forms.formsets.BaseFormSet.total_error_count"><tt class="xref py py-meth docutils literal"><span class="pre">total_error_count()</span></tt></a> method.</li>
+<li><a class="reference internal" href="../topics/forms/modelforms.html#django.forms.ModelForm" title="django.forms.ModelForm"><tt class="xref py py-class docutils literal"><span class="pre">ModelForm</span></tt></a> fields can now override error messages
+defined in model fields by using the
+<a class="reference internal" href="../ref/forms/fields.html#django.forms.Field.error_messages" title="django.forms.Field.error_messages"><tt class="xref py py-attr docutils literal"><span class="pre">error_messages</span></tt></a> argument of a <tt class="docutils literal"><span class="pre">Field</span></tt>’s
+constructor. To take advantage of this new feature with your custom fields,
+<a class="reference internal" href="../ref/forms/validation.html#raising-validation-error"><em>see the updated recommendation</em></a> for raising
+a <tt class="docutils literal"><span class="pre">ValidationError</span></tt>.</li>
+<li><a class="reference internal" href="../ref/contrib/admin/index.html#django.contrib.admin.ModelAdmin" title="django.contrib.admin.ModelAdmin"><tt class="xref py py-class docutils literal"><span class="pre">ModelAdmin</span></tt></a> now preserves filters on the list view
+after creating, editing or deleting an object. It&#8217;s possible to restore the previous
+behavior of clearing filters by setting the
+<a class="reference internal" href="../ref/contrib/admin/index.html#django.contrib.admin.ModelAdmin.preserve_filters" title="django.contrib.admin.ModelAdmin.preserve_filters"><tt class="xref py py-attr docutils literal"><span class="pre">preserve_filters</span></tt></a> attribute to <tt class="docutils literal"><span class="pre">False</span></tt>.</li>
+<li>Added
+<a class="reference internal" href="../ref/class-based-views/mixins-editing.html#django.views.generic.edit.FormMixin.get_prefix" title="django.views.generic.edit.FormMixin.get_prefix"><tt class="xref py py-meth docutils literal"><span class="pre">FormMixin.get_prefix</span></tt></a>
+(which returns
+<a class="reference internal" href="../ref/class-based-views/mixins-editing.html#django.views.generic.edit.FormMixin.prefix" title="django.views.generic.edit.FormMixin.prefix"><tt class="xref py py-attr docutils literal"><span class="pre">FormMixin.prefix</span></tt></a> by
+default) to allow customizing the <a class="reference internal" href="../ref/forms/api.html#django.forms.Form.prefix" title="django.forms.Form.prefix"><tt class="xref py py-attr docutils literal"><span class="pre">prefix</span></tt></a> of the
+form.</li>
+<li>Raw queries (<tt class="docutils literal"><span class="pre">Manager.raw()</span></tt> or <tt class="docutils literal"><span class="pre">cursor.execute()</span></tt>) can now use the
+&#8220;pyformat&#8221; parameter style, where placeholders in the query are given as
+<tt class="docutils literal"><span class="pre">'%(name)s'</span></tt> and the parameters are passed as a dictionary rather than
+a list (except on SQLite). This has long been possible (but not officially
+supported) on MySQL and PostgreSQL, and is now also available on Oracle.</li>
+<li>The default iteration count for the PBKDF2 password hasher has been
+increased by 20%. This backwards compatible change will not affect
+existing passwords or users who have subclassed
+<tt class="docutils literal"><span class="pre">django.contrib.auth.hashers.PBKDF2PasswordHasher</span></tt> to change the
+default value. Passwords <a class="reference internal" href="../topics/auth/passwords.html#password-upgrades"><em>will be upgraded</em></a> to use
+the new iteration count as necessary.</li>
+</ul>
+</div>
+</div>
+<div class="section" id="s-backwards-incompatible-changes-in-1-6">
+<span id="backwards-incompatible-changes-in-1-6"></span><h2>Backwards incompatible changes in 1.6<a class="headerlink" href="#backwards-incompatible-changes-in-1-6" title="Permalink to this headline">¶</a></h2>
+<div class="admonition warning">
+<p class="first admonition-title">Warning</p>
+<p class="last">In addition to the changes outlined in this section, be sure to review the
+<a class="reference internal" href="../internals/deprecation.html#deprecation-removed-in-1-6"><em>deprecation plan</em></a> for any features that
+have been removed. If you haven&#8217;t updated your code within the
+deprecation timeline for a given feature, its removal may appear as a
+backwards incompatible change.</p>
+</div>
+<div class="section" id="s-new-transaction-management-model">
+<span id="new-transaction-management-model"></span><h3>New transaction management model<a class="headerlink" href="#new-transaction-management-model" title="Permalink to this headline">¶</a></h3>
+<div class="section" id="s-behavior-changes">
+<span id="behavior-changes"></span><h4>Behavior changes<a class="headerlink" href="#behavior-changes" title="Permalink to this headline">¶</a></h4>
+<p>Database-level autocommit is enabled by default in Django 1.6. While this
+doesn&#8217;t change the general spirit of Django&#8217;s transaction management, there
+are a few backwards-incompatibilities.</p>
+</div>
+<div class="section" id="s-savepoints-and-assertnumqueries">
+<span id="savepoints-and-assertnumqueries"></span><h4>Savepoints and <tt class="docutils literal"><span class="pre">assertNumQueries</span></tt><a class="headerlink" href="#savepoints-and-assertnumqueries" title="Permalink to this headline">¶</a></h4>
+<p>The changes in transaction management may result in additional statements to
+create, release or rollback savepoints. This is more likely to happen with
+SQLite, since it didn&#8217;t support savepoints until this release.</p>
+<p>If tests using <a class="reference internal" href="../topics/testing/tools.html#django.test.TransactionTestCase.assertNumQueries" title="django.test.TransactionTestCase.assertNumQueries"><tt class="xref py py-meth docutils literal"><span class="pre">assertNumQueries()</span></tt></a> fail
+because of a higher number of queries than expected, check that the extra
+queries are related to savepoints, and adjust the expected number of queries
+accordingly.</p>
+</div>
+<div class="section" id="s-autocommit-option-for-postgresql">
+<span id="autocommit-option-for-postgresql"></span><h4>Autocommit option for PostgreSQL<a class="headerlink" href="#autocommit-option-for-postgresql" title="Permalink to this headline">¶</a></h4>
+<p>In previous versions, database-level autocommit was only an option for
+PostgreSQL, and it was disabled by default. This option is now ignored and can
+be removed.</p>
+</div>
+</div>
+<div class="section" id="s-new-test-runner">
+<span id="s-id1"></span><span id="new-test-runner"></span><span id="id1"></span><h3>New test runner<a class="headerlink" href="#new-test-runner" title="Permalink to this headline">¶</a></h3>
+<p>In order to maintain greater consistency with Python&#8217;s unittest module, the new
+test runner (<tt class="docutils literal"><span class="pre">django.test.runner.DiscoverRunner</span></tt>) does not automatically
+support some types of tests that were supported by the previous runner:</p>
+<ul class="simple">
+<li>Tests in <tt class="docutils literal"><span class="pre">models.py</span></tt> and <tt class="docutils literal"><span class="pre">tests/__init__.py</span></tt> files will no longer be
+found and run. Move them to a file whose name begins with <tt class="docutils literal"><span class="pre">test</span></tt>.</li>
+<li>Doctests will no longer be automatically discovered. To integrate doctests in
+your test suite, follow the <a class="reference external" href="https://docs.python.org/library/doctest.html#unittest-api">recommendations in the Python documentation</a>.</li>
+</ul>
+<p>Django bundles a modified version of the <a class="reference external" href="https://docs.python.org/3/library/doctest.html#module-doctest" title="(in Python v3.4)"><tt class="xref py py-mod docutils literal"><span class="pre">doctest</span></tt></a> module from the Python
+standard library (in <tt class="docutils literal"><span class="pre">django.test._doctest</span></tt>) and includes some additional
+doctest utilities. These utilities are deprecated and will be removed in Django
+1.8; doctest suites should be updated to work with the standard library&#8217;s
+doctest module (or converted to unittest-compatible tests).</p>
+<p>If you wish to delay updates to your test suite, you can set your
+<a class="reference internal" href="../ref/settings.html#std:setting-TEST_RUNNER"><tt class="xref std std-setting docutils literal"><span class="pre">TEST_RUNNER</span></tt></a> setting to <tt class="docutils literal"><span class="pre">django.test.simple.DjangoTestSuiteRunner</span></tt>
+to fully restore the old test behavior. <tt class="docutils literal"><span class="pre">DjangoTestSuiteRunner</span></tt> is deprecated
+but will not be removed from Django until version 1.8.</p>
+</div>
+<div class="section" id="s-removal-of-django-contrib-gis-tests-geodjangotestsuiterunner-geodjango-custom-test-runner">
+<span id="removal-of-django-contrib-gis-tests-geodjangotestsuiterunner-geodjango-custom-test-runner"></span><h3>Removal of <tt class="docutils literal"><span class="pre">django.contrib.gis.tests.GeoDjangoTestSuiteRunner</span></tt> GeoDjango custom test runner<a class="headerlink" href="#removal-of-django-contrib-gis-tests-geodjangotestsuiterunner-geodjango-custom-test-runner" title="Permalink to this headline">¶</a></h3>
+<p>This is for developers working on the GeoDjango application itself and related
+to the item above about changes in the test runners:</p>
+<p>The <tt class="docutils literal"><span class="pre">django.contrib.gis.tests.GeoDjangoTestSuiteRunner</span></tt> test runner has been
+removed and the standalone GeoDjango tests execution setup it implemented isn&#8217;t
+supported anymore. To run the GeoDjango tests simply use the new
+<tt class="docutils literal"><span class="pre">DiscoverRunner</span></tt> and specify the <tt class="docutils literal"><span class="pre">django.contrib.gis</span></tt> app.</p>
+</div>
+<div class="section" id="s-custom-user-models-in-tests">
+<span id="custom-user-models-in-tests"></span><h3>Custom User models in tests<a class="headerlink" href="#custom-user-models-in-tests" title="Permalink to this headline">¶</a></h3>
+<p>The introduction of the new test runner has also slightly changed the way that
+test models are imported. As a result, any test that overrides <tt class="docutils literal"><span class="pre">AUTH_USER_MODEL</span></tt>
+to test behavior with one of Django&#8217;s test user models (
+<a class="reference internal" href="../topics/auth/customizing.html#django.contrib.auth.tests.custom_user.CustomUser" title="django.contrib.auth.tests.custom_user.CustomUser"><tt class="xref py py-class docutils literal"><span class="pre">CustomUser</span></tt></a> and
+<a class="reference internal" href="../topics/auth/customizing.html#django.contrib.auth.tests.custom_user.ExtensionUser" title="django.contrib.auth.tests.custom_user.ExtensionUser"><tt class="xref py py-class docutils literal"><span class="pre">ExtensionUser</span></tt></a>) must now
+explicitly import the User model in your test module:</p>
+<div class="highlight-python"><div class="highlight"><pre>from django.contrib.auth.tests.custom_user import CustomUser
+
+@override_settings(AUTH_USER_MODEL=&#39;auth.CustomUser&#39;)
+class CustomUserFeatureTests(TestCase):
+    def test_something(self):
+        # Test code here ...
+</pre></div>
+</div>
+<p>This import forces the custom user model to be registered. Without this import,
+the test will be unable to swap in the custom user model, and you will get an
+error reporting:</p>
+<div class="highlight-python"><div class="highlight"><pre>ImproperlyConfigured: AUTH_USER_MODEL refers to model &#39;auth.CustomUser&#39; that has not been installed
+</pre></div>
+</div>
+</div>
+<div class="section" id="s-time-zone-aware-day-month-and-week-day-lookups">
+<span id="time-zone-aware-day-month-and-week-day-lookups"></span><h3>Time zone-aware <tt class="docutils literal"><span class="pre">day</span></tt>, <tt class="docutils literal"><span class="pre">month</span></tt>, and <tt class="docutils literal"><span class="pre">week_day</span></tt> lookups<a class="headerlink" href="#time-zone-aware-day-month-and-week-day-lookups" title="Permalink to this headline">¶</a></h3>
+<p>Django 1.6 introduces time zone support for <a class="reference internal" href="../ref/models/querysets.html#std:fieldlookup-day"><tt class="xref std std-lookup docutils literal"><span class="pre">day</span></tt></a>, <a class="reference internal" href="../ref/models/querysets.html#std:fieldlookup-month"><tt class="xref std std-lookup docutils literal"><span class="pre">month</span></tt></a>,
+and <a class="reference internal" href="../ref/models/querysets.html#std:fieldlookup-week_day"><tt class="xref std std-lookup docutils literal"><span class="pre">week_day</span></tt></a> lookups when <a class="reference internal" href="../ref/settings.html#std:setting-USE_TZ"><tt class="xref std std-setting docutils literal"><span class="pre">USE_TZ</span></tt></a> is <tt class="docutils literal"><span class="pre">True</span></tt>. These
+lookups were previously performed in UTC regardless of the current time zone.</p>
+<p>This requires <a class="reference internal" href="../ref/models/querysets.html#database-time-zone-definitions"><em>time zone definitions in the database</em></a>. If you&#8217;re using SQLite, you must install
+<a class="reference external" href="http://pytz.sourceforge.net/">pytz</a>. If you&#8217;re using MySQL, you must install <a class="reference external" href="http://pytz.sourceforge.net/">pytz</a> and load the time zone
+tables with <a class="reference external" href="http://dev.mysql.com/doc/refman/5.6/en/mysql-tzinfo-to-sql.html">mysql_tzinfo_to_sql</a>.</p>
+</div>
+<div class="section" id="s-addition-of-queryset-datetimes">
+<span id="addition-of-queryset-datetimes"></span><h3>Addition of <tt class="docutils literal"><span class="pre">QuerySet.datetimes()</span></tt><a class="headerlink" href="#addition-of-queryset-datetimes" title="Permalink to this headline">¶</a></h3>
+<p>When the <a class="reference internal" href="../topics/i18n/timezones.html"><em>time zone support</em></a> added in Django 1.4
+was active, <a class="reference internal" href="../ref/models/querysets.html#django.db.models.query.QuerySet.dates" title="django.db.models.query.QuerySet.dates"><tt class="xref py py-meth docutils literal"><span class="pre">QuerySet.dates()</span></tt></a>
+lookups returned unexpected results, because the aggregation was performed in
+UTC. To fix this, Django 1.6 introduces a new API, <a class="reference internal" href="../ref/models/querysets.html#django.db.models.query.QuerySet.datetimes" title="django.db.models.query.QuerySet.datetimes"><tt class="xref py py-meth docutils literal"><span class="pre">QuerySet.datetimes()</span></tt></a>. This requires a few changes in
+your code.</p>
+<div class="section" id="s-queryset-dates-returns-date-objects">
+<span id="queryset-dates-returns-date-objects"></span><h4><tt class="docutils literal"><span class="pre">QuerySet.dates()</span></tt> returns <tt class="docutils literal"><span class="pre">date</span></tt> objects<a class="headerlink" href="#queryset-dates-returns-date-objects" title="Permalink to this headline">¶</a></h4>
+<p><a class="reference internal" href="../ref/models/querysets.html#django.db.models.query.QuerySet.dates" title="django.db.models.query.QuerySet.dates"><tt class="xref py py-meth docutils literal"><span class="pre">QuerySet.dates()</span></tt></a> now returns a
+list of <a class="reference external" href="https://docs.python.org/3/library/datetime.html#datetime.date" title="(in Python v3.4)"><tt class="xref py py-class docutils literal"><span class="pre">date</span></tt></a>. It used to return a list of
+<a class="reference external" href="https://docs.python.org/3/library/datetime.html#datetime.datetime" title="(in Python v3.4)"><tt class="xref py py-class docutils literal"><span class="pre">datetime</span></tt></a>.</p>
+<p><a class="reference internal" href="../ref/models/querysets.html#django.db.models.query.QuerySet.datetimes" title="django.db.models.query.QuerySet.datetimes"><tt class="xref py py-meth docutils literal"><span class="pre">QuerySet.datetimes()</span></tt></a>
+returns a list of <a class="reference external" href="https://docs.python.org/3/library/datetime.html#datetime.datetime" title="(in Python v3.4)"><tt class="xref py py-class docutils literal"><span class="pre">datetime</span></tt></a>.</p>
+</div>
+<div class="section" id="s-queryset-dates-no-longer-usable-on-datetimefield">
+<span id="queryset-dates-no-longer-usable-on-datetimefield"></span><h4><tt class="docutils literal"><span class="pre">QuerySet.dates()</span></tt> no longer usable on <tt class="docutils literal"><span class="pre">DateTimeField</span></tt><a class="headerlink" href="#queryset-dates-no-longer-usable-on-datetimefield" title="Permalink to this headline">¶</a></h4>
+<p><a class="reference internal" href="../ref/models/querysets.html#django.db.models.query.QuerySet.dates" title="django.db.models.query.QuerySet.dates"><tt class="xref py py-meth docutils literal"><span class="pre">QuerySet.dates()</span></tt></a> raises an
+error if it&#8217;s used on <a class="reference internal" href="../ref/models/fields.html#django.db.models.DateTimeField" title="django.db.models.DateTimeField"><tt class="xref py py-class docutils literal"><span class="pre">DateTimeField</span></tt></a> when time
+zone support is active. Use <a class="reference internal" href="../ref/models/querysets.html#django.db.models.query.QuerySet.datetimes" title="django.db.models.query.QuerySet.datetimes"><tt class="xref py py-meth docutils literal"><span class="pre">QuerySet.datetimes()</span></tt></a> instead.</p>
+</div>
+<div class="section" id="s-date-hierarchy-requires-time-zone-definitions">
+<span id="date-hierarchy-requires-time-zone-definitions"></span><h4><tt class="docutils literal"><span class="pre">date_hierarchy</span></tt> requires time zone definitions<a class="headerlink" href="#date-hierarchy-requires-time-zone-definitions" title="Permalink to this headline">¶</a></h4>
+<p>The <a class="reference internal" href="../ref/contrib/admin/index.html#django.contrib.admin.ModelAdmin.date_hierarchy" title="django.contrib.admin.ModelAdmin.date_hierarchy"><tt class="xref py py-attr docutils literal"><span class="pre">date_hierarchy</span></tt></a> feature of the
+admin now relies on <a class="reference internal" href="../ref/models/querysets.html#django.db.models.query.QuerySet.datetimes" title="django.db.models.query.QuerySet.datetimes"><tt class="xref py py-meth docutils literal"><span class="pre">QuerySet.datetimes()</span></tt></a> when it&#8217;s used on a
+<a class="reference internal" href="../ref/models/fields.html#django.db.models.DateTimeField" title="django.db.models.DateTimeField"><tt class="xref py py-class docutils literal"><span class="pre">DateTimeField</span></tt></a>.</p>
+<p>This requires time zone definitions in the database when <a class="reference internal" href="../ref/settings.html#std:setting-USE_TZ"><tt class="xref std std-setting docutils literal"><span class="pre">USE_TZ</span></tt></a> is
+<tt class="docutils literal"><span class="pre">True</span></tt>. <a class="reference internal" href="../ref/models/querysets.html#database-time-zone-definitions"><em>Learn more</em></a>.</p>
+</div>
+<div class="section" id="s-date-list-in-generic-views-requires-time-zone-definitions">
+<span id="date-list-in-generic-views-requires-time-zone-definitions"></span><h4><tt class="docutils literal"><span class="pre">date_list</span></tt> in generic views requires time zone definitions<a class="headerlink" href="#date-list-in-generic-views-requires-time-zone-definitions" title="Permalink to this headline">¶</a></h4>
+<p>For the same reason, accessing <tt class="docutils literal"><span class="pre">date_list</span></tt> in the context of a date-based
+generic view requires time zone definitions in the database when the view is
+based on a <a class="reference internal" href="../ref/models/fields.html#django.db.models.DateTimeField" title="django.db.models.DateTimeField"><tt class="xref py py-class docutils literal"><span class="pre">DateTimeField</span></tt></a> and <a class="reference internal" href="../ref/settings.html#std:setting-USE_TZ"><tt class="xref std std-setting docutils literal"><span class="pre">USE_TZ</span></tt></a> is
+<tt class="docutils literal"><span class="pre">True</span></tt>. <a class="reference internal" href="../ref/models/querysets.html#database-time-zone-definitions"><em>Learn more</em></a>.</p>
+</div>
+</div>
+<div class="section" id="s-new-lookups-may-clash-with-model-fields">
+<span id="new-lookups-may-clash-with-model-fields"></span><h3>New lookups may clash with model fields<a class="headerlink" href="#new-lookups-may-clash-with-model-fields" title="Permalink to this headline">¶</a></h3>
+<p>Django 1.6 introduces <tt class="docutils literal"><span class="pre">hour</span></tt>, <tt class="docutils literal"><span class="pre">minute</span></tt>, and <tt class="docutils literal"><span class="pre">second</span></tt> lookups on
+<a class="reference internal" href="../ref/models/fields.html#django.db.models.DateTimeField" title="django.db.models.DateTimeField"><tt class="xref py py-class docutils literal"><span class="pre">DateTimeField</span></tt></a>. If you had model fields called
+<tt class="docutils literal"><span class="pre">hour</span></tt>, <tt class="docutils literal"><span class="pre">minute</span></tt>, or <tt class="docutils literal"><span class="pre">second</span></tt>, the new lookups will clash with you field
+names. Append an explicit <a class="reference internal" href="../ref/models/querysets.html#std:fieldlookup-exact"><tt class="xref std std-lookup docutils literal"><span class="pre">exact</span></tt></a> lookup if this is an issue.</p>
+</div>
+<div class="section" id="s-booleanfield-no-longer-defaults-to-false">
+<span id="booleanfield-no-longer-defaults-to-false"></span><h3><tt class="docutils literal"><span class="pre">BooleanField</span></tt> no longer defaults to <tt class="docutils literal"><span class="pre">False</span></tt><a class="headerlink" href="#booleanfield-no-longer-defaults-to-false" title="Permalink to this headline">¶</a></h3>
+<p>When a <a class="reference internal" href="../ref/models/fields.html#django.db.models.BooleanField" title="django.db.models.BooleanField"><tt class="xref py py-class docutils literal"><span class="pre">BooleanField</span></tt></a> doesn&#8217;t have an explicit
+<a class="reference internal" href="../ref/models/fields.html#django.db.models.Field.default" title="django.db.models.Field.default"><tt class="xref py py-attr docutils literal"><span class="pre">default</span></tt></a>, the implicit default value is
+<tt class="docutils literal"><span class="pre">None</span></tt>. In previous version of Django, it was <tt class="docutils literal"><span class="pre">False</span></tt>, but that didn&#8217;t
+represent accurately the lack of a value.</p>
+<p>Code that relies on the default value being <tt class="docutils literal"><span class="pre">False</span></tt> may raise an exception
+when saving new model instances to the database, because <tt class="docutils literal"><span class="pre">None</span></tt> isn&#8217;t an
+acceptable value for a <a class="reference internal" href="../ref/models/fields.html#django.db.models.BooleanField" title="django.db.models.BooleanField"><tt class="xref py py-class docutils literal"><span class="pre">BooleanField</span></tt></a>. You should
+either specify <tt class="docutils literal"><span class="pre">default=False</span></tt> in the field definition, or ensure the field
+is set to <tt class="docutils literal"><span class="pre">True</span></tt> or <tt class="docutils literal"><span class="pre">False</span></tt> before saving the object.</p>
+</div>
+<div class="section" id="s-translations-and-comments-in-templates">
+<span id="translations-and-comments-in-templates"></span><h3>Translations and comments in templates<a class="headerlink" href="#translations-and-comments-in-templates" title="Permalink to this headline">¶</a></h3>
+<div class="section" id="s-extraction-of-translations-after-comments">
+<span id="extraction-of-translations-after-comments"></span><h4>Extraction of translations after comments<a class="headerlink" href="#extraction-of-translations-after-comments" title="Permalink to this headline">¶</a></h4>
+<p>Extraction of translatable literals from templates with the
+<a class="reference internal" href="../ref/django-admin.html#django-admin-makemessages"><tt class="xref std std-djadmin docutils literal"><span class="pre">makemessages</span></tt></a> command now correctly detects i18n constructs when
+they are located after a <tt class="docutils literal"><span class="pre">{#</span></tt> / <tt class="docutils literal"><span class="pre">#}</span></tt>-type comment on the same line. E.g.:</p>
+<div class="highlight-html+django"><div class="highlight"><pre><span class="c">{# A comment #}</span><span class="cp">{%</span> <span class="k">trans</span> <span class="s2">&quot;This literal was incorrectly ignored. Not anymore&quot;</span> <span class="cp">%}</span>
+</pre></div>
+</div>
+</div>
+<div class="section" id="s-location-of-translator-comments">
+<span id="location-of-translator-comments"></span><h4>Location of translator comments<a class="headerlink" href="#location-of-translator-comments" title="Permalink to this headline">¶</a></h4>
+<p><a class="reference internal" href="../topics/i18n/translation.html#translator-comments-in-templates"><em>Comments for translators in templates</em></a> specified using <tt class="docutils literal"><span class="pre">{#</span></tt> / <tt class="docutils literal"><span class="pre">#}</span></tt> need to
+be at the end of a line. If they are not, the comments are ignored and
+<a class="reference internal" href="../ref/django-admin.html#django-admin-makemessages"><tt class="xref std std-djadmin docutils literal"><span class="pre">makemessages</span></tt></a> will generate a warning. For example:</p>
+<div class="highlight-html+django"><div class="highlight"><pre><span class="c">{# Translators: This is ignored #}</span><span class="cp">{%</span> <span class="k">trans</span> <span class="s2">&quot;Translate me&quot;</span> <span class="cp">%}</span>
+<span class="cp">{{</span> <span class="nv">title</span> <span class="cp">}}</span><span class="c">{# Translators: Extracted and associated with &#39;Welcome&#39; below #}</span>
+<span class="nt">&lt;h1&gt;</span><span class="cp">{%</span> <span class="k">trans</span> <span class="s2">&quot;Welcome&quot;</span> <span class="cp">%}</span><span class="nt">&lt;/h1&gt;</span>
+</pre></div>
+</div>
+</div>
+</div>
+<div class="section" id="s-quoting-in-reverse">
+<span id="quoting-in-reverse"></span><h3>Quoting in <a class="reference internal" href="../ref/urlresolvers.html#django.core.urlresolvers.reverse" title="django.core.urlresolvers.reverse"><tt class="xref py py-func docutils literal"><span class="pre">reverse()</span></tt></a><a class="headerlink" href="#quoting-in-reverse" title="Permalink to this headline">¶</a></h3>
+<p>When reversing URLs, Django didn&#8217;t apply <a class="reference internal" href="../ref/utils.html#django.utils.http.urlquote" title="django.utils.http.urlquote"><tt class="xref py py-func docutils literal"><span class="pre">urlquote()</span></tt></a>
+to arguments before interpolating them in URL patterns. This bug is fixed in
+Django 1.6. If you worked around this bug by applying URL quoting before
+passing arguments to <a class="reference internal" href="../ref/urlresolvers.html#django.core.urlresolvers.reverse" title="django.core.urlresolvers.reverse"><tt class="xref py py-func docutils literal"><span class="pre">reverse()</span></tt></a>, this may
+result in double-quoting. If this happens, simply remove the URL quoting from
+your code. You will also have to replace special characters in URLs used in
+<a class="reference internal" href="../topics/testing/tools.html#django.test.SimpleTestCase.assertRedirects" title="django.test.SimpleTestCase.assertRedirects"><tt class="xref py py-func docutils literal"><span class="pre">assertRedirects()</span></tt></a> with their encoded versions.</p>
+</div>
+<div class="section" id="s-storage-of-ip-addresses-in-the-comments-app">
+<span id="storage-of-ip-addresses-in-the-comments-app"></span><h3>Storage of IP addresses in the comments app<a class="headerlink" href="#storage-of-ip-addresses-in-the-comments-app" title="Permalink to this headline">¶</a></h3>
+<p>The comments app now uses a
+<tt class="docutils literal"><span class="pre">GenericIPAddressField</span></tt> for storing commenters&#8217; IP addresses, to support
+comments submitted from IPv6 addresses. Until now, it stored them in an
+<tt class="docutils literal"><span class="pre">IPAddressField</span></tt>, which is only meant to support IPv4. When saving a comment
+made from an IPv6 address, the address would be silently truncated on MySQL
+databases, and raise an exception on Oracle. You will need to change the
+column type in your database to benefit from this change.</p>
+<p>For MySQL, execute this query on your project&#8217;s database:</p>
+<div class="highlight-sql"><div class="highlight"><pre><span class="k">ALTER</span> <span class="k">TABLE</span> <span class="n">django_comments</span> <span class="k">MODIFY</span> <span class="n">ip_address</span> <span class="nb">VARCHAR</span><span class="p">(</span><span class="mi">39</span><span class="p">);</span>
+</pre></div>
+</div>
+<p>For Oracle, execute this query:</p>
+<div class="highlight-sql"><div class="highlight"><pre><span class="k">ALTER</span> <span class="k">TABLE</span> <span class="n">DJANGO_COMMENTS</span> <span class="k">MODIFY</span> <span class="p">(</span><span class="n">ip_address</span> <span class="n">VARCHAR2</span><span class="p">(</span><span class="mi">39</span><span class="p">));</span>
+</pre></div>
+</div>
+<p>If you do not apply this change, the behavior is unchanged: on MySQL, IPv6
+addresses are silently truncated; on Oracle, an exception is generated. No
+database change is needed for SQLite or PostgreSQL databases.</p>
+</div>
+<div class="section" id="s-percent-literals-in-cursor-execute-queries">
+<span id="percent-literals-in-cursor-execute-queries"></span><h3>Percent literals in <tt class="docutils literal"><span class="pre">cursor.execute</span></tt> queries<a class="headerlink" href="#percent-literals-in-cursor-execute-queries" title="Permalink to this headline">¶</a></h3>
+<p>When you are running raw SQL queries through the
+<a class="reference internal" href="../topics/db/sql.html#executing-custom-sql"><em>cursor.execute</em></a> method, the rule about doubling
+percent literals (<tt class="docutils literal"><span class="pre">%</span></tt>) inside the query has been unified. Past behavior
+depended on the database backend. Now, across all backends, you only need to
+double literal percent characters if you are also providing replacement
+parameters. For example:</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="c"># No parameters, no percent doubling</span>
+<span class="n">cursor</span><span class="o">.</span><span class="n">execute</span><span class="p">(</span><span class="s">&quot;SELECT foo FROM bar WHERE baz = &#39;30%&#39;&quot;</span><span class="p">)</span>
+
+<span class="c"># Parameters passed, non-placeholders have to be doubled</span>
+<span class="n">cursor</span><span class="o">.</span><span class="n">execute</span><span class="p">(</span><span class="s">&quot;SELECT foo FROM bar WHERE baz = &#39;30</span><span class="si">%%</span><span class="s">&#39; and id = </span><span class="si">%s</span><span class="s">&quot;</span><span class="p">,</span> <span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">id</span><span class="p">])</span>
+</pre></div>
+</div>
+<p><tt class="docutils literal"><span class="pre">SQLite</span></tt> users need to check and update such queries.</p>
+</div>
+<div class="section" id="s-help-text-of-model-form-fields-for-manytomanyfield-fields">
+<span id="s-m2m-help-text"></span><span id="help-text-of-model-form-fields-for-manytomanyfield-fields"></span><span id="m2m-help-text"></span><h3>Help text of model form fields for ManyToManyField fields<a class="headerlink" href="#help-text-of-model-form-fields-for-manytomanyfield-fields" title="Permalink to this headline">¶</a></h3>
+<p>HTML rendering of model form fields corresponding to
+<a class="reference internal" href="../ref/models/fields.html#django.db.models.ManyToManyField" title="django.db.models.ManyToManyField"><tt class="xref py py-class docutils literal"><span class="pre">ManyToManyField</span></tt></a> model fields used to get the
+hard-coded sentence:</p>
+<blockquote>
+<div><em>Hold down &#8220;Control&#8221;, or &#8220;Command&#8221; on a Mac, to select more than one.</em></div></blockquote>
+<p>(or its translation to the active locale) imposed as the help legend shown along
+them if neither <a class="reference internal" href="../ref/models/fields.html#django.db.models.Field.help_text" title="django.db.models.Field.help_text"><tt class="xref py py-attr docutils literal"><span class="pre">model</span></tt></a> nor <a class="reference internal" href="../ref/forms/fields.html#django.forms.Field.help_text" title="django.forms.Field.help_text"><tt class="xref py py-attr docutils literal"><span class="pre">form</span></tt></a> <tt class="docutils literal"><span class="pre">help_text</span></tt> attributes were specified by the
+user (or this string was appended to any <tt class="docutils literal"><span class="pre">help_text</span></tt> that was provided).</p>
+<p>Since this happened at the model layer, there was no way to prevent the text
+from appearing in cases where it wasn&#8217;t applicable such as form fields that
+implement user interactions that don&#8217;t involve a keyboard and/or a mouse.</p>
+<p>Starting with Django 1.6, as an ad-hoc temporary backward-compatibility
+provision, the logic to add the &#8220;Hold down...&#8221; sentence has been moved to the
+model form field layer and modified to add the text only when the associated
+widget is <a class="reference internal" href="../ref/forms/widgets.html#django.forms.SelectMultiple" title="django.forms.SelectMultiple"><tt class="xref py py-class docutils literal"><span class="pre">SelectMultiple</span></tt></a> or selected subclasses.</p>
+<p>The change can affect you in a backward incompatible way if you employ custom
+model form fields and/or widgets for <tt class="docutils literal"><span class="pre">ManyToManyField</span></tt> model fields whose UIs
+do rely on the automatic provision of the mentioned hard-coded sentence. These
+form field implementations need to adapt to the new scenario by providing their
+own handling of the <tt class="docutils literal"><span class="pre">help_text</span></tt> attribute.</p>
+<p>Applications that use Django <a class="reference internal" href="../topics/forms/modelforms.html"><em>model form</em></a>
+facilities together with Django built-in form <a class="reference internal" href="../ref/forms/fields.html"><em>fields</em></a>
+and <a class="reference internal" href="../ref/forms/widgets.html"><em>widgets</em></a> aren&#8217;t affected but need to be aware of
+what&#8217;s described in <a class="reference internal" href="#m2m-help-text-deprecation"><em>Munging of help text of model form fields for ManyToManyField fields</em></a> below.</p>
+</div>
+<div class="section" id="s-queryset-iteration">
+<span id="queryset-iteration"></span><h3>QuerySet iteration<a class="headerlink" href="#queryset-iteration" title="Permalink to this headline">¶</a></h3>
+<p>The <tt class="docutils literal"><span class="pre">QuerySet</span></tt> iteration was changed to immediately convert all fetched
+rows to <tt class="docutils literal"><span class="pre">Model</span></tt> objects. In Django 1.5 and earlier the fetched rows were
+converted to <tt class="docutils literal"><span class="pre">Model</span></tt> objects in chunks of 100.</p>
+<p>Existing code will work, but the amount of rows converted to objects
+might change in certain use cases. Such usages include partially looping
+over a queryset or any usage which ends up doing <tt class="docutils literal"><span class="pre">__bool__</span></tt> or
+<tt class="docutils literal"><span class="pre">__contains__</span></tt>.</p>
+<p>Notably most database backends did fetch all the rows in one go already in
+1.5.</p>
+<p>It is still possible to convert the fetched rows to <tt class="docutils literal"><span class="pre">Model</span></tt> objects
+lazily by using the <a class="reference internal" href="../ref/models/querysets.html#django.db.models.query.QuerySet.iterator" title="django.db.models.query.QuerySet.iterator"><tt class="xref py py-meth docutils literal"><span class="pre">iterator()</span></tt></a>
+method.</p>
+</div>
+<div class="section" id="s-boundfield-label-tag-now-includes-the-form-s-label-suffix">
+<span id="boundfield-label-tag-now-includes-the-form-s-label-suffix"></span><h3><a class="reference internal" href="../ref/forms/api.html#django.forms.BoundField.label_tag" title="django.forms.BoundField.label_tag"><tt class="xref py py-meth docutils literal"><span class="pre">BoundField.label_tag</span></tt></a> now includes the form&#8217;s <a class="reference internal" href="../ref/forms/api.html#django.forms.Form.label_suffix" title="django.forms.Form.label_suffix"><tt class="xref py py-attr docutils literal"><span class="pre">label_suffix</span></tt></a><a class="headerlink" href="#boundfield-label-tag-now-includes-the-form-s-label-suffix" title="Permalink to this headline">¶</a></h3>
+<p>This is consistent with how methods like
+<a class="reference internal" href="../ref/forms/api.html#django.forms.Form.as_p" title="django.forms.Form.as_p"><tt class="xref py py-meth docutils literal"><span class="pre">Form.as_p</span></tt></a> and
+<a class="reference internal" href="../ref/forms/api.html#django.forms.Form.as_ul" title="django.forms.Form.as_ul"><tt class="xref py py-meth docutils literal"><span class="pre">Form.as_ul</span></tt></a> render labels.</p>
+<p>If you manually render <tt class="docutils literal"><span class="pre">label_tag</span></tt> in your templates:</p>
+<div class="highlight-html+django"><div class="highlight"><pre><span class="cp">{{</span> <span class="nv">form.my_field.label_tag</span> <span class="cp">}}</span>: <span class="cp">{{</span> <span class="nv">form.my_field</span> <span class="cp">}}</span>
+</pre></div>
+</div>
+<p>you&#8217;ll want to remove the colon (or whatever other separator you may be
+using) to avoid duplicating it when upgrading to Django 1.6. The following
+template in Django 1.6 will render identically to the above template in Django
+1.5, except that the colon will appear inside the <tt class="docutils literal"><span class="pre">&lt;label&gt;</span></tt> element.</p>
+<div class="highlight-html+django"><div class="highlight"><pre><span class="cp">{{</span> <span class="nv">form.my_field.label_tag</span> <span class="cp">}}</span> <span class="cp">{{</span> <span class="nv">form.my_field</span> <span class="cp">}}</span>
+</pre></div>
+</div>
+<p>will render something like:</p>
+<div class="highlight-html"><div class="highlight"><pre><span class="nt">&lt;label</span> <span class="na">for=</span><span class="s">&quot;id_my_field&quot;</span><span class="nt">&gt;</span>My Field:<span class="nt">&lt;/label&gt;</span> <span class="nt">&lt;input</span> <span class="na">id=</span><span class="s">&quot;id_my_field&quot;</span> <span class="na">type=</span><span class="s">&quot;text&quot;</span> <span class="na">name=</span><span class="s">&quot;my_field&quot;</span> <span class="nt">/&gt;</span>
+</pre></div>
+</div>
+<p>If you want to keep the current behavior of rendering <tt class="docutils literal"><span class="pre">label_tag</span></tt> without
+the <tt class="docutils literal"><span class="pre">label_suffix</span></tt>, instantiate the form <tt class="docutils literal"><span class="pre">label_suffix=''</span></tt>. You can also
+customize the <tt class="docutils literal"><span class="pre">label_suffix</span></tt> on a per-field basis using the new
+<tt class="docutils literal"><span class="pre">label_suffix</span></tt> parameter on <a class="reference internal" href="../ref/forms/api.html#django.forms.BoundField.label_tag" title="django.forms.BoundField.label_tag"><tt class="xref py py-meth docutils literal"><span class="pre">label_tag()</span></tt></a>.</p>
+</div>
+<div class="section" id="s-admin-views-changelist-filters-get-parameter">
+<span id="admin-views-changelist-filters-get-parameter"></span><h3>Admin views <tt class="docutils literal"><span class="pre">_changelist_filters</span></tt> GET parameter<a class="headerlink" href="#admin-views-changelist-filters-get-parameter" title="Permalink to this headline">¶</a></h3>
+<p>To achieve preserving and restoring list view filters, admin views now
+pass around the <cite>_changelist_filters</cite> GET parameter. It&#8217;s important that you
+account for that change if you have custom admin templates or if your tests
+rely on the previous URLs. If you want to revert to the original behavior you
+can set the
+<a class="reference internal" href="../ref/contrib/admin/index.html#django.contrib.admin.ModelAdmin.preserve_filters" title="django.contrib.admin.ModelAdmin.preserve_filters"><tt class="xref py py-attr docutils literal"><span class="pre">preserve_filters</span></tt></a> attribute to <tt class="docutils literal"><span class="pre">False</span></tt>.</p>
+</div>
+<div class="section" id="s-django-contrib-auth-password-reset-uses-base-64-encoding-of-user-pk">
+<span id="django-contrib-auth-password-reset-uses-base-64-encoding-of-user-pk"></span><h3><tt class="docutils literal"><span class="pre">django.contrib.auth</span></tt> password reset uses base 64 encoding of <tt class="docutils literal"><span class="pre">User</span></tt> PK<a class="headerlink" href="#django-contrib-auth-password-reset-uses-base-64-encoding-of-user-pk" title="Permalink to this headline">¶</a></h3>
+<p>Past versions of Django used base 36 encoding of the <tt class="docutils literal"><span class="pre">User</span></tt> primary key in
+the password reset views and URLs
+(<a class="reference internal" href="../topics/auth/default.html#django.contrib.auth.views.password_reset_confirm" title="django.contrib.auth.views.password_reset_confirm"><tt class="xref py py-func docutils literal"><span class="pre">django.contrib.auth.views.password_reset_confirm()</span></tt></a>). Base 36 encoding is
+sufficient if the user primary key is an integer, however, with the
+introduction of custom user models in Django 1.5, that assumption may no longer
+be true.</p>
+<p><a class="reference internal" href="../topics/auth/default.html#django.contrib.auth.views.password_reset_confirm" title="django.contrib.auth.views.password_reset_confirm"><tt class="xref py py-func docutils literal"><span class="pre">django.contrib.auth.views.password_reset_confirm()</span></tt></a> has been modified to
+take a <tt class="docutils literal"><span class="pre">uidb64</span></tt> parameter instead of <tt class="docutils literal"><span class="pre">uidb36</span></tt>. If you are reversing this
+view, for example in a custom <tt class="docutils literal"><span class="pre">password_reset_email.html</span></tt> template, be sure
+to update your code.</p>
+<p>A temporary shim for <a class="reference internal" href="../topics/auth/default.html#django.contrib.auth.views.password_reset_confirm" title="django.contrib.auth.views.password_reset_confirm"><tt class="xref py py-func docutils literal"><span class="pre">django.contrib.auth.views.password_reset_confirm()</span></tt></a>
+that will allow password reset links generated prior to Django 1.6 to continue
+to work has been added to provide backwards compatibility; this will be removed
+in Django 1.7. Thus, as long as your site has been running Django 1.6 for more
+than <a class="reference internal" href="../ref/settings.html#std:setting-PASSWORD_RESET_TIMEOUT_DAYS"><tt class="xref std std-setting docutils literal"><span class="pre">PASSWORD_RESET_TIMEOUT_DAYS</span></tt></a>, this change will have no effect.
+If not (for example, if you upgrade directly from Django 1.5 to Django 1.7),
+then any password reset links generated before you upgrade to Django 1.7 or
+later won&#8217;t work after the upgrade.</p>
+<p>In addition, if you have any custom password reset URLs, you will need to
+update them by replacing <tt class="docutils literal"><span class="pre">uidb36</span></tt> with <tt class="docutils literal"><span class="pre">uidb64</span></tt> and the dash that follows
+that pattern with a slash. Also add <tt class="docutils literal"><span class="pre">_\-</span></tt> to the list of characters that may
+match the <tt class="docutils literal"><span class="pre">uidb64</span></tt> pattern.</p>
+<p>For example:</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="n">url</span><span class="p">(</span><span class="s">r&#39;^reset/(?P&lt;uidb36&gt;[0-9A-Za-z]+)-(?P&lt;token&gt;.+)/$&#39;</span><span class="p">,</span>
+    <span class="s">&#39;django.contrib.auth.views.password_reset_confirm&#39;</span><span class="p">,</span>
+    <span class="n">name</span><span class="o">=</span><span class="s">&#39;password_reset_confirm&#39;</span><span class="p">),</span>
+</pre></div>
+</div>
+<p>becomes:</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="n">url</span><span class="p">(</span><span class="s">r&#39;^reset/(?P&lt;uidb64&gt;[0-9A-Za-z_\-]+)/(?P&lt;token&gt;.+)/$&#39;</span><span class="p">,</span>
+    <span class="s">&#39;django.contrib.auth.views.password_reset_confirm&#39;</span><span class="p">,</span>
+    <span class="n">name</span><span class="o">=</span><span class="s">&#39;password_reset_confirm&#39;</span><span class="p">),</span>
+</pre></div>
+</div>
+<p>You may also want to add the shim to support the old style reset links. Using
+the example above, you would modify the existing url by replacing
+<tt class="docutils literal"><span class="pre">django.contrib.auth.views.password_reset_confirm</span></tt> with
+<tt class="docutils literal"><span class="pre">django.contrib.auth.views.password_reset_confirm_uidb36</span></tt> and also remove
+the <tt class="docutils literal"><span class="pre">name</span></tt> argument so it doesn&#8217;t conflict with the new url:</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="n">url</span><span class="p">(</span><span class="s">r&#39;^reset/(?P&lt;uidb36&gt;[0-9A-Za-z]+)-(?P&lt;token&gt;.+)/$&#39;</span><span class="p">,</span>
+    <span class="s">&#39;django.contrib.auth.views.password_reset_confirm_uidb36&#39;</span><span class="p">),</span>
+</pre></div>
+</div>
+<p>You can remove this url pattern after your app has been deployed with Django
+1.6 for <a class="reference internal" href="../ref/settings.html#std:setting-PASSWORD_RESET_TIMEOUT_DAYS"><tt class="xref std std-setting docutils literal"><span class="pre">PASSWORD_RESET_TIMEOUT_DAYS</span></tt></a>.</p>
+</div>
+<div class="section" id="s-default-session-serialization-switched-to-json">
+<span id="default-session-serialization-switched-to-json"></span><h3>Default session serialization switched to JSON<a class="headerlink" href="#default-session-serialization-switched-to-json" title="Permalink to this headline">¶</a></h3>
+<p>Historically, <a class="reference internal" href="../topics/http/sessions.html#module-django.contrib.sessions" title="django.contrib.sessions: Provides session management for Django projects."><tt class="xref py py-mod docutils literal"><span class="pre">django.contrib.sessions</span></tt></a> used <a class="reference external" href="https://docs.python.org/3/library/pickle.html#module-pickle" title="(in Python v3.4)"><tt class="xref py py-mod docutils literal"><span class="pre">pickle</span></tt></a> to serialize
+session data before storing it in the backend. If you&#8217;re using the <a class="reference internal" href="../topics/http/sessions.html#cookie-session-backend"><em>signed
+cookie session backend</em></a> and <a class="reference internal" href="../ref/settings.html#std:setting-SECRET_KEY"><tt class="xref std std-setting docutils literal"><span class="pre">SECRET_KEY</span></tt></a> is
+known by an attacker (there isn&#8217;t an inherent vulnerability in Django that
+would cause it to leak), the attacker could insert a string into his session
+which, when unpickled, executes arbitrary code on the server. The technique for
+doing so is simple and easily available on the internet. Although the cookie
+session storage signs the cookie-stored data to prevent tampering, a
+<a class="reference internal" href="../ref/settings.html#std:setting-SECRET_KEY"><tt class="xref std std-setting docutils literal"><span class="pre">SECRET_KEY</span></tt></a> leak immediately escalates to a remote code execution
+vulnerability.</p>
+<p>This attack can be mitigated by serializing session data using JSON rather
+than <a class="reference external" href="https://docs.python.org/3/library/pickle.html#module-pickle" title="(in Python v3.4)"><tt class="xref py py-mod docutils literal"><span class="pre">pickle</span></tt></a>. To facilitate this, Django 1.5.3 introduced a new setting,
+<a class="reference internal" href="../ref/settings.html#std:setting-SESSION_SERIALIZER"><tt class="xref std std-setting docutils literal"><span class="pre">SESSION_SERIALIZER</span></tt></a>, to customize the session serialization format.
+For backwards compatibility, this setting defaulted to using <a class="reference external" href="https://docs.python.org/3/library/pickle.html#module-pickle" title="(in Python v3.4)"><tt class="xref py py-mod docutils literal"><span class="pre">pickle</span></tt></a>
+in Django 1.5.3, but we&#8217;ve changed the default to JSON in 1.6. If you upgrade
+and switch from pickle to JSON, sessions created before the upgrade will be
+lost. While JSON serialization does not support all Python objects like
+<a class="reference external" href="https://docs.python.org/3/library/pickle.html#module-pickle" title="(in Python v3.4)"><tt class="xref py py-mod docutils literal"><span class="pre">pickle</span></tt></a> does, we highly recommend using JSON-serialized sessions. Be
+aware of the following when checking your code to determine if JSON
+serialization will work for your application:</p>
+<ul class="simple">
+<li>JSON requires string keys, so you will likely run into problems if you are
+using non-string keys in <tt class="docutils literal"><span class="pre">request.session</span></tt>.</li>
+<li>Setting session expiration by passing <tt class="docutils literal"><span class="pre">datetime</span></tt> values to
+<a class="reference internal" href="../topics/http/sessions.html#django.contrib.sessions.backends.base.SessionBase.set_expiry" title="django.contrib.sessions.backends.base.SessionBase.set_expiry"><tt class="xref py py-meth docutils literal"><span class="pre">set_expiry()</span></tt></a> will
+not work as <tt class="docutils literal"><span class="pre">datetime</span></tt> values are not serializable in JSON. You can use
+integer values instead.</li>
+</ul>
+<p>See the <a class="reference internal" href="../topics/http/sessions.html#session-serialization"><em>Session serialization</em></a> documentation for more details.</p>
+</div>
+<div class="section" id="s-object-relational-mapper-changes">
+<span id="object-relational-mapper-changes"></span><h3>Object Relational Mapper changes<a class="headerlink" href="#object-relational-mapper-changes" title="Permalink to this headline">¶</a></h3>
+<p>Django 1.6 contains many changes to the ORM. These changes fall mostly in
+three categories:</p>
+<ol class="arabic simple">
+<li>Bug fixes (e.g. proper join clauses for generic relations, query combining,
+join promotion, and join trimming fixes)</li>
+<li>Preparation for new features. For example the ORM is now internally ready
+for multicolumn foreign keys.</li>
+<li>General cleanup.</li>
+</ol>
+<p>These changes can result in some compatibility problems. For example, some
+queries will now generate different table aliases. This can affect
+<a class="reference internal" href="../ref/models/querysets.html#django.db.models.query.QuerySet.extra" title="django.db.models.query.QuerySet.extra"><tt class="xref py py-meth docutils literal"><span class="pre">QuerySet.extra()</span></tt></a>. In addition
+some queries will now produce different results. An example is
+<a class="reference internal" href="../ref/models/querysets.html#django.db.models.query.QuerySet.exclude" title="django.db.models.query.QuerySet.exclude"><tt class="xref py py-meth docutils literal"><span class="pre">exclude(condition)</span></tt></a>
+where the condition is a complex one (referencing multijoins inside
+<a class="reference internal" href="../ref/models/querysets.html#django.db.models.Q" title="django.db.models.Q"><tt class="xref py py-class docutils literal"><span class="pre">Q</span> <span class="pre">objects</span></tt></a>). In many cases the affected
+queries didn&#8217;t produce correct results in Django 1.5 but do now.
+Unfortunately there are also cases that produce different results, but
+neither Django 1.5 nor 1.6 produce correct results.</p>
+<p>Finally, there have been many changes to the ORM internal APIs.</p>
+</div>
+<div class="section" id="s-miscellaneous">
+<span id="miscellaneous"></span><h3>Miscellaneous<a class="headerlink" href="#miscellaneous" title="Permalink to this headline">¶</a></h3>
+<ul>
+<li><p class="first">The <tt class="docutils literal"><span class="pre">django.db.models.query.EmptyQuerySet</span></tt> can&#8217;t be instantiated any more -
+it is only usable as a marker class for checking if
+<a class="reference internal" href="../ref/models/querysets.html#django.db.models.query.QuerySet.none" title="django.db.models.query.QuerySet.none"><tt class="xref py py-meth docutils literal"><span class="pre">none()</span></tt></a> has been called:
+<tt class="docutils literal"><span class="pre">isinstance(qs.none(),</span> <span class="pre">EmptyQuerySet)</span></tt></p>
+</li>
+<li><p class="first">If your CSS/JavaScript code used to access HTML input widgets by type, you
+should review it as <tt class="docutils literal"><span class="pre">type='text'</span></tt> widgets might be now output as
+<tt class="docutils literal"><span class="pre">type='email'</span></tt>, <tt class="docutils literal"><span class="pre">type='url'</span></tt> or <tt class="docutils literal"><span class="pre">type='number'</span></tt> depending on their
+corresponding field type.</p>
+</li>
+<li><p class="first">Form field&#8217;s <a class="reference internal" href="../ref/forms/fields.html#django.forms.Field.error_messages" title="django.forms.Field.error_messages"><tt class="xref py py-attr docutils literal"><span class="pre">error_messages</span></tt></a> that contain a
+placeholder should now always use a named placeholder (<tt class="docutils literal"><span class="pre">&quot;Value</span> <span class="pre">'%(value)s'</span> <span class="pre">is</span>
+<span class="pre">too</span> <span class="pre">big&quot;</span></tt> instead of <tt class="docutils literal"><span class="pre">&quot;Value</span> <span class="pre">'%s'</span> <span class="pre">is</span> <span class="pre">too</span> <span class="pre">big&quot;</span></tt>). See the corresponding
+field documentation for details about the names of the placeholders. The
+changes in 1.6 particularly affect <a class="reference internal" href="../ref/forms/fields.html#django.forms.DecimalField" title="django.forms.DecimalField"><tt class="xref py py-class docutils literal"><span class="pre">DecimalField</span></tt></a> and
+<a class="reference internal" href="../ref/forms/fields.html#django.forms.ModelMultipleChoiceField" title="django.forms.ModelMultipleChoiceField"><tt class="xref py py-class docutils literal"><span class="pre">ModelMultipleChoiceField</span></tt></a>.</p>
+</li>
+<li><p class="first">Some <a class="reference internal" href="../ref/forms/fields.html#django.forms.Field.error_messages" title="django.forms.Field.error_messages"><tt class="xref py py-attr docutils literal"><span class="pre">error_messages</span></tt></a> for
+<a class="reference internal" href="../ref/forms/fields.html#django.forms.IntegerField" title="django.forms.IntegerField"><tt class="xref py py-class docutils literal"><span class="pre">IntegerField</span></tt></a>,
+<a class="reference internal" href="../ref/forms/fields.html#django.forms.EmailField" title="django.forms.EmailField"><tt class="xref py py-class docutils literal"><span class="pre">EmailField</span></tt></a>,
+<a class="reference internal" href="../ref/forms/fields.html#django.forms.IPAddressField" title="django.forms.IPAddressField"><tt class="xref py py-class docutils literal"><span class="pre">IPAddressField</span></tt></a>,
+<a class="reference internal" href="../ref/forms/fields.html#django.forms.GenericIPAddressField" title="django.forms.GenericIPAddressField"><tt class="xref py py-class docutils literal"><span class="pre">GenericIPAddressField</span></tt></a>, and
+<a class="reference internal" href="../ref/forms/fields.html#django.forms.SlugField" title="django.forms.SlugField"><tt class="xref py py-class docutils literal"><span class="pre">SlugField</span></tt></a> have been suppressed because they
+duplicated error messages already provided by validators tied to the fields.</p>
+</li>
+<li><p class="first">Due to a change in the form validation workflow,
+<a class="reference internal" href="../ref/forms/fields.html#django.forms.TypedChoiceField" title="django.forms.TypedChoiceField"><tt class="xref py py-class docutils literal"><span class="pre">TypedChoiceField</span></tt></a> <tt class="docutils literal"><span class="pre">coerce</span></tt> method should always
+return a value present in the <tt class="docutils literal"><span class="pre">choices</span></tt> field attribute. That limitation
+should be lift again in Django 1.7.</p>
+</li>
+<li><p class="first">There have been changes in the way timeouts are handled in cache backends.
+Explicitly passing in <tt class="docutils literal"><span class="pre">timeout=None</span></tt> no longer results in using the
+default timeout. It will now set a non-expiring timeout. Passing 0 into the
+memcache backend no longer uses the default timeout, and now will
+set-and-expire-immediately the value.</p>
+</li>
+<li><p class="first">The <tt class="docutils literal"><span class="pre">django.contrib.flatpages</span></tt> app used to set custom HTTP headers for
+debugging purposes. This functionality was not documented and made caching
+ineffective so it has been removed, along with its generic implementation,
+previously available in <tt class="docutils literal"><span class="pre">django.core.xheaders</span></tt>.</p>
+</li>
+<li><p class="first">The <tt class="docutils literal"><span class="pre">XViewMiddleware</span></tt> has been moved from <tt class="docutils literal"><span class="pre">django.middleware.doc</span></tt> to
+<tt class="docutils literal"><span class="pre">django.contrib.admindocs.middleware</span></tt> because it is an implementation
+detail of admindocs, proven not to be reusable in general.</p>
+</li>
+<li><p class="first"><a class="reference internal" href="../ref/models/fields.html#django.db.models.GenericIPAddressField" title="django.db.models.GenericIPAddressField"><tt class="xref py py-class docutils literal"><span class="pre">GenericIPAddressField</span></tt></a> will now only allow
+<tt class="docutils literal"><span class="pre">blank</span></tt> values if <tt class="docutils literal"><span class="pre">null</span></tt> values are also allowed. Creating a
+<tt class="docutils literal"><span class="pre">GenericIPAddressField</span></tt> where <tt class="docutils literal"><span class="pre">blank</span></tt> is allowed but <tt class="docutils literal"><span class="pre">null</span></tt> is not
+will trigger a model validation error because <tt class="docutils literal"><span class="pre">blank</span></tt> values are always
+stored as <tt class="docutils literal"><span class="pre">null</span></tt>. Previously, storing a <tt class="docutils literal"><span class="pre">blank</span></tt> value in a field which
+did not allow <tt class="docutils literal"><span class="pre">null</span></tt> would cause a database exception at runtime.</p>
+</li>
+<li><p class="first">If a <a class="reference internal" href="../ref/exceptions.html#django.core.urlresolvers.NoReverseMatch" title="django.core.urlresolvers.NoReverseMatch"><tt class="xref py py-class docutils literal"><span class="pre">NoReverseMatch</span></tt></a> exception is raised
+from a method when rendering a template, it is not silenced. For example,
+<tt class="docutils literal"><span class="pre">{{</span> <span class="pre">obj.view_href</span> <span class="pre">}}</span></tt> will cause template rendering to fail if
+<tt class="docutils literal"><span class="pre">view_href()</span></tt> raises <tt class="docutils literal"><span class="pre">NoReverseMatch</span></tt>. There is no change to the
+<a class="reference internal" href="../ref/templates/builtins.html#std:templatetag-url"><tt class="xref std std-ttag docutils literal"><span class="pre">{%</span> <span class="pre">url</span> <span class="pre">%}</span></tt></a>&nbsp;tag, it causes template rendering to fail like always
+when <tt class="docutils literal"><span class="pre">NoReverseMatch</span></tt> is raised.</p>
+</li>
+<li><p class="first"><a class="reference internal" href="../topics/testing/tools.html#django.test.Client.logout" title="django.test.Client.logout"><tt class="xref py py-meth docutils literal"><span class="pre">django.test.Client.logout()</span></tt></a> now calls
+<a class="reference internal" href="../topics/auth/default.html#django.contrib.auth.logout" title="django.contrib.auth.logout"><tt class="xref py py-meth docutils literal"><span class="pre">django.contrib.auth.logout()</span></tt></a> which will send the
+<a class="reference internal" href="../ref/contrib/auth.html#django.contrib.auth.signals.user_logged_out" title="django.contrib.auth.signals.user_logged_out"><tt class="xref py py-func docutils literal"><span class="pre">user_logged_out()</span></tt></a> signal.</p>
+</li>
+<li><p class="first"><a class="reference internal" href="../topics/auth/default.html#built-in-auth-views"><em>Authentication views</em></a> are now reversed by name,
+not their locations in <tt class="docutils literal"><span class="pre">django.contrib.auth.views</span></tt>. If you are using the
+views without a <tt class="docutils literal"><span class="pre">name</span></tt>, you should update your <tt class="docutils literal"><span class="pre">urlpatterns</span></tt> to use
+<a class="reference internal" href="../ref/urls.html#django.conf.urls.url" title="django.conf.urls.url"><tt class="xref py py-meth docutils literal"><span class="pre">url()</span></tt></a> with the <tt class="docutils literal"><span class="pre">name</span></tt> parameter. For example:</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="p">(</span><span class="s">r&#39;^reset/done/$&#39;</span><span class="p">,</span> <span class="s">&#39;django.contrib.auth.views.password_reset_complete&#39;</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>becomes:</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="n">url</span><span class="p">(</span><span class="s">r&#39;^reset/done/$&#39;</span><span class="p">,</span> <span class="s">&#39;django.contrib.auth.views.password_reset_complete&#39;</span><span class="p">,</span> <span class="n">name</span><span class="o">=</span><span class="s">&#39;password_reset_complete&#39;</span><span class="p">)</span>
+</pre></div>
+</div>
+</li>
+<li><p class="first"><a class="reference internal" href="../ref/class-based-views/base.html#django.views.generic.base.RedirectView" title="django.views.generic.base.RedirectView"><tt class="xref py py-class docutils literal"><span class="pre">RedirectView</span></tt></a> now has a <cite>pattern_name</cite>
+attribute which allows it to choose the target by reversing the URL.</p>
+</li>
+<li><p class="first">In Django 1.4 and 1.5, a blank string was unintentionally not considered to
+be a valid password. This meant
+<a class="reference internal" href="../ref/contrib/auth.html#django.contrib.auth.models.User.set_password" title="django.contrib.auth.models.User.set_password"><tt class="xref py py-meth docutils literal"><span class="pre">set_password()</span></tt></a> would save a blank
+password as an unusable password like
+<a class="reference internal" href="../ref/contrib/auth.html#django.contrib.auth.models.User.set_unusable_password" title="django.contrib.auth.models.User.set_unusable_password"><tt class="xref py py-meth docutils literal"><span class="pre">set_unusable_password()</span></tt></a> does, and
+thus <a class="reference internal" href="../ref/contrib/auth.html#django.contrib.auth.models.User.check_password" title="django.contrib.auth.models.User.check_password"><tt class="xref py py-meth docutils literal"><span class="pre">check_password()</span></tt></a> always
+returned <tt class="docutils literal"><span class="pre">False</span></tt> for blank passwords. This has been corrected in this
+release: blank passwords are now valid.</p>
+</li>
+<li><p class="first">The admin <a class="reference internal" href="../ref/contrib/admin/index.html#django.contrib.admin.ModelAdmin.changelist_view" title="django.contrib.admin.ModelAdmin.changelist_view"><tt class="xref py py-attr docutils literal"><span class="pre">changelist_view</span></tt></a> previously
+accepted a <tt class="docutils literal"><span class="pre">pop</span></tt> GET parameter to signify it was to be displayed in a popup.
+This parameter has been renamed to <tt class="docutils literal"><span class="pre">_popup</span></tt> to be consistent with the rest
+of the admin views. You should update your custom templates if they use the
+previous parameter name.</p>
+</li>
+<li><p class="first"><a class="reference internal" href="../ref/validators.html#django.core.validators.validate_email" title="django.core.validators.validate_email"><tt class="xref py py-meth docutils literal"><span class="pre">validate_email()</span></tt></a> now accepts email addresses
+with <tt class="docutils literal"><span class="pre">localhost</span></tt> as the domain.</p>
+</li>
+<li><p class="first">The <a class="reference internal" href="../ref/django-admin.html#django-admin-option---keep-pot"><tt class="xref std std-djadminopt docutils literal"><span class="pre">--keep-pot</span></tt></a> option was added to <a class="reference internal" href="../ref/django-admin.html#django-admin-makemessages"><tt class="xref std std-djadmin docutils literal"><span class="pre">makemessages</span></tt></a>
+to prevent django from deleting the temporary .pot file it generates before
+creating the .po file.</p>
+</li>
+<li><p class="first">The undocumented <tt class="docutils literal"><span class="pre">django.core.servers.basehttp.WSGIServerException</span></tt> has
+been removed. Use <tt class="docutils literal"><span class="pre">socket.error</span></tt> provided by the standard library instead.
+This change was also released in Django 1.5.5.</p>
+</li>
+<li><p class="first">The signature of <a class="reference internal" href="../ref/class-based-views/base.html#django.views.generic.base.RedirectView.get_redirect_url" title="django.views.generic.base.RedirectView.get_redirect_url"><tt class="xref py py-meth docutils literal"><span class="pre">django.views.generic.base.RedirectView.get_redirect_url()</span></tt></a>
+has changed and now accepts positional arguments as well (<tt class="docutils literal"><span class="pre">*args,</span> <span class="pre">**kwargs</span></tt>).
+Any unnamed captured group will now be passed to <tt class="docutils literal"><span class="pre">get_redirect_url()</span></tt>
+which may result in a <tt class="docutils literal"><span class="pre">TypeError</span></tt> if you don&#8217;t update the signature of your
+custom method.</p>
+</li>
+</ul>
+</div>
+</div>
+<div class="section" id="s-features-deprecated-in-1-6">
+<span id="s-deprecated-features-1-6"></span><span id="features-deprecated-in-1-6"></span><span id="deprecated-features-1-6"></span><h2>Features deprecated in 1.6<a class="headerlink" href="#features-deprecated-in-1-6" title="Permalink to this headline">¶</a></h2>
+<div class="section" id="s-transaction-management-apis">
+<span id="transaction-management-apis"></span><h3>Transaction management APIs<a class="headerlink" href="#transaction-management-apis" title="Permalink to this headline">¶</a></h3>
+<p>Transaction management was completely overhauled in Django 1.6, and the
+current APIs are deprecated:</p>
+<ul class="simple">
+<li><tt class="docutils literal"><span class="pre">django.middleware.transaction.TransactionMiddleware</span></tt></li>
+<li><tt class="docutils literal"><span class="pre">django.db.transaction.autocommit</span></tt></li>
+<li><tt class="docutils literal"><span class="pre">django.db.transaction.commit_on_success</span></tt></li>
+<li><tt class="docutils literal"><span class="pre">django.db.transaction.commit_manually</span></tt></li>
+<li>the <tt class="docutils literal"><span class="pre">TRANSACTIONS_MANAGED</span></tt> setting</li>
+</ul>
+</div>
+<div class="section" id="s-django-contrib-comments">
+<span id="django-contrib-comments"></span><h3><tt class="docutils literal"><span class="pre">django.contrib.comments</span></tt><a class="headerlink" href="#django-contrib-comments" title="Permalink to this headline">¶</a></h3>
+<p>Django&#8217;s comment framework has been deprecated and is no longer supported. It
+will be available in Django 1.6 and 1.7, and removed in Django 1.8. Most users
+will be better served with a custom solution, or a hosted product like <a class="reference external" href="https://disqus.com/">Disqus</a>.</p>
+<p>The code formerly known as <tt class="docutils literal"><span class="pre">django.contrib.comments</span></tt> is <a class="reference external" href="https://github.com/django/django-contrib-comments">still available
+in an external repository</a>.</p>
+</div>
+<div class="section" id="s-support-for-postgresql-versions-older-than-8-4">
+<span id="support-for-postgresql-versions-older-than-8-4"></span><h3>Support for PostgreSQL versions older than 8.4<a class="headerlink" href="#support-for-postgresql-versions-older-than-8-4" title="Permalink to this headline">¶</a></h3>
+<p>The end of upstream support periods was reached in December 2011 for
+PostgreSQL 8.2 and in February 2013 for 8.3. As a consequence, Django 1.6 sets
+8.4 as the minimum PostgreSQL version it officially supports.</p>
+<p>You&#8217;re strongly encouraged to use the most recent version of PostgreSQL
+available, because of performance improvements and to take advantage of the
+native streaming replication available in PostgreSQL 9.x.</p>
+</div>
+<div class="section" id="s-changes-to-cycle-and-firstof">
+<span id="changes-to-cycle-and-firstof"></span><h3>Changes to <a class="reference internal" href="../ref/templates/builtins.html#std:templatetag-cycle"><tt class="xref std std-ttag docutils literal"><span class="pre">cycle</span></tt></a> and <a class="reference internal" href="../ref/templates/builtins.html#std:templatetag-firstof"><tt class="xref std std-ttag docutils literal"><span class="pre">firstof</span></tt></a><a class="headerlink" href="#changes-to-cycle-and-firstof" title="Permalink to this headline">¶</a></h3>
+<p>The template system generally escapes all variables to avoid XSS attacks.
+However, due to an accident of history, the <a class="reference internal" href="../ref/templates/builtins.html#std:templatetag-cycle"><tt class="xref std std-ttag docutils literal"><span class="pre">cycle</span></tt></a> and <a class="reference internal" href="../ref/templates/builtins.html#std:templatetag-firstof"><tt class="xref std std-ttag docutils literal"><span class="pre">firstof</span></tt></a>
+tags render their arguments as-is.</p>
+<p>Django 1.6 starts a process to correct this inconsistency. The <tt class="docutils literal"><span class="pre">future</span></tt>
+template library provides alternate implementations of <a class="reference internal" href="../ref/templates/builtins.html#std:templatetag-cycle"><tt class="xref std std-ttag docutils literal"><span class="pre">cycle</span></tt></a> and
+<a class="reference internal" href="../ref/templates/builtins.html#std:templatetag-firstof"><tt class="xref std std-ttag docutils literal"><span class="pre">firstof</span></tt></a> that autoescape their inputs. If you&#8217;re using these tags,
+you&#8217;re encouraged to include the following line at the top of your templates to
+enable the new behavior:</p>
+<div class="highlight-python"><div class="highlight"><pre>{% load cycle from future %}
+</pre></div>
+</div>
+<p>or:</p>
+<div class="highlight-python"><div class="highlight"><pre>{% load firstof from future %}
+</pre></div>
+</div>
+<p>The tags implementing the old behavior have been deprecated, and in Django
+1.8, the old behavior will be replaced with the new behavior. To ensure
+compatibility with future versions of Django, existing templates should be
+modified to use the <tt class="docutils literal"><span class="pre">future</span></tt> versions.</p>
+<p>If necessary, you can temporarily disable auto-escaping with
+<a class="reference internal" href="../ref/utils.html#django.utils.safestring.mark_safe" title="django.utils.safestring.mark_safe"><tt class="xref py py-func docutils literal"><span class="pre">mark_safe()</span></tt></a> or <a class="reference internal" href="../ref/templates/builtins.html#std:templatetag-autoescape"><tt class="xref std std-ttag docutils literal"><span class="pre">{%</span> <span class="pre">autoescape</span> <span class="pre">off</span> <span class="pre">%}</span></tt></a>.</p>
+</div>
+<div class="section" id="s-cache-middleware-anonymous-only-setting">
+<span id="cache-middleware-anonymous-only-setting"></span><h3><tt class="docutils literal"><span class="pre">CACHE_MIDDLEWARE_ANONYMOUS_ONLY</span></tt> setting<a class="headerlink" href="#cache-middleware-anonymous-only-setting" title="Permalink to this headline">¶</a></h3>
+<p><tt class="docutils literal"><span class="pre">CacheMiddleware</span></tt> and <tt class="docutils literal"><span class="pre">UpdateCacheMiddleware</span></tt> used to provide a way to
+cache requests only if they weren&#8217;t made by a logged-in user. This mechanism
+was largely ineffective because the middleware correctly takes into account the
+<tt class="docutils literal"><span class="pre">Vary:</span> <span class="pre">Cookie</span></tt> HTTP header, and this header is being set on a variety of
+occasions, such as:</p>
+<ul class="simple">
+<li>accessing the session, or</li>
+<li>using CSRF protection, which is turned on by default, or</li>
+<li>using a client-side library which sets cookies, like <a class="reference external" href="http://www.google.com/analytics/">Google Analytics</a>.</li>
+</ul>
+<p>This makes the cache effectively work on a per-session basis regardless of the
+<tt class="docutils literal"><span class="pre">CACHE_MIDDLEWARE_ANONYMOUS_ONLY</span></tt> setting.</p>
+</div>
+<div class="section" id="s-send-broken-link-emails-setting">
+<span id="send-broken-link-emails-setting"></span><h3><tt class="docutils literal"><span class="pre">SEND_BROKEN_LINK_EMAILS</span></tt> setting<a class="headerlink" href="#send-broken-link-emails-setting" title="Permalink to this headline">¶</a></h3>
+<p><a class="reference internal" href="../ref/middleware.html#django.middleware.common.CommonMiddleware" title="django.middleware.common.CommonMiddleware"><tt class="xref py py-class docutils literal"><span class="pre">CommonMiddleware</span></tt></a> used to provide basic
+reporting of broken links by email when <tt class="docutils literal"><span class="pre">SEND_BROKEN_LINK_EMAILS</span></tt> is set to
+<tt class="docutils literal"><span class="pre">True</span></tt>.</p>
+<p>Because of intractable ordering problems between
+<a class="reference internal" href="../ref/middleware.html#django.middleware.common.CommonMiddleware" title="django.middleware.common.CommonMiddleware"><tt class="xref py py-class docutils literal"><span class="pre">CommonMiddleware</span></tt></a> and
+<a class="reference internal" href="../ref/middleware.html#django.middleware.locale.LocaleMiddleware" title="django.middleware.locale.LocaleMiddleware"><tt class="xref py py-class docutils literal"><span class="pre">LocaleMiddleware</span></tt></a>, this feature was split
+out into a new middleware:
+<a class="reference internal" href="../ref/middleware.html#django.middleware.common.BrokenLinkEmailsMiddleware" title="django.middleware.common.BrokenLinkEmailsMiddleware"><tt class="xref py py-class docutils literal"><span class="pre">BrokenLinkEmailsMiddleware</span></tt></a>.</p>
+<p>If you&#8217;re relying on this feature, you should add
+<tt class="docutils literal"><span class="pre">'django.middleware.common.BrokenLinkEmailsMiddleware'</span></tt> to your
+<a class="reference internal" href="../ref/settings.html#std:setting-MIDDLEWARE_CLASSES"><tt class="xref std std-setting docutils literal"><span class="pre">MIDDLEWARE_CLASSES</span></tt></a> setting and remove <tt class="docutils literal"><span class="pre">SEND_BROKEN_LINK_EMAILS</span></tt>
+from your settings.</p>
+</div>
+<div class="section" id="s-has-changed-method-on-widgets">
+<span id="has-changed-method-on-widgets"></span><h3><tt class="docutils literal"><span class="pre">_has_changed</span></tt> method on widgets<a class="headerlink" href="#has-changed-method-on-widgets" title="Permalink to this headline">¶</a></h3>
+<p>If you defined your own form widgets and defined the <tt class="docutils literal"><span class="pre">_has_changed</span></tt> method
+on a widget, you should now define this method on the form field itself.</p>
+</div>
+<div class="section" id="s-module-name-model-meta-attribute">
+<span id="module-name-model-meta-attribute"></span><h3><tt class="docutils literal"><span class="pre">module_name</span></tt> model _meta attribute<a class="headerlink" href="#module-name-model-meta-attribute" title="Permalink to this headline">¶</a></h3>
+<p><tt class="docutils literal"><span class="pre">Model._meta.module_name</span></tt> was renamed to <tt class="docutils literal"><span class="pre">model_name</span></tt>. Despite being a
+private API, it will go through a regular deprecation path.</p>
+</div>
+<div class="section" id="s-get-add-change-delete-permission-model-meta-methods">
+<span id="get-add-change-delete-permission-model-meta-methods"></span><h3><tt class="docutils literal"><span class="pre">get_(add|change|delete)_permission</span></tt> model _meta methods<a class="headerlink" href="#get-add-change-delete-permission-model-meta-methods" title="Permalink to this headline">¶</a></h3>
+<p><tt class="docutils literal"><span class="pre">Model._meta.get_(add|change|delete)_permission</span></tt> methods were deprecated.
+Even if they were not part of the public API they&#8217;ll also go through
+a regular deprecation path. You can replace them with
+<tt class="docutils literal"><span class="pre">django.contrib.auth.get_permission_codename('action',</span> <span class="pre">Model._meta)</span></tt> where
+<tt class="docutils literal"><span class="pre">'action'</span></tt> is <tt class="docutils literal"><span class="pre">'add'</span></tt>, <tt class="docutils literal"><span class="pre">'change'</span></tt>, or <tt class="docutils literal"><span class="pre">'delete'</span></tt>.</p>
+</div>
+<div class="section" id="s-get-query-set-and-similar-methods-renamed-to-get-queryset">
+<span id="get-query-set-and-similar-methods-renamed-to-get-queryset"></span><h3><tt class="docutils literal"><span class="pre">get_query_set</span></tt> and similar methods renamed to <tt class="docutils literal"><span class="pre">get_queryset</span></tt><a class="headerlink" href="#get-query-set-and-similar-methods-renamed-to-get-queryset" title="Permalink to this headline">¶</a></h3>
+<p>Methods that return a <tt class="docutils literal"><span class="pre">QuerySet</span></tt> such as <tt class="docutils literal"><span class="pre">Manager.get_query_set</span></tt> or
+<tt class="docutils literal"><span class="pre">ModelAdmin.queryset</span></tt> have been renamed to <tt class="docutils literal"><span class="pre">get_queryset</span></tt>.</p>
+<p>If you are writing a library that implements, for example, a
+<tt class="docutils literal"><span class="pre">Manager.get_query_set</span></tt> method, and you need to support old Django versions,
+you should rename the method and conditionally add an alias with the old name:</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="k">class</span> <span class="nc">CustomManager</span><span class="p">(</span><span class="n">models</span><span class="o">.</span><span class="n">Manager</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">get_queryset</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">pass</span> <span class="c"># ...</span>
+
+    <span class="k">if</span> <span class="n">django</span><span class="o">.</span><span class="n">VERSION</span> <span class="o">&lt;</span> <span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">6</span><span class="p">):</span>
+        <span class="n">get_query_set</span> <span class="o">=</span> <span class="n">get_queryset</span>
+
+    <span class="c"># For Django &gt;= 1.6, models.Manager provides a get_query_set fallback</span>
+    <span class="c"># that emits a warning when used.</span>
+</pre></div>
+</div>
+<p>If you are writing a library that needs to call the <tt class="docutils literal"><span class="pre">get_queryset</span></tt> method and
+must support old Django versions, you should write:</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="n">get_queryset</span> <span class="o">=</span> <span class="p">(</span><span class="n">some_manager</span><span class="o">.</span><span class="n">get_query_set</span>
+                <span class="k">if</span> <span class="nb">hasattr</span><span class="p">(</span><span class="n">some_manager</span><span class="p">,</span> <span class="s">&#39;get_query_set&#39;</span><span class="p">)</span>
+                <span class="k">else</span> <span class="n">some_manager</span><span class="o">.</span><span class="n">get_queryset</span><span class="p">)</span>
+<span class="k">return</span> <span class="n">get_queryset</span><span class="p">()</span> <span class="c"># etc</span>
+</pre></div>
+</div>
+<p>In the general case of a custom manager that both implements its own
+<tt class="docutils literal"><span class="pre">get_queryset</span></tt> method and calls that method, and needs to work with older Django
+versions, and libraries that have not been updated yet, it is useful to define
+a <tt class="docutils literal"><span class="pre">get_queryset_compat</span></tt> method as below and use it internally to your manager:</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="k">class</span> <span class="nc">YourCustomManager</span><span class="p">(</span><span class="n">models</span><span class="o">.</span><span class="n">Manager</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">get_queryset</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="n">YourCustomQuerySet</span><span class="p">()</span> <span class="c"># for example</span>
+
+    <span class="n">get_query_set</span> <span class="o">=</span> <span class="n">get_queryset</span>
+
+    <span class="k">def</span> <span class="nf">active</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span> <span class="c"># for example</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_queryset_compat</span><span class="p">()</span><span class="o">.</span><span class="n">filter</span><span class="p">(</span><span class="n">active</span><span class="o">=</span><span class="bp">True</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">get_queryset_compat</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="n">get_queryset</span> <span class="o">=</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">get_query_set</span>
+                        <span class="k">if</span> <span class="nb">hasattr</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="s">&#39;get_query_set&#39;</span><span class="p">)</span>
+                        <span class="k">else</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_queryset</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">get_queryset</span><span class="p">()</span>
+</pre></div>
+</div>
+<p>This helps to minimize the changes that are needed, but also works correctly in
+the case of subclasses (such as <tt class="docutils literal"><span class="pre">RelatedManagers</span></tt> from Django 1.5) which might
+override either <tt class="docutils literal"><span class="pre">get_query_set</span></tt> or <tt class="docutils literal"><span class="pre">get_queryset</span></tt>.</p>
+</div>
+<div class="section" id="s-shortcut-view-and-urlconf">
+<span id="shortcut-view-and-urlconf"></span><h3><tt class="docutils literal"><span class="pre">shortcut</span></tt> view and URLconf<a class="headerlink" href="#shortcut-view-and-urlconf" title="Permalink to this headline">¶</a></h3>
+<p>The <tt class="docutils literal"><span class="pre">shortcut</span></tt> view was moved from <tt class="docutils literal"><span class="pre">django.views.defaults</span></tt> to
+<tt class="docutils literal"><span class="pre">django.contrib.contenttypes.views</span></tt> shortly after the 1.0 release, but the
+old location was never deprecated. This oversight was corrected in Django 1.6
+and you should now use the new location.</p>
+<p>The URLconf <tt class="docutils literal"><span class="pre">django.conf.urls.shortcut</span></tt> was also deprecated. If you&#8217;re
+including it in an URLconf, simply replace:</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="p">(</span><span class="s">r&#39;^prefix/&#39;</span><span class="p">,</span> <span class="n">include</span><span class="p">(</span><span class="s">&#39;django.conf.urls.shortcut&#39;</span><span class="p">)),</span>
+</pre></div>
+</div>
+<p>with:</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="p">(</span><span class="s">r&#39;^prefix/(?P&lt;content_type_id&gt;\d+)/(?P&lt;object_id&gt;.*)/$&#39;</span><span class="p">,</span> <span class="s">&#39;django.contrib.contenttypes.views.shortcut&#39;</span><span class="p">),</span>
+</pre></div>
+</div>
+</div>
+<div class="section" id="s-modelform-without-fields-or-exclude">
+<span id="modelform-without-fields-or-exclude"></span><h3><tt class="docutils literal"><span class="pre">ModelForm</span></tt> without <tt class="docutils literal"><span class="pre">fields</span></tt> or <tt class="docutils literal"><span class="pre">exclude</span></tt><a class="headerlink" href="#modelform-without-fields-or-exclude" title="Permalink to this headline">¶</a></h3>
+<p>Previously, if you wanted a <a class="reference internal" href="../topics/forms/modelforms.html#django.forms.ModelForm" title="django.forms.ModelForm"><tt class="xref py py-class docutils literal"><span class="pre">ModelForm</span></tt></a> to use all fields on
+the model, you could simply omit the <tt class="docutils literal"><span class="pre">Meta.fields</span></tt> attribute, and all fields
+would be used.</p>
+<p>This can lead to security problems where fields are added to the model and,
+unintentionally, automatically become editable by end users. In some cases,
+particular with boolean fields, it is possible for this problem to be completely
+invisible. This is a form of <a class="reference external" href="http://en.wikipedia.org/wiki/Mass_assignment_vulnerability">Mass assignment vulnerability</a>.</p>
+<p>For this reason, this behavior is deprecated, and using the <tt class="docutils literal"><span class="pre">Meta.exclude</span></tt>
+option is strongly discouraged. Instead, all fields that are intended for
+inclusion in the form should be listed explicitly in the <tt class="docutils literal"><span class="pre">fields</span></tt> attribute.</p>
+<p>If this security concern really does not apply in your case, there is a shortcut
+to explicitly indicate that all fields should be used - use the special value
+<tt class="docutils literal"><span class="pre">&quot;__all__&quot;</span></tt> for the fields attribute:</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="k">class</span> <span class="nc">MyModelForm</span><span class="p">(</span><span class="n">ModelForm</span><span class="p">):</span>
+    <span class="k">class</span> <span class="nc">Meta</span><span class="p">:</span>
+        <span class="n">fields</span> <span class="o">=</span> <span class="s">&quot;__all__&quot;</span>
+        <span class="n">model</span> <span class="o">=</span> <span class="n">MyModel</span>
+</pre></div>
+</div>
+<p>If you have custom <tt class="docutils literal"><span class="pre">ModelForms</span></tt> that only need to be used in the admin, there
+is another option. The admin has its own methods for defining fields
+(<tt class="docutils literal"><span class="pre">fieldsets</span></tt> etc.), and so adding a list of fields to the <tt class="docutils literal"><span class="pre">ModelForm</span></tt> is
+redundant. Instead, simply omit the <tt class="docutils literal"><span class="pre">Meta</span></tt> inner class of the <tt class="docutils literal"><span class="pre">ModelForm</span></tt>,
+or omit the <tt class="docutils literal"><span class="pre">Meta.model</span></tt> attribute. Since the <tt class="docutils literal"><span class="pre">ModelAdmin</span></tt> subclass knows
+which model it is for, it can add the necessary attributes to derive a
+functioning <tt class="docutils literal"><span class="pre">ModelForm</span></tt>. This behavior also works for earlier Django
+versions.</p>
+</div>
+<div class="section" id="s-updateview-and-createview-without-explicit-fields">
+<span id="updateview-and-createview-without-explicit-fields"></span><h3><tt class="docutils literal"><span class="pre">UpdateView</span></tt> and <tt class="docutils literal"><span class="pre">CreateView</span></tt> without explicit fields<a class="headerlink" href="#updateview-and-createview-without-explicit-fields" title="Permalink to this headline">¶</a></h3>
+<p>The generic views <a class="reference internal" href="../ref/class-based-views/generic-editing.html#django.views.generic.edit.CreateView" title="django.views.generic.edit.CreateView"><tt class="xref py py-class docutils literal"><span class="pre">CreateView</span></tt></a> and
+<a class="reference internal" href="../ref/class-based-views/generic-editing.html#django.views.generic.edit.UpdateView" title="django.views.generic.edit.UpdateView"><tt class="xref py py-class docutils literal"><span class="pre">UpdateView</span></tt></a>, and anything else derived from
+<a class="reference internal" href="../ref/class-based-views/mixins-editing.html#django.views.generic.edit.ModelFormMixin" title="django.views.generic.edit.ModelFormMixin"><tt class="xref py py-class docutils literal"><span class="pre">ModelFormMixin</span></tt></a>, are vulnerable to the
+security problem described in the section above, because they can automatically
+create a <tt class="docutils literal"><span class="pre">ModelForm</span></tt> that uses all fields for a model.</p>
+<p>For this reason, if you use these views for editing models, you must also supply
+the <tt class="docutils literal"><span class="pre">fields</span></tt> attribute (new in Django 1.6), which is a list of model fields
+and works in the same way as the <a class="reference internal" href="../topics/forms/modelforms.html#django.forms.ModelForm" title="django.forms.ModelForm"><tt class="xref py py-class docutils literal"><span class="pre">ModelForm</span></tt></a>
+<tt class="docutils literal"><span class="pre">Meta.fields</span></tt> attribute. Alternatively, you can set the <tt class="docutils literal"><span class="pre">form_class</span></tt>
+attribute to a <tt class="docutils literal"><span class="pre">ModelForm</span></tt> that explicitly defines the fields to be used.
+Defining an <tt class="docutils literal"><span class="pre">UpdateView</span></tt> or <tt class="docutils literal"><span class="pre">CreateView</span></tt> subclass to be used with a model
+but without an explicit list of fields is deprecated.</p>
+</div>
+<div class="section" id="s-munging-of-help-text-of-model-form-fields-for-manytomanyfield-fields">
+<span id="s-m2m-help-text-deprecation"></span><span id="munging-of-help-text-of-model-form-fields-for-manytomanyfield-fields"></span><span id="m2m-help-text-deprecation"></span><h3>Munging of help text of model form fields for <tt class="docutils literal"><span class="pre">ManyToManyField</span></tt> fields<a class="headerlink" href="#munging-of-help-text-of-model-form-fields-for-manytomanyfield-fields" title="Permalink to this headline">¶</a></h3>
+<p>All special handling of the <tt class="docutils literal"><span class="pre">help_text</span></tt> attribute of <tt class="docutils literal"><span class="pre">ManyToManyField</span></tt> model
+fields performed by standard model or model form fields as described in
+<a class="reference internal" href="#m2m-help-text"><em>Help text of model form fields for ManyToManyField fields</em></a> above is deprecated and will be removed in Django 1.8.</p>
+<p>Help text of these fields will need to be handled either by applications, custom
+form fields or widgets, just like happens with the rest of the model field
+types.</p>
+</div>
+</div>
+</div>
+
+
+          </div>
+        </div>
+      </div>
+      
+        
+          <div class="yui-b" id="sidebar">
+            
+      <div class="sphinxsidebar">
+        <div class="sphinxsidebarwrapper">
+  <h3><a href="../contents.html">Table Of Contents</a></h3>
+  <ul>
+<li><a class="reference internal" href="#">Django 1.6 release notes</a><ul>
+<li><a class="reference internal" href="#python-compatibility">Python compatibility</a></li>
+<li><a class="reference internal" href="#what-s-new-in-django-1-6">What&#8217;s new in Django 1.6</a><ul>
+<li><a class="reference internal" href="#simplified-default-project-and-app-templates">Simplified default project and app templates</a></li>
+<li><a class="reference internal" href="#improved-transaction-management">Improved transaction management</a></li>
+<li><a class="reference internal" href="#persistent-database-connections">Persistent database connections</a></li>
+<li><a class="reference internal" href="#discovery-of-tests-in-any-test-module">Discovery of tests in any test module</a></li>
+<li><a class="reference internal" href="#time-zone-aware-aggregation">Time zone aware aggregation</a></li>
+<li><a class="reference internal" href="#support-for-savepoints-in-sqlite">Support for savepoints in SQLite</a></li>
+<li><a class="reference internal" href="#binaryfield-model-field"><tt class="docutils literal"><span class="pre">BinaryField</span></tt> model field</a></li>
+<li><a class="reference internal" href="#geodjango-form-widgets">GeoDjango form widgets</a></li>
+<li><a class="reference internal" href="#check-management-command-added-for-verifying-compatibility"><tt class="docutils literal"><span class="pre">check</span></tt> management command added for verifying compatibility</a></li>
+<li><a class="reference internal" href="#model-save-algorithm-changed"><tt class="docutils literal"><span class="pre">Model.save()</span></tt> algorithm changed</a></li>
+<li><a class="reference internal" href="#minor-features">Minor features</a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#backwards-incompatible-changes-in-1-6">Backwards incompatible changes in 1.6</a><ul>
+<li><a class="reference internal" href="#new-transaction-management-model">New transaction management model</a><ul>
+<li><a class="reference internal" href="#behavior-changes">Behavior changes</a></li>
+<li><a class="reference internal" href="#savepoints-and-assertnumqueries">Savepoints and <tt class="docutils literal"><span class="pre">assertNumQueries</span></tt></a></li>
+<li><a class="reference internal" href="#autocommit-option-for-postgresql">Autocommit option for PostgreSQL</a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#new-test-runner">New test runner</a></li>
+<li><a class="reference internal" href="#removal-of-django-contrib-gis-tests-geodjangotestsuiterunner-geodjango-custom-test-runner">Removal of <tt class="docutils literal"><span class="pre">django.contrib.gis.tests.GeoDjangoTestSuiteRunner</span></tt> GeoDjango custom test runner</a></li>
+<li><a class="reference internal" href="#custom-user-models-in-tests">Custom User models in tests</a></li>
+<li><a class="reference internal" href="#time-zone-aware-day-month-and-week-day-lookups">Time zone-aware <tt class="docutils literal"><span class="pre">day</span></tt>, <tt class="docutils literal"><span class="pre">month</span></tt>, and <tt class="docutils literal"><span class="pre">week_day</span></tt> lookups</a></li>
+<li><a class="reference internal" href="#addition-of-queryset-datetimes">Addition of <tt class="docutils literal"><span class="pre">QuerySet.datetimes()</span></tt></a><ul>
+<li><a class="reference internal" href="#queryset-dates-returns-date-objects"><tt class="docutils literal"><span class="pre">QuerySet.dates()</span></tt> returns <tt class="docutils literal"><span class="pre">date</span></tt> objects</a></li>
+<li><a class="reference internal" href="#queryset-dates-no-longer-usable-on-datetimefield"><tt class="docutils literal"><span class="pre">QuerySet.dates()</span></tt> no longer usable on <tt class="docutils literal"><span class="pre">DateTimeField</span></tt></a></li>
+<li><a class="reference internal" href="#date-hierarchy-requires-time-zone-definitions"><tt class="docutils literal"><span class="pre">date_hierarchy</span></tt> requires time zone definitions</a></li>
+<li><a class="reference internal" href="#date-list-in-generic-views-requires-time-zone-definitions"><tt class="docutils literal"><span class="pre">date_list</span></tt> in generic views requires time zone definitions</a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#new-lookups-may-clash-with-model-fields">New lookups may clash with model fields</a></li>
+<li><a class="reference internal" href="#booleanfield-no-longer-defaults-to-false"><tt class="docutils literal"><span class="pre">BooleanField</span></tt> no longer defaults to <tt class="docutils literal"><span class="pre">False</span></tt></a></li>
+<li><a class="reference internal" href="#translations-and-comments-in-templates">Translations and comments in templates</a><ul>
+<li><a class="reference internal" href="#extraction-of-translations-after-comments">Extraction of translations after comments</a></li>
+<li><a class="reference internal" href="#location-of-translator-comments">Location of translator comments</a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#quoting-in-reverse">Quoting in <tt class="docutils literal"><span class="pre">reverse()</span></tt></a></li>
+<li><a class="reference internal" href="#storage-of-ip-addresses-in-the-comments-app">Storage of IP addresses in the comments app</a></li>
+<li><a class="reference internal" href="#percent-literals-in-cursor-execute-queries">Percent literals in <tt class="docutils literal"><span class="pre">cursor.execute</span></tt> queries</a></li>
+<li><a class="reference internal" href="#help-text-of-model-form-fields-for-manytomanyfield-fields">Help text of model form fields for ManyToManyField fields</a></li>
+<li><a class="reference internal" href="#queryset-iteration">QuerySet iteration</a></li>
+<li><a class="reference internal" href="#boundfield-label-tag-now-includes-the-form-s-label-suffix"><tt class="docutils literal"><span class="pre">BoundField.label_tag</span></tt> now includes the form&#8217;s <tt class="docutils literal"><span class="pre">label_suffix</span></tt></a></li>
+<li><a class="reference internal" href="#admin-views-changelist-filters-get-parameter">Admin views <tt class="docutils literal"><span class="pre">_changelist_filters</span></tt> GET parameter</a></li>
+<li><a class="reference internal" href="#django-contrib-auth-password-reset-uses-base-64-encoding-of-user-pk"><tt class="docutils literal"><span class="pre">django.contrib.auth</span></tt> password reset uses base 64 encoding of <tt class="docutils literal"><span class="pre">User</span></tt> PK</a></li>
+<li><a class="reference internal" href="#default-session-serialization-switched-to-json">Default session serialization switched to JSON</a></li>
+<li><a class="reference internal" href="#object-relational-mapper-changes">Object Relational Mapper changes</a></li>
+<li><a class="reference internal" href="#miscellaneous">Miscellaneous</a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#features-deprecated-in-1-6">Features deprecated in 1.6</a><ul>
+<li><a class="reference internal" href="#transaction-management-apis">Transaction management APIs</a></li>
+<li><a class="reference internal" href="#django-contrib-comments"><tt class="docutils literal"><span class="pre">django.contrib.comments</span></tt></a></li>
+<li><a class="reference internal" href="#support-for-postgresql-versions-older-than-8-4">Support for PostgreSQL versions older than 8.4</a></li>
+<li><a class="reference internal" href="#changes-to-cycle-and-firstof">Changes to <tt class="docutils literal"><span class="pre">cycle</span></tt> and <tt class="docutils literal"><span class="pre">firstof</span></tt></a></li>
+<li><a class="reference internal" href="#cache-middleware-anonymous-only-setting"><tt class="docutils literal"><span class="pre">CACHE_MIDDLEWARE_ANONYMOUS_ONLY</span></tt> setting</a></li>
+<li><a class="reference internal" href="#send-broken-link-emails-setting"><tt class="docutils literal"><span class="pre">SEND_BROKEN_LINK_EMAILS</span></tt> setting</a></li>
+<li><a class="reference internal" href="#has-changed-method-on-widgets"><tt class="docutils literal"><span class="pre">_has_changed</span></tt> method on widgets</a></li>
+<li><a class="reference internal" href="#module-name-model-meta-attribute"><tt class="docutils literal"><span class="pre">module_name</span></tt> model _meta attribute</a></li>
+<li><a class="reference internal" href="#get-add-change-delete-permission-model-meta-methods"><tt class="docutils literal"><span class="pre">get_(add|change|delete)_permission</span></tt> model _meta methods</a></li>
+<li><a class="reference internal" href="#get-query-set-and-similar-methods-renamed-to-get-queryset"><tt class="docutils literal"><span class="pre">get_query_set</span></tt> and similar methods renamed to <tt class="docutils literal"><span class="pre">get_queryset</span></tt></a></li>
+<li><a class="reference internal" href="#shortcut-view-and-urlconf"><tt class="docutils literal"><span class="pre">shortcut</span></tt> view and URLconf</a></li>
+<li><a class="reference internal" href="#modelform-without-fields-or-exclude"><tt class="docutils literal"><span class="pre">ModelForm</span></tt> without <tt class="docutils literal"><span class="pre">fields</span></tt> or <tt class="docutils literal"><span class="pre">exclude</span></tt></a></li>
+<li><a class="reference internal" href="#updateview-and-createview-without-explicit-fields"><tt class="docutils literal"><span class="pre">UpdateView</span></tt> and <tt class="docutils literal"><span class="pre">CreateView</span></tt> without explicit fields</a></li>
+<li><a class="reference internal" href="#munging-of-help-text-of-model-form-fields-for-manytomanyfield-fields">Munging of help text of model form fields for <tt class="docutils literal"><span class="pre">ManyToManyField</span></tt> fields</a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+
+  <h3>Browse</h3>
+  <ul>
+    
+      <li>Prev: <a href="1.6.1.html">Django 1.6.1 release notes</a></li>
+    
+    
+      <li>Next: <a href="1.5.12.html">Django 1.5.12 release notes</a></li>
+    
+  </ul>
+  <h3>You are here:</h3>
+  <ul>
+      <li>
+        <a href="../index.html">Django 1.8.2.dev20150505153848 documentation</a>
+        
+          <ul><li><a href="index.html">Release notes</a>
+        
+        <ul><li>Django 1.6 release notes</li></ul>
+        </li></ul>
+      </li>
+  </ul>
+
+  <h3>This Page</h3>
+  <ul class="this-page-menu">
+    <li><a href="../_sources/releases/1.6.txt"
+           rel="nofollow">Show Source</a></li>
+  </ul>
+<div id="searchbox" style="display: none">
+  <h3>Quick search</h3>
+    <form class="search" action="../search.html" method="get">
+      <input type="text" name="q" />
+      <input type="submit" value="Go" />
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+    <p class="searchtip" style="font-size: 90%">
+    Enter search terms or a module, class or function name.
+    </p>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+              <h3>Last update:</h3>
+              <p class="topless">May 06, 2015</p>
+          </div>
+        
+      
+    </div>
+
+    <div id="ft">
+      <div class="nav">
+    &laquo; <a href="1.6.1.html" title="Django 1.6.1 release notes">previous</a>
+     |
+    <a href="index.html" title="Release notes" accesskey="U">up</a>
+   |
+    <a href="1.5.12.html" title="Django 1.5.12 release notes">next</a> &raquo;</div>
+    </div>
+  </div>
+
+      <div class="clearer"></div>
+    </div>
+  </body>
+</html>

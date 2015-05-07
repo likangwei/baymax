@@ -1,0 +1,226 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>django.middleware.locale &mdash; Django 1.8.2.dev20150505153848 documentation</title>
+    
+    <link rel="stylesheet" href="../../../_static/default.css" type="text/css" />
+    <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '../../../',
+        VERSION:     '1.8.2.dev20150505153848',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="../../../_static/jquery.js"></script>
+    <script type="text/javascript" src="../../../_static/underscore.js"></script>
+    <script type="text/javascript" src="../../../_static/doctools.js"></script>
+    <link rel="top" title="Django 1.8.2.dev20150505153848 documentation" href="../../../index.html" />
+    <link rel="up" title="django" href="../../django.html" />
+
+
+
+ 
+<script type="text/javascript" src="../../../templatebuiltins.js"></script>
+<script type="text/javascript">
+(function($) {
+    if (!django_template_builtins) {
+       // templatebuiltins.js missing, do nothing.
+       return;
+    }
+    $(document).ready(function() {
+        // Hyperlink Django template tags and filters
+        var base = "../../../ref/templates/builtins.html";
+        if (base == "#") {
+            // Special case for builtins.html itself
+            base = "";
+        }
+        // Tags are keywords, class '.k'
+        $("div.highlight\\-html\\+django span.k").each(function(i, elem) {
+             var tagname = $(elem).text();
+             if ($.inArray(tagname, django_template_builtins.ttags) != -1) {
+                 var fragment = tagname.replace(/_/, '-');
+                 $(elem).html("<a href='" + base + "#" + fragment + "'>" + tagname + "</a>");
+             }
+        });
+        // Filters are functions, class '.nf'
+        $("div.highlight\\-html\\+django span.nf").each(function(i, elem) {
+             var filtername = $(elem).text();
+             if ($.inArray(filtername, django_template_builtins.tfilters) != -1) {
+                 var fragment = filtername.replace(/_/, '-');
+                 $(elem).html("<a href='" + base + "#" + fragment + "'>" + filtername + "</a>");
+             }
+        });
+    });
+})(jQuery);
+</script>
+
+
+  </head>
+  <body>
+
+    <div class="document">
+  <div id="custom-doc" class="yui-t6">
+    <div id="hd">
+      <h1><a href="../../../index.html">Django 1.8.2.dev20150505153848 documentation</a></h1>
+      <div id="global-nav">
+        <a title="Home page" href="../../../index.html">Home</a>  |
+        <a title="Table of contents" href="../../../contents.html">Table of contents</a>  |
+        <a title="Global index" href="../../../genindex.html">Index</a>  |
+        <a title="Module index" href="../../../py-modindex.html">Modules</a>
+      </div>
+      <div class="nav">
+    <a href="../../index.html" title="Module code" accesskey="U">up</a></div>
+    </div>
+
+    <div id="bd">
+      <div id="yui-main">
+        <div class="yui-b">
+          <div class="yui-g" id="_modules-django-middleware-locale">
+            
+  <h1>Source code for django.middleware.locale</h1><div class="highlight"><pre>
+<span class="s">&quot;This is the locale selecting middleware that will look at accept headers&quot;</span>
+
+<span class="kn">from</span> <span class="nn">django.conf</span> <span class="kn">import</span> <span class="n">settings</span>
+<span class="kn">from</span> <span class="nn">django.core.urlresolvers</span> <span class="kn">import</span> <span class="p">(</span>
+    <span class="n">LocaleRegexURLResolver</span><span class="p">,</span> <span class="n">get_resolver</span><span class="p">,</span> <span class="n">get_script_prefix</span><span class="p">,</span> <span class="n">is_valid_path</span><span class="p">,</span>
+<span class="p">)</span>
+<span class="kn">from</span> <span class="nn">django.http</span> <span class="kn">import</span> <span class="n">HttpResponseRedirect</span>
+<span class="kn">from</span> <span class="nn">django.utils</span> <span class="kn">import</span> <span class="n">translation</span>
+<span class="kn">from</span> <span class="nn">django.utils.cache</span> <span class="kn">import</span> <span class="n">patch_vary_headers</span>
+
+
+<div class="viewcode-block" id="LocaleMiddleware"><a class="viewcode-back" href="../../../ref/middleware.html#django.middleware.locale.LocaleMiddleware">[docs]</a><span class="k">class</span> <span class="nc">LocaleMiddleware</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    This is a very simple middleware that parses a request</span>
+<span class="sd">    and decides what translation object to install in the current</span>
+<span class="sd">    thread context. This allows pages to be dynamically</span>
+<span class="sd">    translated to the language the user desires (if the language</span>
+<span class="sd">    is available, of course).</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">response_redirect_class</span> <span class="o">=</span> <span class="n">HttpResponseRedirect</span>
+
+    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_is_language_prefix_patterns_used</span> <span class="o">=</span> <span class="bp">False</span>
+        <span class="k">for</span> <span class="n">url_pattern</span> <span class="ow">in</span> <span class="n">get_resolver</span><span class="p">(</span><span class="bp">None</span><span class="p">)</span><span class="o">.</span><span class="n">url_patterns</span><span class="p">:</span>
+            <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">url_pattern</span><span class="p">,</span> <span class="n">LocaleRegexURLResolver</span><span class="p">):</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">_is_language_prefix_patterns_used</span> <span class="o">=</span> <span class="bp">True</span>
+                <span class="k">break</span>
+
+    <span class="k">def</span> <span class="nf">process_request</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">request</span><span class="p">):</span>
+        <span class="n">check_path</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">is_language_prefix_patterns_used</span><span class="p">()</span>
+        <span class="n">language</span> <span class="o">=</span> <span class="n">translation</span><span class="o">.</span><span class="n">get_language_from_request</span><span class="p">(</span>
+            <span class="n">request</span><span class="p">,</span> <span class="n">check_path</span><span class="o">=</span><span class="n">check_path</span><span class="p">)</span>
+        <span class="n">translation</span><span class="o">.</span><span class="n">activate</span><span class="p">(</span><span class="n">language</span><span class="p">)</span>
+        <span class="n">request</span><span class="o">.</span><span class="n">LANGUAGE_CODE</span> <span class="o">=</span> <span class="n">translation</span><span class="o">.</span><span class="n">get_language</span><span class="p">()</span>
+
+    <span class="k">def</span> <span class="nf">process_response</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">request</span><span class="p">,</span> <span class="n">response</span><span class="p">):</span>
+        <span class="n">language</span> <span class="o">=</span> <span class="n">translation</span><span class="o">.</span><span class="n">get_language</span><span class="p">()</span>
+        <span class="n">language_from_path</span> <span class="o">=</span> <span class="n">translation</span><span class="o">.</span><span class="n">get_language_from_path</span><span class="p">(</span><span class="n">request</span><span class="o">.</span><span class="n">path_info</span><span class="p">)</span>
+        <span class="k">if</span> <span class="p">(</span><span class="n">response</span><span class="o">.</span><span class="n">status_code</span> <span class="o">==</span> <span class="mi">404</span> <span class="ow">and</span> <span class="ow">not</span> <span class="n">language_from_path</span>
+                <span class="ow">and</span> <span class="bp">self</span><span class="o">.</span><span class="n">is_language_prefix_patterns_used</span><span class="p">()):</span>
+            <span class="n">urlconf</span> <span class="o">=</span> <span class="nb">getattr</span><span class="p">(</span><span class="n">request</span><span class="p">,</span> <span class="s">&#39;urlconf&#39;</span><span class="p">,</span> <span class="bp">None</span><span class="p">)</span>
+            <span class="n">language_path</span> <span class="o">=</span> <span class="s">&#39;/</span><span class="si">%s%s</span><span class="s">&#39;</span> <span class="o">%</span> <span class="p">(</span><span class="n">language</span><span class="p">,</span> <span class="n">request</span><span class="o">.</span><span class="n">path_info</span><span class="p">)</span>
+            <span class="n">path_valid</span> <span class="o">=</span> <span class="n">is_valid_path</span><span class="p">(</span><span class="n">language_path</span><span class="p">,</span> <span class="n">urlconf</span><span class="p">)</span>
+            <span class="k">if</span> <span class="p">(</span><span class="ow">not</span> <span class="n">path_valid</span> <span class="ow">and</span> <span class="n">settings</span><span class="o">.</span><span class="n">APPEND_SLASH</span>
+                    <span class="ow">and</span> <span class="ow">not</span> <span class="n">language_path</span><span class="o">.</span><span class="n">endswith</span><span class="p">(</span><span class="s">&#39;/&#39;</span><span class="p">)):</span>
+                <span class="n">path_valid</span> <span class="o">=</span> <span class="n">is_valid_path</span><span class="p">(</span><span class="s">&quot;</span><span class="si">%s</span><span class="s">/&quot;</span> <span class="o">%</span> <span class="n">language_path</span><span class="p">,</span> <span class="n">urlconf</span><span class="p">)</span>
+
+            <span class="k">if</span> <span class="n">path_valid</span><span class="p">:</span>
+                <span class="n">script_prefix</span> <span class="o">=</span> <span class="n">get_script_prefix</span><span class="p">()</span>
+                <span class="n">language_url</span> <span class="o">=</span> <span class="s">&quot;</span><span class="si">%s</span><span class="s">://</span><span class="si">%s%s</span><span class="s">&quot;</span> <span class="o">%</span> <span class="p">(</span>
+                    <span class="n">request</span><span class="o">.</span><span class="n">scheme</span><span class="p">,</span>
+                    <span class="n">request</span><span class="o">.</span><span class="n">get_host</span><span class="p">(),</span>
+                    <span class="c"># insert language after the script prefix and before the</span>
+                    <span class="c"># rest of the URL</span>
+                    <span class="n">request</span><span class="o">.</span><span class="n">get_full_path</span><span class="p">()</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span>
+                        <span class="n">script_prefix</span><span class="p">,</span>
+                        <span class="s">&#39;</span><span class="si">%s%s</span><span class="s">/&#39;</span> <span class="o">%</span> <span class="p">(</span><span class="n">script_prefix</span><span class="p">,</span> <span class="n">language</span><span class="p">),</span>
+                        <span class="mi">1</span>
+                    <span class="p">)</span>
+                <span class="p">)</span>
+                <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">response_redirect_class</span><span class="p">(</span><span class="n">language_url</span><span class="p">)</span>
+
+        <span class="k">if</span> <span class="ow">not</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">is_language_prefix_patterns_used</span><span class="p">()</span>
+                <span class="ow">and</span> <span class="n">language_from_path</span><span class="p">):</span>
+            <span class="n">patch_vary_headers</span><span class="p">(</span><span class="n">response</span><span class="p">,</span> <span class="p">(</span><span class="s">&#39;Accept-Language&#39;</span><span class="p">,))</span>
+        <span class="k">if</span> <span class="s">&#39;Content-Language&#39;</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">response</span><span class="p">:</span>
+            <span class="n">response</span><span class="p">[</span><span class="s">&#39;Content-Language&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">language</span>
+        <span class="k">return</span> <span class="n">response</span>
+
+    <span class="k">def</span> <span class="nf">is_language_prefix_patterns_used</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Returns `True` if the `LocaleRegexURLResolver` is used</span>
+<span class="sd">        at root level of the urlpatterns, else it returns `False`.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_is_language_prefix_patterns_used</span></div>
+</pre></div>
+
+          </div>
+        </div>
+      </div>
+      
+        
+          <div class="yui-b" id="sidebar">
+            
+      <div class="sphinxsidebar">
+        <div class="sphinxsidebarwrapper">
+  <h3>Browse</h3>
+  <ul>
+    
+    
+  </ul>
+  <h3>You are here:</h3>
+  <ul>
+      <li>
+        <a href="../../../index.html">Django 1.8.2.dev20150505153848 documentation</a>
+        
+          <ul><li><a href="../../index.html">Module code</a>
+        
+          <ul><li><a href="../../django.html">django</a>
+        
+        <ul><li>django.middleware.locale</li></ul>
+        </li></ul></li></ul>
+      </li>
+  </ul>
+
+<div id="searchbox" style="display: none">
+  <h3>Quick search</h3>
+    <form class="search" action="../../../search.html" method="get">
+      <input type="text" name="q" />
+      <input type="submit" value="Go" />
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+    <p class="searchtip" style="font-size: 90%">
+    Enter search terms or a module, class or function name.
+    </p>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+              <h3>Last update:</h3>
+              <p class="topless">May 06, 2015</p>
+          </div>
+        
+      
+    </div>
+
+    <div id="ft">
+      <div class="nav">
+    <a href="../../index.html" title="Module code" accesskey="U">up</a></div>
+    </div>
+  </div>
+
+      <div class="clearer"></div>
+    </div>
+  </body>
+</html>

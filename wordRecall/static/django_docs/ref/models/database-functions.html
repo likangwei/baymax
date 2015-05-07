@@ -1,0 +1,340 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>Database Functions &mdash; Django 1.8.2.dev20150505153848 documentation</title>
+    
+    <link rel="stylesheet" href="../../_static/default.css" type="text/css" />
+    <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '../../',
+        VERSION:     '1.8.2.dev20150505153848',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="../../_static/jquery.js"></script>
+    <script type="text/javascript" src="../../_static/underscore.js"></script>
+    <script type="text/javascript" src="../../_static/doctools.js"></script>
+    <link rel="top" title="Django 1.8.2.dev20150505153848 documentation" href="../../index.html" />
+    <link rel="up" title="Models" href="index.html" />
+    <link rel="next" title="Request and response objects" href="../request-response.html" />
+    <link rel="prev" title="Conditional Expressions" href="conditional-expressions.html" />
+
+
+
+ 
+<script type="text/javascript" src="../../templatebuiltins.js"></script>
+<script type="text/javascript">
+(function($) {
+    if (!django_template_builtins) {
+       // templatebuiltins.js missing, do nothing.
+       return;
+    }
+    $(document).ready(function() {
+        // Hyperlink Django template tags and filters
+        var base = "../templates/builtins.html";
+        if (base == "#") {
+            // Special case for builtins.html itself
+            base = "";
+        }
+        // Tags are keywords, class '.k'
+        $("div.highlight\\-html\\+django span.k").each(function(i, elem) {
+             var tagname = $(elem).text();
+             if ($.inArray(tagname, django_template_builtins.ttags) != -1) {
+                 var fragment = tagname.replace(/_/, '-');
+                 $(elem).html("<a href='" + base + "#" + fragment + "'>" + tagname + "</a>");
+             }
+        });
+        // Filters are functions, class '.nf'
+        $("div.highlight\\-html\\+django span.nf").each(function(i, elem) {
+             var filtername = $(elem).text();
+             if ($.inArray(filtername, django_template_builtins.tfilters) != -1) {
+                 var fragment = filtername.replace(/_/, '-');
+                 $(elem).html("<a href='" + base + "#" + fragment + "'>" + filtername + "</a>");
+             }
+        });
+    });
+})(jQuery);
+</script>
+
+
+  </head>
+  <body>
+
+    <div class="document">
+  <div id="custom-doc" class="yui-t6">
+    <div id="hd">
+      <h1><a href="../../index.html">Django 1.8.2.dev20150505153848 documentation</a></h1>
+      <div id="global-nav">
+        <a title="Home page" href="../../index.html">Home</a>  |
+        <a title="Table of contents" href="../../contents.html">Table of contents</a>  |
+        <a title="Global index" href="../../genindex.html">Index</a>  |
+        <a title="Module index" href="../../py-modindex.html">Modules</a>
+      </div>
+      <div class="nav">
+    &laquo; <a href="conditional-expressions.html" title="Conditional Expressions">previous</a>
+     |
+    <a href="../index.html" title="API Reference" accesskey="U">up</a>
+   |
+    <a href="../request-response.html" title="Request and response objects">next</a> &raquo;</div>
+    </div>
+
+    <div id="bd">
+      <div id="yui-main">
+        <div class="yui-b">
+          <div class="yui-g" id="ref-models-database-functions">
+            
+  <div class="section" id="s-module-django.db.models.functions">
+<span id="s-database-functions"></span><span id="module-django.db.models.functions"></span><span id="database-functions"></span><h1>Database Functions<a class="headerlink" href="#module-django.db.models.functions" title="Permalink to this headline">¶</a></h1>
+<div class="versionadded">
+<span class="title">New in Django 1.8.</span> </div>
+<p>The classes documented below provide a way for users to use functions provided
+by the underlying database as annotations, aggregations, or filters in Django.
+Functions are also <a class="reference internal" href="expressions.html"><em>expressions</em></a>, so they can be used and
+combined with other expressions like <a class="reference internal" href="querysets.html#aggregation-functions"><em>aggregate functions</em></a>.</p>
+<p>We&#8217;ll be using the following model in examples of each function:</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="k">class</span> <span class="nc">Author</span><span class="p">(</span><span class="n">models</span><span class="o">.</span><span class="n">Model</span><span class="p">):</span>
+    <span class="n">name</span> <span class="o">=</span> <span class="n">models</span><span class="o">.</span><span class="n">CharField</span><span class="p">(</span><span class="n">max_length</span><span class="o">=</span><span class="mi">50</span><span class="p">)</span>
+    <span class="n">age</span> <span class="o">=</span> <span class="n">models</span><span class="o">.</span><span class="n">PositiveIntegerField</span><span class="p">(</span><span class="n">null</span><span class="o">=</span><span class="bp">True</span><span class="p">,</span> <span class="n">blank</span><span class="o">=</span><span class="bp">True</span><span class="p">)</span>
+    <span class="n">alias</span> <span class="o">=</span> <span class="n">models</span><span class="o">.</span><span class="n">CharField</span><span class="p">(</span><span class="n">max_length</span><span class="o">=</span><span class="mi">50</span><span class="p">,</span> <span class="n">null</span><span class="o">=</span><span class="bp">True</span><span class="p">,</span> <span class="n">blank</span><span class="o">=</span><span class="bp">True</span><span class="p">)</span>
+    <span class="n">goes_by</span> <span class="o">=</span> <span class="n">models</span><span class="o">.</span><span class="n">CharField</span><span class="p">(</span><span class="n">max_length</span><span class="o">=</span><span class="mi">50</span><span class="p">,</span> <span class="n">null</span><span class="o">=</span><span class="bp">True</span><span class="p">,</span> <span class="n">blank</span><span class="o">=</span><span class="bp">True</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>We don&#8217;t usually recommend allowing <tt class="docutils literal"><span class="pre">null=True</span></tt> for <tt class="docutils literal"><span class="pre">CharField</span></tt> since this
+allows the field to have two &#8220;empty values&#8221;, but it&#8217;s important for the
+<tt class="docutils literal"><span class="pre">Coalesce</span></tt> example below.</p>
+<div class="section" id="s-coalesce">
+<span id="coalesce"></span><h2>Coalesce<a class="headerlink" href="#coalesce" title="Permalink to this headline">¶</a></h2>
+<dl class="class">
+<dt id="django.db.models.functions.Coalesce">
+<em class="property">class </em><tt class="descname">Coalesce</tt>(<em>*expressions</em>, <em>**extra</em>)<a class="reference internal" href="../../_modules/django/db/models/functions.html#Coalesce"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#django.db.models.functions.Coalesce" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<p>Accepts a list of at least two field names or expressions and returns the
+first non-null value (note that an empty string is not considered a null
+value). Each argument must be of a similar type, so mixing text and numbers
+will result in a database error.</p>
+<p>Usage examples:</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="c"># Get a screen name from least to most public</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">django.db.models</span> <span class="kn">import</span> <span class="n">Sum</span><span class="p">,</span> <span class="n">Value</span> <span class="k">as</span> <span class="n">V</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">django.db.models.functions</span> <span class="kn">import</span> <span class="n">Coalesce</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">Author</span><span class="o">.</span><span class="n">objects</span><span class="o">.</span><span class="n">create</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="s">&#39;Margaret Smith&#39;</span><span class="p">,</span> <span class="n">goes_by</span><span class="o">=</span><span class="s">&#39;Maggie&#39;</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">author</span> <span class="o">=</span> <span class="n">Author</span><span class="o">.</span><span class="n">objects</span><span class="o">.</span><span class="n">annotate</span><span class="p">(</span>
+<span class="gp">... </span>   <span class="n">screen_name</span><span class="o">=</span><span class="n">Coalesce</span><span class="p">(</span><span class="s">&#39;alias&#39;</span><span class="p">,</span> <span class="s">&#39;goes_by&#39;</span><span class="p">,</span> <span class="s">&#39;name&#39;</span><span class="p">))</span><span class="o">.</span><span class="n">get</span><span class="p">()</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="k">print</span><span class="p">(</span><span class="n">author</span><span class="o">.</span><span class="n">screen_name</span><span class="p">)</span>
+<span class="go">Maggie</span>
+
+<span class="gp">&gt;&gt;&gt; </span><span class="c"># Prevent an aggregate Sum() from returning None</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">aggregated</span> <span class="o">=</span> <span class="n">Author</span><span class="o">.</span><span class="n">objects</span><span class="o">.</span><span class="n">aggregate</span><span class="p">(</span>
+<span class="gp">... </span>   <span class="n">combined_age</span><span class="o">=</span><span class="n">Coalesce</span><span class="p">(</span><span class="n">Sum</span><span class="p">(</span><span class="s">&#39;age&#39;</span><span class="p">),</span> <span class="n">V</span><span class="p">(</span><span class="mi">0</span><span class="p">)),</span>
+<span class="gp">... </span>   <span class="n">combined_age_default</span><span class="o">=</span><span class="n">Sum</span><span class="p">(</span><span class="s">&#39;age&#39;</span><span class="p">))</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="k">print</span><span class="p">(</span><span class="n">aggregated</span><span class="p">[</span><span class="s">&#39;combined_age&#39;</span><span class="p">])</span>
+<span class="go">0</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="k">print</span><span class="p">(</span><span class="n">aggregated</span><span class="p">[</span><span class="s">&#39;combined_age_default&#39;</span><span class="p">])</span>
+<span class="go">None</span>
+</pre></div>
+</div>
+</div>
+<div class="section" id="s-concat">
+<span id="concat"></span><h2>Concat<a class="headerlink" href="#concat" title="Permalink to this headline">¶</a></h2>
+<dl class="class">
+<dt id="django.db.models.functions.Concat">
+<em class="property">class </em><tt class="descname">Concat</tt>(<em>*expressions</em>, <em>**extra</em>)<a class="reference internal" href="../../_modules/django/db/models/functions.html#Concat"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#django.db.models.functions.Concat" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<p>Accepts a list of at least two text fields or expressions and returns the
+concatenated text. Each argument must be of a text or char type. If you want
+to concatenate a <tt class="docutils literal"><span class="pre">TextField()</span></tt> with a <tt class="docutils literal"><span class="pre">CharField()</span></tt>, then be sure to tell
+Django that the <tt class="docutils literal"><span class="pre">output_field</span></tt> should be a <tt class="docutils literal"><span class="pre">TextField()</span></tt>. This is also
+required when concatenating a <tt class="docutils literal"><span class="pre">Value</span></tt> as in the example below.</p>
+<p>This function will never have a null result. On backends where a null argument
+results in the entire expression being null, Django will ensure that each null
+part is converted to an empty string first.</p>
+<p>Usage example:</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="c"># Get the display name as &quot;name (goes_by)&quot;</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">django.db.models</span> <span class="kn">import</span> <span class="n">CharField</span><span class="p">,</span> <span class="n">Value</span> <span class="k">as</span> <span class="n">V</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">django.db.models.functions</span> <span class="kn">import</span> <span class="n">Concat</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">Author</span><span class="o">.</span><span class="n">objects</span><span class="o">.</span><span class="n">create</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="s">&#39;Margaret Smith&#39;</span><span class="p">,</span> <span class="n">goes_by</span><span class="o">=</span><span class="s">&#39;Maggie&#39;</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">author</span> <span class="o">=</span> <span class="n">Author</span><span class="o">.</span><span class="n">objects</span><span class="o">.</span><span class="n">annotate</span><span class="p">(</span>
+<span class="gp">... </span>   <span class="n">screen_name</span><span class="o">=</span><span class="n">Concat</span><span class="p">(</span><span class="s">&#39;name&#39;</span><span class="p">,</span> <span class="n">V</span><span class="p">(</span><span class="s">&#39; (&#39;</span><span class="p">),</span> <span class="s">&#39;goes_by&#39;</span><span class="p">,</span> <span class="n">V</span><span class="p">(</span><span class="s">&#39;)&#39;</span><span class="p">),</span>
+<span class="gp">... </span>   <span class="n">output_field</span><span class="o">=</span><span class="n">CharField</span><span class="p">()))</span><span class="o">.</span><span class="n">get</span><span class="p">()</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="k">print</span><span class="p">(</span><span class="n">author</span><span class="o">.</span><span class="n">screen_name</span><span class="p">)</span>
+<span class="go">Margaret Smith (Maggie)</span>
+</pre></div>
+</div>
+</div>
+<div class="section" id="s-length">
+<span id="length"></span><h2>Length<a class="headerlink" href="#length" title="Permalink to this headline">¶</a></h2>
+<dl class="class">
+<dt id="django.db.models.functions.Length">
+<em class="property">class </em><tt class="descname">Length</tt>(<em>expression</em>, <em>**extra</em>)<a class="reference internal" href="../../_modules/django/db/models/functions.html#Length"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#django.db.models.functions.Length" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<p>Accepts a single text field or expression and returns the number of characters
+the value has. If the expression is null, then the length will also be null.</p>
+<p>Usage example:</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="c"># Get the length of the name and goes_by fields</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">django.db.models.functions</span> <span class="kn">import</span> <span class="n">Length</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">Author</span><span class="o">.</span><span class="n">objects</span><span class="o">.</span><span class="n">create</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="s">&#39;Margaret Smith&#39;</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">author</span> <span class="o">=</span> <span class="n">Author</span><span class="o">.</span><span class="n">objects</span><span class="o">.</span><span class="n">annotate</span><span class="p">(</span>
+<span class="gp">... </span>   <span class="n">name_length</span><span class="o">=</span><span class="n">Length</span><span class="p">(</span><span class="s">&#39;name&#39;</span><span class="p">),</span>
+<span class="gp">... </span>   <span class="n">goes_by_length</span><span class="o">=</span><span class="n">Length</span><span class="p">(</span><span class="s">&#39;goes_by&#39;</span><span class="p">))</span><span class="o">.</span><span class="n">get</span><span class="p">()</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="k">print</span><span class="p">(</span><span class="n">author</span><span class="o">.</span><span class="n">name_length</span><span class="p">,</span> <span class="n">author</span><span class="o">.</span><span class="n">goes_by_length</span><span class="p">)</span>
+<span class="go">(14, None)</span>
+</pre></div>
+</div>
+</div>
+<div class="section" id="s-lower">
+<span id="lower"></span><h2>Lower<a class="headerlink" href="#lower" title="Permalink to this headline">¶</a></h2>
+<dl class="class">
+<dt id="django.db.models.functions.Lower">
+<em class="property">class </em><tt class="descname">Lower</tt>(<em>expression</em>, <em>**extra</em>)<a class="reference internal" href="../../_modules/django/db/models/functions.html#Lower"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#django.db.models.functions.Lower" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<p>Accepts a single text field or expression and returns the lowercase
+representation.</p>
+<p>Usage example:</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">django.db.models.functions</span> <span class="kn">import</span> <span class="n">Lower</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">Author</span><span class="o">.</span><span class="n">objects</span><span class="o">.</span><span class="n">create</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="s">&#39;Margaret Smith&#39;</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">author</span> <span class="o">=</span> <span class="n">Author</span><span class="o">.</span><span class="n">objects</span><span class="o">.</span><span class="n">annotate</span><span class="p">(</span><span class="n">name_lower</span><span class="o">=</span><span class="n">Lower</span><span class="p">(</span><span class="s">&#39;name&#39;</span><span class="p">))</span><span class="o">.</span><span class="n">get</span><span class="p">()</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="k">print</span><span class="p">(</span><span class="n">author</span><span class="o">.</span><span class="n">name_lower</span><span class="p">)</span>
+<span class="go">margaret smith</span>
+</pre></div>
+</div>
+</div>
+<div class="section" id="s-substr">
+<span id="substr"></span><h2>Substr<a class="headerlink" href="#substr" title="Permalink to this headline">¶</a></h2>
+<dl class="class">
+<dt id="django.db.models.functions.Substr">
+<em class="property">class </em><tt class="descname">Substr</tt>(<em>expression</em>, <em>pos</em>, <em>length=None</em>, <em>**extra</em>)<a class="reference internal" href="../../_modules/django/db/models/functions.html#Substr"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#django.db.models.functions.Substr" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<p>Returns a substring of length <tt class="docutils literal"><span class="pre">length</span></tt> from the field or expression starting
+at position <tt class="docutils literal"><span class="pre">pos</span></tt>. The position is 1-indexed, so the position must be greater
+than 0. If <tt class="docutils literal"><span class="pre">length</span></tt> is <tt class="docutils literal"><span class="pre">None</span></tt>, then the rest of the string will be returned.</p>
+<p>Usage example:</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="c"># Set the alias to the first 5 characters of the name as lowercase</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">django.db.models.functions</span> <span class="kn">import</span> <span class="n">Substr</span><span class="p">,</span> <span class="n">Lower</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">Author</span><span class="o">.</span><span class="n">objects</span><span class="o">.</span><span class="n">create</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="s">&#39;Margaret Smith&#39;</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">Author</span><span class="o">.</span><span class="n">objects</span><span class="o">.</span><span class="n">update</span><span class="p">(</span><span class="n">alias</span><span class="o">=</span><span class="n">Lower</span><span class="p">(</span><span class="n">Substr</span><span class="p">(</span><span class="s">&#39;name&#39;</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">5</span><span class="p">)))</span>
+<span class="go">1</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="k">print</span><span class="p">(</span><span class="n">Author</span><span class="o">.</span><span class="n">objects</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="s">&#39;Margaret Smith&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">alias</span><span class="p">)</span>
+<span class="go">marga</span>
+</pre></div>
+</div>
+</div>
+<div class="section" id="s-upper">
+<span id="upper"></span><h2>Upper<a class="headerlink" href="#upper" title="Permalink to this headline">¶</a></h2>
+<dl class="class">
+<dt id="django.db.models.functions.Upper">
+<em class="property">class </em><tt class="descname">Upper</tt>(<em>expression</em>, <em>**extra</em>)<a class="reference internal" href="../../_modules/django/db/models/functions.html#Upper"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#django.db.models.functions.Upper" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<p>Accepts a single text field or expression and returns the uppercase
+representation.</p>
+<p>Usage example:</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">django.db.models.functions</span> <span class="kn">import</span> <span class="n">Upper</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">Author</span><span class="o">.</span><span class="n">objects</span><span class="o">.</span><span class="n">create</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="s">&#39;Margaret Smith&#39;</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">author</span> <span class="o">=</span> <span class="n">Author</span><span class="o">.</span><span class="n">objects</span><span class="o">.</span><span class="n">annotate</span><span class="p">(</span><span class="n">name_upper</span><span class="o">=</span><span class="n">Upper</span><span class="p">(</span><span class="s">&#39;name&#39;</span><span class="p">))</span><span class="o">.</span><span class="n">get</span><span class="p">()</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="k">print</span><span class="p">(</span><span class="n">author</span><span class="o">.</span><span class="n">name_upper</span><span class="p">)</span>
+<span class="go">MARGARET SMITH</span>
+</pre></div>
+</div>
+</div>
+</div>
+
+
+          </div>
+        </div>
+      </div>
+      
+        
+          <div class="yui-b" id="sidebar">
+            
+      <div class="sphinxsidebar">
+        <div class="sphinxsidebarwrapper">
+  <h3><a href="../../contents.html">Table Of Contents</a></h3>
+  <ul>
+<li><a class="reference internal" href="#">Database Functions</a><ul>
+<li><a class="reference internal" href="#coalesce">Coalesce</a></li>
+<li><a class="reference internal" href="#concat">Concat</a></li>
+<li><a class="reference internal" href="#length">Length</a></li>
+<li><a class="reference internal" href="#lower">Lower</a></li>
+<li><a class="reference internal" href="#substr">Substr</a></li>
+<li><a class="reference internal" href="#upper">Upper</a></li>
+</ul>
+</li>
+</ul>
+
+  <h3>Browse</h3>
+  <ul>
+    
+      <li>Prev: <a href="conditional-expressions.html">Conditional Expressions</a></li>
+    
+    
+      <li>Next: <a href="../request-response.html">Request and response objects</a></li>
+    
+  </ul>
+  <h3>You are here:</h3>
+  <ul>
+      <li>
+        <a href="../../index.html">Django 1.8.2.dev20150505153848 documentation</a>
+        
+          <ul><li><a href="../index.html">API Reference</a>
+        
+          <ul><li><a href="index.html">Models</a>
+        
+        <ul><li>Database Functions</li></ul>
+        </li></ul></li></ul>
+      </li>
+  </ul>
+
+  <h3>This Page</h3>
+  <ul class="this-page-menu">
+    <li><a href="../../_sources/ref/models/database-functions.txt"
+           rel="nofollow">Show Source</a></li>
+  </ul>
+<div id="searchbox" style="display: none">
+  <h3>Quick search</h3>
+    <form class="search" action="../../search.html" method="get">
+      <input type="text" name="q" />
+      <input type="submit" value="Go" />
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+    <p class="searchtip" style="font-size: 90%">
+    Enter search terms or a module, class or function name.
+    </p>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+              <h3>Last update:</h3>
+              <p class="topless">May 06, 2015</p>
+          </div>
+        
+      
+    </div>
+
+    <div id="ft">
+      <div class="nav">
+    &laquo; <a href="conditional-expressions.html" title="Conditional Expressions">previous</a>
+     |
+    <a href="../index.html" title="API Reference" accesskey="U">up</a>
+   |
+    <a href="../request-response.html" title="Request and response objects">next</a> &raquo;</div>
+    </div>
+  </div>
+
+      <div class="clearer"></div>
+    </div>
+  </body>
+</html>

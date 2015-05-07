@@ -1,0 +1,462 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>Model _meta API &mdash; Django 1.8.2.dev20150505153848 documentation</title>
+    
+    <link rel="stylesheet" href="../../_static/default.css" type="text/css" />
+    <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '../../',
+        VERSION:     '1.8.2.dev20150505153848',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="../../_static/jquery.js"></script>
+    <script type="text/javascript" src="../../_static/underscore.js"></script>
+    <script type="text/javascript" src="../../_static/doctools.js"></script>
+    <link rel="top" title="Django 1.8.2.dev20150505153848 documentation" href="../../index.html" />
+    <link rel="up" title="Models" href="index.html" />
+    <link rel="next" title="Related objects reference" href="relations.html" />
+    <link rel="prev" title="Model field reference" href="fields.html" />
+
+
+
+ 
+<script type="text/javascript" src="../../templatebuiltins.js"></script>
+<script type="text/javascript">
+(function($) {
+    if (!django_template_builtins) {
+       // templatebuiltins.js missing, do nothing.
+       return;
+    }
+    $(document).ready(function() {
+        // Hyperlink Django template tags and filters
+        var base = "../templates/builtins.html";
+        if (base == "#") {
+            // Special case for builtins.html itself
+            base = "";
+        }
+        // Tags are keywords, class '.k'
+        $("div.highlight\\-html\\+django span.k").each(function(i, elem) {
+             var tagname = $(elem).text();
+             if ($.inArray(tagname, django_template_builtins.ttags) != -1) {
+                 var fragment = tagname.replace(/_/, '-');
+                 $(elem).html("<a href='" + base + "#" + fragment + "'>" + tagname + "</a>");
+             }
+        });
+        // Filters are functions, class '.nf'
+        $("div.highlight\\-html\\+django span.nf").each(function(i, elem) {
+             var filtername = $(elem).text();
+             if ($.inArray(filtername, django_template_builtins.tfilters) != -1) {
+                 var fragment = filtername.replace(/_/, '-');
+                 $(elem).html("<a href='" + base + "#" + fragment + "'>" + filtername + "</a>");
+             }
+        });
+    });
+})(jQuery);
+</script>
+
+
+  </head>
+  <body>
+
+    <div class="document">
+  <div id="custom-doc" class="yui-t6">
+    <div id="hd">
+      <h1><a href="../../index.html">Django 1.8.2.dev20150505153848 documentation</a></h1>
+      <div id="global-nav">
+        <a title="Home page" href="../../index.html">Home</a>  |
+        <a title="Table of contents" href="../../contents.html">Table of contents</a>  |
+        <a title="Global index" href="../../genindex.html">Index</a>  |
+        <a title="Module index" href="../../py-modindex.html">Modules</a>
+      </div>
+      <div class="nav">
+    &laquo; <a href="fields.html" title="Model field reference">previous</a>
+     |
+    <a href="../index.html" title="API Reference" accesskey="U">up</a>
+   |
+    <a href="relations.html" title="Related objects reference">next</a> &raquo;</div>
+    </div>
+
+    <div id="bd">
+      <div id="yui-main">
+        <div class="yui-b">
+          <div class="yui-g" id="ref-models-meta">
+            
+  <div class="section" id="s-module-django.db.models.options">
+<span id="s-model-meta-api"></span><span id="module-django.db.models.options"></span><span id="model-meta-api"></span><h1>Model <tt class="docutils literal"><span class="pre">_meta</span></tt> API<a class="headerlink" href="#module-django.db.models.options" title="Permalink to this headline">¶</a></h1>
+<dl class="class">
+<dt id="django.db.models.options.Options">
+<em class="property">class </em><tt class="descname">Options</tt><a class="reference internal" href="../../_modules/django/db/models/options.html#Options"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#django.db.models.options.Options" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<p>The model <tt class="docutils literal"><span class="pre">_meta</span></tt> API is at the core of the Django ORM. It enables other
+parts of the system such as lookups, queries, forms, and the admin to
+understand the capabilities of each model. The API is accessible through
+the <tt class="docutils literal"><span class="pre">_meta</span></tt> attribute of each model class, which is an instance of an
+<tt class="docutils literal"><span class="pre">django.db.models.options.Options</span></tt> object.</p>
+<p>Methods that it provides can be used to:</p>
+<ul class="simple">
+<li>Retrieve all field instances of a model</li>
+<li>Retrieve a single field instance of a model by name</li>
+</ul>
+<div class="versionchanged">
+<span class="title">Changed in Django 1.8:</span> <p>The Model <tt class="docutils literal"><span class="pre">_meta</span></tt> API has always existed as a Django internal, but
+wasn&#8217;t formally documented and supported. As part of the effort to
+make this API public, some of the already existing API entry points
+have changed slightly. A <a class="reference internal" href="#migrating-old-meta-api"><em>migration guide</em></a>
+has been provided to assist in converting your code to use the new,
+official API.</p>
+</div>
+<div class="section" id="s-field-access-api">
+<span id="s-model-meta-field-api"></span><span id="field-access-api"></span><span id="model-meta-field-api"></span><h2>Field access API<a class="headerlink" href="#field-access-api" title="Permalink to this headline">¶</a></h2>
+<div class="section" id="s-retrieving-a-single-field-instance-of-a-model-by-name">
+<span id="retrieving-a-single-field-instance-of-a-model-by-name"></span><h3>Retrieving a single field instance of a model by name<a class="headerlink" href="#retrieving-a-single-field-instance-of-a-model-by-name" title="Permalink to this headline">¶</a></h3>
+<dl class="method">
+<dt id="django.db.models.options.Options.get_field">
+<tt class="descclassname">Options.</tt><tt class="descname">get_field</tt>(<em>field_name</em>)<a class="reference internal" href="../../_modules/django/db/models/options.html#Options.get_field"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#django.db.models.options.Options.get_field" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns the field instance given a name of a field.</p>
+<p><tt class="docutils literal"><span class="pre">field_name</span></tt> can be the name of a field on the model, a field
+on an abstract or inherited model, or a field defined on another
+model that points to the model. In the latter case, the <tt class="docutils literal"><span class="pre">field_name</span></tt>
+will be the <tt class="docutils literal"><span class="pre">related_name</span></tt> defined by the user or the name automatically
+generated by Django itself.</p>
+<p><a class="reference internal" href="fields.html#django.db.models.Field.hidden" title="django.db.models.Field.hidden"><tt class="xref py py-attr docutils literal"><span class="pre">Hidden</span> <span class="pre">fields</span></tt></a> cannot be retrieved
+by name.</p>
+<p>If a field with the given name is not found a
+<a class="reference internal" href="../exceptions.html#django.core.exceptions.FieldDoesNotExist" title="django.core.exceptions.FieldDoesNotExist"><tt class="xref py py-class docutils literal"><span class="pre">FieldDoesNotExist</span></tt></a> exception will be
+raised.</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">django.contrib.auth.models</span> <span class="kn">import</span> <span class="n">User</span>
+
+<span class="go"># A field on the model</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">User</span><span class="o">.</span><span class="n">_meta</span><span class="o">.</span><span class="n">get_field</span><span class="p">(</span><span class="s">&#39;username&#39;</span><span class="p">)</span>
+<span class="go">&lt;django.db.models.fields.CharField: username&gt;</span>
+
+<span class="go"># A field from another model that has a relation with the current model</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">User</span><span class="o">.</span><span class="n">_meta</span><span class="o">.</span><span class="n">get_field</span><span class="p">(</span><span class="s">&#39;logentry&#39;</span><span class="p">)</span>
+<span class="go">&lt;ManyToOneRel: admin.logentry&gt;</span>
+
+<span class="go"># A non existent field</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">User</span><span class="o">.</span><span class="n">_meta</span><span class="o">.</span><span class="n">get_field</span><span class="p">(</span><span class="s">&#39;does_not_exist&#39;</span><span class="p">)</span>
+<span class="gt">Traceback (most recent call last):</span>
+    <span class="o">...</span>
+<span class="gr">FieldDoesNotExist</span>: <span class="n">User has no field named &#39;does_not_exist&#39;</span>
+</pre></div>
+</div>
+<div class="deprecated">
+<p><span class="versionmodified">Deprecated since version 1.8: </span><a class="reference internal" href="#django.db.models.options.Options.get_field" title="django.db.models.options.Options.get_field"><tt class="xref py py-meth docutils literal"><span class="pre">Options.get_field()</span></tt></a> previously accepted a <tt class="docutils literal"><span class="pre">many_to_many</span></tt>
+parameter which could be set to <tt class="docutils literal"><span class="pre">False</span></tt> to avoid searching
+<tt class="docutils literal"><span class="pre">ManyToManyField</span></tt>s. The old behavior has been preserved for
+backwards compatibility; however, the parameter and this behavior
+has been deprecated.</p>
+<p>If you wish to filter out <tt class="docutils literal"><span class="pre">ManyToManyField</span></tt>s, you can inspect the
+<a class="reference internal" href="fields.html#django.db.models.Field.many_to_many" title="django.db.models.Field.many_to_many"><tt class="xref py py-attr docutils literal"><span class="pre">Field.many_to_many</span></tt></a>
+attribute after calling <tt class="docutils literal"><span class="pre">get_field()</span></tt>.</p>
+</div>
+</dd></dl>
+
+</div>
+<div class="section" id="s-retrieving-all-field-instances-of-a-model">
+<span id="retrieving-all-field-instances-of-a-model"></span><h3>Retrieving all field instances of a model<a class="headerlink" href="#retrieving-all-field-instances-of-a-model" title="Permalink to this headline">¶</a></h3>
+<dl class="method">
+<dt id="django.db.models.options.Options.get_fields">
+<tt class="descclassname">Options.</tt><tt class="descname">get_fields</tt>(<em>include_parents=True</em>, <em>include_hidden=False</em>)<a class="reference internal" href="../../_modules/django/db/models/options.html#Options.get_fields"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#django.db.models.options.Options.get_fields" title="Permalink to this definition">¶</a></dt>
+<dd><div class="versionadded">
+<span class="title">New in Django 1.8.</span> </div>
+<p>Returns a tuple of fields associated with a model. <tt class="docutils literal"><span class="pre">get_fields()</span></tt> accepts
+two parameters that can be used to control which fields are returned:</p>
+<dl class="docutils">
+<dt><tt class="docutils literal"><span class="pre">include_parents</span></tt></dt>
+<dd><tt class="docutils literal"><span class="pre">True</span></tt> by default. Recursively includes fields defined on parent
+classes. If set to <tt class="docutils literal"><span class="pre">False</span></tt>, <tt class="docutils literal"><span class="pre">get_fields()</span></tt> will only search for
+fields declared directly on the current model. Fields from models that
+directly inherit from abstract models or proxy classes are considered
+to be local, not on the parent.</dd>
+<dt><tt class="docutils literal"><span class="pre">include_hidden</span></tt></dt>
+<dd><tt class="docutils literal"><span class="pre">False</span></tt> by default. If set to <tt class="docutils literal"><span class="pre">True</span></tt>, <tt class="docutils literal"><span class="pre">get_fields()</span></tt> will include
+fields that are used to back other field&#8217;s functionality. This will
+also include any fields that have a <tt class="docutils literal"><span class="pre">related_name</span></tt> (such
+as <a class="reference internal" href="fields.html#django.db.models.ManyToManyField" title="django.db.models.ManyToManyField"><tt class="xref py py-class docutils literal"><span class="pre">ManyToManyField</span></tt></a>, or
+<a class="reference internal" href="fields.html#django.db.models.ForeignKey" title="django.db.models.ForeignKey"><tt class="xref py py-class docutils literal"><span class="pre">ForeignKey</span></tt></a>) that start with a &#8220;+&#8221;.</dd>
+</dl>
+<div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">django.contrib.auth.models</span> <span class="kn">import</span> <span class="n">User</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">User</span><span class="o">.</span><span class="n">_meta</span><span class="o">.</span><span class="n">get_fields</span><span class="p">()</span>
+<span class="go">(&lt;ManyToOneRel: admin.logentry&gt;,</span>
+<span class="go"> &lt;django.db.models.fields.AutoField: id&gt;,</span>
+<span class="go"> &lt;django.db.models.fields.CharField: password&gt;,</span>
+<span class="go"> &lt;django.db.models.fields.DateTimeField: last_login&gt;,</span>
+<span class="go"> &lt;django.db.models.fields.BooleanField: is_superuser&gt;,</span>
+<span class="go"> &lt;django.db.models.fields.CharField: username&gt;,</span>
+<span class="go"> &lt;django.db.models.fields.CharField: first_name&gt;,</span>
+<span class="go"> &lt;django.db.models.fields.CharField: last_name&gt;,</span>
+<span class="go"> &lt;django.db.models.fields.EmailField: email&gt;,</span>
+<span class="go"> &lt;django.db.models.fields.BooleanField: is_staff&gt;,</span>
+<span class="go"> &lt;django.db.models.fields.BooleanField: is_active&gt;,</span>
+<span class="go"> &lt;django.db.models.fields.DateTimeField: date_joined&gt;,</span>
+<span class="go"> &lt;django.db.models.fields.related.ManyToManyField: groups&gt;,</span>
+<span class="go"> &lt;django.db.models.fields.related.ManyToManyField: user_permissions&gt;)</span>
+
+<span class="go"># Also include hidden fields.</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">User</span><span class="o">.</span><span class="n">_meta</span><span class="o">.</span><span class="n">get_fields</span><span class="p">(</span><span class="n">include_hidden</span><span class="o">=</span><span class="bp">True</span><span class="p">)</span>
+<span class="go">(&lt;ManyToOneRel: auth.user_groups&gt;,</span>
+<span class="go"> &lt;ManyToOneRel: auth.user_user_permissions&gt;,</span>
+<span class="go"> &lt;ManyToOneRel: admin.logentry&gt;,</span>
+<span class="go"> &lt;django.db.models.fields.AutoField: id&gt;,</span>
+<span class="go"> &lt;django.db.models.fields.CharField: password&gt;,</span>
+<span class="go"> &lt;django.db.models.fields.DateTimeField: last_login&gt;,</span>
+<span class="go"> &lt;django.db.models.fields.BooleanField: is_superuser&gt;,</span>
+<span class="go"> &lt;django.db.models.fields.CharField: username&gt;,</span>
+<span class="go"> &lt;django.db.models.fields.CharField: first_name&gt;,</span>
+<span class="go"> &lt;django.db.models.fields.CharField: last_name&gt;,</span>
+<span class="go"> &lt;django.db.models.fields.EmailField: email&gt;,</span>
+<span class="go"> &lt;django.db.models.fields.BooleanField: is_staff&gt;,</span>
+<span class="go"> &lt;django.db.models.fields.BooleanField: is_active&gt;,</span>
+<span class="go"> &lt;django.db.models.fields.DateTimeField: date_joined&gt;,</span>
+<span class="go"> &lt;django.db.models.fields.related.ManyToManyField: groups&gt;,</span>
+<span class="go"> &lt;django.db.models.fields.related.ManyToManyField: user_permissions&gt;)</span>
+</pre></div>
+</div>
+</dd></dl>
+
+</div>
+</div>
+<div class="section" id="s-migrating-from-the-old-api">
+<span id="s-migrating-old-meta-api"></span><span id="migrating-from-the-old-api"></span><span id="migrating-old-meta-api"></span><h2>Migrating from the old API<a class="headerlink" href="#migrating-from-the-old-api" title="Permalink to this headline">¶</a></h2>
+<p>As part of the formalization of the <tt class="docutils literal"><span class="pre">Model._meta</span></tt> API (from the
+<a class="reference internal" href="#django.db.models.options.Options" title="django.db.models.options.Options"><tt class="xref py py-class docutils literal"><span class="pre">django.db.models.options.Options</span></tt></a> class), a number of methods and
+properties have been deprecated and will be removed in Django 2.0.</p>
+<p>These old APIs can be replicated by either:</p>
+<ul class="simple">
+<li>invoking <a class="reference internal" href="#django.db.models.options.Options.get_field" title="django.db.models.options.Options.get_field"><tt class="xref py py-meth docutils literal"><span class="pre">Options.get_field()</span></tt></a>, or;</li>
+<li>invoking <a class="reference internal" href="#django.db.models.options.Options.get_fields" title="django.db.models.options.Options.get_fields"><tt class="xref py py-meth docutils literal"><span class="pre">Options.get_fields()</span></tt></a> to retrieve a list of all
+fields, and then filtering this list using the <a class="reference internal" href="fields.html#model-field-attributes"><em>field attributes</em></a> that describe (or retrieve, in the case of
+<tt class="docutils literal"><span class="pre">_with_model</span></tt> variants) the properties of the desired fields.</li>
+</ul>
+<p>Although it&#8217;s possible to make strictly equivalent replacements of the old
+methods, that might not be the best approach. Taking the time to refactor any
+field loops to make better use of the new API - and possibly include fields
+that were previously excluded - will almost certainly result in better code.</p>
+<p>Assuming you have a model named <tt class="docutils literal"><span class="pre">MyModel</span></tt>, the following substitutions
+can be made to convert your code to the new API:</p>
+<ul>
+<li><p class="first"><tt class="docutils literal"><span class="pre">MyModel._meta.get_field(name)</span></tt>:</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="n">f</span> <span class="o">=</span> <span class="n">MyModel</span><span class="o">.</span><span class="n">_meta</span><span class="o">.</span><span class="n">get_field</span><span class="p">(</span><span class="n">name</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>then check if:</p>
+<ul class="simple">
+<li><tt class="docutils literal"><span class="pre">f.auto_created</span> <span class="pre">==</span> <span class="pre">False</span></tt>, because the new <tt class="docutils literal"><span class="pre">get_field()</span></tt>
+API will find &#8220;reverse&#8221; relations), and:</li>
+<li><tt class="docutils literal"><span class="pre">f.is_relation</span> <span class="pre">and</span> <span class="pre">f.related_model</span> <span class="pre">is</span> <span class="pre">None</span></tt>, because the new
+<tt class="docutils literal"><span class="pre">get_field()</span></tt> API will find
+<a class="reference internal" href="../contrib/contenttypes.html#django.contrib.contenttypes.fields.GenericForeignKey" title="django.contrib.contenttypes.fields.GenericForeignKey"><tt class="xref py py-class docutils literal"><span class="pre">GenericForeignKey</span></tt></a> relations;</li>
+</ul>
+</li>
+<li><p class="first"><tt class="docutils literal"><span class="pre">MyModel._meta.get_field_by_name(name)</span></tt>:</p>
+<p><tt class="docutils literal"><span class="pre">get_field_by_name()</span></tt> returned four values:
+<tt class="docutils literal"><span class="pre">(field,</span> <span class="pre">model,</span> <span class="pre">direct,</span>&nbsp; <span class="pre">m2m)</span></tt>:</p>
+<ul>
+<li><p class="first"><tt class="docutils literal"><span class="pre">field</span></tt> can be found by <tt class="docutils literal"><span class="pre">MyModel._meta.get_field(name)</span></tt></p>
+</li>
+<li><p class="first"><tt class="docutils literal"><span class="pre">model</span></tt> can be found through the
+<a class="reference internal" href="fields.html#django.db.models.Field.model" title="django.db.models.Field.model"><tt class="xref py py-attr docutils literal"><span class="pre">model</span></tt></a> attribute on the field.</p>
+</li>
+<li><p class="first"><tt class="docutils literal"><span class="pre">direct</span></tt> can be found by: <tt class="docutils literal"><span class="pre">not</span> <span class="pre">field.auto_created</span> <span class="pre">or</span> <span class="pre">field.concrete</span></tt></p>
+<p>The <a class="reference internal" href="fields.html#django.db.models.Field.auto_created" title="django.db.models.Field.auto_created"><tt class="xref py py-attr docutils literal"><span class="pre">auto_created</span></tt></a> check excludes
+all &#8220;forward&#8221; and &#8220;reverse&#8221; relations that are created by Django, but
+this also includes <tt class="docutils literal"><span class="pre">AutoField</span></tt> and <tt class="docutils literal"><span class="pre">OneToOneField</span></tt> on proxy models.
+We avoid filtering out these attributes using the
+<a class="reference internal" href="fields.html#django.db.models.Field.concrete" title="django.db.models.Field.concrete"><tt class="xref py py-attr docutils literal"><span class="pre">concrete</span></tt></a> attribute.</p>
+</li>
+<li><p class="first"><tt class="docutils literal"><span class="pre">m2m</span></tt> can be found through the
+<a class="reference internal" href="fields.html#django.db.models.Field.many_to_many" title="django.db.models.Field.many_to_many"><tt class="xref py py-attr docutils literal"><span class="pre">many_to_many</span></tt></a> attribute on the field.</p>
+</li>
+</ul>
+</li>
+<li><p class="first"><tt class="docutils literal"><span class="pre">MyModel._meta.get_fields_with_model()</span></tt>:</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="p">[</span>
+    <span class="p">(</span><span class="n">f</span><span class="p">,</span> <span class="n">f</span><span class="o">.</span><span class="n">model</span> <span class="k">if</span> <span class="n">f</span><span class="o">.</span><span class="n">model</span> <span class="o">!=</span> <span class="n">MyModel</span> <span class="k">else</span> <span class="bp">None</span><span class="p">)</span>
+    <span class="k">for</span> <span class="n">f</span> <span class="ow">in</span> <span class="n">MyModel</span><span class="o">.</span><span class="n">_meta</span><span class="o">.</span><span class="n">get_fields</span><span class="p">()</span>
+    <span class="k">if</span> <span class="ow">not</span> <span class="n">f</span><span class="o">.</span><span class="n">is_relation</span>
+        <span class="ow">or</span> <span class="n">f</span><span class="o">.</span><span class="n">one_to_one</span>
+        <span class="ow">or</span> <span class="p">(</span><span class="n">f</span><span class="o">.</span><span class="n">many_to_one</span> <span class="ow">and</span> <span class="n">f</span><span class="o">.</span><span class="n">related_model</span><span class="p">)</span>
+<span class="p">]</span>
+</pre></div>
+</div>
+</li>
+<li><p class="first"><tt class="docutils literal"><span class="pre">MyModel._meta.get_concrete_fields_with_model()</span></tt>:</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="p">[</span>
+    <span class="p">(</span><span class="n">f</span><span class="p">,</span> <span class="n">f</span><span class="o">.</span><span class="n">model</span> <span class="k">if</span> <span class="n">f</span><span class="o">.</span><span class="n">model</span> <span class="o">!=</span> <span class="n">MyModel</span> <span class="k">else</span> <span class="bp">None</span><span class="p">)</span>
+    <span class="k">for</span> <span class="n">f</span> <span class="ow">in</span> <span class="n">MyModel</span><span class="o">.</span><span class="n">_meta</span><span class="o">.</span><span class="n">get_fields</span><span class="p">()</span>
+    <span class="k">if</span> <span class="n">f</span><span class="o">.</span><span class="n">concrete</span> <span class="ow">and</span> <span class="p">(</span>
+        <span class="ow">not</span> <span class="n">f</span><span class="o">.</span><span class="n">is_relation</span>
+        <span class="ow">or</span> <span class="n">f</span><span class="o">.</span><span class="n">one_to_one</span>
+        <span class="ow">or</span> <span class="p">(</span><span class="n">f</span><span class="o">.</span><span class="n">many_to_one</span> <span class="ow">and</span> <span class="n">f</span><span class="o">.</span><span class="n">related_model</span><span class="p">)</span>
+    <span class="p">)</span>
+<span class="p">]</span>
+</pre></div>
+</div>
+</li>
+<li><p class="first"><tt class="docutils literal"><span class="pre">MyModel._meta.get_m2m_with_model()</span></tt>:</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="p">[</span>
+    <span class="p">(</span><span class="n">f</span><span class="p">,</span> <span class="n">f</span><span class="o">.</span><span class="n">model</span> <span class="k">if</span> <span class="n">f</span><span class="o">.</span><span class="n">model</span> <span class="o">!=</span> <span class="n">MyModel</span> <span class="k">else</span> <span class="bp">None</span><span class="p">)</span>
+    <span class="k">for</span> <span class="n">f</span> <span class="ow">in</span> <span class="n">MyModel</span><span class="o">.</span><span class="n">_meta</span><span class="o">.</span><span class="n">get_fields</span><span class="p">()</span>
+    <span class="k">if</span> <span class="n">f</span><span class="o">.</span><span class="n">many_to_many</span> <span class="ow">and</span> <span class="ow">not</span> <span class="n">f</span><span class="o">.</span><span class="n">auto_created</span>
+<span class="p">]</span>
+</pre></div>
+</div>
+</li>
+<li><p class="first"><tt class="docutils literal"><span class="pre">MyModel._meta.get_all_related_objects()</span></tt>:</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="p">[</span>
+    <span class="n">f</span> <span class="k">for</span> <span class="n">f</span> <span class="ow">in</span> <span class="n">MyModel</span><span class="o">.</span><span class="n">_meta</span><span class="o">.</span><span class="n">get_fields</span><span class="p">()</span>
+    <span class="k">if</span> <span class="p">(</span><span class="n">f</span><span class="o">.</span><span class="n">one_to_many</span> <span class="ow">or</span> <span class="n">f</span><span class="o">.</span><span class="n">one_to_one</span><span class="p">)</span> <span class="ow">and</span> <span class="n">f</span><span class="o">.</span><span class="n">auto_created</span>
+<span class="p">]</span>
+</pre></div>
+</div>
+</li>
+<li><p class="first"><tt class="docutils literal"><span class="pre">MyModel._meta.get_all_related_objects_with_model()</span></tt>:</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="p">[</span>
+    <span class="p">(</span><span class="n">f</span><span class="p">,</span> <span class="n">f</span><span class="o">.</span><span class="n">model</span> <span class="k">if</span> <span class="n">f</span><span class="o">.</span><span class="n">model</span> <span class="o">!=</span> <span class="n">MyModel</span> <span class="k">else</span> <span class="bp">None</span><span class="p">)</span>
+    <span class="k">for</span> <span class="n">f</span> <span class="ow">in</span> <span class="n">MyModel</span><span class="o">.</span><span class="n">_meta</span><span class="o">.</span><span class="n">get_fields</span><span class="p">()</span>
+    <span class="k">if</span> <span class="p">(</span><span class="n">f</span><span class="o">.</span><span class="n">one_to_many</span> <span class="ow">or</span> <span class="n">f</span><span class="o">.</span><span class="n">one_to_one</span><span class="p">)</span> <span class="ow">and</span> <span class="n">f</span><span class="o">.</span><span class="n">auto_created</span>
+<span class="p">]</span>
+</pre></div>
+</div>
+</li>
+<li><p class="first"><tt class="docutils literal"><span class="pre">MyModel._meta.get_all_related_many_to_many_objects()</span></tt>:</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="p">[</span>
+    <span class="n">f</span> <span class="k">for</span> <span class="n">f</span> <span class="ow">in</span> <span class="n">MyModel</span><span class="o">.</span><span class="n">_meta</span><span class="o">.</span><span class="n">get_fields</span><span class="p">(</span><span class="n">include_hidden</span><span class="o">=</span><span class="bp">True</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">f</span><span class="o">.</span><span class="n">many_to_many</span> <span class="ow">and</span> <span class="n">f</span><span class="o">.</span><span class="n">auto_created</span>
+<span class="p">]</span>
+</pre></div>
+</div>
+</li>
+<li><p class="first"><tt class="docutils literal"><span class="pre">MyModel._meta.get_all_related_m2m_objects_with_model()</span></tt>:</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="p">[</span>
+    <span class="p">(</span><span class="n">f</span><span class="p">,</span> <span class="n">f</span><span class="o">.</span><span class="n">model</span> <span class="k">if</span> <span class="n">f</span><span class="o">.</span><span class="n">model</span> <span class="o">!=</span> <span class="n">MyModel</span> <span class="k">else</span> <span class="bp">None</span><span class="p">)</span>
+    <span class="k">for</span> <span class="n">f</span> <span class="ow">in</span> <span class="n">MyModel</span><span class="o">.</span><span class="n">_meta</span><span class="o">.</span><span class="n">get_fields</span><span class="p">(</span><span class="n">include_hidden</span><span class="o">=</span><span class="bp">True</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">f</span><span class="o">.</span><span class="n">many_to_many</span> <span class="ow">and</span> <span class="n">f</span><span class="o">.</span><span class="n">auto_created</span>
+<span class="p">]</span>
+</pre></div>
+</div>
+</li>
+<li><p class="first"><tt class="docutils literal"><span class="pre">MyModel._meta.get_all_field_names()</span></tt>:</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="kn">from</span> <span class="nn">itertools</span> <span class="kn">import</span> <span class="n">chain</span>
+<span class="nb">list</span><span class="p">(</span><span class="nb">set</span><span class="p">(</span><span class="n">chain</span><span class="o">.</span><span class="n">from_iterable</span><span class="p">(</span>
+    <span class="p">(</span><span class="n">field</span><span class="o">.</span><span class="n">name</span><span class="p">,</span> <span class="n">field</span><span class="o">.</span><span class="n">attname</span><span class="p">)</span> <span class="k">if</span> <span class="nb">hasattr</span><span class="p">(</span><span class="n">field</span><span class="p">,</span> <span class="s">&#39;attname&#39;</span><span class="p">)</span> <span class="k">else</span> <span class="p">(</span><span class="n">field</span><span class="o">.</span><span class="n">name</span><span class="p">,)</span>
+    <span class="k">for</span> <span class="n">field</span> <span class="ow">in</span> <span class="n">MyModel</span><span class="o">.</span><span class="n">_meta</span><span class="o">.</span><span class="n">get_fields</span><span class="p">()</span>
+    <span class="c"># For complete backwards compatibility, you may want to exclude</span>
+    <span class="c"># GenericForeignKey from the results.</span>
+    <span class="k">if</span> <span class="ow">not</span> <span class="p">(</span><span class="n">field</span><span class="o">.</span><span class="n">many_to_one</span> <span class="ow">and</span> <span class="n">field</span><span class="o">.</span><span class="n">related_model</span> <span class="ow">is</span> <span class="bp">None</span><span class="p">)</span>
+<span class="p">)))</span>
+</pre></div>
+</div>
+<p>This provides a 100% backwards compatible replacement, ensuring that both
+field names and attribute names <tt class="docutils literal"><span class="pre">ForeignKey</span></tt>s are included, but fields
+associated with <tt class="docutils literal"><span class="pre">GenericForeignKey</span></tt>s are not. A simpler version would be:</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="p">[</span><span class="n">f</span><span class="o">.</span><span class="n">name</span> <span class="k">for</span> <span class="n">f</span> <span class="ow">in</span> <span class="n">MyModel</span><span class="o">.</span><span class="n">_meta</span><span class="o">.</span><span class="n">get_fields</span><span class="p">()]</span>
+</pre></div>
+</div>
+<p>While this isn&#8217;t 100% backwards compatible, it may be sufficient in many
+situations.</p>
+</li>
+</ul>
+</div>
+</div>
+
+
+          </div>
+        </div>
+      </div>
+      
+        
+          <div class="yui-b" id="sidebar">
+            
+      <div class="sphinxsidebar">
+        <div class="sphinxsidebarwrapper">
+  <h3><a href="../../contents.html">Table Of Contents</a></h3>
+  <ul>
+<li><a class="reference internal" href="#">Model <tt class="docutils literal"><span class="pre">_meta</span></tt> API</a><ul>
+<li><a class="reference internal" href="#field-access-api">Field access API</a><ul>
+<li><a class="reference internal" href="#retrieving-a-single-field-instance-of-a-model-by-name">Retrieving a single field instance of a model by name</a></li>
+<li><a class="reference internal" href="#retrieving-all-field-instances-of-a-model">Retrieving all field instances of a model</a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#migrating-from-the-old-api">Migrating from the old API</a></li>
+</ul>
+</li>
+</ul>
+
+  <h3>Browse</h3>
+  <ul>
+    
+      <li>Prev: <a href="fields.html">Model field reference</a></li>
+    
+    
+      <li>Next: <a href="relations.html">Related objects reference</a></li>
+    
+  </ul>
+  <h3>You are here:</h3>
+  <ul>
+      <li>
+        <a href="../../index.html">Django 1.8.2.dev20150505153848 documentation</a>
+        
+          <ul><li><a href="../index.html">API Reference</a>
+        
+          <ul><li><a href="index.html">Models</a>
+        
+        <ul><li>Model <tt class="docutils literal"><span class="pre">_meta</span></tt> API</li></ul>
+        </li></ul></li></ul>
+      </li>
+  </ul>
+
+  <h3>This Page</h3>
+  <ul class="this-page-menu">
+    <li><a href="../../_sources/ref/models/meta.txt"
+           rel="nofollow">Show Source</a></li>
+  </ul>
+<div id="searchbox" style="display: none">
+  <h3>Quick search</h3>
+    <form class="search" action="../../search.html" method="get">
+      <input type="text" name="q" />
+      <input type="submit" value="Go" />
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+    <p class="searchtip" style="font-size: 90%">
+    Enter search terms or a module, class or function name.
+    </p>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+              <h3>Last update:</h3>
+              <p class="topless">May 06, 2015</p>
+          </div>
+        
+      
+    </div>
+
+    <div id="ft">
+      <div class="nav">
+    &laquo; <a href="fields.html" title="Model field reference">previous</a>
+     |
+    <a href="../index.html" title="API Reference" accesskey="U">up</a>
+   |
+    <a href="relations.html" title="Related objects reference">next</a> &raquo;</div>
+    </div>
+  </div>
+
+      <div class="clearer"></div>
+    </div>
+  </body>
+</html>

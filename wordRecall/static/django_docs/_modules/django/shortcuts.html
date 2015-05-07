@@ -1,0 +1,366 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>django.shortcuts &mdash; Django 1.8.2.dev20150505153848 documentation</title>
+    
+    <link rel="stylesheet" href="../../_static/default.css" type="text/css" />
+    <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '../../',
+        VERSION:     '1.8.2.dev20150505153848',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="../../_static/jquery.js"></script>
+    <script type="text/javascript" src="../../_static/underscore.js"></script>
+    <script type="text/javascript" src="../../_static/doctools.js"></script>
+    <link rel="top" title="Django 1.8.2.dev20150505153848 documentation" href="../../index.html" />
+    <link rel="up" title="django" href="../django.html" />
+
+
+
+ 
+<script type="text/javascript" src="../../templatebuiltins.js"></script>
+<script type="text/javascript">
+(function($) {
+    if (!django_template_builtins) {
+       // templatebuiltins.js missing, do nothing.
+       return;
+    }
+    $(document).ready(function() {
+        // Hyperlink Django template tags and filters
+        var base = "../../ref/templates/builtins.html";
+        if (base == "#") {
+            // Special case for builtins.html itself
+            base = "";
+        }
+        // Tags are keywords, class '.k'
+        $("div.highlight\\-html\\+django span.k").each(function(i, elem) {
+             var tagname = $(elem).text();
+             if ($.inArray(tagname, django_template_builtins.ttags) != -1) {
+                 var fragment = tagname.replace(/_/, '-');
+                 $(elem).html("<a href='" + base + "#" + fragment + "'>" + tagname + "</a>");
+             }
+        });
+        // Filters are functions, class '.nf'
+        $("div.highlight\\-html\\+django span.nf").each(function(i, elem) {
+             var filtername = $(elem).text();
+             if ($.inArray(filtername, django_template_builtins.tfilters) != -1) {
+                 var fragment = filtername.replace(/_/, '-');
+                 $(elem).html("<a href='" + base + "#" + fragment + "'>" + filtername + "</a>");
+             }
+        });
+    });
+})(jQuery);
+</script>
+
+
+  </head>
+  <body>
+
+    <div class="document">
+  <div id="custom-doc" class="yui-t6">
+    <div id="hd">
+      <h1><a href="../../index.html">Django 1.8.2.dev20150505153848 documentation</a></h1>
+      <div id="global-nav">
+        <a title="Home page" href="../../index.html">Home</a>  |
+        <a title="Table of contents" href="../../contents.html">Table of contents</a>  |
+        <a title="Global index" href="../../genindex.html">Index</a>  |
+        <a title="Module index" href="../../py-modindex.html">Modules</a>
+      </div>
+      <div class="nav">
+    <a href="../index.html" title="Module code" accesskey="U">up</a></div>
+    </div>
+
+    <div id="bd">
+      <div id="yui-main">
+        <div class="yui-b">
+          <div class="yui-g" id="_modules-django-shortcuts">
+            
+  <h1>Source code for django.shortcuts</h1><div class="highlight"><pre>
+<span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">This module collects helper functions and classes that &quot;span&quot; multiple levels</span>
+<span class="sd">of MVC. In other words, these functions/classes introduce controlled coupling</span>
+<span class="sd">for convenience&#39;s sake.</span>
+<span class="sd">&quot;&quot;&quot;</span>
+
+<span class="kn">import</span> <span class="nn">warnings</span>
+
+<span class="kn">from</span> <span class="nn">django.core</span> <span class="kn">import</span> <span class="n">urlresolvers</span>
+<span class="kn">from</span> <span class="nn">django.db.models.base</span> <span class="kn">import</span> <span class="n">ModelBase</span>
+<span class="kn">from</span> <span class="nn">django.db.models.manager</span> <span class="kn">import</span> <span class="n">Manager</span>
+<span class="kn">from</span> <span class="nn">django.db.models.query</span> <span class="kn">import</span> <span class="n">QuerySet</span>
+<span class="kn">from</span> <span class="nn">django.http</span> <span class="kn">import</span> <span class="p">(</span>
+    <span class="n">Http404</span><span class="p">,</span> <span class="n">HttpResponse</span><span class="p">,</span> <span class="n">HttpResponsePermanentRedirect</span><span class="p">,</span> <span class="n">HttpResponseRedirect</span><span class="p">,</span>
+<span class="p">)</span>
+<span class="kn">from</span> <span class="nn">django.template</span> <span class="kn">import</span> <span class="n">RequestContext</span><span class="p">,</span> <span class="n">loader</span>
+<span class="kn">from</span> <span class="nn">django.template.context</span> <span class="kn">import</span> <span class="n">_current_app_undefined</span>
+<span class="kn">from</span> <span class="nn">django.template.engine</span> <span class="kn">import</span> <span class="p">(</span>
+    <span class="n">_context_instance_undefined</span><span class="p">,</span> <span class="n">_dictionary_undefined</span><span class="p">,</span> <span class="n">_dirs_undefined</span><span class="p">,</span>
+<span class="p">)</span>
+<span class="kn">from</span> <span class="nn">django.utils</span> <span class="kn">import</span> <span class="n">six</span>
+<span class="kn">from</span> <span class="nn">django.utils.deprecation</span> <span class="kn">import</span> <span class="n">RemovedInDjango20Warning</span>
+<span class="kn">from</span> <span class="nn">django.utils.encoding</span> <span class="kn">import</span> <span class="n">force_text</span>
+<span class="kn">from</span> <span class="nn">django.utils.functional</span> <span class="kn">import</span> <span class="n">Promise</span>
+
+
+<div class="viewcode-block" id="render_to_response"><a class="viewcode-back" href="../../topics/http/shortcuts.html#django.shortcuts.render_to_response">[docs]</a><span class="k">def</span> <span class="nf">render_to_response</span><span class="p">(</span><span class="n">template_name</span><span class="p">,</span> <span class="n">context</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span>
+                       <span class="n">context_instance</span><span class="o">=</span><span class="n">_context_instance_undefined</span><span class="p">,</span>
+                       <span class="n">content_type</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span> <span class="n">status</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span> <span class="n">dirs</span><span class="o">=</span><span class="n">_dirs_undefined</span><span class="p">,</span>
+                       <span class="n">dictionary</span><span class="o">=</span><span class="n">_dictionary_undefined</span><span class="p">,</span> <span class="n">using</span><span class="o">=</span><span class="bp">None</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Returns a HttpResponse whose content is filled with the result of calling</span>
+<span class="sd">    django.template.loader.render_to_string() with the passed arguments.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">if</span> <span class="p">(</span><span class="n">context_instance</span> <span class="ow">is</span> <span class="n">_context_instance_undefined</span>
+            <span class="ow">and</span> <span class="n">dirs</span> <span class="ow">is</span> <span class="n">_dirs_undefined</span>
+            <span class="ow">and</span> <span class="n">dictionary</span> <span class="ow">is</span> <span class="n">_dictionary_undefined</span><span class="p">):</span>
+        <span class="c"># No deprecated arguments were passed - use the new code path</span>
+        <span class="n">content</span> <span class="o">=</span> <span class="n">loader</span><span class="o">.</span><span class="n">render_to_string</span><span class="p">(</span><span class="n">template_name</span><span class="p">,</span> <span class="n">context</span><span class="p">,</span> <span class="n">using</span><span class="o">=</span><span class="n">using</span><span class="p">)</span>
+
+    <span class="k">else</span><span class="p">:</span>
+        <span class="c"># Some deprecated arguments were passed - use the legacy code path</span>
+        <span class="n">content</span> <span class="o">=</span> <span class="n">loader</span><span class="o">.</span><span class="n">render_to_string</span><span class="p">(</span>
+            <span class="n">template_name</span><span class="p">,</span> <span class="n">context</span><span class="p">,</span> <span class="n">context_instance</span><span class="p">,</span> <span class="n">dirs</span><span class="p">,</span> <span class="n">dictionary</span><span class="p">,</span>
+            <span class="n">using</span><span class="o">=</span><span class="n">using</span><span class="p">)</span>
+
+    <span class="k">return</span> <span class="n">HttpResponse</span><span class="p">(</span><span class="n">content</span><span class="p">,</span> <span class="n">content_type</span><span class="p">,</span> <span class="n">status</span><span class="p">)</span>
+
+</div>
+<div class="viewcode-block" id="render"><a class="viewcode-back" href="../../topics/http/shortcuts.html#django.shortcuts.render">[docs]</a><span class="k">def</span> <span class="nf">render</span><span class="p">(</span><span class="n">request</span><span class="p">,</span> <span class="n">template_name</span><span class="p">,</span> <span class="n">context</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span>
+           <span class="n">context_instance</span><span class="o">=</span><span class="n">_context_instance_undefined</span><span class="p">,</span>
+           <span class="n">content_type</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span> <span class="n">status</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span> <span class="n">current_app</span><span class="o">=</span><span class="n">_current_app_undefined</span><span class="p">,</span>
+           <span class="n">dirs</span><span class="o">=</span><span class="n">_dirs_undefined</span><span class="p">,</span> <span class="n">dictionary</span><span class="o">=</span><span class="n">_dictionary_undefined</span><span class="p">,</span>
+           <span class="n">using</span><span class="o">=</span><span class="bp">None</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Returns a HttpResponse whose content is filled with the result of calling</span>
+<span class="sd">    django.template.loader.render_to_string() with the passed arguments.</span>
+<span class="sd">    Uses a RequestContext by default.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">if</span> <span class="p">(</span><span class="n">context_instance</span> <span class="ow">is</span> <span class="n">_context_instance_undefined</span>
+            <span class="ow">and</span> <span class="n">current_app</span> <span class="ow">is</span> <span class="n">_current_app_undefined</span>
+            <span class="ow">and</span> <span class="n">dirs</span> <span class="ow">is</span> <span class="n">_dirs_undefined</span>
+            <span class="ow">and</span> <span class="n">dictionary</span> <span class="ow">is</span> <span class="n">_dictionary_undefined</span><span class="p">):</span>
+        <span class="c"># No deprecated arguments were passed - use the new code path</span>
+        <span class="c"># In Django 2.0, request should become a positional argument.</span>
+        <span class="n">content</span> <span class="o">=</span> <span class="n">loader</span><span class="o">.</span><span class="n">render_to_string</span><span class="p">(</span>
+            <span class="n">template_name</span><span class="p">,</span> <span class="n">context</span><span class="p">,</span> <span class="n">request</span><span class="o">=</span><span class="n">request</span><span class="p">,</span> <span class="n">using</span><span class="o">=</span><span class="n">using</span><span class="p">)</span>
+
+    <span class="k">else</span><span class="p">:</span>
+        <span class="c"># Some deprecated arguments were passed - use the legacy code path</span>
+        <span class="k">if</span> <span class="n">context_instance</span> <span class="ow">is</span> <span class="ow">not</span> <span class="n">_context_instance_undefined</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">current_app</span> <span class="ow">is</span> <span class="ow">not</span> <span class="n">_current_app_undefined</span><span class="p">:</span>
+                <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s">&#39;If you provide a context_instance you must &#39;</span>
+                                 <span class="s">&#39;set its current_app before calling render()&#39;</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">context_instance</span> <span class="o">=</span> <span class="n">RequestContext</span><span class="p">(</span><span class="n">request</span><span class="p">)</span>
+            <span class="k">if</span> <span class="n">current_app</span> <span class="ow">is</span> <span class="ow">not</span> <span class="n">_current_app_undefined</span><span class="p">:</span>
+                <span class="n">warnings</span><span class="o">.</span><span class="n">warn</span><span class="p">(</span>
+                    <span class="s">&quot;The current_app argument of render is deprecated. &quot;</span>
+                    <span class="s">&quot;Set the current_app attribute of request instead.&quot;</span><span class="p">,</span>
+                    <span class="n">RemovedInDjango20Warning</span><span class="p">,</span> <span class="n">stacklevel</span><span class="o">=</span><span class="mi">2</span><span class="p">)</span>
+                <span class="n">request</span><span class="o">.</span><span class="n">current_app</span> <span class="o">=</span> <span class="n">current_app</span>
+                <span class="c"># Directly set the private attribute to avoid triggering the</span>
+                <span class="c"># warning in RequestContext.__init__.</span>
+                <span class="n">context_instance</span><span class="o">.</span><span class="n">_current_app</span> <span class="o">=</span> <span class="n">current_app</span>
+
+        <span class="n">content</span> <span class="o">=</span> <span class="n">loader</span><span class="o">.</span><span class="n">render_to_string</span><span class="p">(</span>
+            <span class="n">template_name</span><span class="p">,</span> <span class="n">context</span><span class="p">,</span> <span class="n">context_instance</span><span class="p">,</span> <span class="n">dirs</span><span class="p">,</span> <span class="n">dictionary</span><span class="p">,</span>
+            <span class="n">using</span><span class="o">=</span><span class="n">using</span><span class="p">)</span>
+
+    <span class="k">return</span> <span class="n">HttpResponse</span><span class="p">(</span><span class="n">content</span><span class="p">,</span> <span class="n">content_type</span><span class="p">,</span> <span class="n">status</span><span class="p">)</span>
+
+</div>
+<div class="viewcode-block" id="redirect"><a class="viewcode-back" href="../../topics/http/shortcuts.html#django.shortcuts.redirect">[docs]</a><span class="k">def</span> <span class="nf">redirect</span><span class="p">(</span><span class="n">to</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Returns an HttpResponseRedirect to the appropriate URL for the arguments</span>
+<span class="sd">    passed.</span>
+
+<span class="sd">    The arguments could be:</span>
+
+<span class="sd">        * A model: the model&#39;s `get_absolute_url()` function will be called.</span>
+
+<span class="sd">        * A view name, possibly with arguments: `urlresolvers.reverse()` will</span>
+<span class="sd">          be used to reverse-resolve the name.</span>
+
+<span class="sd">        * A URL, which will be used as-is for the redirect location.</span>
+
+<span class="sd">    By default issues a temporary redirect; pass permanent=True to issue a</span>
+<span class="sd">    permanent redirect</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">if</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="s">&#39;permanent&#39;</span><span class="p">,</span> <span class="bp">False</span><span class="p">):</span>
+        <span class="n">redirect_class</span> <span class="o">=</span> <span class="n">HttpResponsePermanentRedirect</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="n">redirect_class</span> <span class="o">=</span> <span class="n">HttpResponseRedirect</span>
+
+    <span class="k">return</span> <span class="n">redirect_class</span><span class="p">(</span><span class="n">resolve_url</span><span class="p">(</span><span class="n">to</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">))</span>
+
+</div>
+<span class="k">def</span> <span class="nf">_get_queryset</span><span class="p">(</span><span class="n">klass</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Returns a QuerySet from a Model, Manager, or QuerySet. Created to make</span>
+<span class="sd">    get_object_or_404 and get_list_or_404 more DRY.</span>
+
+<span class="sd">    Raises a ValueError if klass is not a Model, Manager, or QuerySet.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">klass</span><span class="p">,</span> <span class="n">QuerySet</span><span class="p">):</span>
+        <span class="k">return</span> <span class="n">klass</span>
+    <span class="k">elif</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">klass</span><span class="p">,</span> <span class="n">Manager</span><span class="p">):</span>
+        <span class="n">manager</span> <span class="o">=</span> <span class="n">klass</span>
+    <span class="k">elif</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">klass</span><span class="p">,</span> <span class="n">ModelBase</span><span class="p">):</span>
+        <span class="n">manager</span> <span class="o">=</span> <span class="n">klass</span><span class="o">.</span><span class="n">_default_manager</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">klass</span><span class="p">,</span> <span class="nb">type</span><span class="p">):</span>
+            <span class="n">klass__name</span> <span class="o">=</span> <span class="n">klass</span><span class="o">.</span><span class="n">__name__</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">klass__name</span> <span class="o">=</span> <span class="n">klass</span><span class="o">.</span><span class="n">__class__</span><span class="o">.</span><span class="n">__name__</span>
+        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s">&quot;Object is of type &#39;</span><span class="si">%s</span><span class="s">&#39;, but must be a Django Model, &quot;</span>
+                         <span class="s">&quot;Manager, or QuerySet&quot;</span> <span class="o">%</span> <span class="n">klass__name</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">manager</span><span class="o">.</span><span class="n">all</span><span class="p">()</span>
+
+
+<div class="viewcode-block" id="get_object_or_404"><a class="viewcode-back" href="../../topics/http/shortcuts.html#django.shortcuts.get_object_or_404">[docs]</a><span class="k">def</span> <span class="nf">get_object_or_404</span><span class="p">(</span><span class="n">klass</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Uses get() to return an object, or raises a Http404 exception if the object</span>
+<span class="sd">    does not exist.</span>
+
+<span class="sd">    klass may be a Model, Manager, or QuerySet object. All other passed</span>
+<span class="sd">    arguments and keyword arguments are used in the get() query.</span>
+
+<span class="sd">    Note: Like with get(), an MultipleObjectsReturned will be raised if more than one</span>
+<span class="sd">    object is found.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">queryset</span> <span class="o">=</span> <span class="n">_get_queryset</span><span class="p">(</span><span class="n">klass</span><span class="p">)</span>
+    <span class="k">try</span><span class="p">:</span>
+        <span class="k">return</span> <span class="n">queryset</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+    <span class="k">except</span> <span class="n">queryset</span><span class="o">.</span><span class="n">model</span><span class="o">.</span><span class="n">DoesNotExist</span><span class="p">:</span>
+        <span class="k">raise</span> <span class="n">Http404</span><span class="p">(</span><span class="s">&#39;No </span><span class="si">%s</span><span class="s"> matches the given query.&#39;</span> <span class="o">%</span> <span class="n">queryset</span><span class="o">.</span><span class="n">model</span><span class="o">.</span><span class="n">_meta</span><span class="o">.</span><span class="n">object_name</span><span class="p">)</span>
+
+</div>
+<div class="viewcode-block" id="get_list_or_404"><a class="viewcode-back" href="../../topics/http/shortcuts.html#django.shortcuts.get_list_or_404">[docs]</a><span class="k">def</span> <span class="nf">get_list_or_404</span><span class="p">(</span><span class="n">klass</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Uses filter() to return a list of objects, or raise a Http404 exception if</span>
+<span class="sd">    the list is empty.</span>
+
+<span class="sd">    klass may be a Model, Manager, or QuerySet object. All other passed</span>
+<span class="sd">    arguments and keyword arguments are used in the filter() query.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">queryset</span> <span class="o">=</span> <span class="n">_get_queryset</span><span class="p">(</span><span class="n">klass</span><span class="p">)</span>
+    <span class="n">obj_list</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="n">queryset</span><span class="o">.</span><span class="n">filter</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">))</span>
+    <span class="k">if</span> <span class="ow">not</span> <span class="n">obj_list</span><span class="p">:</span>
+        <span class="k">raise</span> <span class="n">Http404</span><span class="p">(</span><span class="s">&#39;No </span><span class="si">%s</span><span class="s"> matches the given query.&#39;</span> <span class="o">%</span> <span class="n">queryset</span><span class="o">.</span><span class="n">model</span><span class="o">.</span><span class="n">_meta</span><span class="o">.</span><span class="n">object_name</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">obj_list</span>
+
+</div>
+<span class="k">def</span> <span class="nf">resolve_url</span><span class="p">(</span><span class="n">to</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Return a URL appropriate for the arguments passed.</span>
+
+<span class="sd">    The arguments could be:</span>
+
+<span class="sd">        * A model: the model&#39;s `get_absolute_url()` function will be called.</span>
+
+<span class="sd">        * A view name, possibly with arguments: `urlresolvers.reverse()` will</span>
+<span class="sd">          be used to reverse-resolve the name.</span>
+
+<span class="sd">        * A URL, which will be returned as-is.</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="c"># If it&#39;s a model, use get_absolute_url()</span>
+    <span class="k">if</span> <span class="nb">hasattr</span><span class="p">(</span><span class="n">to</span><span class="p">,</span> <span class="s">&#39;get_absolute_url&#39;</span><span class="p">):</span>
+        <span class="k">return</span> <span class="n">to</span><span class="o">.</span><span class="n">get_absolute_url</span><span class="p">()</span>
+
+    <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">to</span><span class="p">,</span> <span class="n">Promise</span><span class="p">):</span>
+        <span class="c"># Expand the lazy instance, as it can cause issues when it is passed</span>
+        <span class="c"># further to some Python functions like urlparse.</span>
+        <span class="n">to</span> <span class="o">=</span> <span class="n">force_text</span><span class="p">(</span><span class="n">to</span><span class="p">)</span>
+
+    <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">to</span><span class="p">,</span> <span class="n">six</span><span class="o">.</span><span class="n">string_types</span><span class="p">):</span>
+        <span class="c"># Handle relative URLs</span>
+        <span class="k">if</span> <span class="nb">any</span><span class="p">(</span><span class="n">to</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span><span class="n">path</span><span class="p">)</span> <span class="k">for</span> <span class="n">path</span> <span class="ow">in</span> <span class="p">(</span><span class="s">&#39;./&#39;</span><span class="p">,</span> <span class="s">&#39;../&#39;</span><span class="p">)):</span>
+            <span class="k">return</span> <span class="n">to</span>
+
+    <span class="c"># Next try a reverse URL resolution.</span>
+    <span class="k">try</span><span class="p">:</span>
+        <span class="k">return</span> <span class="n">urlresolvers</span><span class="o">.</span><span class="n">reverse</span><span class="p">(</span><span class="n">to</span><span class="p">,</span> <span class="n">args</span><span class="o">=</span><span class="n">args</span><span class="p">,</span> <span class="n">kwargs</span><span class="o">=</span><span class="n">kwargs</span><span class="p">)</span>
+    <span class="k">except</span> <span class="n">urlresolvers</span><span class="o">.</span><span class="n">NoReverseMatch</span><span class="p">:</span>
+        <span class="c"># If this is a callable, re-raise.</span>
+        <span class="k">if</span> <span class="nb">callable</span><span class="p">(</span><span class="n">to</span><span class="p">):</span>
+            <span class="k">raise</span>
+        <span class="c"># If this doesn&#39;t &quot;feel&quot; like a URL, re-raise.</span>
+        <span class="k">if</span> <span class="s">&#39;/&#39;</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">to</span> <span class="ow">and</span> <span class="s">&#39;.&#39;</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">to</span><span class="p">:</span>
+            <span class="k">raise</span>
+
+    <span class="c"># Finally, fall back and assume it&#39;s a URL</span>
+    <span class="k">return</span> <span class="n">to</span>
+</pre></div>
+
+          </div>
+        </div>
+      </div>
+      
+        
+          <div class="yui-b" id="sidebar">
+            
+      <div class="sphinxsidebar">
+        <div class="sphinxsidebarwrapper">
+  <h3>Browse</h3>
+  <ul>
+    
+    
+  </ul>
+  <h3>You are here:</h3>
+  <ul>
+      <li>
+        <a href="../../index.html">Django 1.8.2.dev20150505153848 documentation</a>
+        
+          <ul><li><a href="../index.html">Module code</a>
+        
+          <ul><li><a href="../django.html">django</a>
+        
+        <ul><li>django.shortcuts</li></ul>
+        </li></ul></li></ul>
+      </li>
+  </ul>
+
+<div id="searchbox" style="display: none">
+  <h3>Quick search</h3>
+    <form class="search" action="../../search.html" method="get">
+      <input type="text" name="q" />
+      <input type="submit" value="Go" />
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+    <p class="searchtip" style="font-size: 90%">
+    Enter search terms or a module, class or function name.
+    </p>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+              <h3>Last update:</h3>
+              <p class="topless">May 06, 2015</p>
+          </div>
+        
+      
+    </div>
+
+    <div id="ft">
+      <div class="nav">
+    <a href="../index.html" title="Module code" accesskey="U">up</a></div>
+    </div>
+  </div>
+
+      <div class="clearer"></div>
+    </div>
+  </body>
+</html>

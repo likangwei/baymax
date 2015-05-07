@@ -1,0 +1,363 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>Release notes &mdash; Django 1.8.2.dev20150505153848 documentation</title>
+    
+    <link rel="stylesheet" href="../_static/default.css" type="text/css" />
+    <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '../',
+        VERSION:     '1.8.2.dev20150505153848',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="../_static/jquery.js"></script>
+    <script type="text/javascript" src="../_static/underscore.js"></script>
+    <script type="text/javascript" src="../_static/doctools.js"></script>
+    <link rel="top" title="Django 1.8.2.dev20150505153848 documentation" href="../index.html" />
+    <link rel="next" title="Django 1.8.2 release notes" href="1.8.2.html" />
+    <link rel="prev" title="Glossary" href="../glossary.html" />
+
+
+
+ 
+<script type="text/javascript" src="../templatebuiltins.js"></script>
+<script type="text/javascript">
+(function($) {
+    if (!django_template_builtins) {
+       // templatebuiltins.js missing, do nothing.
+       return;
+    }
+    $(document).ready(function() {
+        // Hyperlink Django template tags and filters
+        var base = "../ref/templates/builtins.html";
+        if (base == "#") {
+            // Special case for builtins.html itself
+            base = "";
+        }
+        // Tags are keywords, class '.k'
+        $("div.highlight\\-html\\+django span.k").each(function(i, elem) {
+             var tagname = $(elem).text();
+             if ($.inArray(tagname, django_template_builtins.ttags) != -1) {
+                 var fragment = tagname.replace(/_/, '-');
+                 $(elem).html("<a href='" + base + "#" + fragment + "'>" + tagname + "</a>");
+             }
+        });
+        // Filters are functions, class '.nf'
+        $("div.highlight\\-html\\+django span.nf").each(function(i, elem) {
+             var filtername = $(elem).text();
+             if ($.inArray(filtername, django_template_builtins.tfilters) != -1) {
+                 var fragment = filtername.replace(/_/, '-');
+                 $(elem).html("<a href='" + base + "#" + fragment + "'>" + filtername + "</a>");
+             }
+        });
+    });
+})(jQuery);
+</script>
+
+
+  </head>
+  <body>
+
+    <div class="document">
+  <div id="custom-doc" class="yui-t6">
+    <div id="hd">
+      <h1><a href="../index.html">Django 1.8.2.dev20150505153848 documentation</a></h1>
+      <div id="global-nav">
+        <a title="Home page" href="../index.html">Home</a>  |
+        <a title="Table of contents" href="../contents.html">Table of contents</a>  |
+        <a title="Global index" href="../genindex.html">Index</a>  |
+        <a title="Module index" href="../py-modindex.html">Modules</a>
+      </div>
+      <div class="nav">
+    &laquo; <a href="../glossary.html" title="Glossary">previous</a>
+     |
+    <a title="Django 1.8.2.dev20150505153848 documentation" href="../index.html" accesskey="U">up</a>
+   |
+    <a href="1.8.2.html" title="Django 1.8.2 release notes">next</a> &raquo;</div>
+    </div>
+
+    <div id="bd">
+      <div id="yui-main">
+        <div class="yui-b">
+          <div class="yui-g" id="releases-index">
+            
+  <div class="section" id="s-release-notes">
+<span id="release-notes"></span><h1>Release notes<a class="headerlink" href="#release-notes" title="Permalink to this headline">¶</a></h1>
+<p>Release notes for the official Django releases. Each release note will tell you
+what&#8217;s new in each version, and will also describe any backwards-incompatible
+changes made in that version.</p>
+<p>For those <a class="reference internal" href="../howto/upgrade-version.html"><em>upgrading to a new version of Django</em></a>,
+you will need to check all the backwards-incompatible changes and
+<a class="reference internal" href="../internals/deprecation.html"><em>deprecated features</em></a> for each &#8216;final&#8217; release
+from the one after your current Django version, up to and including the new
+version.</p>
+<div class="section" id="s-final-releases">
+<span id="final-releases"></span><h2>Final releases<a class="headerlink" href="#final-releases" title="Permalink to this headline">¶</a></h2>
+<p>Below are release notes through Django 1.8 and its minor releases. Newer
+versions of the documentation contain the release notes for any later releases.</p>
+<div class="section" id="s-release">
+<span id="s-development-release-notes"></span><span id="release"></span><span id="development-release-notes"></span><h3>1.8 release<a class="headerlink" href="#release" title="Permalink to this headline">¶</a></h3>
+<div class="toctree-wrapper compound">
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="1.8.2.html">Django 1.8.2 release notes</a></li>
+<li class="toctree-l1"><a class="reference internal" href="1.8.1.html">Django 1.8.1 release notes</a></li>
+<li class="toctree-l1"><a class="reference internal" href="1.8.html">Django 1.8 release notes</a></li>
+</ul>
+</div>
+</div>
+<div class="section" id="s-id1">
+<span id="id1"></span><h3>1.7 release<a class="headerlink" href="#id1" title="Permalink to this headline">¶</a></h3>
+<div class="toctree-wrapper compound">
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="1.7.8.html">Django 1.7.8 release notes</a></li>
+<li class="toctree-l1"><a class="reference internal" href="1.7.7.html">Django 1.7.7 release notes</a></li>
+<li class="toctree-l1"><a class="reference internal" href="1.7.6.html">Django 1.7.6 release notes</a></li>
+<li class="toctree-l1"><a class="reference internal" href="1.7.5.html">Django 1.7.5 release notes</a></li>
+<li class="toctree-l1"><a class="reference internal" href="1.7.4.html">Django 1.7.4 release notes</a></li>
+<li class="toctree-l1"><a class="reference internal" href="1.7.3.html">Django 1.7.3 release notes</a></li>
+<li class="toctree-l1"><a class="reference internal" href="1.7.2.html">Django 1.7.2 release notes</a></li>
+<li class="toctree-l1"><a class="reference internal" href="1.7.1.html">Django 1.7.1 release notes</a></li>
+<li class="toctree-l1"><a class="reference internal" href="1.7.html">Django 1.7 release notes</a></li>
+</ul>
+</div>
+</div>
+<div class="section" id="s-id2">
+<span id="id2"></span><h3>1.6 release<a class="headerlink" href="#id2" title="Permalink to this headline">¶</a></h3>
+<div class="toctree-wrapper compound">
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="1.6.11.html">Django 1.6.11 release notes</a></li>
+<li class="toctree-l1"><a class="reference internal" href="1.6.10.html">Django 1.6.10 release notes</a></li>
+<li class="toctree-l1"><a class="reference internal" href="1.6.9.html">Django 1.6.9 release notes</a></li>
+<li class="toctree-l1"><a class="reference internal" href="1.6.8.html">Django 1.6.8 release notes</a></li>
+<li class="toctree-l1"><a class="reference internal" href="1.6.7.html">Django 1.6.7 release notes</a></li>
+<li class="toctree-l1"><a class="reference internal" href="1.6.6.html">Django 1.6.6 release notes</a></li>
+<li class="toctree-l1"><a class="reference internal" href="1.6.5.html">Django 1.6.5 release notes</a></li>
+<li class="toctree-l1"><a class="reference internal" href="1.6.4.html">Django 1.6.4 release notes</a></li>
+<li class="toctree-l1"><a class="reference internal" href="1.6.3.html">Django 1.6.3 release notes</a></li>
+<li class="toctree-l1"><a class="reference internal" href="1.6.2.html">Django 1.6.2 release notes</a></li>
+<li class="toctree-l1"><a class="reference internal" href="1.6.1.html">Django 1.6.1 release notes</a></li>
+<li class="toctree-l1"><a class="reference internal" href="1.6.html">Django 1.6 release notes</a></li>
+</ul>
+</div>
+</div>
+<div class="section" id="s-id3">
+<span id="id3"></span><h3>1.5 release<a class="headerlink" href="#id3" title="Permalink to this headline">¶</a></h3>
+<div class="toctree-wrapper compound">
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="1.5.12.html">Django 1.5.12 release notes</a></li>
+<li class="toctree-l1"><a class="reference internal" href="1.5.11.html">Django 1.5.11 release notes</a></li>
+<li class="toctree-l1"><a class="reference internal" href="1.5.10.html">Django 1.5.10 release notes</a></li>
+<li class="toctree-l1"><a class="reference internal" href="1.5.9.html">Django 1.5.9 release notes</a></li>
+<li class="toctree-l1"><a class="reference internal" href="1.5.8.html">Django 1.5.8 release notes</a></li>
+<li class="toctree-l1"><a class="reference internal" href="1.5.7.html">Django 1.5.7 release notes</a></li>
+<li class="toctree-l1"><a class="reference internal" href="1.5.6.html">Django 1.5.6 release notes</a></li>
+<li class="toctree-l1"><a class="reference internal" href="1.5.5.html">Django 1.5.5 release notes</a></li>
+<li class="toctree-l1"><a class="reference internal" href="1.5.4.html">Django 1.5.4 release notes</a></li>
+<li class="toctree-l1"><a class="reference internal" href="1.5.3.html">Django 1.5.3 release notes</a></li>
+<li class="toctree-l1"><a class="reference internal" href="1.5.2.html">Django 1.5.2 release notes</a></li>
+<li class="toctree-l1"><a class="reference internal" href="1.5.1.html">Django 1.5.1 release notes</a></li>
+<li class="toctree-l1"><a class="reference internal" href="1.5.html">Django 1.5 release notes</a></li>
+</ul>
+</div>
+</div>
+<div class="section" id="s-id4">
+<span id="id4"></span><h3>1.4 release<a class="headerlink" href="#id4" title="Permalink to this headline">¶</a></h3>
+<div class="toctree-wrapper compound">
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="1.4.20.html">Django 1.4.20 release notes</a></li>
+<li class="toctree-l1"><a class="reference internal" href="1.4.19.html">Django 1.4.19 release notes</a></li>
+<li class="toctree-l1"><a class="reference internal" href="1.4.18.html">Django 1.4.18 release notes</a></li>
+<li class="toctree-l1"><a class="reference internal" href="1.4.17.html">Django 1.4.17 release notes</a></li>
+<li class="toctree-l1"><a class="reference internal" href="1.4.16.html">Django 1.4.16 release notes</a></li>
+<li class="toctree-l1"><a class="reference internal" href="1.4.15.html">Django 1.4.15 release notes</a></li>
+<li class="toctree-l1"><a class="reference internal" href="1.4.14.html">Django 1.4.14 release notes</a></li>
+<li class="toctree-l1"><a class="reference internal" href="1.4.13.html">Django 1.4.13 release notes</a></li>
+<li class="toctree-l1"><a class="reference internal" href="1.4.12.html">Django 1.4.12 release notes</a></li>
+<li class="toctree-l1"><a class="reference internal" href="1.4.11.html">Django 1.4.11 release notes</a></li>
+<li class="toctree-l1"><a class="reference internal" href="1.4.10.html">Django 1.4.10 release notes</a></li>
+<li class="toctree-l1"><a class="reference internal" href="1.4.9.html">Django 1.4.9 release notes</a></li>
+<li class="toctree-l1"><a class="reference internal" href="1.4.8.html">Django 1.4.8 release notes</a></li>
+<li class="toctree-l1"><a class="reference internal" href="1.4.7.html">Django 1.4.7 release notes</a></li>
+<li class="toctree-l1"><a class="reference internal" href="1.4.6.html">Django 1.4.6 release notes</a></li>
+<li class="toctree-l1"><a class="reference internal" href="1.4.5.html">Django 1.4.5 release notes</a></li>
+<li class="toctree-l1"><a class="reference internal" href="1.4.4.html">Django 1.4.4 release notes</a></li>
+<li class="toctree-l1"><a class="reference internal" href="1.4.3.html">Django 1.4.3 release notes</a></li>
+<li class="toctree-l1"><a class="reference internal" href="1.4.2.html">Django 1.4.2 release notes</a></li>
+<li class="toctree-l1"><a class="reference internal" href="1.4.1.html">Django 1.4.1 release notes</a></li>
+<li class="toctree-l1"><a class="reference internal" href="1.4.html">Django 1.4 release notes</a></li>
+</ul>
+</div>
+</div>
+<div class="section" id="s-id5">
+<span id="id5"></span><h3>1.3 release<a class="headerlink" href="#id5" title="Permalink to this headline">¶</a></h3>
+<div class="toctree-wrapper compound">
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="1.3.7.html">Django 1.3.7 release notes</a></li>
+<li class="toctree-l1"><a class="reference internal" href="1.3.6.html">Django 1.3.6 release notes</a></li>
+<li class="toctree-l1"><a class="reference internal" href="1.3.5.html">Django 1.3.5 release notes</a></li>
+<li class="toctree-l1"><a class="reference internal" href="1.3.4.html">Django 1.3.4 release notes</a></li>
+<li class="toctree-l1"><a class="reference internal" href="1.3.3.html">Django 1.3.3 release notes</a></li>
+<li class="toctree-l1"><a class="reference internal" href="1.3.2.html">Django 1.3.2 release notes</a></li>
+<li class="toctree-l1"><a class="reference internal" href="1.3.1.html">Django 1.3.1 release notes</a></li>
+<li class="toctree-l1"><a class="reference internal" href="1.3.html">Django 1.3 release notes</a></li>
+</ul>
+</div>
+</div>
+<div class="section" id="s-id6">
+<span id="id6"></span><h3>1.2 release<a class="headerlink" href="#id6" title="Permalink to this headline">¶</a></h3>
+<div class="toctree-wrapper compound">
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="1.2.7.html">Django 1.2.7 release notes</a></li>
+<li class="toctree-l1"><a class="reference internal" href="1.2.6.html">Django 1.2.6 release notes</a></li>
+<li class="toctree-l1"><a class="reference internal" href="1.2.5.html">Django 1.2.5 release notes</a></li>
+<li class="toctree-l1"><a class="reference internal" href="1.2.4.html">Django 1.2.4 release notes</a></li>
+<li class="toctree-l1"><a class="reference internal" href="1.2.3.html">Django 1.2.3 release notes</a></li>
+<li class="toctree-l1"><a class="reference internal" href="1.2.2.html">Django 1.2.2 release notes</a></li>
+<li class="toctree-l1"><a class="reference internal" href="1.2.1.html">Django 1.2.1 release notes</a></li>
+<li class="toctree-l1"><a class="reference internal" href="1.2.html">Django 1.2 release notes</a></li>
+</ul>
+</div>
+</div>
+<div class="section" id="s-id7">
+<span id="id7"></span><h3>1.1 release<a class="headerlink" href="#id7" title="Permalink to this headline">¶</a></h3>
+<div class="toctree-wrapper compound">
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="1.1.4.html">Django 1.1.4 release notes</a></li>
+<li class="toctree-l1"><a class="reference internal" href="1.1.3.html">Django 1.1.3 release notes</a></li>
+<li class="toctree-l1"><a class="reference internal" href="1.1.2.html">Django 1.1.2 release notes</a></li>
+<li class="toctree-l1"><a class="reference internal" href="1.1.html">Django 1.1 release notes</a></li>
+</ul>
+</div>
+</div>
+<div class="section" id="s-id8">
+<span id="id8"></span><h3>1.0 release<a class="headerlink" href="#id8" title="Permalink to this headline">¶</a></h3>
+<div class="toctree-wrapper compound">
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="1.0.2.html">Django 1.0.2 release notes</a></li>
+<li class="toctree-l1"><a class="reference internal" href="1.0.1.html">Django 1.0.1 release notes</a></li>
+<li class="toctree-l1"><a class="reference internal" href="1.0.html">Django 1.0 release notes</a></li>
+</ul>
+</div>
+</div>
+<div class="section" id="s-pre-1-0-releases">
+<span id="pre-1-0-releases"></span><h3>Pre-1.0 releases<a class="headerlink" href="#pre-1-0-releases" title="Permalink to this headline">¶</a></h3>
+<div class="toctree-wrapper compound">
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="0.96.html">Django version 0.96 release notes</a></li>
+<li class="toctree-l1"><a class="reference internal" href="0.95.html">Django version 0.95 release notes</a></li>
+</ul>
+</div>
+</div>
+</div>
+<div class="section" id="s-security-releases">
+<span id="security-releases"></span><h2>Security releases<a class="headerlink" href="#security-releases" title="Permalink to this headline">¶</a></h2>
+<p>Whenever a security issue is disclosed via <a class="reference internal" href="../internals/security.html"><em>Django&#8217;s security
+policies</em></a>, appropriate release notes are now
+added to all affected release series.</p>
+<p>Additionally, <a class="reference internal" href="security.html"><em>an archive of disclosed security issues</em></a> is maintained.</p>
+<div class="toctree-wrapper compound">
+</div>
+</div>
+</div>
+
+
+          </div>
+        </div>
+      </div>
+      
+        
+          <div class="yui-b" id="sidebar">
+            
+      <div class="sphinxsidebar">
+        <div class="sphinxsidebarwrapper">
+  <h3><a href="../contents.html">Table Of Contents</a></h3>
+  <ul>
+<li><a class="reference internal" href="#">Release notes</a><ul>
+<li><a class="reference internal" href="#final-releases">Final releases</a><ul>
+<li><a class="reference internal" href="#release">1.8 release</a></li>
+<li><a class="reference internal" href="#id1">1.7 release</a></li>
+<li><a class="reference internal" href="#id2">1.6 release</a></li>
+<li><a class="reference internal" href="#id3">1.5 release</a></li>
+<li><a class="reference internal" href="#id4">1.4 release</a></li>
+<li><a class="reference internal" href="#id5">1.3 release</a></li>
+<li><a class="reference internal" href="#id6">1.2 release</a></li>
+<li><a class="reference internal" href="#id7">1.1 release</a></li>
+<li><a class="reference internal" href="#id8">1.0 release</a></li>
+<li><a class="reference internal" href="#pre-1-0-releases">Pre-1.0 releases</a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#security-releases">Security releases</a></li>
+</ul>
+</li>
+</ul>
+
+  <h3>Browse</h3>
+  <ul>
+    
+      <li>Prev: <a href="../glossary.html">Glossary</a></li>
+    
+    
+      <li>Next: <a href="1.8.2.html">Django 1.8.2 release notes</a></li>
+    
+  </ul>
+  <h3>You are here:</h3>
+  <ul>
+      <li>
+        <a href="../index.html">Django 1.8.2.dev20150505153848 documentation</a>
+        
+        <ul><li>Release notes</li></ul>
+        
+      </li>
+  </ul>
+
+  <h3>This Page</h3>
+  <ul class="this-page-menu">
+    <li><a href="../_sources/releases/index.txt"
+           rel="nofollow">Show Source</a></li>
+  </ul>
+<div id="searchbox" style="display: none">
+  <h3>Quick search</h3>
+    <form class="search" action="../search.html" method="get">
+      <input type="text" name="q" />
+      <input type="submit" value="Go" />
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+    <p class="searchtip" style="font-size: 90%">
+    Enter search terms or a module, class or function name.
+    </p>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+              <h3>Last update:</h3>
+              <p class="topless">May 06, 2015</p>
+          </div>
+        
+      
+    </div>
+
+    <div id="ft">
+      <div class="nav">
+    &laquo; <a href="../glossary.html" title="Glossary">previous</a>
+     |
+    <a title="Django 1.8.2.dev20150505153848 documentation" href="../index.html" accesskey="U">up</a>
+   |
+    <a href="1.8.2.html" title="Django 1.8.2 release notes">next</a> &raquo;</div>
+    </div>
+  </div>
+
+      <div class="clearer"></div>
+    </div>
+  </body>
+</html>

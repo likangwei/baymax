@@ -1,0 +1,231 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>Model Form Functions &mdash; Django 1.8.2.dev20150505153848 documentation</title>
+    
+    <link rel="stylesheet" href="../../_static/default.css" type="text/css" />
+    <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '../../',
+        VERSION:     '1.8.2.dev20150505153848',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="../../_static/jquery.js"></script>
+    <script type="text/javascript" src="../../_static/underscore.js"></script>
+    <script type="text/javascript" src="../../_static/doctools.js"></script>
+    <link rel="top" title="Django 1.8.2.dev20150505153848 documentation" href="../../index.html" />
+    <link rel="up" title="Forms" href="index.html" />
+    <link rel="next" title="Formset Functions" href="formsets.html" />
+    <link rel="prev" title="Form fields" href="fields.html" />
+
+
+
+ 
+<script type="text/javascript" src="../../templatebuiltins.js"></script>
+<script type="text/javascript">
+(function($) {
+    if (!django_template_builtins) {
+       // templatebuiltins.js missing, do nothing.
+       return;
+    }
+    $(document).ready(function() {
+        // Hyperlink Django template tags and filters
+        var base = "../templates/builtins.html";
+        if (base == "#") {
+            // Special case for builtins.html itself
+            base = "";
+        }
+        // Tags are keywords, class '.k'
+        $("div.highlight\\-html\\+django span.k").each(function(i, elem) {
+             var tagname = $(elem).text();
+             if ($.inArray(tagname, django_template_builtins.ttags) != -1) {
+                 var fragment = tagname.replace(/_/, '-');
+                 $(elem).html("<a href='" + base + "#" + fragment + "'>" + tagname + "</a>");
+             }
+        });
+        // Filters are functions, class '.nf'
+        $("div.highlight\\-html\\+django span.nf").each(function(i, elem) {
+             var filtername = $(elem).text();
+             if ($.inArray(filtername, django_template_builtins.tfilters) != -1) {
+                 var fragment = filtername.replace(/_/, '-');
+                 $(elem).html("<a href='" + base + "#" + fragment + "'>" + filtername + "</a>");
+             }
+        });
+    });
+})(jQuery);
+</script>
+
+
+  </head>
+  <body>
+
+    <div class="document">
+  <div id="custom-doc" class="yui-t6">
+    <div id="hd">
+      <h1><a href="../../index.html">Django 1.8.2.dev20150505153848 documentation</a></h1>
+      <div id="global-nav">
+        <a title="Home page" href="../../index.html">Home</a>  |
+        <a title="Table of contents" href="../../contents.html">Table of contents</a>  |
+        <a title="Global index" href="../../genindex.html">Index</a>  |
+        <a title="Module index" href="../../py-modindex.html">Modules</a>
+      </div>
+      <div class="nav">
+    &laquo; <a href="fields.html" title="Form fields">previous</a>
+     |
+    <a href="../index.html" title="API Reference" accesskey="U">up</a>
+   |
+    <a href="formsets.html" title="Formset Functions">next</a> &raquo;</div>
+    </div>
+
+    <div id="bd">
+      <div id="yui-main">
+        <div class="yui-b">
+          <div class="yui-g" id="ref-forms-models">
+            
+  <div class="section" id="s-model-form-functions">
+<span id="model-form-functions"></span><h1>Model Form Functions<a class="headerlink" href="#model-form-functions" title="Permalink to this headline">¶</a></h1>
+<p>Model Form API reference. For introductory material about model forms, see the
+<a class="reference internal" href="../../topics/forms/modelforms.html"><em>Creating forms from models</em></a> topic guide.</p>
+<span class="target" id="module-django.forms.models"></span><dl class="function">
+<dt id="django.forms.models.modelform_factory">
+<tt class="descname">modelform_factory</tt>(<em>model</em>, <em>form=ModelForm</em>, <em>fields=None</em>, <em>exclude=None</em>, <em>formfield_callback=None</em>, <em>widgets=None</em>, <em>localized_fields=None</em>, <em>labels=None</em>, <em>help_texts=None</em>, <em>error_messages=None</em>)<a class="reference internal" href="../../_modules/django/forms/models.html#modelform_factory"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#django.forms.models.modelform_factory" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns a <a class="reference internal" href="../../topics/forms/modelforms.html#django.forms.ModelForm" title="django.forms.ModelForm"><tt class="xref py py-class docutils literal"><span class="pre">ModelForm</span></tt></a> class for the given <tt class="docutils literal"><span class="pre">model</span></tt>.
+You can optionally pass a <tt class="docutils literal"><span class="pre">form</span></tt> argument to use as a starting point for
+constructing the <tt class="docutils literal"><span class="pre">ModelForm</span></tt>.</p>
+<p><tt class="docutils literal"><span class="pre">fields</span></tt> is an optional list of field names. If provided, only the named
+fields will be included in the returned fields.</p>
+<p><tt class="docutils literal"><span class="pre">exclude</span></tt> is an optional list of field names. If provided, the named
+fields will be excluded from the returned fields, even if they are listed
+in the <tt class="docutils literal"><span class="pre">fields</span></tt> argument.</p>
+<p><tt class="docutils literal"><span class="pre">widgets</span></tt> is a dictionary of model field names mapped to a widget.</p>
+<p><tt class="docutils literal"><span class="pre">formfield_callback</span></tt> is a callable that takes a model field and returns
+a form field.</p>
+<p><tt class="docutils literal"><span class="pre">localized_fields</span></tt> is a list of names of fields which should be localized.</p>
+<p><tt class="docutils literal"><span class="pre">labels</span></tt> is a dictionary of model field names mapped to a label.</p>
+<p><tt class="docutils literal"><span class="pre">help_texts</span></tt> is a dictionary of model field names mapped to a help text.</p>
+<p><tt class="docutils literal"><span class="pre">error_messages</span></tt> is a dictionary of model field names mapped to a
+dictionary of error messages.</p>
+<p>See <a class="reference internal" href="../../topics/forms/modelforms.html#modelforms-factory"><em>ModelForm factory function</em></a> for example usage.</p>
+<p>You must provide the list of fields explicitly, either via keyword arguments
+<tt class="docutils literal"><span class="pre">fields</span></tt> or <tt class="docutils literal"><span class="pre">exclude</span></tt>, or the corresponding attributes on the form&#8217;s
+inner <tt class="docutils literal"><span class="pre">Meta</span></tt> class. See <a class="reference internal" href="../../topics/forms/modelforms.html#modelforms-selecting-fields"><em>Selecting the fields to use</em></a> for more
+information. Omitting any definition of the fields to use will result in
+an <a class="reference internal" href="../exceptions.html#django.core.exceptions.ImproperlyConfigured" title="django.core.exceptions.ImproperlyConfigured"><tt class="xref py py-exc docutils literal"><span class="pre">ImproperlyConfigured</span></tt></a> exception.</p>
+<div class="versionchanged">
+<span class="title">Changed in Django 1.8:</span> <p>Previously, omitting the list of fields was allowed and resulted in
+a form with all fields of the model.</p>
+</div>
+</dd></dl>
+
+<dl class="function">
+<dt id="django.forms.models.modelformset_factory">
+<tt class="descname">modelformset_factory</tt>(<em>model</em>, <em>form=ModelForm</em>, <em>formfield_callback=None</em>, <em>formset=BaseModelFormSet</em>, <em>extra=1</em>, <em>can_delete=False</em>, <em>can_order=False</em>, <em>max_num=None</em>, <em>fields=None</em>, <em>exclude=None</em>, <em>widgets=None</em>, <em>validate_max=False</em>, <em>localized_fields=None</em>, <em>labels=None</em>, <em>help_texts=None</em>, <em>error_messages=None</em>, <em>min_num=None</em>, <em>validate_min=False</em>)<a class="reference internal" href="../../_modules/django/forms/models.html#modelformset_factory"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#django.forms.models.modelformset_factory" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns a <tt class="docutils literal"><span class="pre">FormSet</span></tt> class for the given <tt class="docutils literal"><span class="pre">model</span></tt> class.</p>
+<p>Arguments <tt class="docutils literal"><span class="pre">model</span></tt>, <tt class="docutils literal"><span class="pre">form</span></tt>, <tt class="docutils literal"><span class="pre">fields</span></tt>, <tt class="docutils literal"><span class="pre">exclude</span></tt>,
+<tt class="docutils literal"><span class="pre">formfield_callback</span></tt>, <tt class="docutils literal"><span class="pre">widgets</span></tt>, <tt class="docutils literal"><span class="pre">localized_fields</span></tt>, <tt class="docutils literal"><span class="pre">labels</span></tt>,
+<tt class="docutils literal"><span class="pre">help_texts</span></tt>, and <tt class="docutils literal"><span class="pre">error_messages</span></tt> are all passed through to
+<a class="reference internal" href="#django.forms.models.modelform_factory" title="django.forms.models.modelform_factory"><tt class="xref py py-func docutils literal"><span class="pre">modelform_factory()</span></tt></a>.</p>
+<p>Arguments <tt class="docutils literal"><span class="pre">formset</span></tt>, <tt class="docutils literal"><span class="pre">extra</span></tt>, <tt class="docutils literal"><span class="pre">max_num</span></tt>, <tt class="docutils literal"><span class="pre">can_order</span></tt>,
+<tt class="docutils literal"><span class="pre">can_delete</span></tt> and <tt class="docutils literal"><span class="pre">validate_max</span></tt> are passed through to
+<a class="reference internal" href="formsets.html#django.forms.formsets.formset_factory" title="django.forms.formsets.formset_factory"><tt class="xref py py-func docutils literal"><span class="pre">formset_factory()</span></tt></a>. See <a class="reference internal" href="../../topics/forms/formsets.html#formsets"><em>Formsets</em></a> for
+details.</p>
+<p>See <a class="reference internal" href="../../topics/forms/modelforms.html#model-formsets"><em>Model formsets</em></a> for example usage.</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="django.forms.models.inlineformset_factory">
+<tt class="descname">inlineformset_factory</tt>(<em>parent_model</em>, <em>model</em>, <em>form=ModelForm</em>, <em>formset=BaseInlineFormSet</em>, <em>fk_name=None</em>, <em>fields=None</em>, <em>exclude=None</em>, <em>extra=3</em>, <em>can_order=False</em>, <em>can_delete=True</em>, <em>max_num=None</em>, <em>formfield_callback=None</em>, <em>widgets=None</em>, <em>validate_max=False</em>, <em>localized_fields=None</em>, <em>labels=None</em>, <em>help_texts=None</em>, <em>error_messages=None</em>, <em>min_num=None</em>, <em>validate_min=False</em>)<a class="reference internal" href="../../_modules/django/forms/models.html#inlineformset_factory"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#django.forms.models.inlineformset_factory" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns an <tt class="docutils literal"><span class="pre">InlineFormSet</span></tt> using <a class="reference internal" href="#django.forms.models.modelformset_factory" title="django.forms.models.modelformset_factory"><tt class="xref py py-func docutils literal"><span class="pre">modelformset_factory()</span></tt></a> with
+defaults of <tt class="docutils literal"><span class="pre">formset=</span></tt><a class="reference internal" href="../../topics/forms/modelforms.html#django.forms.models.BaseInlineFormSet" title="django.forms.models.BaseInlineFormSet"><tt class="xref py py-class docutils literal"><span class="pre">BaseInlineFormSet</span></tt></a>,
+<tt class="docutils literal"><span class="pre">can_delete=True</span></tt>, and <tt class="docutils literal"><span class="pre">extra=3</span></tt>.</p>
+<p>If your model has more than one <a class="reference internal" href="../models/fields.html#django.db.models.ForeignKey" title="django.db.models.ForeignKey"><tt class="xref py py-class docutils literal"><span class="pre">ForeignKey</span></tt></a> to
+the <tt class="docutils literal"><span class="pre">parent_model</span></tt>, you must specify a <tt class="docutils literal"><span class="pre">fk_name</span></tt>.</p>
+<p>See <a class="reference internal" href="../../topics/forms/modelforms.html#inline-formsets"><em>Inline formsets</em></a> for example usage.</p>
+</dd></dl>
+
+</div>
+
+
+          </div>
+        </div>
+      </div>
+      
+        
+          <div class="yui-b" id="sidebar">
+            
+      <div class="sphinxsidebar">
+        <div class="sphinxsidebarwrapper">
+  <h3>Browse</h3>
+  <ul>
+    
+      <li>Prev: <a href="fields.html">Form fields</a></li>
+    
+    
+      <li>Next: <a href="formsets.html">Formset Functions</a></li>
+    
+  </ul>
+  <h3>You are here:</h3>
+  <ul>
+      <li>
+        <a href="../../index.html">Django 1.8.2.dev20150505153848 documentation</a>
+        
+          <ul><li><a href="../index.html">API Reference</a>
+        
+          <ul><li><a href="index.html">Forms</a>
+        
+        <ul><li>Model Form Functions</li></ul>
+        </li></ul></li></ul>
+      </li>
+  </ul>
+
+  <h3>This Page</h3>
+  <ul class="this-page-menu">
+    <li><a href="../../_sources/ref/forms/models.txt"
+           rel="nofollow">Show Source</a></li>
+  </ul>
+<div id="searchbox" style="display: none">
+  <h3>Quick search</h3>
+    <form class="search" action="../../search.html" method="get">
+      <input type="text" name="q" />
+      <input type="submit" value="Go" />
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+    <p class="searchtip" style="font-size: 90%">
+    Enter search terms or a module, class or function name.
+    </p>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+              <h3>Last update:</h3>
+              <p class="topless">May 06, 2015</p>
+          </div>
+        
+      
+    </div>
+
+    <div id="ft">
+      <div class="nav">
+    &laquo; <a href="fields.html" title="Form fields">previous</a>
+     |
+    <a href="../index.html" title="API Reference" accesskey="U">up</a>
+   |
+    <a href="formsets.html" title="Formset Functions">next</a> &raquo;</div>
+    </div>
+  </div>
+
+      <div class="clearer"></div>
+    </div>
+  </body>
+</html>

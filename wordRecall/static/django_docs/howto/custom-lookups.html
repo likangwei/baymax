@@ -1,0 +1,491 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>Custom Lookups &mdash; Django 1.8.2.dev20150505153848 documentation</title>
+    
+    <link rel="stylesheet" href="../_static/default.css" type="text/css" />
+    <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '../',
+        VERSION:     '1.8.2.dev20150505153848',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="../_static/jquery.js"></script>
+    <script type="text/javascript" src="../_static/underscore.js"></script>
+    <script type="text/javascript" src="../_static/doctools.js"></script>
+    <link rel="top" title="Django 1.8.2.dev20150505153848 documentation" href="../index.html" />
+    <link rel="up" title="“How-to” guides" href="index.html" />
+    <link rel="next" title="Custom template tags and filters" href="custom-template-tags.html" />
+    <link rel="prev" title="Writing custom model fields" href="custom-model-fields.html" />
+
+
+
+ 
+<script type="text/javascript" src="../templatebuiltins.js"></script>
+<script type="text/javascript">
+(function($) {
+    if (!django_template_builtins) {
+       // templatebuiltins.js missing, do nothing.
+       return;
+    }
+    $(document).ready(function() {
+        // Hyperlink Django template tags and filters
+        var base = "../ref/templates/builtins.html";
+        if (base == "#") {
+            // Special case for builtins.html itself
+            base = "";
+        }
+        // Tags are keywords, class '.k'
+        $("div.highlight\\-html\\+django span.k").each(function(i, elem) {
+             var tagname = $(elem).text();
+             if ($.inArray(tagname, django_template_builtins.ttags) != -1) {
+                 var fragment = tagname.replace(/_/, '-');
+                 $(elem).html("<a href='" + base + "#" + fragment + "'>" + tagname + "</a>");
+             }
+        });
+        // Filters are functions, class '.nf'
+        $("div.highlight\\-html\\+django span.nf").each(function(i, elem) {
+             var filtername = $(elem).text();
+             if ($.inArray(filtername, django_template_builtins.tfilters) != -1) {
+                 var fragment = filtername.replace(/_/, '-');
+                 $(elem).html("<a href='" + base + "#" + fragment + "'>" + filtername + "</a>");
+             }
+        });
+    });
+})(jQuery);
+</script>
+
+
+  </head>
+  <body>
+
+    <div class="document">
+  <div id="custom-doc" class="yui-t6">
+    <div id="hd">
+      <h1><a href="../index.html">Django 1.8.2.dev20150505153848 documentation</a></h1>
+      <div id="global-nav">
+        <a title="Home page" href="../index.html">Home</a>  |
+        <a title="Table of contents" href="../contents.html">Table of contents</a>  |
+        <a title="Global index" href="../genindex.html">Index</a>  |
+        <a title="Module index" href="../py-modindex.html">Modules</a>
+      </div>
+      <div class="nav">
+    &laquo; <a href="custom-model-fields.html" title="Writing custom model fields">previous</a>
+     |
+    <a href="index.html" title="&amp;#8220;How-to&amp;#8221; guides" accesskey="U">up</a>
+   |
+    <a href="custom-template-tags.html" title="Custom template tags and filters">next</a> &raquo;</div>
+    </div>
+
+    <div id="bd">
+      <div id="yui-main">
+        <div class="yui-b">
+          <div class="yui-g" id="howto-custom-lookups">
+            
+  <div class="section" id="s-custom-lookups">
+<span id="custom-lookups"></span><h1>Custom Lookups<a class="headerlink" href="#custom-lookups" title="Permalink to this headline">¶</a></h1>
+<div class="versionadded">
+<span class="title">New in Django 1.7.</span> </div>
+<p>Django offers a wide variety of <a class="reference internal" href="../ref/models/querysets.html#field-lookups"><em>built-in lookups</em></a> for
+filtering (for example, <tt class="docutils literal"><span class="pre">exact</span></tt> and <tt class="docutils literal"><span class="pre">icontains</span></tt>). This documentation
+explains how to write custom lookups and how to alter the working of existing
+lookups. For the API references of lookups, see the <a class="reference internal" href="../ref/models/lookups.html"><em>Lookup API reference</em></a>.</p>
+<div class="section" id="s-a-simple-lookup-example">
+<span id="a-simple-lookup-example"></span><h2>A simple lookup example<a class="headerlink" href="#a-simple-lookup-example" title="Permalink to this headline">¶</a></h2>
+<p>Let&#8217;s start with a simple custom lookup. We will write a custom lookup <tt class="docutils literal"><span class="pre">ne</span></tt>
+which works opposite to <tt class="docutils literal"><span class="pre">exact</span></tt>. <tt class="docutils literal"><span class="pre">Author.objects.filter(name__ne='Jack')</span></tt>
+will translate to the SQL:</p>
+<div class="highlight-python"><div class="highlight"><pre>&quot;author&quot;.&quot;name&quot; &lt;&gt; &#39;Jack&#39;
+</pre></div>
+</div>
+<p>This SQL is backend independent, so we don&#8217;t need to worry about different
+databases.</p>
+<p>There are two steps to making this work. Firstly we need to implement the
+lookup, then we need to tell Django about it. The implementation is quite
+straightforward:</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="kn">from</span> <span class="nn">django.db.models</span> <span class="kn">import</span> <span class="n">Lookup</span>
+
+<span class="k">class</span> <span class="nc">NotEqual</span><span class="p">(</span><span class="n">Lookup</span><span class="p">):</span>
+    <span class="n">lookup_name</span> <span class="o">=</span> <span class="s">&#39;ne&#39;</span>
+
+    <span class="k">def</span> <span class="nf">as_sql</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">compiler</span><span class="p">,</span> <span class="n">connection</span><span class="p">):</span>
+        <span class="n">lhs</span><span class="p">,</span> <span class="n">lhs_params</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">process_lhs</span><span class="p">(</span><span class="n">compiler</span><span class="p">,</span> <span class="n">connection</span><span class="p">)</span>
+        <span class="n">rhs</span><span class="p">,</span> <span class="n">rhs_params</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">process_rhs</span><span class="p">(</span><span class="n">compiler</span><span class="p">,</span> <span class="n">connection</span><span class="p">)</span>
+        <span class="n">params</span> <span class="o">=</span> <span class="n">lhs_params</span> <span class="o">+</span> <span class="n">rhs_params</span>
+        <span class="k">return</span> <span class="s">&#39;</span><span class="si">%s</span><span class="s"> &lt;&gt; </span><span class="si">%s</span><span class="s">&#39;</span> <span class="o">%</span> <span class="p">(</span><span class="n">lhs</span><span class="p">,</span> <span class="n">rhs</span><span class="p">),</span> <span class="n">params</span>
+</pre></div>
+</div>
+<p>To register the <tt class="docutils literal"><span class="pre">NotEqual</span></tt> lookup we will just need to call
+<tt class="docutils literal"><span class="pre">register_lookup</span></tt> on the field class we want the lookup to be available. In
+this case, the lookup makes sense on all <tt class="docutils literal"><span class="pre">Field</span></tt> subclasses, so we register
+it with <tt class="docutils literal"><span class="pre">Field</span></tt> directly:</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="kn">from</span> <span class="nn">django.db.models.fields</span> <span class="kn">import</span> <span class="n">Field</span>
+<span class="n">Field</span><span class="o">.</span><span class="n">register_lookup</span><span class="p">(</span><span class="n">NotEqual</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>Lookup registration can also be done using a decorator pattern:</p>
+<div class="highlight-python"><div class="highlight"><pre>from django.db.models.fields import Field
+
+@Field.register_lookup
+class NotEqualLookup(Lookup):
+    # ...
+</pre></div>
+</div>
+<div class="versionchanged">
+<span class="title">Changed in Django 1.8:</span> <p>The ability to use the decorator pattern was added.</p>
+</div>
+<p>We can now use <tt class="docutils literal"><span class="pre">foo__ne</span></tt> for any field <tt class="docutils literal"><span class="pre">foo</span></tt>. You will need to ensure that
+this registration happens before you try to create any querysets using it. You
+could place the implementation in a <tt class="docutils literal"><span class="pre">models.py</span></tt> file, or register the lookup
+in the <tt class="docutils literal"><span class="pre">ready()</span></tt> method of an <tt class="docutils literal"><span class="pre">AppConfig</span></tt>.</p>
+<p>Taking a closer look at the implementation, the first required attribute is
+<tt class="docutils literal"><span class="pre">lookup_name</span></tt>. This allows the ORM to understand how to interpret <tt class="docutils literal"><span class="pre">name__ne</span></tt>
+and use <tt class="docutils literal"><span class="pre">NotEqual</span></tt> to generate the SQL. By convention, these names are always
+lowercase strings containing only letters, but the only hard requirement is
+that it must not contain the string <tt class="docutils literal"><span class="pre">__</span></tt>.</p>
+<p>We then need to define the <tt class="docutils literal"><span class="pre">as_sql</span></tt> method. This takes a <tt class="docutils literal"><span class="pre">SQLCompiler</span></tt>
+object, called <tt class="docutils literal"><span class="pre">compiler</span></tt>,  and the active database connection.
+<tt class="docutils literal"><span class="pre">SQLCompiler</span></tt> objects are not documented, but the only thing we need to know
+about them is that they have a <tt class="docutils literal"><span class="pre">compile()</span></tt> method which returns a tuple
+containing a SQL string, and the parameters to be interpolated into that
+string. In most cases, you don&#8217;t need to use it directly and can pass it on to
+<tt class="docutils literal"><span class="pre">process_lhs()</span></tt> and <tt class="docutils literal"><span class="pre">process_rhs()</span></tt>.</p>
+<p>A <tt class="docutils literal"><span class="pre">Lookup</span></tt> works against two values, <tt class="docutils literal"><span class="pre">lhs</span></tt> and <tt class="docutils literal"><span class="pre">rhs</span></tt>, standing for
+left-hand side and right-hand side. The left-hand side is usually a field
+reference, but it can be anything implementing the <a class="reference internal" href="../ref/models/lookups.html#query-expression"><em>query expression API</em></a>. The right-hand is the value given by the user. In the
+example <tt class="docutils literal"><span class="pre">Author.objects.filter(name__ne='Jack')</span></tt>, the left-hand side is a
+reference to the <tt class="docutils literal"><span class="pre">name</span></tt> field of the <tt class="docutils literal"><span class="pre">Author</span></tt> model, and <tt class="docutils literal"><span class="pre">'Jack'</span></tt> is the
+right-hand side.</p>
+<p>We call <tt class="docutils literal"><span class="pre">process_lhs</span></tt> and <tt class="docutils literal"><span class="pre">process_rhs</span></tt> to convert them into the values we
+need for SQL using the <tt class="docutils literal"><span class="pre">compiler</span></tt> object described before. These methods
+return tuples containing some SQL and the parameters to be interpolated into
+that SQL, just as we need to return from our <tt class="docutils literal"><span class="pre">as_sql</span></tt> method. In the above
+example, <tt class="docutils literal"><span class="pre">process_lhs</span></tt> returns <tt class="docutils literal"><span class="pre">('&quot;author&quot;.&quot;name&quot;',</span> <span class="pre">[])</span></tt> and
+<tt class="docutils literal"><span class="pre">process_rhs</span></tt> returns <tt class="docutils literal"><span class="pre">('&quot;%s&quot;',</span> <span class="pre">['Jack'])</span></tt>. In this example there were no
+parameters for the left hand side, but this would depend on the object we have,
+so we still need to include them in the parameters we return.</p>
+<p>Finally we combine the parts into a SQL expression with <tt class="docutils literal"><span class="pre">&lt;&gt;</span></tt>, and supply all
+the parameters for the query. We then return a tuple containing the generated
+SQL string and the parameters.</p>
+</div>
+<div class="section" id="s-a-simple-transformer-example">
+<span id="a-simple-transformer-example"></span><h2>A simple transformer example<a class="headerlink" href="#a-simple-transformer-example" title="Permalink to this headline">¶</a></h2>
+<p>The custom lookup above is great, but in some cases you may want to be able to
+chain lookups together. For example, let&#8217;s suppose we are building an
+application where we want to make use of the <tt class="docutils literal"><span class="pre">abs()</span></tt> operator.
+We have an <tt class="docutils literal"><span class="pre">Experiment</span></tt> model which records a start value, end value, and the
+change (start - end). We would like to find all experiments where the change
+was equal to a certain amount (<tt class="docutils literal"><span class="pre">Experiment.objects.filter(change__abs=27)</span></tt>),
+or where it did not exceed a certain amount
+(<tt class="docutils literal"><span class="pre">Experiment.objects.filter(change__abs__lt=27)</span></tt>).</p>
+<div class="admonition note">
+<p class="first admonition-title">Note</p>
+<p class="last">This example is somewhat contrived, but it nicely demonstrates the range of
+functionality which is possible in a database backend independent manner,
+and without duplicating functionality already in Django.</p>
+</div>
+<p>We will start by writing a <tt class="docutils literal"><span class="pre">AbsoluteValue</span></tt> transformer. This will use the SQL
+function <tt class="docutils literal"><span class="pre">ABS()</span></tt> to transform the value before comparison:</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="kn">from</span> <span class="nn">django.db.models</span> <span class="kn">import</span> <span class="n">Transform</span>
+
+<span class="k">class</span> <span class="nc">AbsoluteValue</span><span class="p">(</span><span class="n">Transform</span><span class="p">):</span>
+    <span class="n">lookup_name</span> <span class="o">=</span> <span class="s">&#39;abs&#39;</span>
+
+    <span class="k">def</span> <span class="nf">as_sql</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">compiler</span><span class="p">,</span> <span class="n">connection</span><span class="p">):</span>
+        <span class="n">lhs</span><span class="p">,</span> <span class="n">params</span> <span class="o">=</span> <span class="n">compiler</span><span class="o">.</span><span class="n">compile</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">lhs</span><span class="p">)</span>
+        <span class="k">return</span> <span class="s">&quot;ABS(</span><span class="si">%s</span><span class="s">)&quot;</span> <span class="o">%</span> <span class="n">lhs</span><span class="p">,</span> <span class="n">params</span>
+</pre></div>
+</div>
+<p>Next, let&#8217;s register it for <tt class="docutils literal"><span class="pre">IntegerField</span></tt>:</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="kn">from</span> <span class="nn">django.db.models</span> <span class="kn">import</span> <span class="n">IntegerField</span>
+<span class="n">IntegerField</span><span class="o">.</span><span class="n">register_lookup</span><span class="p">(</span><span class="n">AbsoluteValue</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>We can now run the queries we had before.
+<tt class="docutils literal"><span class="pre">Experiment.objects.filter(change__abs=27)</span></tt> will generate the following SQL:</p>
+<div class="highlight-python"><div class="highlight"><pre>SELECT ... WHERE ABS(&quot;experiments&quot;.&quot;change&quot;) = 27
+</pre></div>
+</div>
+<p>By using <tt class="docutils literal"><span class="pre">Transform</span></tt> instead of <tt class="docutils literal"><span class="pre">Lookup</span></tt> it means we are able to chain
+further lookups afterwards. So
+<tt class="docutils literal"><span class="pre">Experiment.objects.filter(change__abs__lt=27)</span></tt> will generate the following
+SQL:</p>
+<div class="highlight-python"><div class="highlight"><pre>SELECT ... WHERE ABS(&quot;experiments&quot;.&quot;change&quot;) &lt; 27
+</pre></div>
+</div>
+<p>Note that in case there is no other lookup specified, Django interprets
+<tt class="docutils literal"><span class="pre">change__abs=27</span></tt> as <tt class="docutils literal"><span class="pre">change__abs__exact=27</span></tt>.</p>
+<p>When looking for which lookups are allowable after the <tt class="docutils literal"><span class="pre">Transform</span></tt> has been
+applied, Django uses the <tt class="docutils literal"><span class="pre">output_field</span></tt> attribute. We didn&#8217;t need to specify
+this here as it didn&#8217;t change, but supposing we were applying <tt class="docutils literal"><span class="pre">AbsoluteValue</span></tt>
+to some field which represents a more complex type (for example a point
+relative to an origin, or a complex number) then we may have wanted to specify
+that the transform returns a <tt class="docutils literal"><span class="pre">FloatField</span></tt> type for further lookups. This can
+be done by adding an <tt class="docutils literal"><span class="pre">output_field</span></tt> attribute to the transform:</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="kn">from</span> <span class="nn">django.db.models</span> <span class="kn">import</span> <span class="n">FloatField</span><span class="p">,</span> <span class="n">Transform</span>
+
+<span class="k">class</span> <span class="nc">AbsoluteValue</span><span class="p">(</span><span class="n">Transform</span><span class="p">):</span>
+    <span class="n">lookup_name</span> <span class="o">=</span> <span class="s">&#39;abs&#39;</span>
+
+    <span class="k">def</span> <span class="nf">as_sql</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">compiler</span><span class="p">,</span> <span class="n">connection</span><span class="p">):</span>
+        <span class="n">lhs</span><span class="p">,</span> <span class="n">params</span> <span class="o">=</span> <span class="n">compiler</span><span class="o">.</span><span class="n">compile</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">lhs</span><span class="p">)</span>
+        <span class="k">return</span> <span class="s">&quot;ABS(</span><span class="si">%s</span><span class="s">)&quot;</span> <span class="o">%</span> <span class="n">lhs</span><span class="p">,</span> <span class="n">params</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">output_field</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="n">FloatField</span><span class="p">()</span>
+</pre></div>
+</div>
+<p>This ensures that further lookups like <tt class="docutils literal"><span class="pre">abs__lte</span></tt> behave as they would for
+a <tt class="docutils literal"><span class="pre">FloatField</span></tt>.</p>
+</div>
+<div class="section" id="s-writing-an-efficient-abs-lt-lookup">
+<span id="writing-an-efficient-abs-lt-lookup"></span><h2>Writing an efficient abs__lt lookup<a class="headerlink" href="#writing-an-efficient-abs-lt-lookup" title="Permalink to this headline">¶</a></h2>
+<p>When using the above written <tt class="docutils literal"><span class="pre">abs</span></tt> lookup, the SQL produced will not use
+indexes efficiently in some cases. In particular, when we use
+<tt class="docutils literal"><span class="pre">change__abs__lt=27</span></tt>, this is equivalent to <tt class="docutils literal"><span class="pre">change__gt=-27</span></tt> AND
+<tt class="docutils literal"><span class="pre">change__lt=27</span></tt>. (For the <tt class="docutils literal"><span class="pre">lte</span></tt> case we could use the SQL <tt class="docutils literal"><span class="pre">BETWEEN</span></tt>).</p>
+<p>So we would like <tt class="docutils literal"><span class="pre">Experiment.objects.filter(change__abs__lt=27)</span></tt> to generate
+the following SQL:</p>
+<div class="highlight-python"><div class="highlight"><pre>SELECT .. WHERE &quot;experiments&quot;.&quot;change&quot; &lt; 27 AND &quot;experiments&quot;.&quot;change&quot; &gt; -27
+</pre></div>
+</div>
+<p>The implementation is:</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="kn">from</span> <span class="nn">django.db.models</span> <span class="kn">import</span> <span class="n">Lookup</span>
+
+<span class="k">class</span> <span class="nc">AbsoluteValueLessThan</span><span class="p">(</span><span class="n">Lookup</span><span class="p">):</span>
+    <span class="n">lookup_name</span> <span class="o">=</span> <span class="s">&#39;lt&#39;</span>
+
+    <span class="k">def</span> <span class="nf">as_sql</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">compiler</span><span class="p">,</span> <span class="n">connection</span><span class="p">):</span>
+        <span class="n">lhs</span><span class="p">,</span> <span class="n">lhs_params</span> <span class="o">=</span> <span class="n">compiler</span><span class="o">.</span><span class="n">compile</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">lhs</span><span class="o">.</span><span class="n">lhs</span><span class="p">)</span>
+        <span class="n">rhs</span><span class="p">,</span> <span class="n">rhs_params</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">process_rhs</span><span class="p">(</span><span class="n">compiler</span><span class="p">,</span> <span class="n">connection</span><span class="p">)</span>
+        <span class="n">params</span> <span class="o">=</span> <span class="n">lhs_params</span> <span class="o">+</span> <span class="n">rhs_params</span> <span class="o">+</span> <span class="n">lhs_params</span> <span class="o">+</span> <span class="n">rhs_params</span>
+        <span class="k">return</span> <span class="s">&#39;</span><span class="si">%s</span><span class="s"> &lt; </span><span class="si">%s</span><span class="s"> AND </span><span class="si">%s</span><span class="s"> &gt; -</span><span class="si">%s</span><span class="s">&#39;</span> <span class="o">%</span> <span class="p">(</span><span class="n">lhs</span><span class="p">,</span> <span class="n">rhs</span><span class="p">,</span> <span class="n">lhs</span><span class="p">,</span> <span class="n">rhs</span><span class="p">),</span> <span class="n">params</span>
+
+<span class="n">AbsoluteValue</span><span class="o">.</span><span class="n">register_lookup</span><span class="p">(</span><span class="n">AbsoluteValueLessThan</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>There are a couple of notable things going on. First, <tt class="docutils literal"><span class="pre">AbsoluteValueLessThan</span></tt>
+isn&#8217;t calling <tt class="docutils literal"><span class="pre">process_lhs()</span></tt>. Instead it skips the transformation of the
+<tt class="docutils literal"><span class="pre">lhs</span></tt> done by <tt class="docutils literal"><span class="pre">AbsoluteValue</span></tt> and uses the original <tt class="docutils literal"><span class="pre">lhs</span></tt>. That is, we
+want to get <tt class="docutils literal"><span class="pre">27</span></tt> not <tt class="docutils literal"><span class="pre">ABS(27)</span></tt>. Referring directly to <tt class="docutils literal"><span class="pre">self.lhs.lhs</span></tt> is
+safe as <tt class="docutils literal"><span class="pre">AbsoluteValueLessThan</span></tt> can be accessed only from the
+<tt class="docutils literal"><span class="pre">AbsoluteValue</span></tt> lookup, that is the <tt class="docutils literal"><span class="pre">lhs</span></tt> is always an instance of
+<tt class="docutils literal"><span class="pre">AbsoluteValue</span></tt>.</p>
+<p>Notice also that  as both sides are used multiple times in the query the params
+need to contain <tt class="docutils literal"><span class="pre">lhs_params</span></tt> and <tt class="docutils literal"><span class="pre">rhs_params</span></tt> multiple times.</p>
+<p>The final query does the inversion (<tt class="docutils literal"><span class="pre">27</span></tt> to <tt class="docutils literal"><span class="pre">-27</span></tt>) directly in the
+database. The reason for doing this is that if the <tt class="docutils literal"><span class="pre">self.rhs</span></tt> is something else
+than a plain integer value (for example an <tt class="docutils literal"><span class="pre">F()</span></tt> reference) we can&#8217;t do the
+transformations in Python.</p>
+<div class="admonition note">
+<p class="first admonition-title">Note</p>
+<p class="last">In fact, most lookups with <tt class="docutils literal"><span class="pre">__abs</span></tt> could be implemented as range queries
+like this, and on most database backends it is likely to be more sensible to
+do so as you can make use of the indexes. However with PostgreSQL you may
+want to add an index on <tt class="docutils literal"><span class="pre">abs(change)</span></tt> which would allow these queries to
+be very efficient.</p>
+</div>
+</div>
+<div class="section" id="s-a-bilateral-transformer-example">
+<span id="a-bilateral-transformer-example"></span><h2>A bilateral transformer example<a class="headerlink" href="#a-bilateral-transformer-example" title="Permalink to this headline">¶</a></h2>
+<p>The <tt class="docutils literal"><span class="pre">AbsoluteValue</span></tt> example we discussed previously is a transformation which
+applies to the left-hand side of the lookup. There may be some cases where you
+want the transformation to be applied to both the left-hand side and the
+right-hand side. For instance, if you want to filter a queryset based on the
+equality of the left and right-hand side insensitively to some SQL function.</p>
+<p>Let&#8217;s examine the simple example of case-insensitive transformation here. This
+transformation isn&#8217;t very useful in practice as Django already comes with a bunch
+of built-in case-insensitive lookups, but it will be a nice demonstration of
+bilateral transformations in a database-agnostic way.</p>
+<p>We define an <tt class="docutils literal"><span class="pre">UpperCase</span></tt> transformer which uses the SQL function <tt class="docutils literal"><span class="pre">UPPER()</span></tt> to
+transform the values before comparison. We define
+<a class="reference internal" href="../ref/models/lookups.html#django.db.models.Transform.bilateral" title="django.db.models.Transform.bilateral"><tt class="xref py py-attr docutils literal"><span class="pre">bilateral</span> <span class="pre">=</span> <span class="pre">True</span></tt></a> to indicate that
+this transformation should apply to both <tt class="docutils literal"><span class="pre">lhs</span></tt> and <tt class="docutils literal"><span class="pre">rhs</span></tt>:</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="kn">from</span> <span class="nn">django.db.models</span> <span class="kn">import</span> <span class="n">Transform</span>
+
+<span class="k">class</span> <span class="nc">UpperCase</span><span class="p">(</span><span class="n">Transform</span><span class="p">):</span>
+    <span class="n">lookup_name</span> <span class="o">=</span> <span class="s">&#39;upper&#39;</span>
+    <span class="n">bilateral</span> <span class="o">=</span> <span class="bp">True</span>
+
+    <span class="k">def</span> <span class="nf">as_sql</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">compiler</span><span class="p">,</span> <span class="n">connection</span><span class="p">):</span>
+        <span class="n">lhs</span><span class="p">,</span> <span class="n">params</span> <span class="o">=</span> <span class="n">compiler</span><span class="o">.</span><span class="n">compile</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">lhs</span><span class="p">)</span>
+        <span class="k">return</span> <span class="s">&quot;UPPER(</span><span class="si">%s</span><span class="s">)&quot;</span> <span class="o">%</span> <span class="n">lhs</span><span class="p">,</span> <span class="n">params</span>
+</pre></div>
+</div>
+<p>Next, let&#8217;s register it:</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="kn">from</span> <span class="nn">django.db.models</span> <span class="kn">import</span> <span class="n">CharField</span><span class="p">,</span> <span class="n">TextField</span>
+<span class="n">CharField</span><span class="o">.</span><span class="n">register_lookup</span><span class="p">(</span><span class="n">UpperCase</span><span class="p">)</span>
+<span class="n">TextField</span><span class="o">.</span><span class="n">register_lookup</span><span class="p">(</span><span class="n">UpperCase</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>Now, the queryset <tt class="docutils literal"><span class="pre">Author.objects.filter(name__upper=&quot;doe&quot;)</span></tt> will generate a case
+insensitive query like this:</p>
+<div class="highlight-python"><div class="highlight"><pre>SELECT ... WHERE UPPER(&quot;author&quot;.&quot;name&quot;) = UPPER(&#39;doe&#39;)
+</pre></div>
+</div>
+</div>
+<div class="section" id="s-writing-alternative-implementations-for-existing-lookups">
+<span id="writing-alternative-implementations-for-existing-lookups"></span><h2>Writing alternative implementations for existing lookups<a class="headerlink" href="#writing-alternative-implementations-for-existing-lookups" title="Permalink to this headline">¶</a></h2>
+<p>Sometimes different database vendors require different SQL for the same
+operation. For this example we will rewrite a custom implementation for
+MySQL for the NotEqual operator. Instead of <tt class="docutils literal"><span class="pre">&lt;&gt;</span></tt> we will be using <tt class="docutils literal"><span class="pre">!=</span></tt>
+operator. (Note that in reality almost all databases support both, including
+all the official databases supported by Django).</p>
+<p>We can change the behavior on a specific backend by creating a subclass of
+<tt class="docutils literal"><span class="pre">NotEqual</span></tt> with a <tt class="docutils literal"><span class="pre">as_mysql</span></tt> method:</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="k">class</span> <span class="nc">MySQLNotEqual</span><span class="p">(</span><span class="n">NotEqual</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">as_mysql</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">compiler</span><span class="p">,</span> <span class="n">connection</span><span class="p">):</span>
+        <span class="n">lhs</span><span class="p">,</span> <span class="n">lhs_params</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">process_lhs</span><span class="p">(</span><span class="n">compiler</span><span class="p">,</span> <span class="n">connection</span><span class="p">)</span>
+        <span class="n">rhs</span><span class="p">,</span> <span class="n">rhs_params</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">process_rhs</span><span class="p">(</span><span class="n">compiler</span><span class="p">,</span> <span class="n">connection</span><span class="p">)</span>
+        <span class="n">params</span> <span class="o">=</span> <span class="n">lhs_params</span> <span class="o">+</span> <span class="n">rhs_params</span>
+        <span class="k">return</span> <span class="s">&#39;</span><span class="si">%s</span><span class="s"> != </span><span class="si">%s</span><span class="s">&#39;</span> <span class="o">%</span> <span class="p">(</span><span class="n">lhs</span><span class="p">,</span> <span class="n">rhs</span><span class="p">),</span> <span class="n">params</span>
+
+<span class="n">Field</span><span class="o">.</span><span class="n">register_lookup</span><span class="p">(</span><span class="n">MySQLNotEqual</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>We can then register it with <tt class="docutils literal"><span class="pre">Field</span></tt>. It takes the place of the original
+<tt class="docutils literal"><span class="pre">NotEqual</span></tt> class as it has the same <tt class="docutils literal"><span class="pre">lookup_name</span></tt>.</p>
+<p>When compiling a query, Django first looks for <tt class="docutils literal"><span class="pre">as_%s</span> <span class="pre">%</span> <span class="pre">connection.vendor</span></tt>
+methods, and then falls back to <tt class="docutils literal"><span class="pre">as_sql</span></tt>. The vendor names for the in-built
+backends are <tt class="docutils literal"><span class="pre">sqlite</span></tt>, <tt class="docutils literal"><span class="pre">postgresql</span></tt>, <tt class="docutils literal"><span class="pre">oracle</span></tt> and <tt class="docutils literal"><span class="pre">mysql</span></tt>.</p>
+</div>
+<div class="section" id="s-how-django-determines-the-lookups-and-transforms-which-are-used">
+<span id="how-django-determines-the-lookups-and-transforms-which-are-used"></span><h2>How Django determines the lookups and transforms which are used<a class="headerlink" href="#how-django-determines-the-lookups-and-transforms-which-are-used" title="Permalink to this headline">¶</a></h2>
+<p>In some cases you may wish to dynamically change which <tt class="docutils literal"><span class="pre">Transform</span></tt> or
+<tt class="docutils literal"><span class="pre">Lookup</span></tt> is returned based on the name passed in, rather than fixing it. As
+an example, you could have a field which stores coordinates or an arbitrary
+dimension, and wish to allow a syntax like <tt class="docutils literal"><span class="pre">.filter(coords__x7=4)</span></tt> to return
+the objects where the 7th coordinate has value 4. In order to do this, you
+would override <tt class="docutils literal"><span class="pre">get_lookup</span></tt> with something like:</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="k">class</span> <span class="nc">CoordinatesField</span><span class="p">(</span><span class="n">Field</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">get_lookup</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">lookup_name</span><span class="p">):</span>
+        <span class="k">if</span> <span class="n">lookup_name</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span><span class="s">&#39;x&#39;</span><span class="p">):</span>
+            <span class="k">try</span><span class="p">:</span>
+                <span class="n">dimension</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">lookup_name</span><span class="p">[</span><span class="mi">1</span><span class="p">:])</span>
+            <span class="k">except</span> <span class="ne">ValueError</span><span class="p">:</span>
+                <span class="k">pass</span>
+            <span class="k">finally</span><span class="p">:</span>
+                <span class="k">return</span> <span class="n">get_coordinate_lookup</span><span class="p">(</span><span class="n">dimension</span><span class="p">)</span>
+        <span class="k">return</span> <span class="nb">super</span><span class="p">(</span><span class="n">CoordinatesField</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="n">get_lookup</span><span class="p">(</span><span class="n">lookup_name</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>You would then define <tt class="docutils literal"><span class="pre">get_coordinate_lookup</span></tt> appropriately to return a
+<tt class="docutils literal"><span class="pre">Lookup</span></tt> subclass which handles the relevant value of <tt class="docutils literal"><span class="pre">dimension</span></tt>.</p>
+<p>There is a similarly named method called <tt class="docutils literal"><span class="pre">get_transform()</span></tt>. <tt class="docutils literal"><span class="pre">get_lookup()</span></tt>
+should always return a <tt class="docutils literal"><span class="pre">Lookup</span></tt> subclass, and <tt class="docutils literal"><span class="pre">get_transform()</span></tt> a
+<tt class="docutils literal"><span class="pre">Transform</span></tt> subclass. It is important to remember that <tt class="docutils literal"><span class="pre">Transform</span></tt>
+objects can be further filtered on, and <tt class="docutils literal"><span class="pre">Lookup</span></tt> objects cannot.</p>
+<p>When filtering, if there is only one lookup name remaining to be resolved, we
+will look for a <tt class="docutils literal"><span class="pre">Lookup</span></tt>. If there are multiple names, it will look for a
+<tt class="docutils literal"><span class="pre">Transform</span></tt>. In the situation where there is only one name and a <tt class="docutils literal"><span class="pre">Lookup</span></tt>
+is not found, we look for a <tt class="docutils literal"><span class="pre">Transform</span></tt> and then the <tt class="docutils literal"><span class="pre">exact</span></tt> lookup on that
+<tt class="docutils literal"><span class="pre">Transform</span></tt>. All call sequences always end with a <tt class="docutils literal"><span class="pre">Lookup</span></tt>. To clarify:</p>
+<ul class="simple">
+<li><tt class="docutils literal"><span class="pre">.filter(myfield__mylookup)</span></tt> will call <tt class="docutils literal"><span class="pre">myfield.get_lookup('mylookup')</span></tt>.</li>
+<li><tt class="docutils literal"><span class="pre">.filter(myfield__mytransform__mylookup)</span></tt> will call
+<tt class="docutils literal"><span class="pre">myfield.get_transform('mytransform')</span></tt>, and then
+<tt class="docutils literal"><span class="pre">mytransform.get_lookup('mylookup')</span></tt>.</li>
+<li><tt class="docutils literal"><span class="pre">.filter(myfield__mytransform)</span></tt> will first call
+<tt class="docutils literal"><span class="pre">myfield.get_lookup('mytransform')</span></tt>, which will fail, so it will fall back
+to calling <tt class="docutils literal"><span class="pre">myfield.get_transform('mytransform')</span></tt> and then
+<tt class="docutils literal"><span class="pre">mytransform.get_lookup('exact')</span></tt>.</li>
+</ul>
+</div>
+</div>
+
+
+          </div>
+        </div>
+      </div>
+      
+        
+          <div class="yui-b" id="sidebar">
+            
+      <div class="sphinxsidebar">
+        <div class="sphinxsidebarwrapper">
+  <h3><a href="../contents.html">Table Of Contents</a></h3>
+  <ul>
+<li><a class="reference internal" href="#">Custom Lookups</a><ul>
+<li><a class="reference internal" href="#a-simple-lookup-example">A simple lookup example</a></li>
+<li><a class="reference internal" href="#a-simple-transformer-example">A simple transformer example</a></li>
+<li><a class="reference internal" href="#writing-an-efficient-abs-lt-lookup">Writing an efficient abs__lt lookup</a></li>
+<li><a class="reference internal" href="#a-bilateral-transformer-example">A bilateral transformer example</a></li>
+<li><a class="reference internal" href="#writing-alternative-implementations-for-existing-lookups">Writing alternative implementations for existing lookups</a></li>
+<li><a class="reference internal" href="#how-django-determines-the-lookups-and-transforms-which-are-used">How Django determines the lookups and transforms which are used</a></li>
+</ul>
+</li>
+</ul>
+
+  <h3>Browse</h3>
+  <ul>
+    
+      <li>Prev: <a href="custom-model-fields.html">Writing custom model fields</a></li>
+    
+    
+      <li>Next: <a href="custom-template-tags.html">Custom template tags and filters</a></li>
+    
+  </ul>
+  <h3>You are here:</h3>
+  <ul>
+      <li>
+        <a href="../index.html">Django 1.8.2.dev20150505153848 documentation</a>
+        
+          <ul><li><a href="index.html">&#8220;How-to&#8221; guides</a>
+        
+        <ul><li>Custom Lookups</li></ul>
+        </li></ul>
+      </li>
+  </ul>
+
+  <h3>This Page</h3>
+  <ul class="this-page-menu">
+    <li><a href="../_sources/howto/custom-lookups.txt"
+           rel="nofollow">Show Source</a></li>
+  </ul>
+<div id="searchbox" style="display: none">
+  <h3>Quick search</h3>
+    <form class="search" action="../search.html" method="get">
+      <input type="text" name="q" />
+      <input type="submit" value="Go" />
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+    <p class="searchtip" style="font-size: 90%">
+    Enter search terms or a module, class or function name.
+    </p>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+              <h3>Last update:</h3>
+              <p class="topless">May 06, 2015</p>
+          </div>
+        
+      
+    </div>
+
+    <div id="ft">
+      <div class="nav">
+    &laquo; <a href="custom-model-fields.html" title="Writing custom model fields">previous</a>
+     |
+    <a href="index.html" title="&amp;#8220;How-to&amp;#8221; guides" accesskey="U">up</a>
+   |
+    <a href="custom-template-tags.html" title="Custom template tags and filters">next</a> &raquo;</div>
+    </div>
+  </div>
+
+      <div class="clearer"></div>
+    </div>
+  </body>
+</html>

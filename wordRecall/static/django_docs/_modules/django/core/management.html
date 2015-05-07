@@ -1,0 +1,489 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>django.core.management &mdash; Django 1.8.2.dev20150505153848 documentation</title>
+    
+    <link rel="stylesheet" href="../../../_static/default.css" type="text/css" />
+    <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '../../../',
+        VERSION:     '1.8.2.dev20150505153848',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="../../../_static/jquery.js"></script>
+    <script type="text/javascript" src="../../../_static/underscore.js"></script>
+    <script type="text/javascript" src="../../../_static/doctools.js"></script>
+    <link rel="top" title="Django 1.8.2.dev20150505153848 documentation" href="../../../index.html" />
+    <link rel="up" title="django" href="../../django.html" />
+
+
+
+ 
+<script type="text/javascript" src="../../../templatebuiltins.js"></script>
+<script type="text/javascript">
+(function($) {
+    if (!django_template_builtins) {
+       // templatebuiltins.js missing, do nothing.
+       return;
+    }
+    $(document).ready(function() {
+        // Hyperlink Django template tags and filters
+        var base = "../../../ref/templates/builtins.html";
+        if (base == "#") {
+            // Special case for builtins.html itself
+            base = "";
+        }
+        // Tags are keywords, class '.k'
+        $("div.highlight\\-html\\+django span.k").each(function(i, elem) {
+             var tagname = $(elem).text();
+             if ($.inArray(tagname, django_template_builtins.ttags) != -1) {
+                 var fragment = tagname.replace(/_/, '-');
+                 $(elem).html("<a href='" + base + "#" + fragment + "'>" + tagname + "</a>");
+             }
+        });
+        // Filters are functions, class '.nf'
+        $("div.highlight\\-html\\+django span.nf").each(function(i, elem) {
+             var filtername = $(elem).text();
+             if ($.inArray(filtername, django_template_builtins.tfilters) != -1) {
+                 var fragment = filtername.replace(/_/, '-');
+                 $(elem).html("<a href='" + base + "#" + fragment + "'>" + filtername + "</a>");
+             }
+        });
+    });
+})(jQuery);
+</script>
+
+
+  </head>
+  <body>
+
+    <div class="document">
+  <div id="custom-doc" class="yui-t6">
+    <div id="hd">
+      <h1><a href="../../../index.html">Django 1.8.2.dev20150505153848 documentation</a></h1>
+      <div id="global-nav">
+        <a title="Home page" href="../../../index.html">Home</a>  |
+        <a title="Table of contents" href="../../../contents.html">Table of contents</a>  |
+        <a title="Global index" href="../../../genindex.html">Index</a>  |
+        <a title="Module index" href="../../../py-modindex.html">Modules</a>
+      </div>
+      <div class="nav">
+    <a href="../../index.html" title="Module code" accesskey="U">up</a></div>
+    </div>
+
+    <div id="bd">
+      <div id="yui-main">
+        <div class="yui-b">
+          <div class="yui-g" id="_modules-django-core-management">
+            
+  <h1>Source code for django.core.management</h1><div class="highlight"><pre>
+<span class="kn">from</span> <span class="nn">__future__</span> <span class="kn">import</span> <span class="n">unicode_literals</span>
+
+<span class="kn">import</span> <span class="nn">collections</span>
+<span class="kn">from</span> <span class="nn">importlib</span> <span class="kn">import</span> <span class="n">import_module</span>
+<span class="kn">import</span> <span class="nn">os</span>
+<span class="kn">import</span> <span class="nn">pkgutil</span>
+<span class="kn">import</span> <span class="nn">sys</span>
+
+<span class="kn">import</span> <span class="nn">django</span>
+<span class="kn">from</span> <span class="nn">django.apps</span> <span class="kn">import</span> <span class="n">apps</span>
+<span class="kn">from</span> <span class="nn">django.conf</span> <span class="kn">import</span> <span class="n">settings</span>
+<span class="kn">from</span> <span class="nn">django.core.exceptions</span> <span class="kn">import</span> <span class="n">ImproperlyConfigured</span>
+<span class="kn">from</span> <span class="nn">django.core.management.base</span> <span class="kn">import</span> <span class="p">(</span><span class="n">BaseCommand</span><span class="p">,</span> <span class="n">CommandError</span><span class="p">,</span>
+    <span class="n">CommandParser</span><span class="p">,</span> <span class="n">handle_default_options</span><span class="p">)</span>
+<span class="kn">from</span> <span class="nn">django.core.management.color</span> <span class="kn">import</span> <span class="n">color_style</span>
+<span class="kn">from</span> <span class="nn">django.utils</span> <span class="kn">import</span> <span class="n">lru_cache</span><span class="p">,</span> <span class="n">six</span>
+<span class="kn">from</span> <span class="nn">django.utils._os</span> <span class="kn">import</span> <span class="n">npath</span><span class="p">,</span> <span class="n">upath</span>
+
+
+<span class="k">def</span> <span class="nf">find_commands</span><span class="p">(</span><span class="n">management_dir</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Given a path to a management directory, returns a list of all the command</span>
+<span class="sd">    names that are available.</span>
+
+<span class="sd">    Returns an empty list if no commands are defined.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">command_dir</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">management_dir</span><span class="p">,</span> <span class="s">&#39;commands&#39;</span><span class="p">)</span>
+    <span class="c"># Workaround for a Python 3.2 bug with pkgutil.iter_modules</span>
+    <span class="n">sys</span><span class="o">.</span><span class="n">path_importer_cache</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="n">command_dir</span><span class="p">,</span> <span class="bp">None</span><span class="p">)</span>
+    <span class="k">return</span> <span class="p">[</span><span class="n">name</span> <span class="k">for</span> <span class="n">_</span><span class="p">,</span> <span class="n">name</span><span class="p">,</span> <span class="n">is_pkg</span> <span class="ow">in</span> <span class="n">pkgutil</span><span class="o">.</span><span class="n">iter_modules</span><span class="p">([</span><span class="n">npath</span><span class="p">(</span><span class="n">command_dir</span><span class="p">)])</span>
+            <span class="k">if</span> <span class="ow">not</span> <span class="n">is_pkg</span> <span class="ow">and</span> <span class="ow">not</span> <span class="n">name</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span><span class="s">&#39;_&#39;</span><span class="p">)]</span>
+
+
+<span class="k">def</span> <span class="nf">load_command_class</span><span class="p">(</span><span class="n">app_name</span><span class="p">,</span> <span class="n">name</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Given a command name and an application name, returns the Command</span>
+<span class="sd">    class instance. All errors raised by the import process</span>
+<span class="sd">    (ImportError, AttributeError) are allowed to propagate.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">module</span> <span class="o">=</span> <span class="n">import_module</span><span class="p">(</span><span class="s">&#39;</span><span class="si">%s</span><span class="s">.management.commands.</span><span class="si">%s</span><span class="s">&#39;</span> <span class="o">%</span> <span class="p">(</span><span class="n">app_name</span><span class="p">,</span> <span class="n">name</span><span class="p">))</span>
+    <span class="k">return</span> <span class="n">module</span><span class="o">.</span><span class="n">Command</span><span class="p">()</span>
+
+
+<span class="nd">@lru_cache.lru_cache</span><span class="p">(</span><span class="n">maxsize</span><span class="o">=</span><span class="bp">None</span><span class="p">)</span>
+<span class="k">def</span> <span class="nf">get_commands</span><span class="p">():</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Returns a dictionary mapping command names to their callback applications.</span>
+
+<span class="sd">    This works by looking for a management.commands package in django.core, and</span>
+<span class="sd">    in each installed application -- if a commands package exists, all commands</span>
+<span class="sd">    in that package are registered.</span>
+
+<span class="sd">    Core commands are always included. If a settings module has been</span>
+<span class="sd">    specified, user-defined commands will also be included.</span>
+
+<span class="sd">    The dictionary is in the format {command_name: app_name}. Key-value</span>
+<span class="sd">    pairs from this dictionary can then be used in calls to</span>
+<span class="sd">    load_command_class(app_name, command_name)</span>
+
+<span class="sd">    If a specific version of a command must be loaded (e.g., with the</span>
+<span class="sd">    startapp command), the instantiated module can be placed in the</span>
+<span class="sd">    dictionary in place of the application name.</span>
+
+<span class="sd">    The dictionary is cached on the first call and reused on subsequent</span>
+<span class="sd">    calls.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">commands</span> <span class="o">=</span> <span class="p">{</span><span class="n">name</span><span class="p">:</span> <span class="s">&#39;django.core&#39;</span> <span class="k">for</span> <span class="n">name</span> <span class="ow">in</span> <span class="n">find_commands</span><span class="p">(</span><span class="n">upath</span><span class="p">(</span><span class="n">__path__</span><span class="p">[</span><span class="mi">0</span><span class="p">]))}</span>
+
+    <span class="k">if</span> <span class="ow">not</span> <span class="n">settings</span><span class="o">.</span><span class="n">configured</span><span class="p">:</span>
+        <span class="k">return</span> <span class="n">commands</span>
+
+    <span class="k">for</span> <span class="n">app_config</span> <span class="ow">in</span> <span class="nb">reversed</span><span class="p">(</span><span class="nb">list</span><span class="p">(</span><span class="n">apps</span><span class="o">.</span><span class="n">get_app_configs</span><span class="p">())):</span>
+        <span class="n">path</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">app_config</span><span class="o">.</span><span class="n">path</span><span class="p">,</span> <span class="s">&#39;management&#39;</span><span class="p">)</span>
+        <span class="n">commands</span><span class="o">.</span><span class="n">update</span><span class="p">({</span><span class="n">name</span><span class="p">:</span> <span class="n">app_config</span><span class="o">.</span><span class="n">name</span> <span class="k">for</span> <span class="n">name</span> <span class="ow">in</span> <span class="n">find_commands</span><span class="p">(</span><span class="n">path</span><span class="p">)})</span>
+
+    <span class="k">return</span> <span class="n">commands</span>
+
+
+<span class="k">def</span> <span class="nf">call_command</span><span class="p">(</span><span class="n">name</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">options</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Calls the given command, with the given options and args/kwargs.</span>
+
+<span class="sd">    This is the primary API you should use for calling specific commands.</span>
+
+<span class="sd">    Some examples:</span>
+<span class="sd">        call_command(&#39;syncdb&#39;)</span>
+<span class="sd">        call_command(&#39;shell&#39;, plain=True)</span>
+<span class="sd">        call_command(&#39;sqlmigrate&#39;, &#39;myapp&#39;)</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="c"># Load the command object.</span>
+    <span class="k">try</span><span class="p">:</span>
+        <span class="n">app_name</span> <span class="o">=</span> <span class="n">get_commands</span><span class="p">()[</span><span class="n">name</span><span class="p">]</span>
+    <span class="k">except</span> <span class="ne">KeyError</span><span class="p">:</span>
+        <span class="k">raise</span> <span class="n">CommandError</span><span class="p">(</span><span class="s">&quot;Unknown command: </span><span class="si">%r</span><span class="s">&quot;</span> <span class="o">%</span> <span class="n">name</span><span class="p">)</span>
+
+    <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">app_name</span><span class="p">,</span> <span class="n">BaseCommand</span><span class="p">):</span>
+        <span class="c"># If the command is already loaded, use it directly.</span>
+        <span class="n">command</span> <span class="o">=</span> <span class="n">app_name</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="n">command</span> <span class="o">=</span> <span class="n">load_command_class</span><span class="p">(</span><span class="n">app_name</span><span class="p">,</span> <span class="n">name</span><span class="p">)</span>
+
+    <span class="c"># Simulate argument parsing to get the option defaults (see #10080 for details).</span>
+    <span class="n">parser</span> <span class="o">=</span> <span class="n">command</span><span class="o">.</span><span class="n">create_parser</span><span class="p">(</span><span class="s">&#39;&#39;</span><span class="p">,</span> <span class="n">name</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">command</span><span class="o">.</span><span class="n">use_argparse</span><span class="p">:</span>
+        <span class="c"># Use the `dest` option name from the parser option</span>
+        <span class="n">opt_mapping</span> <span class="o">=</span> <span class="p">{</span><span class="nb">sorted</span><span class="p">(</span><span class="n">s_opt</span><span class="o">.</span><span class="n">option_strings</span><span class="p">)[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">lstrip</span><span class="p">(</span><span class="s">&#39;-&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s">&#39;-&#39;</span><span class="p">,</span> <span class="s">&#39;_&#39;</span><span class="p">):</span> <span class="n">s_opt</span><span class="o">.</span><span class="n">dest</span>
+                       <span class="k">for</span> <span class="n">s_opt</span> <span class="ow">in</span> <span class="n">parser</span><span class="o">.</span><span class="n">_actions</span> <span class="k">if</span> <span class="n">s_opt</span><span class="o">.</span><span class="n">option_strings</span><span class="p">}</span>
+        <span class="n">arg_options</span> <span class="o">=</span> <span class="p">{</span><span class="n">opt_mapping</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">key</span><span class="p">,</span> <span class="n">key</span><span class="p">):</span> <span class="n">value</span> <span class="k">for</span> <span class="n">key</span><span class="p">,</span> <span class="n">value</span> <span class="ow">in</span> <span class="n">options</span><span class="o">.</span><span class="n">items</span><span class="p">()}</span>
+        <span class="n">defaults</span> <span class="o">=</span> <span class="n">parser</span><span class="o">.</span><span class="n">parse_args</span><span class="p">(</span><span class="n">args</span><span class="o">=</span><span class="n">args</span><span class="p">)</span>
+        <span class="n">defaults</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">(</span><span class="n">defaults</span><span class="o">.</span><span class="n">_get_kwargs</span><span class="p">(),</span> <span class="o">**</span><span class="n">arg_options</span><span class="p">)</span>
+        <span class="c"># Move positional args out of options to mimic legacy optparse</span>
+        <span class="n">args</span> <span class="o">=</span> <span class="n">defaults</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="s">&#39;args&#39;</span><span class="p">,</span> <span class="p">())</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="c"># Legacy optparse method</span>
+        <span class="n">defaults</span><span class="p">,</span> <span class="n">_</span> <span class="o">=</span> <span class="n">parser</span><span class="o">.</span><span class="n">parse_args</span><span class="p">(</span><span class="n">args</span><span class="o">=</span><span class="p">[])</span>
+        <span class="n">defaults</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">(</span><span class="n">defaults</span><span class="o">.</span><span class="n">__dict__</span><span class="p">,</span> <span class="o">**</span><span class="n">options</span><span class="p">)</span>
+    <span class="k">if</span> <span class="s">&#39;skip_checks&#39;</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">options</span><span class="p">:</span>
+        <span class="n">defaults</span><span class="p">[</span><span class="s">&#39;skip_checks&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="bp">True</span>
+
+    <span class="k">return</span> <span class="n">command</span><span class="o">.</span><span class="n">execute</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">defaults</span><span class="p">)</span>
+
+
+<span class="k">class</span> <span class="nc">ManagementUtility</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Encapsulates the logic of the django-admin and manage.py utilities.</span>
+
+<span class="sd">    A ManagementUtility has a number of commands, which can be manipulated</span>
+<span class="sd">    by editing the self.commands dictionary.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">argv</span><span class="o">=</span><span class="bp">None</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">argv</span> <span class="o">=</span> <span class="n">argv</span> <span class="ow">or</span> <span class="n">sys</span><span class="o">.</span><span class="n">argv</span><span class="p">[:]</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">prog_name</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">basename</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">argv</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">settings_exception</span> <span class="o">=</span> <span class="bp">None</span>
+
+    <span class="k">def</span> <span class="nf">main_help_text</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">commands_only</span><span class="o">=</span><span class="bp">False</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Returns the script&#39;s main help text, as a string.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="n">commands_only</span><span class="p">:</span>
+            <span class="n">usage</span> <span class="o">=</span> <span class="nb">sorted</span><span class="p">(</span><span class="n">get_commands</span><span class="p">()</span><span class="o">.</span><span class="n">keys</span><span class="p">())</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">usage</span> <span class="o">=</span> <span class="p">[</span>
+                <span class="s">&quot;&quot;</span><span class="p">,</span>
+                <span class="s">&quot;Type &#39;</span><span class="si">%s</span><span class="s"> help &lt;subcommand&gt;&#39; for help on a specific subcommand.&quot;</span> <span class="o">%</span> <span class="bp">self</span><span class="o">.</span><span class="n">prog_name</span><span class="p">,</span>
+                <span class="s">&quot;&quot;</span><span class="p">,</span>
+                <span class="s">&quot;Available subcommands:&quot;</span><span class="p">,</span>
+            <span class="p">]</span>
+            <span class="n">commands_dict</span> <span class="o">=</span> <span class="n">collections</span><span class="o">.</span><span class="n">defaultdict</span><span class="p">(</span><span class="k">lambda</span><span class="p">:</span> <span class="p">[])</span>
+            <span class="k">for</span> <span class="n">name</span><span class="p">,</span> <span class="n">app</span> <span class="ow">in</span> <span class="n">six</span><span class="o">.</span><span class="n">iteritems</span><span class="p">(</span><span class="n">get_commands</span><span class="p">()):</span>
+                <span class="k">if</span> <span class="n">app</span> <span class="o">==</span> <span class="s">&#39;django.core&#39;</span><span class="p">:</span>
+                    <span class="n">app</span> <span class="o">=</span> <span class="s">&#39;django&#39;</span>
+                <span class="k">else</span><span class="p">:</span>
+                    <span class="n">app</span> <span class="o">=</span> <span class="n">app</span><span class="o">.</span><span class="n">rpartition</span><span class="p">(</span><span class="s">&#39;.&#39;</span><span class="p">)[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span>
+                <span class="n">commands_dict</span><span class="p">[</span><span class="n">app</span><span class="p">]</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">name</span><span class="p">)</span>
+            <span class="n">style</span> <span class="o">=</span> <span class="n">color_style</span><span class="p">()</span>
+            <span class="k">for</span> <span class="n">app</span> <span class="ow">in</span> <span class="nb">sorted</span><span class="p">(</span><span class="n">commands_dict</span><span class="o">.</span><span class="n">keys</span><span class="p">()):</span>
+                <span class="n">usage</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="s">&quot;&quot;</span><span class="p">)</span>
+                <span class="n">usage</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">style</span><span class="o">.</span><span class="n">NOTICE</span><span class="p">(</span><span class="s">&quot;[</span><span class="si">%s</span><span class="s">]&quot;</span> <span class="o">%</span> <span class="n">app</span><span class="p">))</span>
+                <span class="k">for</span> <span class="n">name</span> <span class="ow">in</span> <span class="nb">sorted</span><span class="p">(</span><span class="n">commands_dict</span><span class="p">[</span><span class="n">app</span><span class="p">]):</span>
+                    <span class="n">usage</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="s">&quot;    </span><span class="si">%s</span><span class="s">&quot;</span> <span class="o">%</span> <span class="n">name</span><span class="p">)</span>
+            <span class="c"># Output an extra note if settings are not properly configured</span>
+            <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">settings_exception</span> <span class="ow">is</span> <span class="ow">not</span> <span class="bp">None</span><span class="p">:</span>
+                <span class="n">usage</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">style</span><span class="o">.</span><span class="n">NOTICE</span><span class="p">(</span>
+                    <span class="s">&quot;Note that only Django core commands are listed &quot;</span>
+                    <span class="s">&quot;as settings are not properly configured (error: </span><span class="si">%s</span><span class="s">).&quot;</span>
+                    <span class="o">%</span> <span class="bp">self</span><span class="o">.</span><span class="n">settings_exception</span><span class="p">))</span>
+
+        <span class="k">return</span> <span class="s">&#39;</span><span class="se">\n</span><span class="s">&#39;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">usage</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">fetch_command</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">subcommand</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Tries to fetch the given subcommand, printing a message with the</span>
+<span class="sd">        appropriate command called from the command line (usually</span>
+<span class="sd">        &quot;django-admin&quot; or &quot;manage.py&quot;) if it can&#39;t be found.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="c"># Get commands outside of try block to prevent swallowing exceptions</span>
+        <span class="n">commands</span> <span class="o">=</span> <span class="n">get_commands</span><span class="p">()</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="n">app_name</span> <span class="o">=</span> <span class="n">commands</span><span class="p">[</span><span class="n">subcommand</span><span class="p">]</span>
+        <span class="k">except</span> <span class="ne">KeyError</span><span class="p">:</span>
+            <span class="c"># This might trigger ImproperlyConfigured (masked in get_commands)</span>
+            <span class="n">settings</span><span class="o">.</span><span class="n">INSTALLED_APPS</span>
+            <span class="n">sys</span><span class="o">.</span><span class="n">stderr</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="s">&quot;Unknown command: </span><span class="si">%r</span><span class="se">\n</span><span class="s">Type &#39;</span><span class="si">%s</span><span class="s"> help&#39; for usage.</span><span class="se">\n</span><span class="s">&quot;</span> <span class="o">%</span>
+                <span class="p">(</span><span class="n">subcommand</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">prog_name</span><span class="p">))</span>
+            <span class="n">sys</span><span class="o">.</span><span class="n">exit</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span>
+        <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">app_name</span><span class="p">,</span> <span class="n">BaseCommand</span><span class="p">):</span>
+            <span class="c"># If the command is already loaded, use it directly.</span>
+            <span class="n">klass</span> <span class="o">=</span> <span class="n">app_name</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">klass</span> <span class="o">=</span> <span class="n">load_command_class</span><span class="p">(</span><span class="n">app_name</span><span class="p">,</span> <span class="n">subcommand</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">klass</span>
+
+    <span class="k">def</span> <span class="nf">autocomplete</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Output completion suggestions for BASH.</span>
+
+<span class="sd">        The output of this function is passed to BASH&#39;s `COMREPLY` variable and</span>
+<span class="sd">        treated as completion suggestions. `COMREPLY` expects a space</span>
+<span class="sd">        separated string as the result.</span>
+
+<span class="sd">        The `COMP_WORDS` and `COMP_CWORD` BASH environment variables are used</span>
+<span class="sd">        to get information about the cli input. Please refer to the BASH</span>
+<span class="sd">        man-page for more information about this variables.</span>
+
+<span class="sd">        Subcommand options are saved as pairs. A pair consists of</span>
+<span class="sd">        the long option string (e.g. &#39;--exclude&#39;) and a boolean</span>
+<span class="sd">        value indicating if the option requires arguments. When printing to</span>
+<span class="sd">        stdout, an equal sign is appended to options which require arguments.</span>
+
+<span class="sd">        Note: If debugging this function, it is recommended to write the debug</span>
+<span class="sd">        output in a separate file. Otherwise the debug output will be treated</span>
+<span class="sd">        and formatted as potential completion suggestions.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="c"># Don&#39;t complete if user hasn&#39;t sourced bash_completion file.</span>
+        <span class="k">if</span> <span class="s">&#39;DJANGO_AUTO_COMPLETE&#39;</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">os</span><span class="o">.</span><span class="n">environ</span><span class="p">:</span>
+            <span class="k">return</span>
+
+        <span class="n">cwords</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">environ</span><span class="p">[</span><span class="s">&#39;COMP_WORDS&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">split</span><span class="p">()[</span><span class="mi">1</span><span class="p">:]</span>
+        <span class="n">cword</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">environ</span><span class="p">[</span><span class="s">&#39;COMP_CWORD&#39;</span><span class="p">])</span>
+
+        <span class="k">try</span><span class="p">:</span>
+            <span class="n">curr</span> <span class="o">=</span> <span class="n">cwords</span><span class="p">[</span><span class="n">cword</span> <span class="o">-</span> <span class="mi">1</span><span class="p">]</span>
+        <span class="k">except</span> <span class="ne">IndexError</span><span class="p">:</span>
+            <span class="n">curr</span> <span class="o">=</span> <span class="s">&#39;&#39;</span>
+
+        <span class="n">subcommands</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="n">get_commands</span><span class="p">())</span> <span class="o">+</span> <span class="p">[</span><span class="s">&#39;help&#39;</span><span class="p">]</span>
+        <span class="n">options</span> <span class="o">=</span> <span class="p">[(</span><span class="s">&#39;--help&#39;</span><span class="p">,</span> <span class="bp">False</span><span class="p">)]</span>
+
+        <span class="c"># subcommand</span>
+        <span class="k">if</span> <span class="n">cword</span> <span class="o">==</span> <span class="mi">1</span><span class="p">:</span>
+            <span class="k">print</span><span class="p">(</span><span class="s">&#39; &#39;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="nb">sorted</span><span class="p">(</span><span class="nb">filter</span><span class="p">(</span><span class="k">lambda</span> <span class="n">x</span><span class="p">:</span> <span class="n">x</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span><span class="n">curr</span><span class="p">),</span> <span class="n">subcommands</span><span class="p">))))</span>
+        <span class="c"># subcommand options</span>
+        <span class="c"># special case: the &#39;help&#39; subcommand has no options</span>
+        <span class="k">elif</span> <span class="n">cwords</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="ow">in</span> <span class="n">subcommands</span> <span class="ow">and</span> <span class="n">cwords</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">!=</span> <span class="s">&#39;help&#39;</span><span class="p">:</span>
+            <span class="n">subcommand_cls</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">fetch_command</span><span class="p">(</span><span class="n">cwords</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
+            <span class="c"># special case: &#39;runfcgi&#39; stores additional options as</span>
+            <span class="c"># &#39;key=value&#39; pairs</span>
+            <span class="k">if</span> <span class="n">cwords</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">==</span> <span class="s">&#39;runfcgi&#39;</span><span class="p">:</span>
+                <span class="kn">from</span> <span class="nn">django.core.servers.fastcgi</span> <span class="kn">import</span> <span class="n">FASTCGI_OPTIONS</span>
+                <span class="n">options</span><span class="o">.</span><span class="n">extend</span><span class="p">((</span><span class="n">k</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span> <span class="k">for</span> <span class="n">k</span> <span class="ow">in</span> <span class="n">FASTCGI_OPTIONS</span><span class="p">)</span>
+            <span class="c"># special case: add the names of installed apps to options</span>
+            <span class="k">elif</span> <span class="n">cwords</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="ow">in</span> <span class="p">(</span><span class="s">&#39;dumpdata&#39;</span><span class="p">,</span> <span class="s">&#39;sql&#39;</span><span class="p">,</span> <span class="s">&#39;sqlall&#39;</span><span class="p">,</span> <span class="s">&#39;sqlclear&#39;</span><span class="p">,</span>
+                    <span class="s">&#39;sqlcustom&#39;</span><span class="p">,</span> <span class="s">&#39;sqlindexes&#39;</span><span class="p">,</span> <span class="s">&#39;sqlmigrate&#39;</span><span class="p">,</span> <span class="s">&#39;sqlsequencereset&#39;</span><span class="p">,</span> <span class="s">&#39;test&#39;</span><span class="p">):</span>
+                <span class="k">try</span><span class="p">:</span>
+                    <span class="n">app_configs</span> <span class="o">=</span> <span class="n">apps</span><span class="o">.</span><span class="n">get_app_configs</span><span class="p">()</span>
+                    <span class="c"># Get the last part of the dotted path as the app name.</span>
+                    <span class="n">options</span><span class="o">.</span><span class="n">extend</span><span class="p">((</span><span class="n">app_config</span><span class="o">.</span><span class="n">label</span><span class="p">,</span> <span class="mi">0</span><span class="p">)</span> <span class="k">for</span> <span class="n">app_config</span> <span class="ow">in</span> <span class="n">app_configs</span><span class="p">)</span>
+                <span class="k">except</span> <span class="ne">ImportError</span><span class="p">:</span>
+                    <span class="c"># Fail silently if DJANGO_SETTINGS_MODULE isn&#39;t set. The</span>
+                    <span class="c"># user will find out once they execute the command.</span>
+                    <span class="k">pass</span>
+            <span class="n">parser</span> <span class="o">=</span> <span class="n">subcommand_cls</span><span class="o">.</span><span class="n">create_parser</span><span class="p">(</span><span class="s">&#39;&#39;</span><span class="p">,</span> <span class="n">cwords</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
+            <span class="k">if</span> <span class="n">subcommand_cls</span><span class="o">.</span><span class="n">use_argparse</span><span class="p">:</span>
+                <span class="n">options</span><span class="o">.</span><span class="n">extend</span><span class="p">((</span><span class="nb">sorted</span><span class="p">(</span><span class="n">s_opt</span><span class="o">.</span><span class="n">option_strings</span><span class="p">)[</span><span class="mi">0</span><span class="p">],</span> <span class="n">s_opt</span><span class="o">.</span><span class="n">nargs</span> <span class="o">!=</span> <span class="mi">0</span><span class="p">)</span> <span class="k">for</span> <span class="n">s_opt</span> <span class="ow">in</span>
+                               <span class="n">parser</span><span class="o">.</span><span class="n">_actions</span> <span class="k">if</span> <span class="n">s_opt</span><span class="o">.</span><span class="n">option_strings</span><span class="p">)</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">options</span><span class="o">.</span><span class="n">extend</span><span class="p">((</span><span class="n">s_opt</span><span class="o">.</span><span class="n">get_opt_string</span><span class="p">(),</span> <span class="n">s_opt</span><span class="o">.</span><span class="n">nargs</span><span class="p">)</span> <span class="k">for</span> <span class="n">s_opt</span> <span class="ow">in</span>
+                               <span class="n">parser</span><span class="o">.</span><span class="n">option_list</span><span class="p">)</span>
+            <span class="c"># filter out previously specified options from available options</span>
+            <span class="n">prev_opts</span> <span class="o">=</span> <span class="p">[</span><span class="n">x</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s">&#39;=&#39;</span><span class="p">)[</span><span class="mi">0</span><span class="p">]</span> <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="n">cwords</span><span class="p">[</span><span class="mi">1</span><span class="p">:</span><span class="n">cword</span> <span class="o">-</span> <span class="mi">1</span><span class="p">]]</span>
+            <span class="n">options</span> <span class="o">=</span> <span class="p">[</span><span class="n">opt</span> <span class="k">for</span> <span class="n">opt</span> <span class="ow">in</span> <span class="n">options</span> <span class="k">if</span> <span class="n">opt</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">prev_opts</span><span class="p">]</span>
+
+            <span class="c"># filter options by current input</span>
+            <span class="n">options</span> <span class="o">=</span> <span class="nb">sorted</span><span class="p">((</span><span class="n">k</span><span class="p">,</span> <span class="n">v</span><span class="p">)</span> <span class="k">for</span> <span class="n">k</span><span class="p">,</span> <span class="n">v</span> <span class="ow">in</span> <span class="n">options</span> <span class="k">if</span> <span class="n">k</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span><span class="n">curr</span><span class="p">))</span>
+            <span class="k">for</span> <span class="n">option</span> <span class="ow">in</span> <span class="n">options</span><span class="p">:</span>
+                <span class="n">opt_label</span> <span class="o">=</span> <span class="n">option</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+                <span class="c"># append &#39;=&#39; to options which require args</span>
+                <span class="k">if</span> <span class="n">option</span><span class="p">[</span><span class="mi">1</span><span class="p">]:</span>
+                    <span class="n">opt_label</span> <span class="o">+=</span> <span class="s">&#39;=&#39;</span>
+                <span class="k">print</span><span class="p">(</span><span class="n">opt_label</span><span class="p">)</span>
+        <span class="n">sys</span><span class="o">.</span><span class="n">exit</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">execute</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Given the command-line arguments, this figures out which subcommand is</span>
+<span class="sd">        being run, creates a parser appropriate to that command, and runs it.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="n">subcommand</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">argv</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span>
+        <span class="k">except</span> <span class="ne">IndexError</span><span class="p">:</span>
+            <span class="n">subcommand</span> <span class="o">=</span> <span class="s">&#39;help&#39;</span>  <span class="c"># Display help if no arguments were given.</span>
+
+        <span class="c"># Preprocess options to extract --settings and --pythonpath.</span>
+        <span class="c"># These options could affect the commands that are available, so they</span>
+        <span class="c"># must be processed early.</span>
+        <span class="n">parser</span> <span class="o">=</span> <span class="n">CommandParser</span><span class="p">(</span><span class="bp">None</span><span class="p">,</span> <span class="n">usage</span><span class="o">=</span><span class="s">&quot;</span><span class="si">%(prog)s</span><span class="s"> subcommand [options] [args]&quot;</span><span class="p">,</span> <span class="n">add_help</span><span class="o">=</span><span class="bp">False</span><span class="p">)</span>
+        <span class="n">parser</span><span class="o">.</span><span class="n">add_argument</span><span class="p">(</span><span class="s">&#39;--settings&#39;</span><span class="p">)</span>
+        <span class="n">parser</span><span class="o">.</span><span class="n">add_argument</span><span class="p">(</span><span class="s">&#39;--pythonpath&#39;</span><span class="p">)</span>
+        <span class="n">parser</span><span class="o">.</span><span class="n">add_argument</span><span class="p">(</span><span class="s">&#39;args&#39;</span><span class="p">,</span> <span class="n">nargs</span><span class="o">=</span><span class="s">&#39;*&#39;</span><span class="p">)</span>  <span class="c"># catch-all</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="n">options</span><span class="p">,</span> <span class="n">args</span> <span class="o">=</span> <span class="n">parser</span><span class="o">.</span><span class="n">parse_known_args</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">argv</span><span class="p">[</span><span class="mi">2</span><span class="p">:])</span>
+            <span class="n">handle_default_options</span><span class="p">(</span><span class="n">options</span><span class="p">)</span>
+        <span class="k">except</span> <span class="n">CommandError</span><span class="p">:</span>
+            <span class="k">pass</span>  <span class="c"># Ignore any option errors at this point.</span>
+
+        <span class="n">no_settings_commands</span> <span class="o">=</span> <span class="p">[</span>
+            <span class="s">&#39;help&#39;</span><span class="p">,</span> <span class="s">&#39;version&#39;</span><span class="p">,</span> <span class="s">&#39;--help&#39;</span><span class="p">,</span> <span class="s">&#39;--version&#39;</span><span class="p">,</span> <span class="s">&#39;-h&#39;</span><span class="p">,</span>
+            <span class="s">&#39;compilemessages&#39;</span><span class="p">,</span> <span class="s">&#39;makemessages&#39;</span><span class="p">,</span>
+            <span class="s">&#39;startapp&#39;</span><span class="p">,</span> <span class="s">&#39;startproject&#39;</span><span class="p">,</span>
+        <span class="p">]</span>
+
+        <span class="k">try</span><span class="p">:</span>
+            <span class="n">settings</span><span class="o">.</span><span class="n">INSTALLED_APPS</span>
+        <span class="k">except</span> <span class="n">ImproperlyConfigured</span> <span class="k">as</span> <span class="n">exc</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">settings_exception</span> <span class="o">=</span> <span class="n">exc</span>
+            <span class="c"># A handful of built-in management commands work without settings.</span>
+            <span class="c"># Load the default settings -- where INSTALLED_APPS is empty.</span>
+            <span class="k">if</span> <span class="n">subcommand</span> <span class="ow">in</span> <span class="n">no_settings_commands</span><span class="p">:</span>
+                <span class="n">settings</span><span class="o">.</span><span class="n">configure</span><span class="p">()</span>
+
+        <span class="k">if</span> <span class="n">settings</span><span class="o">.</span><span class="n">configured</span><span class="p">:</span>
+            <span class="n">django</span><span class="o">.</span><span class="n">setup</span><span class="p">()</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">autocomplete</span><span class="p">()</span>
+
+        <span class="k">if</span> <span class="n">subcommand</span> <span class="o">==</span> <span class="s">&#39;help&#39;</span><span class="p">:</span>
+            <span class="k">if</span> <span class="s">&#39;--commands&#39;</span> <span class="ow">in</span> <span class="n">args</span><span class="p">:</span>
+                <span class="n">sys</span><span class="o">.</span><span class="n">stdout</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">main_help_text</span><span class="p">(</span><span class="n">commands_only</span><span class="o">=</span><span class="bp">True</span><span class="p">)</span> <span class="o">+</span> <span class="s">&#39;</span><span class="se">\n</span><span class="s">&#39;</span><span class="p">)</span>
+            <span class="k">elif</span> <span class="nb">len</span><span class="p">(</span><span class="n">options</span><span class="o">.</span><span class="n">args</span><span class="p">)</span> <span class="o">&lt;</span> <span class="mi">1</span><span class="p">:</span>
+                <span class="n">sys</span><span class="o">.</span><span class="n">stdout</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">main_help_text</span><span class="p">()</span> <span class="o">+</span> <span class="s">&#39;</span><span class="se">\n</span><span class="s">&#39;</span><span class="p">)</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">fetch_command</span><span class="p">(</span><span class="n">options</span><span class="o">.</span><span class="n">args</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span><span class="o">.</span><span class="n">print_help</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">prog_name</span><span class="p">,</span> <span class="n">options</span><span class="o">.</span><span class="n">args</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
+        <span class="c"># Special-cases: We want &#39;django-admin --version&#39; and</span>
+        <span class="c"># &#39;django-admin --help&#39; to work, for backwards compatibility.</span>
+        <span class="k">elif</span> <span class="n">subcommand</span> <span class="o">==</span> <span class="s">&#39;version&#39;</span> <span class="ow">or</span> <span class="bp">self</span><span class="o">.</span><span class="n">argv</span><span class="p">[</span><span class="mi">1</span><span class="p">:]</span> <span class="o">==</span> <span class="p">[</span><span class="s">&#39;--version&#39;</span><span class="p">]:</span>
+            <span class="n">sys</span><span class="o">.</span><span class="n">stdout</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="n">django</span><span class="o">.</span><span class="n">get_version</span><span class="p">()</span> <span class="o">+</span> <span class="s">&#39;</span><span class="se">\n</span><span class="s">&#39;</span><span class="p">)</span>
+        <span class="k">elif</span> <span class="bp">self</span><span class="o">.</span><span class="n">argv</span><span class="p">[</span><span class="mi">1</span><span class="p">:]</span> <span class="ow">in</span> <span class="p">([</span><span class="s">&#39;--help&#39;</span><span class="p">],</span> <span class="p">[</span><span class="s">&#39;-h&#39;</span><span class="p">]):</span>
+            <span class="n">sys</span><span class="o">.</span><span class="n">stdout</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">main_help_text</span><span class="p">()</span> <span class="o">+</span> <span class="s">&#39;</span><span class="se">\n</span><span class="s">&#39;</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">fetch_command</span><span class="p">(</span><span class="n">subcommand</span><span class="p">)</span><span class="o">.</span><span class="n">run_from_argv</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">argv</span><span class="p">)</span>
+
+
+<span class="k">def</span> <span class="nf">execute_from_command_line</span><span class="p">(</span><span class="n">argv</span><span class="o">=</span><span class="bp">None</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    A simple method that runs a ManagementUtility.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">utility</span> <span class="o">=</span> <span class="n">ManagementUtility</span><span class="p">(</span><span class="n">argv</span><span class="p">)</span>
+    <span class="n">utility</span><span class="o">.</span><span class="n">execute</span><span class="p">()</span>
+</pre></div>
+
+          </div>
+        </div>
+      </div>
+      
+        
+          <div class="yui-b" id="sidebar">
+            
+      <div class="sphinxsidebar">
+        <div class="sphinxsidebarwrapper">
+  <h3>Browse</h3>
+  <ul>
+    
+    
+  </ul>
+  <h3>You are here:</h3>
+  <ul>
+      <li>
+        <a href="../../../index.html">Django 1.8.2.dev20150505153848 documentation</a>
+        
+          <ul><li><a href="../../index.html">Module code</a>
+        
+          <ul><li><a href="../../django.html">django</a>
+        
+        <ul><li>django.core.management</li></ul>
+        </li></ul></li></ul>
+      </li>
+  </ul>
+
+<div id="searchbox" style="display: none">
+  <h3>Quick search</h3>
+    <form class="search" action="../../../search.html" method="get">
+      <input type="text" name="q" />
+      <input type="submit" value="Go" />
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+    <p class="searchtip" style="font-size: 90%">
+    Enter search terms or a module, class or function name.
+    </p>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+              <h3>Last update:</h3>
+              <p class="topless">May 06, 2015</p>
+          </div>
+        
+      
+    </div>
+
+    <div id="ft">
+      <div class="nav">
+    <a href="../../index.html" title="Module code" accesskey="U">up</a></div>
+    </div>
+  </div>
+
+      <div class="clearer"></div>
+    </div>
+  </body>
+</html>

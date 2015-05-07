@@ -1,0 +1,355 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>Installing PostGIS &mdash; Django 1.8.2.dev20150505153848 documentation</title>
+    
+    <link rel="stylesheet" href="../../../../_static/default.css" type="text/css" />
+    <link rel="stylesheet" href="../../../../_static/pygments.css" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '../../../../',
+        VERSION:     '1.8.2.dev20150505153848',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="../../../../_static/jquery.js"></script>
+    <script type="text/javascript" src="../../../../_static/underscore.js"></script>
+    <script type="text/javascript" src="../../../../_static/doctools.js"></script>
+    <link rel="top" title="Django 1.8.2.dev20150505153848 documentation" href="../../../../index.html" />
+    <link rel="up" title="GeoDjango Installation" href="index.html" />
+    <link rel="next" title="Installing Spatialite" href="spatialite.html" />
+    <link rel="prev" title="Installing Geospatial libraries" href="geolibs.html" />
+
+
+
+ 
+<script type="text/javascript" src="../../../../templatebuiltins.js"></script>
+<script type="text/javascript">
+(function($) {
+    if (!django_template_builtins) {
+       // templatebuiltins.js missing, do nothing.
+       return;
+    }
+    $(document).ready(function() {
+        // Hyperlink Django template tags and filters
+        var base = "../../../templates/builtins.html";
+        if (base == "#") {
+            // Special case for builtins.html itself
+            base = "";
+        }
+        // Tags are keywords, class '.k'
+        $("div.highlight\\-html\\+django span.k").each(function(i, elem) {
+             var tagname = $(elem).text();
+             if ($.inArray(tagname, django_template_builtins.ttags) != -1) {
+                 var fragment = tagname.replace(/_/, '-');
+                 $(elem).html("<a href='" + base + "#" + fragment + "'>" + tagname + "</a>");
+             }
+        });
+        // Filters are functions, class '.nf'
+        $("div.highlight\\-html\\+django span.nf").each(function(i, elem) {
+             var filtername = $(elem).text();
+             if ($.inArray(filtername, django_template_builtins.tfilters) != -1) {
+                 var fragment = filtername.replace(/_/, '-');
+                 $(elem).html("<a href='" + base + "#" + fragment + "'>" + filtername + "</a>");
+             }
+        });
+    });
+})(jQuery);
+</script>
+
+
+  </head>
+  <body>
+
+    <div class="document">
+  <div id="custom-doc" class="yui-t6">
+    <div id="hd">
+      <h1><a href="../../../../index.html">Django 1.8.2.dev20150505153848 documentation</a></h1>
+      <div id="global-nav">
+        <a title="Home page" href="../../../../index.html">Home</a>  |
+        <a title="Table of contents" href="../../../../contents.html">Table of contents</a>  |
+        <a title="Global index" href="../../../../genindex.html">Index</a>  |
+        <a title="Module index" href="../../../../py-modindex.html">Modules</a>
+      </div>
+      <div class="nav">
+    &laquo; <a href="geolibs.html" title="Installing Geospatial libraries">previous</a>
+     |
+    <a href="../../../index.html" title="API Reference" accesskey="U">up</a>
+   |
+    <a href="spatialite.html" title="Installing Spatialite">next</a> &raquo;</div>
+    </div>
+
+    <div id="bd">
+      <div id="yui-main">
+        <div class="yui-b">
+          <div class="yui-g" id="ref-contrib-gis-install-postgis">
+            
+  <div class="section" id="s-installing-postgis">
+<span id="installing-postgis"></span><h1>Installing PostGIS<a class="headerlink" href="#installing-postgis" title="Permalink to this headline">¶</a></h1>
+<p><a class="reference external" href="http://postgis.net/">PostGIS</a> adds geographic object support to PostgreSQL, turning it
+into a spatial database. <a class="reference internal" href="geolibs.html#geosbuild"><em>GEOS</em></a>, <a class="reference internal" href="geolibs.html#proj4"><em>PROJ.4</em></a> and
+<a class="reference internal" href="geolibs.html#gdalbuild"><em>GDAL</em></a> should be installed prior to building PostGIS. You
+might also need additional libraries, see <a class="reference external" href="http://postgis.net/docs/manual-2.1/postgis_installation.html#install_requirements">PostGIS requirements</a>.</p>
+<div class="admonition note">
+<p class="first admonition-title">Note</p>
+<p class="last">The <a class="reference external" href="http://initd.org/psycopg/">psycopg2</a> module is required for use as the database adapter
+when using GeoDjango with PostGIS.</p>
+</div>
+<p>On Debian/Ubuntu, you are advised to install the following packages:
+postgresql-x.x, postgresql-x.x-postgis, postgresql-server-dev-x.x,
+python-psycopg2 (x.x matching the PostgreSQL version you want to install).
+Please also consult platform-specific instructions if you are on <a class="reference internal" href="index.html#macosx"><em>Mac OS X</em></a>
+or <a class="reference internal" href="index.html#windows"><em>Windows</em></a>.</p>
+<div class="section" id="s-building-from-source">
+<span id="building-from-source"></span><h2>Building from source<a class="headerlink" href="#building-from-source" title="Permalink to this headline">¶</a></h2>
+<p>First download the source archive, and extract:</p>
+<div class="highlight-python"><div class="highlight"><pre>$ wget http://download.osgeo.org/postgis/source/postgis-2.1.5.tar.gz
+$ tar xzf postgis-2.1.5.tar.gz
+$ cd postgis-2.1.5
+</pre></div>
+</div>
+<p>Next, configure, make and install PostGIS:</p>
+<div class="highlight-python"><div class="highlight"><pre>$ ./configure
+</pre></div>
+</div>
+<p>Finally, make and install:</p>
+<div class="highlight-python"><div class="highlight"><pre>$ make
+$ sudo make install
+$ cd ..
+</pre></div>
+</div>
+<div class="admonition note">
+<p class="first admonition-title">Note</p>
+<p class="last">GeoDjango does not automatically create a spatial database.  Please consult
+the section on <a class="reference internal" href="#spatialdb-template91"><em>Creating a spatial database with PostGIS 2.0 and PostgreSQL 9.1+</em></a> or
+<a class="reference internal" href="#spatialdb-template-earlier"><em>Creating a spatial database template for earlier versions</em></a> for more information.</p>
+</div>
+</div>
+<div class="section" id="s-post-installation">
+<span id="post-installation"></span><h2>Post-installation<a class="headerlink" href="#post-installation" title="Permalink to this headline">¶</a></h2>
+<div class="section" id="s-creating-a-spatial-database-with-postgis-2-0-and-postgresql-9-1">
+<span id="s-spatialdb-template91"></span><span id="s-spatialdb-template"></span><span id="creating-a-spatial-database-with-postgis-2-0-and-postgresql-9-1"></span><span id="spatialdb-template91"></span><span id="spatialdb-template"></span><h3>Creating a spatial database with PostGIS 2.0 and PostgreSQL 9.1+<a class="headerlink" href="#creating-a-spatial-database-with-postgis-2-0-and-postgresql-9-1" title="Permalink to this headline">¶</a></h3>
+<p>PostGIS 2 includes an extension for Postgres 9.1+ that can be used to enable
+spatial functionality:</p>
+<div class="highlight-python"><div class="highlight"><pre>$ createdb  &lt;db name&gt;
+$ psql &lt;db name&gt;
+&gt; CREATE EXTENSION postgis;
+</pre></div>
+</div>
+<p>GeoDjango does not currently leverage any <a class="reference external" href="http://postgis.net/docs/Topology.html">PostGIS topology functionality</a>.
+If you plan to use those features at some point, you can also install the
+<tt class="docutils literal"><span class="pre">postgis_topology</span></tt> extension by issuing <tt class="docutils literal"><span class="pre">CREATE</span> <span class="pre">EXTENSION</span>
+<span class="pre">postgis_topology;</span></tt>.</p>
+<div class="versionchanged">
+<span class="title">Changed in Django 1.8:</span> <p>The <tt class="docutils literal"><span class="pre">CREATE</span> <span class="pre">EXTENSION</span> <span class="pre">postgis</span></tt> command is now automatically run during
+the <a class="reference internal" href="../../../django-admin.html#django-admin-migrate"><tt class="xref std std-djadmin docutils literal"><span class="pre">migrate</span></tt></a> process. You can still create it manually if you
+wish.</p>
+</div>
+</div>
+<div class="section" id="s-creating-a-spatial-database-template-for-earlier-versions">
+<span id="s-spatialdb-template-earlier"></span><span id="creating-a-spatial-database-template-for-earlier-versions"></span><span id="spatialdb-template-earlier"></span><h3>Creating a spatial database template for earlier versions<a class="headerlink" href="#creating-a-spatial-database-template-for-earlier-versions" title="Permalink to this headline">¶</a></h3>
+<p>If you have an earlier version of PostGIS or PostgreSQL, the CREATE
+EXTENSION isn&#8217;t available and you need to create the spatial database
+using the following instructions.</p>
+<p>Creating a spatial database with PostGIS is different than normal because
+additional SQL must be loaded to enable spatial functionality.  Because of
+the steps in this process, it&#8217;s better to create a database template that
+can be reused later.</p>
+<p>First, you need to be able to execute the commands as a privileged database
+user.  For example, you can use the following to become the <tt class="docutils literal"><span class="pre">postgres</span></tt> user:</p>
+<div class="highlight-python"><div class="highlight"><pre>$ sudo su - postgres
+</pre></div>
+</div>
+<div class="admonition note">
+<p class="first admonition-title">Note</p>
+<p>The location <em>and</em> name of the PostGIS SQL files (e.g., from
+<tt class="docutils literal"><span class="pre">POSTGIS_SQL_PATH</span></tt> below) depends on the version of PostGIS.
+Version 1.5 uses <tt class="docutils literal"><span class="pre">&lt;sharedir&gt;/contrib/postgis-1.5/postgis.sql</span></tt>.</p>
+<p>To complicate matters, Debian/Ubuntu distributions have their own separate
+directory naming system that might change with time. In this case, use the
+<a class="reference download internal" href="../../../../_downloads/create_template_postgis-debian.sh"><tt class="xref download docutils literal"><span class="pre">create_template_postgis-debian.sh</span></tt></a> script.</p>
+<p class="last">The example below assumes PostGIS 1.5, thus you may need to modify
+<tt class="docutils literal"><span class="pre">POSTGIS_SQL_PATH</span></tt> and the name of the SQL file for the specific
+version of PostGIS you are using.</p>
+</div>
+<p>Once you&#8217;re a database super user, then you may execute the following commands
+to create a PostGIS spatial database template:</p>
+<div class="highlight-python"><div class="highlight"><pre>$ POSTGIS_SQL_PATH=`pg_config --sharedir`/contrib/postgis-2.0
+# Creating the template spatial database.
+$ createdb -E UTF8 template_postgis
+$ createlang -d template_postgis plpgsql # Adding PLPGSQL language support.
+# Allows non-superusers the ability to create from this template
+$ psql -d postgres -c &quot;UPDATE pg_database SET datistemplate=&#39;true&#39; WHERE datname=&#39;template_postgis&#39;;&quot;
+# Loading the PostGIS SQL routines
+$ psql -d template_postgis -f $POSTGIS_SQL_PATH/postgis.sql
+$ psql -d template_postgis -f $POSTGIS_SQL_PATH/spatial_ref_sys.sql
+# Enabling users to alter spatial tables.
+$ psql -d template_postgis -c &quot;GRANT ALL ON geometry_columns TO PUBLIC;&quot;
+$ psql -d template_postgis -c &quot;GRANT ALL ON geography_columns TO PUBLIC;&quot;
+$ psql -d template_postgis -c &quot;GRANT ALL ON spatial_ref_sys TO PUBLIC;&quot;
+</pre></div>
+</div>
+<p>These commands may be placed in a shell script for later use; for convenience
+the following scripts are available:</p>
+<table class="docutils">
+<colgroup>
+<col width="25%" />
+<col width="75%" />
+</colgroup>
+<thead valign="bottom">
+<tr class="row-odd"><th class="head">PostGIS version</th>
+<th class="head">Bash shell script</th>
+</tr>
+</thead>
+<tbody valign="top">
+<tr class="row-even"><td>1.5</td>
+<td><a class="reference download internal" href="../../../../_downloads/create_template_postgis-1.5.sh"><tt class="xref download docutils literal"><span class="pre">create_template_postgis-1.5.sh</span></tt></a></td>
+</tr>
+<tr class="row-odd"><td>Debian/Ubuntu</td>
+<td><a class="reference download internal" href="../../../../_downloads/create_template_postgis-debian.sh"><tt class="xref download docutils literal"><span class="pre">create_template_postgis-debian.sh</span></tt></a></td>
+</tr>
+</tbody>
+</table>
+<p>Afterwards, you may create a spatial database by simply specifying
+<tt class="docutils literal"><span class="pre">template_postgis</span></tt> as the template to use (via the <tt class="docutils literal"><span class="pre">-T</span></tt> option):</p>
+<div class="highlight-python"><div class="highlight"><pre>$ createdb -T template_postgis &lt;db name&gt;
+</pre></div>
+</div>
+<div class="admonition note">
+<p class="first admonition-title">Note</p>
+<p>While the <tt class="docutils literal"><span class="pre">createdb</span></tt> command does not require database super-user privileges,
+it must be executed by a database user that has permissions to create databases.
+You can create such a user with the following command:</p>
+<div class="last highlight-python"><div class="highlight"><pre>$ createuser --createdb &lt;user&gt;
+</pre></div>
+</div>
+</div>
+</div>
+<div class="section" id="s-postgresql-s-createdb-fails">
+<span id="postgresql-s-createdb-fails"></span><h3>PostgreSQL&#8217;s createdb fails<a class="headerlink" href="#postgresql-s-createdb-fails" title="Permalink to this headline">¶</a></h3>
+<p>When the PostgreSQL cluster uses a non-UTF8 encoding, the
+<tt class="file docutils literal"><span class="pre">create_template_postgis-*.sh</span></tt> script will fail when executing
+<tt class="docutils literal"><span class="pre">createdb</span></tt>:</p>
+<div class="highlight-python"><div class="highlight"><pre>createdb: database creation failed: ERROR:  new encoding (UTF8) is incompatible
+  with the encoding of the template database (SQL_ASCII)
+</pre></div>
+</div>
+<p>The <a class="reference external" href="http://jacobian.org/writing/pg-encoding-ubuntu/">current workaround</a> is to re-create the cluster using UTF8 (back up any
+databases before dropping the cluster).</p>
+</div>
+<div class="section" id="s-managing-the-database">
+<span id="managing-the-database"></span><h3>Managing the database<a class="headerlink" href="#managing-the-database" title="Permalink to this headline">¶</a></h3>
+<p>To administer the database, you can either use the pgAdmin III program
+(<em class="menuselection">Start ‣ PostgreSQL 9.x ‣ pgAdmin III</em>) or the
+SQL Shell (<em class="menuselection">Start ‣ PostgreSQL 9.x ‣ SQL Shell</em>).
+For example, to create a <tt class="docutils literal"><span class="pre">geodjango</span></tt> spatial database and user, the following
+may be executed from the SQL Shell as the <tt class="docutils literal"><span class="pre">postgres</span></tt> user:</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="n">postgres</span><span class="c"># CREATE USER geodjango PASSWORD &#39;my_passwd&#39;;</span>
+<span class="n">postgres</span><span class="c"># CREATE DATABASE geodjango OWNER geodjango TEMPLATE template_postgis ENCODING &#39;utf8&#39;;</span>
+</pre></div>
+</div>
+</div>
+</div>
+</div>
+
+
+          </div>
+        </div>
+      </div>
+      
+        
+          <div class="yui-b" id="sidebar">
+            
+      <div class="sphinxsidebar">
+        <div class="sphinxsidebarwrapper">
+  <h3><a href="../../../../contents.html">Table Of Contents</a></h3>
+  <ul>
+<li><a class="reference internal" href="#">Installing PostGIS</a><ul>
+<li><a class="reference internal" href="#building-from-source">Building from source</a></li>
+<li><a class="reference internal" href="#post-installation">Post-installation</a><ul>
+<li><a class="reference internal" href="#creating-a-spatial-database-with-postgis-2-0-and-postgresql-9-1">Creating a spatial database with PostGIS 2.0 and PostgreSQL 9.1+</a></li>
+<li><a class="reference internal" href="#creating-a-spatial-database-template-for-earlier-versions">Creating a spatial database template for earlier versions</a></li>
+<li><a class="reference internal" href="#postgresql-s-createdb-fails">PostgreSQL&#8217;s createdb fails</a></li>
+<li><a class="reference internal" href="#managing-the-database">Managing the database</a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+
+  <h3>Browse</h3>
+  <ul>
+    
+      <li>Prev: <a href="geolibs.html">Installing Geospatial libraries</a></li>
+    
+    
+      <li>Next: <a href="spatialite.html">Installing Spatialite</a></li>
+    
+  </ul>
+  <h3>You are here:</h3>
+  <ul>
+      <li>
+        <a href="../../../../index.html">Django 1.8.2.dev20150505153848 documentation</a>
+        
+          <ul><li><a href="../../../index.html">API Reference</a>
+        
+          <ul><li><a href="../../index.html"><tt class="docutils literal"><span class="pre">contrib</span></tt> packages</a>
+        
+          <ul><li><a href="../index.html">GeoDjango</a>
+        
+          <ul><li><a href="index.html">GeoDjango Installation</a>
+        
+        <ul><li>Installing PostGIS</li></ul>
+        </li></ul></li></ul></li></ul></li></ul>
+      </li>
+  </ul>
+
+  <h3>This Page</h3>
+  <ul class="this-page-menu">
+    <li><a href="../../../../_sources/ref/contrib/gis/install/postgis.txt"
+           rel="nofollow">Show Source</a></li>
+  </ul>
+<div id="searchbox" style="display: none">
+  <h3>Quick search</h3>
+    <form class="search" action="../../../../search.html" method="get">
+      <input type="text" name="q" />
+      <input type="submit" value="Go" />
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+    <p class="searchtip" style="font-size: 90%">
+    Enter search terms or a module, class or function name.
+    </p>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+              <h3>Last update:</h3>
+              <p class="topless">May 06, 2015</p>
+          </div>
+        
+      
+    </div>
+
+    <div id="ft">
+      <div class="nav">
+    &laquo; <a href="geolibs.html" title="Installing Geospatial libraries">previous</a>
+     |
+    <a href="../../../index.html" title="API Reference" accesskey="U">up</a>
+   |
+    <a href="spatialite.html" title="Installing Spatialite">next</a> &raquo;</div>
+    </div>
+  </div>
+
+      <div class="clearer"></div>
+    </div>
+  </body>
+</html>

@@ -1,0 +1,217 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>django.contrib.gis.gdal &mdash; Django 1.8.2.dev20150505153848 documentation</title>
+    
+    <link rel="stylesheet" href="../../../../_static/default.css" type="text/css" />
+    <link rel="stylesheet" href="../../../../_static/pygments.css" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '../../../../',
+        VERSION:     '1.8.2.dev20150505153848',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="../../../../_static/jquery.js"></script>
+    <script type="text/javascript" src="../../../../_static/underscore.js"></script>
+    <script type="text/javascript" src="../../../../_static/doctools.js"></script>
+    <link rel="top" title="Django 1.8.2.dev20150505153848 documentation" href="../../../../index.html" />
+    <link rel="up" title="django" href="../../../django.html" />
+
+
+
+ 
+<script type="text/javascript" src="../../../../templatebuiltins.js"></script>
+<script type="text/javascript">
+(function($) {
+    if (!django_template_builtins) {
+       // templatebuiltins.js missing, do nothing.
+       return;
+    }
+    $(document).ready(function() {
+        // Hyperlink Django template tags and filters
+        var base = "../../../../ref/templates/builtins.html";
+        if (base == "#") {
+            // Special case for builtins.html itself
+            base = "";
+        }
+        // Tags are keywords, class '.k'
+        $("div.highlight\\-html\\+django span.k").each(function(i, elem) {
+             var tagname = $(elem).text();
+             if ($.inArray(tagname, django_template_builtins.ttags) != -1) {
+                 var fragment = tagname.replace(/_/, '-');
+                 $(elem).html("<a href='" + base + "#" + fragment + "'>" + tagname + "</a>");
+             }
+        });
+        // Filters are functions, class '.nf'
+        $("div.highlight\\-html\\+django span.nf").each(function(i, elem) {
+             var filtername = $(elem).text();
+             if ($.inArray(filtername, django_template_builtins.tfilters) != -1) {
+                 var fragment = filtername.replace(/_/, '-');
+                 $(elem).html("<a href='" + base + "#" + fragment + "'>" + filtername + "</a>");
+             }
+        });
+    });
+})(jQuery);
+</script>
+
+
+  </head>
+  <body>
+
+    <div class="document">
+  <div id="custom-doc" class="yui-t6">
+    <div id="hd">
+      <h1><a href="../../../../index.html">Django 1.8.2.dev20150505153848 documentation</a></h1>
+      <div id="global-nav">
+        <a title="Home page" href="../../../../index.html">Home</a>  |
+        <a title="Table of contents" href="../../../../contents.html">Table of contents</a>  |
+        <a title="Global index" href="../../../../genindex.html">Index</a>  |
+        <a title="Module index" href="../../../../py-modindex.html">Modules</a>
+      </div>
+      <div class="nav">
+    <a href="../../../index.html" title="Module code" accesskey="U">up</a></div>
+    </div>
+
+    <div id="bd">
+      <div id="yui-main">
+        <div class="yui-b">
+          <div class="yui-g" id="_modules-django-contrib-gis-gdal">
+            
+  <h1>Source code for django.contrib.gis.gdal</h1><div class="highlight"><pre>
+<span class="sd">&quot;&quot;&quot;</span>
+<span class="sd"> This module houses ctypes interfaces for GDAL objects.  The following GDAL</span>
+<span class="sd"> objects are supported:</span>
+
+<span class="sd"> CoordTransform: Used for coordinate transformations from one spatial</span>
+<span class="sd">  reference system to another.</span>
+
+<span class="sd"> Driver: Wraps an OGR data source driver.</span>
+
+<span class="sd"> DataSource: Wrapper for the OGR data source object, supports</span>
+<span class="sd">  OGR-supported data sources.</span>
+
+<span class="sd"> Envelope: A ctypes structure for bounding boxes (GDAL library</span>
+<span class="sd">  not required).</span>
+
+<span class="sd"> OGRGeometry: Object for accessing OGR Geometry functionality.</span>
+
+<span class="sd"> OGRGeomType: A class for representing the different OGR Geometry</span>
+<span class="sd">  types (GDAL library not required).</span>
+
+<span class="sd"> SpatialReference: Represents OSR Spatial Reference objects.</span>
+
+<span class="sd"> The GDAL library will be imported from the system path using the default</span>
+<span class="sd"> library name for the current OS. The default library path may be overridden</span>
+<span class="sd"> by setting `GDAL_LIBRARY_PATH` in your settings with the path to the GDAL C</span>
+<span class="sd"> library on your system.</span>
+
+<span class="sd"> GDAL links to a large number of external libraries that consume RAM when</span>
+<span class="sd"> loaded.  Thus, it may desirable to disable GDAL on systems with limited</span>
+<span class="sd"> RAM resources -- this may be accomplished by setting `GDAL_LIBRARY_PATH`</span>
+<span class="sd"> to a non-existent file location (e.g., `GDAL_LIBRARY_PATH=&#39;/null/path&#39;`;</span>
+<span class="sd"> setting to None/False/&#39;&#39; will not work as a string must be given).</span>
+<span class="sd">&quot;&quot;&quot;</span>
+<span class="kn">from</span> <span class="nn">django.contrib.gis.gdal.error</span> <span class="kn">import</span> <span class="p">(</span><span class="n">check_err</span><span class="p">,</span> <span class="n">GDALException</span><span class="p">,</span>
+    <span class="n">OGRException</span><span class="p">,</span> <span class="n">OGRIndexError</span><span class="p">,</span> <span class="n">SRSException</span><span class="p">)</span>  <span class="c"># NOQA</span>
+<span class="kn">from</span> <span class="nn">django.contrib.gis.gdal.geomtype</span> <span class="kn">import</span> <span class="n">OGRGeomType</span>  <span class="c"># NOQA</span>
+
+<span class="n">__all__</span> <span class="o">=</span> <span class="p">[</span>
+    <span class="s">&#39;check_err&#39;</span><span class="p">,</span> <span class="s">&#39;GDALException&#39;</span><span class="p">,</span> <span class="s">&#39;OGRException&#39;</span><span class="p">,</span> <span class="s">&#39;OGRIndexError&#39;</span><span class="p">,</span>
+    <span class="s">&#39;SRSException&#39;</span><span class="p">,</span> <span class="s">&#39;OGRGeomType&#39;</span><span class="p">,</span> <span class="s">&#39;HAS_GDAL&#39;</span><span class="p">,</span>
+<span class="p">]</span>
+
+<span class="c"># Attempting to import objects that depend on the GDAL library.  The</span>
+<span class="c"># HAS_GDAL flag will be set to True if the library is present on</span>
+<span class="c"># the system.</span>
+<span class="k">try</span><span class="p">:</span>
+    <span class="kn">from</span> <span class="nn">django.contrib.gis.gdal.driver</span> <span class="kn">import</span> <span class="n">Driver</span>  <span class="c"># NOQA</span>
+    <span class="kn">from</span> <span class="nn">django.contrib.gis.gdal.datasource</span> <span class="kn">import</span> <span class="n">DataSource</span>  <span class="c"># NOQA</span>
+    <span class="kn">from</span> <span class="nn">django.contrib.gis.gdal.libgdal</span> <span class="kn">import</span> <span class="n">gdal_version</span><span class="p">,</span> <span class="n">gdal_full_version</span><span class="p">,</span> <span class="n">GDAL_VERSION</span>  <span class="c"># NOQA</span>
+    <span class="kn">from</span> <span class="nn">django.contrib.gis.gdal.raster.source</span> <span class="kn">import</span> <span class="n">GDALRaster</span>  <span class="c"># NOQA</span>
+    <span class="kn">from</span> <span class="nn">django.contrib.gis.gdal.srs</span> <span class="kn">import</span> <span class="n">SpatialReference</span><span class="p">,</span> <span class="n">CoordTransform</span>  <span class="c"># NOQA</span>
+    <span class="kn">from</span> <span class="nn">django.contrib.gis.gdal.geometries</span> <span class="kn">import</span> <span class="n">OGRGeometry</span>  <span class="c"># NOQA</span>
+    <span class="n">HAS_GDAL</span> <span class="o">=</span> <span class="bp">True</span>
+    <span class="n">__all__</span> <span class="o">+=</span> <span class="p">[</span>
+        <span class="s">&#39;Driver&#39;</span><span class="p">,</span> <span class="s">&#39;DataSource&#39;</span><span class="p">,</span> <span class="s">&#39;gdal_version&#39;</span><span class="p">,</span> <span class="s">&#39;gdal_full_version&#39;</span><span class="p">,</span>
+        <span class="s">&#39;GDAL_VERSION&#39;</span><span class="p">,</span> <span class="s">&#39;SpatialReference&#39;</span><span class="p">,</span> <span class="s">&#39;CoordTransform&#39;</span><span class="p">,</span> <span class="s">&#39;OGRGeometry&#39;</span><span class="p">,</span>
+    <span class="p">]</span>
+<span class="k">except</span> <span class="n">GDALException</span><span class="p">:</span>
+    <span class="n">HAS_GDAL</span> <span class="o">=</span> <span class="bp">False</span>
+
+<span class="k">try</span><span class="p">:</span>
+    <span class="kn">from</span> <span class="nn">django.contrib.gis.gdal.envelope</span> <span class="kn">import</span> <span class="n">Envelope</span>
+    <span class="n">__all__</span> <span class="o">+=</span> <span class="p">[</span><span class="s">&#39;Envelope&#39;</span><span class="p">]</span>
+<span class="k">except</span> <span class="ne">ImportError</span><span class="p">:</span>
+    <span class="c"># No ctypes, but don&#39;t raise an exception.</span>
+    <span class="k">pass</span>
+</pre></div>
+
+          </div>
+        </div>
+      </div>
+      
+        
+          <div class="yui-b" id="sidebar">
+            
+      <div class="sphinxsidebar">
+        <div class="sphinxsidebarwrapper">
+  <h3>Browse</h3>
+  <ul>
+    
+    
+  </ul>
+  <h3>You are here:</h3>
+  <ul>
+      <li>
+        <a href="../../../../index.html">Django 1.8.2.dev20150505153848 documentation</a>
+        
+          <ul><li><a href="../../../index.html">Module code</a>
+        
+          <ul><li><a href="../../../django.html">django</a>
+        
+        <ul><li>django.contrib.gis.gdal</li></ul>
+        </li></ul></li></ul>
+      </li>
+  </ul>
+
+<div id="searchbox" style="display: none">
+  <h3>Quick search</h3>
+    <form class="search" action="../../../../search.html" method="get">
+      <input type="text" name="q" />
+      <input type="submit" value="Go" />
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+    <p class="searchtip" style="font-size: 90%">
+    Enter search terms or a module, class or function name.
+    </p>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+              <h3>Last update:</h3>
+              <p class="topless">May 06, 2015</p>
+          </div>
+        
+      
+    </div>
+
+    <div id="ft">
+      <div class="nav">
+    <a href="../../../index.html" title="Module code" accesskey="U">up</a></div>
+    </div>
+  </div>
+
+      <div class="clearer"></div>
+    </div>
+  </body>
+</html>
