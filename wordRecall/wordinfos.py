@@ -17,6 +17,7 @@ def _change_word_remember_status(word_list, remember_status, user, change_catch=
         recall_info, created = WordRememberInfos.objects.get_or_create(word=word, user=user)
         recall_info.remember = remember_status
         recall_info.save()
+        all_conversant_word_list = get_all_conversant_word_list()
         if change_catch and all_conversant_word_list:
             all_conversant_word_list[word_spelling] = None
 
