@@ -6,7 +6,7 @@ from models import Word
 from util import StringUtil
 from django.core.cache import cache
 all_conversant_word_list = None
-
+from util import TimeUtil
 KEY = 'all_conversant_word_list'
 
 
@@ -27,7 +27,7 @@ def _change_word_remember_status(word_list, remember_status, user, change_catch=
             if conversant_word_list.has_key(word_spelling):
                 print 'has have %s' %word_spelling
             conversant_word_list[word_spelling] = None
-        from util import TimeUtil
+
         conversant_word_list['change'] = TimeUtil.get_now_time()
         set_cache(conversant_word_list)
         print cache.get(KEY)['change']
@@ -45,9 +45,10 @@ def get_all_conversant_word_list(user=None):
 
     result = cache.get(KEY)
     if result is not None:
+        result['change'] = TimeUtil.get_now_time()
+        print result['change']
         return result
 
-    from util import TimeUtil
     print 'reload cache %s' %TimeUtil.get_now_time()
     conversant_words = WordRememberInfos.objects.filter(remember=WordRememberInfos.CHOICE_REMEMBER_CONVERSANT)
     all_conversant_word_list = {}
