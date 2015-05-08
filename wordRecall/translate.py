@@ -30,12 +30,12 @@ def get_translate_word_url(spelling, translate_url):
     return "%s%s" %(reverse("word:word_info", args=(spelling,)), "?%s" % (params))
 
 
-def get_sub_element_by_text(p_text, parent, translate_url):
+def get_sub_element_by_text(p_text, parent, translate_url, conversant_word_map):
     """
     进行 英文字符处理
     """
     result = []
-    conversant_word_map = get_all_conversant_word_list()
+
     return_p_text = ''
     cur_u = None
 
@@ -71,7 +71,7 @@ def get_sub_element_by_text(p_text, parent, translate_url):
 
     return result
 
-def get_sub_element(current_tag, parent, translate_url, get_text=True, get_children=True, get_tail=True):
+def get_sub_element(current_tag, parent, translate_url, conversant_word_map, get_text=True, get_children=True, get_tail=True):
     """
     获取block tag的所有子集
     """
@@ -80,11 +80,11 @@ def get_sub_element(current_tag, parent, translate_url, get_text=True, get_child
     if get_text:
         current_tag_text = current_tag.text
         current_tag.text = None
-        result.extend(get_sub_element_by_text(current_tag_text, parent, translate_url))
+        result.extend(get_sub_element_by_text(current_tag_text, parent, translate_url, conversant_word_map))
 
     if get_children:
         for children in raw_children:
-            children_subs = get_sub_element_by_text(children.tail, parent, translate_url)
+            children_subs = get_sub_element_by_text(children.tail, parent, translate_url, conversant_word_map)
             children.tail = None
             result.append(children)
             result.extend(children_subs)
@@ -92,18 +92,18 @@ def get_sub_element(current_tag, parent, translate_url, get_text=True, get_child
     if get_tail:
         current_tag_tail = current_tag.tail
         current_tag.tail = None
-        result.extend(get_sub_element_by_text(current_tag_tail, parent, translate_url))
+        result.extend(get_sub_element_by_text(current_tag_tail, parent, translate_url, conversant_word_map))
     return result
 
 
-def modify_bolock_p(p, translate_url):
+def modify_bolock_p(p, translate_url,conversant_word_map):
     """
     变更<ｐ>标签的具体实现
     """
     # print lxml.html.tostring(p)
-    # if not p.text.startswith('Django provides an abstraction'):
+    # if not p.text.startswith('A fundamental trade-off in dynamic Web sites'):
     #     return
-    sub_element_list = get_sub_element(p, p, translate_url)
+    sub_element_list = get_sub_element(p, p, translate_url,conversant_word_map=conversant_word_map)
     p._children = []
     p.text = p.tail = None
     # p.clear()
@@ -137,16 +137,18 @@ def modify_bolock_p(p, translate_url):
     # print lxml.html.tostring(p)
 
 
-def change_p(html, translate_url):
+def change_p(html, translate_url,conversant_word_map=None):
     """
     变更所有的<ｐ>标签
     """
+    if conversant_word_map is None:
+        conversant_word_map = get_all_conversant_word_list()
     change_list = ["//p", "//h1", "//h2", "//li"]
     for change_tag in change_list:
         for p in html.xpath(change_tag):
             if p.text:
                 # print lxml.html.tostring(p)
-                modify_bolock_p(p, translate_url)
+                modify_bolock_p(p, translate_url, conversant_word_map)
 
 def change_script_data_main_url(html, tran_page_url):
     scripts = html.xpath(u"//script")

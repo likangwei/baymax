@@ -38,17 +38,16 @@ def set_cache(data):
     cache.set(KEY, data, 15 * 60)
 
 def get_all_conversant_word_list(user=None):
-    print 'get_all_conversant_word_list'
     """
     获取所有的熟单词
     """
 
-    result = cache.get(KEY)
-    if result is not None:
-        result['change'] = TimeUtil.get_now_time()
-        print result['change']
-        return result
-
+    # result = cache.get(KEY)
+    # if result is not None:
+    #     result['change'] = TimeUtil.get_now_time()
+    #     print result['change']
+    #     return result
+    #
     print 'reload cache %s' %TimeUtil.get_now_time()
     conversant_words = WordRememberInfos.objects.filter(remember=WordRememberInfos.CHOICE_REMEMBER_CONVERSANT)
     all_conversant_word_list = {}
@@ -58,5 +57,5 @@ def get_all_conversant_word_list(user=None):
     for split_word in StringUtil.SPLIT_STR_LIST:
         all_conversant_word_list[split_word] = None
 
-    set_cache(all_conversant_word_list)
+    # set_cache(all_conversant_word_list)
     return all_conversant_word_list

@@ -24,7 +24,7 @@ def get_html_word_repeated_info(page_url, hidden_word_list=[]):
 
 def __add_word_repeated_count(text, result):
     if text:
-        word_list = StringUtil.get_split_words(text, word_only=True, if_check_word=True, lower=True)
+        word_list = StringUtil.get_split_words(text, word_only=True, lower=True)
 
         for word in word_list:
             if result.has_key(word):
