@@ -16,6 +16,7 @@ import json
 from parser import get_html_word_repeated_info
 from wordinfos import get_all_conversant_word_list
 from wordinfos import change_word_status
+from django.core.urlresolvers import reverse
 
 class TransPageForm(forms.Form):
     tran_page = forms.CharField(label='tran_page', max_length=100)
@@ -77,7 +78,7 @@ def get_tran_page(request):
     KEY = 'tran_page'
     if request.method == 'POST':
         trans_url = request.POST[KEY]
-        return HttpResponseRedirect('/word/tran?tran_page=%s' %trans_url)
+        return HttpResponseRedirect('/word/page?tran_page=%s' %trans_url)
 
     elif request.method == 'GET':
         if request.GET.has_key(KEY):

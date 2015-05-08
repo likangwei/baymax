@@ -2,14 +2,10 @@ __author__ = 'hanzhao'
 # -*- coding: utf-8 -*-
 import urllib
 import lxml.html
-from lxml.html.soupparser import fromstring
 from util import md5util, StringUtil
-import os
 from lxml.html import HtmlElement
-from django.http import HttpResponseRedirect
 from django.core.urlresolvers import reverse
 import urlparse
-from healthPriceless.settings import HOST
 from loader import get_html_str
 from wordinfos import get_all_conversant_word_list
 
