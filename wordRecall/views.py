@@ -77,7 +77,6 @@ def get_tran_page(request):
     KEY = 'tran_page'
     if request.method == 'POST':
         trans_url = request.POST[KEY]
-        translate_page_url = get_tran_page()
         return HttpResponseRedirect('/word/tran?tran_page=%s' %trans_url)
 
     elif request.method == 'GET':
