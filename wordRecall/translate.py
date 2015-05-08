@@ -142,7 +142,7 @@ def change_p(html, user, translate_url):
     变更所有的<ｐ>标签
     """
     conversant_word_map = get_all_conversant_word_list(user)
-    change_list = ["//p", "//h1", "//h2", "//li"]
+    change_list = ["//p", "//h1", "//h2", "//li", "//strong"]
     for change_tag in change_list:
         for p in html.xpath(change_tag):
             if p.text:
