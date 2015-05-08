@@ -77,7 +77,9 @@ def get_tran_page(request):
     KEY = 'tran_page'
     if request.method == 'POST':
         trans_url = request.POST[KEY]
+        translate_page_url = get_tran_page()
         return HttpResponseRedirect('/word/tran?tran_page=%s' %trans_url)
+
     elif request.method == 'GET':
         if request.GET.has_key(KEY):
             trans_url = request.GET[KEY]
@@ -105,13 +107,13 @@ def _get_words(request, filter):
     form = RecallWordForm(instance=recall_word)
     return render(request, 'recall/recall.html', {"form": form, "id":recall_word.pk} )
 
-def translate_word(request):
+def translate_word(request, spelling=None):
     """
     Goo翻译单词
     显示
     """
-    cur_word = request.GET['word']
-    from_page = request.GET['from_page']
+    cur_word = spelling
+    from_page = request.GET['tran_page']
     print from_page
     hidden_word_list = get_all_conversant_word_list()
     word_map = get_html_word_repeated_info(from_page, hidden_word_list=hidden_word_list)

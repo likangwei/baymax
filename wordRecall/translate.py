@@ -6,7 +6,8 @@ from lxml.html.soupparser import fromstring
 from util import md5util, StringUtil
 import os
 from lxml.html import HtmlElement
-
+from django.http import HttpResponseRedirect
+from django.core.urlresolvers import reverse
 import urlparse
 from healthPriceless.settings import HOST
 from loader import get_html_str
@@ -18,18 +19,19 @@ def change_url(pre_url):
         if pre_url.endswith(un_change_pattern):
             return pre_url
     params = urllib.urlencode({'tran_page': pre_url})
-
-    return "/tran?%s" % (params)
+    return "%s%s" %(reverse('word:page', args=()), "?%s" % (params))
 
 
 from util import RegexUtil
 
 
-def get_translate_word_url(word_lower_case, translate_url):
+def get_translate_word_url(spelling, translate_url):
     """
     获取翻译单词的网页网址
     """
-    return "%sword/word_translate?word=%s&from_page=%s" %(HOST, word_lower_case, translate_url)
+
+    params = urllib.urlencode({'tran_page': translate_url})
+    return "%s%s" %(reverse("word:word_info", args=(spelling,)), "?%s" % (params))
 
 
 def get_sub_element_by_text(p_text, parent, translate_url):
