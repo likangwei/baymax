@@ -7,6 +7,8 @@ from util import StringUtil
 from django.core.cache import cache
 all_conversant_word_list = None
 
+KEY = 'all_conversant_word_list'
+
 
 def change_word_status(word_list, user, status):
     _change_word_remember_status(word_list, status, user, change_catch=True)
@@ -22,16 +24,25 @@ def _change_word_remember_status(word_list, remember_status, user, change_catch=
         conversant_word_list = get_all_conversant_word_list()
         if change_catch :
             print 'add 2 cache %s' %word_spelling
+            if conversant_word_list.has_key(word_spelling):
+                print 'has have %s' %word_spelling
             conversant_word_list[word_spelling] = None
+        from util import TimeUtil
+        conversant_word_list['change'] = TimeUtil.get_now_time()
+        set_cache(conversant_word_list)
+        print cache.get(KEY)['change']
+        print conversant_word_list == cache.get(KEY)
 
 
+def set_cache(data):
+    cache.set(KEY, data, 15 * 60)
 
 def get_all_conversant_word_list(user=None):
+    print 'get_all_conversant_word_list'
     """
     获取所有的熟单词
     """
 
-    KEY = 'all_conversant_word_list'
     result = cache.get(KEY)
     if result is not None:
         return result
@@ -46,5 +57,5 @@ def get_all_conversant_word_list(user=None):
     for split_word in StringUtil.SPLIT_STR_LIST:
         all_conversant_word_list[split_word] = None
 
-    cache.set(KEY, all_conversant_word_list, 15 * 60)
+    set_cache(all_conversant_word_list)
     return all_conversant_word_list
