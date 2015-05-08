@@ -7,4 +7,5 @@ def get_ip_address():
 
 def get_host_name():
     return socket.gethostname()
+
 print get_ip_address()

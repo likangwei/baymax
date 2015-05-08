@@ -2,7 +2,6 @@
 from django.shortcuts import render
 
 # Create your views here.
-from healthPriceless.settings import HOST
 from django.http import HttpResponse
 from models import Word, User, WordRememberInfos
 from django.forms import ModelForm
@@ -87,7 +86,7 @@ def get_tran_page(request):
             return __get_tran_page(trans_url, user)
         else:
             form = TransPageForm()
-            return render(request, 'recall/tran_page.html', {"form": form, "HOST": HOST} )
+            return render(request, 'recall/page.html', {"form": form, "HOST": request.get_host()} )
 
 def __get_tran_page(trans_url, user):
     print trans_url
