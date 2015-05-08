@@ -4,7 +4,7 @@ __author__ = 'hanzhao'
 from models import WordRememberInfos
 from models import Word
 from util import StringUtil
-
+from django.core.cache import cache
 all_conversant_word_list = None
 
 
@@ -19,21 +19,25 @@ def _change_word_remember_status(word_list, remember_status, user, change_catch=
         recall_info, created = WordRememberInfos.objects.get_or_create(word=word, user=user)
         recall_info.remember = remember_status
         recall_info.save()
-        all_conversant_word_list = get_all_conversant_word_list()
-        if change_catch and all_conversant_word_list:
-            all_conversant_word_list[word_spelling] = None
+        conversant_word_list = get_all_conversant_word_list()
+        if change_catch :
+            print 'add 2 cache %s' %word_spelling
+            conversant_word_list[word_spelling] = None
 
 
 
-def get_all_conversant_word_list():
+def get_all_conversant_word_list(user=None):
     """
     获取所有的熟单词
     """
-    global all_conversant_word_list
-    if all_conversant_word_list is not None:
-        return all_conversant_word_list
+
+    KEY = 'all_conversant_word_list'
+    result = cache.get(KEY)
+    if result is not None:
+        return result
+
     from util import TimeUtil
-    print 'reload all_conversant_word_list %s' %TimeUtil.get_now_time()
+    print 'reload cache %s' %TimeUtil.get_now_time()
     conversant_words = WordRememberInfos.objects.filter(remember=WordRememberInfos.CHOICE_REMEMBER_CONVERSANT)
     all_conversant_word_list = {}
     for word in conversant_words:
@@ -41,4 +45,6 @@ def get_all_conversant_word_list():
 
     for split_word in StringUtil.SPLIT_STR_LIST:
         all_conversant_word_list[split_word] = None
+
+    cache.set(KEY, all_conversant_word_list, 15 * 60)
     return all_conversant_word_list
