@@ -137,12 +137,11 @@ def modify_bolock_p(p, translate_url,conversant_word_map):
     # print lxml.html.tostring(p)
 
 
-def change_p(html, translate_url,conversant_word_map=None):
+def change_p(html, user, translate_url):
     """
     变更所有的<ｐ>标签
     """
-    if conversant_word_map is None:
-        conversant_word_map = get_all_conversant_word_list()
+    conversant_word_map = get_all_conversant_word_list(user)
     change_list = ["//p", "//h1", "//h2", "//li"]
     for change_tag in change_list:
         for p in html.xpath(change_tag):
@@ -156,11 +155,12 @@ def change_script_data_main_url(html, tran_page_url):
         if script.attrib.has_key('data-main'):
             script.attrib['data-main'] = urlparse.urljoin(tran_page_url, script.attrib['data-main'])
 
-def get_translate_page(tran_page_url):
+def get_translate_page(tran_page_url, user):
+
     htmlStr = get_html_str(tran_page_url)
     html = lxml.html.fromstring(htmlStr)
     html.rewrite_links(change_url, base_href=tran_page_url)
     change_script_data_main_url(html, tran_page_url)
-    change_p(html, tran_page_url)
+    change_p(html, user, tran_page_url)
     return lxml.html.tostring(html)
 

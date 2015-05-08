@@ -75,6 +75,7 @@ def get_user(request):
 
 def get_tran_page(request):
 
+    user = get_user(request)
     KEY = 'tran_page'
     if request.method == 'POST':
         trans_url = request.POST[KEY]
@@ -83,14 +84,14 @@ def get_tran_page(request):
     elif request.method == 'GET':
         if request.GET.has_key(KEY):
             trans_url = request.GET[KEY]
-            return __get_tran_page(trans_url)
+            return __get_tran_page(trans_url, user)
         else:
             form = TransPageForm()
             return render(request, 'recall/tran_page.html', {"form": form, "HOST": HOST} )
 
-def __get_tran_page(trans_url):
+def __get_tran_page(trans_url, user):
     print trans_url
-    return HttpResponse( translate.get_translate_page(trans_url) )
+    return HttpResponse(translate.get_translate_page(trans_url, user) )
 
 def _get_words(request, filter):
     if request.method == 'POST':
@@ -115,7 +116,8 @@ def translate_word(request, spelling=None):
     cur_word = spelling
     from_page = request.GET['tran_page']
     print from_page
-    hidden_word_list = get_all_conversant_word_list()
+    user = get_user(request)
+    hidden_word_list = get_all_conversant_word_list(user)
     word_map = get_html_word_repeated_info(from_page, hidden_word_list=hidden_word_list)
     word_sort_list = word_map.items()
     word_sort_list.sort(cmp=lambda x, y: cmp(y[1], x[1]))

@@ -8,10 +8,10 @@ change_list = ["//p", "//h1", "//h2", "//li"]
 
 
 def get_html_word_repeated_info(page_url, hidden_word_list=[]):
-    html_element = get_html_element(page_url)
     """
     获取网页的词频数据
     """
+    html_element = get_html_element(page_url)
     result = {}
     for change_tag in change_list:
         for p in html_element.xpath(change_tag):

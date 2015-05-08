@@ -21,7 +21,7 @@ def _change_word_remember_status(word_list, remember_status, user, change_catch=
         recall_info, created = WordRememberInfos.objects.get_or_create(word=word, user=user)
         recall_info.remember = remember_status
         recall_info.save()
-        conversant_word_list = get_all_conversant_word_list()
+        conversant_word_list = get_all_conversant_word_list(user)
         if change_catch :
             print 'add 2 cache %s' %word_spelling
             if conversant_word_list.has_key(word_spelling):
@@ -37,7 +37,7 @@ def _change_word_remember_status(word_list, remember_status, user, change_catch=
 def set_cache(data):
     cache.set(KEY, data, 15 * 60)
 
-def get_all_conversant_word_list(user=None):
+def get_all_conversant_word_list(user):
     """
     获取所有的熟单词
     """
@@ -49,7 +49,7 @@ def get_all_conversant_word_list(user=None):
     #     return result
     #
     print 'reload cache %s' %TimeUtil.get_now_time()
-    conversant_words = WordRememberInfos.objects.filter(remember=WordRememberInfos.CHOICE_REMEMBER_CONVERSANT)
+    conversant_words = WordRememberInfos.objects.filter(user=user, remember=WordRememberInfos.CHOICE_REMEMBER_CONVERSANT)
     all_conversant_word_list = {}
     for word in conversant_words:
         all_conversant_word_list[word.word_spelling] = None
