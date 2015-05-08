@@ -15,7 +15,7 @@ from django.http import HttpResponseRedirect
 import json
 from parser import get_html_word_repeated_info
 from wordinfos import get_all_conversant_word_list
-from wordinfos import change_word_to_conversant
+from wordinfos import change_word_status
 
 class TransPageForm(forms.Form):
     tran_page = forms.CharField(label='tran_page', max_length=100)
@@ -54,17 +54,16 @@ def call(request):
 def get_recall_word(request):
     return _get_words(request, models.CHOICE_REMEMBER_UNACQUAINTED)
 
-def get_word_infos(request):
+def get_word_infos(request, words=None, status=None):
     """
     获取要变更状态为熟悉的单词
     """
     user = get_user(request)
     print request
-    if request.GET.has_key('conversant_words'):
-        conversant_words = request.GET['conversant_words']
-        if conversant_words:
-            conversant_words = conversant_words.split(",")
-            change_word_to_conversant(conversant_words, user)
+    if words:
+        words = words.split(",")
+        print words
+        change_word_status(words, user, status)
     data = {}
     data['result'] = 'Success'
     return HttpResponse(json.dumps(data), content_type = "application/json")
@@ -118,7 +117,7 @@ def translate_word(request):
     word_map = get_html_word_repeated_info(from_page, hidden_word_list=hidden_word_list)
     word_sort_list = word_map.items()
     word_sort_list.sort(cmp=lambda x, y: cmp(y[1], x[1]))
-    return render(request, 'recall/translateword.html', {"cur_word": cur_word, "word_sort_list": word_sort_list})
+    return render(request, 'recall/translateword.html', {"cur_word": cur_word, "word_sort_list": word_sort_list, "RecallInfoClz": WordRememberInfos})
 
 def init():
 

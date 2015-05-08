@@ -7,8 +7,10 @@ from util import StringUtil
 
 all_conversant_word_list = None
 
-def change_word_to_conversant(word_list, user):
-    _change_word_remember_status(word_list, WordRememberInfos.CHOICE_REMEMBER_CONVERSANT, user, change_catch=True)
+
+def change_word_status(word_list, user, status):
+    _change_word_remember_status(word_list, status, user, change_catch=True)
+
 
 def _change_word_remember_status(word_list, remember_status, user, change_catch=False):
     for word_spelling in word_list:

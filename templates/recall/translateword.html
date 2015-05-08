@@ -11,7 +11,13 @@
 
 
 <body>
+
 <a href="http://translate.google.cn/?hl=zh-CN&tab=wT#en/zh-CN/{{ cur_word }}">Google翻译 {{ cur_word }}</a>
+
+<br/>
+
+
+
 <div class="span5">
 
     <a href='#' id='select-all'>select all</a>
@@ -23,7 +29,7 @@
 
     <select style="width=100px, height:1000px" id='public-methods' multiple='multiple'>
         {% for word,review_count in word_sort_list%}
-            <option value='{{  word }}'>{{ word|ljust:5 }} &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{{ review_count }}</option>
+        <option value='{{  word }}'>{{ word|ljust:5 }} &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{{ review_count }}</option>
         {% endfor %}
     </select>
 
@@ -33,11 +39,11 @@
         var UNACQUAINTED = ''
 
         $('#public-methods').multiSelect({
-            afterSelect: function(values){
+            afterSelect: function (values) {
                 values = values.toString();
                 conversant_words.push(values);
             },
-            afterDeselect: function(values){
+            afterDeselect: function (values) {
                 values = values.toString();
                 del_idx = conversant_words.indexOf(values);
                 delete conversant_words[del_idx];
@@ -73,7 +79,7 @@
 //            alert(conversant_words.toString());
             var set_word_status_url = "/word/set_word_status?words=" + conversant_words
             alert(set_word_status_url);
-           $.get(set_word_status_url, function(data, status){
+            $.get(set_word_status_url, function (data, status) {
                 alert("Data: " + data + "\nStatus: " + status);
             });
         });
@@ -81,7 +87,7 @@
             var set_word_status_url = "/word/set_word_status?conversant_words=" + conversant_words
             alert_msg = "您是否要提交[ " + conversant_words + " ]为熟词?"
             if (confirm(alert_msg) == true) {
-                $.get(set_word_status_url, function(data, status){
+                $.get(set_word_status_url, function (data, status) {
                     alert_msg = data.result;
                     alert(alert_msg);
                 });
@@ -90,5 +96,7 @@
         });
 
     </script>
+
+    <a href="{% url 'word:set_word_status' cur_word RecallInfoClz.CHOICE_REMEMBER_CONVERSANT %}">添加到熟词表</a>
 </body>
 </html>
