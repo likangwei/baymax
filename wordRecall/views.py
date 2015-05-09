@@ -44,7 +44,7 @@ class LoginForm(forms.Form):
 class RegForm(ModelForm):
     class Meta:
         model = User
-        fields = ['username', 'email', 'password', 'is_staff']
+        fields = ['username', 'email', 'password']
 
 
 
