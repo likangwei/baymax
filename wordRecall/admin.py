@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 from django.contrib import admin
 import models
-from models import User, Word, WordRememberInfos, RecallInfo
+from models import Word, WordRememberInfos, RecallInfo
 # Register your models here.
 
 def make_word_unacquainted(modeladmin, request, queryset):
@@ -46,7 +46,6 @@ class WordRememberAdmin(admin.ModelAdmin):
     list_display = ['word', 'user', 'weight', 'remember', 'recall_counts', 'repeated']
 
 
-admin.site.register(User, CommonAdmin)
 admin.site.register(Word, WordAdmin)
 admin.site.register(WordRememberInfos, WordRememberAdmin)
 admin.site.register(RecallInfo, CommonAdmin)

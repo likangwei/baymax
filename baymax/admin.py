@@ -22,6 +22,5 @@ class UserAdmin(admin.ModelAdmin):
     inlines = []
     pass
 
-admin.site.register(User, CommonAdmin)
 admin.site.register(Cook, CookAdmin)
 admin.site.register(Stool, StoolAdmin)

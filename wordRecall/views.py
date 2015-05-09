@@ -16,11 +16,13 @@ from parser import get_html_word_repeated_info
 from wordinfos import get_all_conversant_word_list
 from wordinfos import change_word_status
 from django.core.urlresolvers import reverse
+from django.contrib.auth.decorators import login_required
 
 class TransPageForm(forms.Form):
-    tran_page = forms.CharField(label='tran_page', max_length=100)
+    tran_page = forms.CharField(label='请输入网址：', max_length=100)
 
-
+# def login_required(request):
+#     return HttpResponse("haha")
 
 class RecallWordForm(ModelForm):
 
@@ -50,10 +52,11 @@ def call(request):
             init6()
         return HttpResponse(callMethod)
 
-
+@login_required
 def get_recall_word(request):
     return _get_words(request, models.CHOICE_REMEMBER_UNACQUAINTED)
 
+@login_required
 def get_word_infos(request, words=None, status=None):
     """
     获取要变更状态为熟悉的单词
@@ -69,11 +72,12 @@ def get_word_infos(request, words=None, status=None):
     return HttpResponse(json.dumps(data), content_type = "application/json")
 
 def get_user(request):
-    user, created = User.objects.get_or_create(pk=1)
+    user = request.user
     return user
 
+@login_required
 def get_tran_page(request):
-
+    print request.user
     user = get_user(request)
     KEY = 'tran_page'
     if request.method == 'POST':
@@ -86,12 +90,15 @@ def get_tran_page(request):
             return __get_tran_page(trans_url, user)
         else:
             form = TransPageForm()
-            return render(request, 'recall/page.html', {"form": form, "HOST": request.get_host()} )
+            return render(request, 'recall/index.html', {"form": form, "user":request.user, "HOST": request.get_host()} )
 
 def __get_tran_page(trans_url, user):
     print trans_url
     return HttpResponse(translate.get_translate_page(trans_url, user) )
 
+
+
+@login_required
 def _get_words(request, filter):
     if request.method == 'POST':
         recall_id = request.POST['xid']
@@ -109,7 +116,7 @@ def _get_words(request, filter):
 
 def translate_word(request, spelling=None):
     """
-    Goo翻译单词
+    翻译单词
     显示
     """
     cur_word = spelling

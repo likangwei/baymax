@@ -92,9 +92,11 @@ USE_TZ = True
 STATIC_URL = '/static/'
 STATIC_ROOT = os.path.join(BASE_DIR, 'static')
 TEMPLATE_DIRS = (
+    os.path.join(BASE_DIR, 'baymax', 'templates'),
+    os.path.join(BASE_DIR, 'wordRecall', 'templates'),
     os.path.join(BASE_DIR,  'templates'),
 )
-
+LOGIN_URL = '/admin/login/'
 CACHES = {
     'default': {
         'BACKEND': 'django.core.cache.backends.locmem.LocMemCache',

@@ -1,17 +1,18 @@
 # -*- coding: utf-8 -*-
 from django.db import models
 import datetime
+from django.contrib.auth.models import User
 # Create your models here.
 
 
-class User(models.Model):
-    """主人"""
-    name = models.CharField('名字',max_length=100)
-    age = models.IntegerField('年龄')
-    birthday = models.DateField('生日')
-
-    def __str__(self):
-        return self.name
+# class User(models.Model):
+#     """主人"""
+#     name = models.CharField('名字',max_length=100)
+#     age = models.IntegerField('年龄')
+#     birthday = models.DateField('生日')
+#
+#     def __str__(self):
+#         return self.name
 
 WORD_TYPE_COMMON = 0
 WORD_TYPE_INVALID = 500
@@ -82,7 +83,7 @@ class WordRememberInfos(models.Model):
         recallInfo.save()
 
     def __str__(self):
-        return '%s_%s' %(self.user.name, self.word_spelling)
+        return '%s_%s' %(self.user.pk, self.word_spelling)
 
 
 
