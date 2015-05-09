@@ -6,8 +6,7 @@ import views
 admin.autodiscover()
 
 urlpatterns =[
-    url(r'^', views.get_tran_page, name='page'),
-
+    url(r'^$', views.get_tran_page, name='page'),
     url(r'^call/?', views.call),
     url(r'^reg/?', views.reg, name='reg'),
     url(r'^login/?', views.login, name='login'),
