@@ -29,7 +29,7 @@
             <!-- horizontal form -->
             <div class="row">
                 <div class="span12">
-                    <h2>请输入您的用户资料</h2>
+                    <h2></h2>
 
                     <hr />
 
@@ -37,7 +37,8 @@
                         {{ form|bootstrap_horizontal }}
                         <div class="col-sm-offset-2 col-sm-10">
                                 <input type="submit" class="btn btn-primary" value="登陆" />
-                            </div>
+                                <input type="button" class="btn btn-primary" onclick="location='{% url 'word:reg' %}' " value="注册" />
+                        </div>
                     </form>
 
                 </div>
