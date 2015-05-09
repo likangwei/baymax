@@ -15,6 +15,7 @@ from models import Word, WordRememberInfos
 from django.core.urlresolvers import reverse
 from django.contrib.auth import login as lg
 from django.contrib.auth import authenticate
+from django.contrib.auth import logout
 import test
 import models
 import translate
@@ -83,6 +84,10 @@ def login(request, next='word:page'):
         form = LoginForm()
     return render(request, 'recall/login.html', {"form": form})
 
+
+def _logout(request):
+    logout(request)
+    return __redirect('word:login', if_reverse=True)
 
 @login_required
 def get_recall_word(request):
