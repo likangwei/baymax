@@ -1,28 +1,28 @@
 # -*- coding: utf-8 -*-
-from django.shortcuts import render
+import json
 
-# Create your views here.
+from django.shortcuts import render
 from django.http import HttpResponse
-from models import Word, User, WordRememberInfos
 from django.forms import ModelForm
 from django import forms
-import test
-import urllib
-import models
-import translate
 from django.http import HttpResponseRedirect
-import json
+from django.contrib.auth.decorators import login_required
+from django.contrib.auth.models import User
 from parser import get_html_word_repeated_info
 from wordinfos import get_all_conversant_word_list
 from wordinfos import change_word_status
+from models import Word, WordRememberInfos
 from django.core.urlresolvers import reverse
-from django.contrib.auth.decorators import login_required
+from django.contrib.auth import login as lg
+from django.contrib.auth import authenticate
+import test
+import models
+import translate
+
 
 class TransPageForm(forms.Form):
     tran_page = forms.CharField(label='请输入网址：', max_length=100)
 
-# def login_required(request):
-#     return HttpResponse("haha")
 
 class RecallWordForm(ModelForm):
 
@@ -34,27 +34,66 @@ class RecallWordForm(ModelForm):
             "remember": forms.RadioSelect()
         }
 
-def call(request):
-    if request.method:
-        callMethod = request.GET['call']
 
-        if callMethod == 'init':
-            init()
-        if callMethod == 'init2':
-            init2()
-        if callMethod == 'init3':
-            init3()
-        if callMethod == 'init4':
-            init4()
-        if callMethod == 'init5':
-            init5()
-        if callMethod == 'init6':
-            init6()
-        return HttpResponse(callMethod)
+class LoginForm(forms.Form):
+    username = forms.CharField(label='用户名：', max_length=100)
+    password = forms.CharField(label='密码：', max_length=100)
+
+
+class RegForm(ModelForm):
+    class Meta:
+        model = User
+        fields = ['username', 'email', 'password', 'is_staff']
+
+
+
+
+def reg(request):
+    """
+    注册
+    """
+    if request.method == "POST":
+        form = RegForm(request.POST)
+        if form.is_valid():
+            form.save()
+
+    else:
+        form = RegForm()
+    return render(request, 'recall/reg.html', {"form": form})
+
+def if_user_valid(username, password):
+    user = User.objects.get(username=username, password=password)
+    return user
+
+
+def login(request, next='word:page'):
+    """
+    登陆
+    """
+    if request.method == "POST":
+        form = LoginForm(request.POST)
+        if form.is_valid():
+            username = form.cleaned_data['username']
+            password = form.cleaned_data['password']
+            user = authenticate(username=username, password=password)
+            if user is not None and user.is_active:
+                lg(request, user)
+                return __redirect(next, if_reverse=True)
+    else:
+        form = LoginForm()
+    return render(request, 'recall/login.html', {"form": form})
+
 
 @login_required
 def get_recall_word(request):
     return _get_words(request, models.CHOICE_REMEMBER_UNACQUAINTED)
+
+
+def __redirect(url, if_reverse=False):
+    if if_reverse:
+        url = reverse(url)
+    return HttpResponseRedirect(url)
+
 
 @login_required
 def get_word_infos(request, words=None, status=None):
@@ -128,6 +167,27 @@ def translate_word(request, spelling=None):
     word_sort_list = word_map.items()
     word_sort_list.sort(cmp=lambda x, y: cmp(y[1], x[1]))
     return render(request, 'recall/translateword.html', {"cur_word": cur_word, "word_sort_list": word_sort_list, "RecallInfoClz": WordRememberInfos})
+
+
+
+def call(request):
+    if request.method:
+        callMethod = request.GET['call']
+
+        if callMethod == 'init':
+            init()
+        if callMethod == 'init2':
+            init2()
+        if callMethod == 'init3':
+            init3()
+        if callMethod == 'init4':
+            init4()
+        if callMethod == 'init5':
+            init5()
+        if callMethod == 'init6':
+            init6()
+        return HttpResponse(callMethod)
+
 
 def init():
 

@@ -9,6 +9,8 @@ import urlparse
 from loader import get_html_str
 from wordinfos import get_all_conversant_word_list
 
+change_list = ["//p", "//h1", "//h2", "//li", "//strong", "//t"]
+
 def change_url(pre_url):
     un_change_patterns = ['css', 'png', 'js', 'ico', 'tgz', 'zip', 'rar', 'pdf', 'gif', 'git']
     for un_change_pattern in un_change_patterns:
@@ -142,7 +144,7 @@ def change_p(html, user, translate_url):
     变更所有的<ｐ>标签
     """
     conversant_word_map = get_all_conversant_word_list(user)
-    change_list = ["//p", "//h1", "//h2", "//li", "//strong"]
+
     for change_tag in change_list:
         for p in html.xpath(change_tag):
             if p.text:

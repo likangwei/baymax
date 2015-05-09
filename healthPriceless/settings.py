@@ -10,6 +10,7 @@ https://docs.djangoproject.com/en/1.6/ref/settings/
 
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
 import os
+
 BASE_DIR = os.path.dirname(os.path.dirname(__file__))
 from util import IpUtil
 
@@ -69,12 +70,12 @@ DATABASES = {
         'HOST': '127.0.0.1'
     }
 }
+
 # Internationalization
 # https://docs.djangoproject.com/en/1.6/topics/i18n/
 
 LANGUAGE_CODE = 'en-us'
 
-TIME_ZONE = 'UTC'
 TIME_ZONE = 'Asia/Shanghai'
 
 DATETIME_FORMAT = 'Y-m-d H:i:s'
@@ -96,7 +97,7 @@ TEMPLATE_DIRS = (
     os.path.join(BASE_DIR, 'wordRecall', 'templates'),
     os.path.join(BASE_DIR,  'templates'),
 )
-LOGIN_URL = '/admin/login/'
+LOGIN_URL = '/word/login'
 CACHES = {
     'default': {
         'BACKEND': 'django.core.cache.backends.locmem.LocMemCache',
