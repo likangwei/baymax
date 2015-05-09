@@ -16,10 +16,11 @@ from django.core.urlresolvers import reverse
 from django.contrib.auth import login as lg
 from django.contrib.auth import authenticate
 from django.contrib.auth import logout
+from django.views.decorators.csrf import csrf_protect
+
 import test
 import models
 import translate
-
 
 class TransPageForm(forms.Form):
     tran_page = forms.CharField(label='请输入网址：', max_length=100)
@@ -35,18 +36,17 @@ class RecallWordForm(ModelForm):
             "remember": forms.RadioSelect()
         }
 
-
 class LoginForm(forms.Form):
     username = forms.CharField(label='用户名：', max_length=100)
-    password = forms.CharField(label='密码：', max_length=100)
-
+    password = forms.CharField(label='密码：', max_length=100, widget=forms.PasswordInput())
 
 class RegForm(ModelForm):
     class Meta:
         model = User
         fields = ['username', 'email', 'password']
-
-
+        widgets = {
+            "password": forms.PasswordInput()
+        }
 
 
 def reg(request):
@@ -56,7 +56,11 @@ def reg(request):
     if request.method == "POST":
         form = RegForm(request.POST)
         if form.is_valid():
-            form.save()
+            username = form.cleaned_data['username']
+            password = form.cleaned_data['password']
+            email = form.cleaned_data['email']
+            User.objects.create_user(username, email=email, password=password)
+            return __redirect("word:page", if_reverse=True)
 
     else:
         form = RegForm()
@@ -66,8 +70,7 @@ def if_user_valid(username, password):
     user = User.objects.get(username=username, password=password)
     return user
 
-
-def login(request, next='word:page'):
+def login(request):
     """
     登陆
     """
@@ -76,14 +79,14 @@ def login(request, next='word:page'):
         if form.is_valid():
             username = form.cleaned_data['username']
             password = form.cleaned_data['password']
+            next = request.GET.get('next', default='/')
             user = authenticate(username=username, password=password)
             if user is not None and user.is_active:
                 lg(request, user)
-                return __redirect(next, if_reverse=True)
+                return __redirect(next)
     else:
         form = LoginForm()
-    return render(request, 'recall/login.html', {"form": form})
-
+    return render(request, 'recall/login.html', {"form": form, "action": request.get_full_path()})
 
 def _logout(request):
     logout(request)
@@ -120,21 +123,27 @@ def get_user(request):
     return user
 
 @login_required
-def get_tran_page(request):
-    print request.user
+def index(request):
+    if request.method == 'GET':
+        form = TransPageForm()
+        return render(request, 'recall/index.html', {"form": form, "user":request.user, "HOST": request.get_host()} )
+
+@login_required
+def go_2_page(request):
     user = get_user(request)
     KEY = 'tran_page'
     if request.method == 'POST':
         trans_url = request.POST[KEY]
-        return HttpResponseRedirect('/word/page?tran_page=%s' %trans_url)
+        return __redirect('%s?%s' %(reverse('word:go'), 'tran_page=%s' %trans_url))
 
     elif request.method == 'GET':
         if request.GET.has_key(KEY):
             trans_url = request.GET[KEY]
             return __get_tran_page(trans_url, user)
         else:
-            form = TransPageForm()
-            return render(request, 'recall/index.html', {"form": form, "user":request.user, "HOST": request.get_host()} )
+            return __redirect("/")
+
+
 
 def __get_tran_page(trans_url, user):
     print trans_url

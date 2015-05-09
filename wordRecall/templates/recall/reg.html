@@ -21,7 +21,7 @@
 
             <div class="row">
                 <div class="span12">
-                    <h1>注册</h1>
+                    <h1>注册 <a href="{% url 'word:login' %}">登陆</a></h1>
 {#                    <p>您好。 我们会帮您把您的生词快速找出。：）</p>#}
                 </div>
             </div>
@@ -33,7 +33,8 @@
 
                     <hr />
 
-                    <form class="form-horizontal" role="form"  method="post" action="{% url "word:reg" %>
+                    <form class="form-horizontal" role="form"  method="post" action="{% url "word:reg" %}">
+                        {% csrf_token %}
                         {{ form|bootstrap_horizontal }}
                         <div class="col-sm-offset-2 col-sm-10">
                                 <input type="submit" class="btn btn-primary" value="提交" />

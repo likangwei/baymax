@@ -85,7 +85,7 @@
         });
         $('#commit-words').click(function () {
 
-            var set_word_status_url = "/word/set_word_status/" + conversant_words + "/" + {{RecallInfoClz.CHOICE_REMEMBER_CONVERSANT}}
+            var set_word_status_url = "{% url 'word:set_word_status' %}" + conversant_words + "/" + {{RecallInfoClz.CHOICE_REMEMBER_CONVERSANT}}
             alert_msg = "您是否要提交[ " + conversant_words + " ]为熟词?"
             if (confirm(alert_msg) == true) {
                 $.get(set_word_status_url, function (data, status) {
