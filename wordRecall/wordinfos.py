@@ -20,6 +20,7 @@ def _change_word_remember_status(word_list, remember_status, user, change_catch=
         word, created = Word.objects.get_or_create(spelling=word_spelling)
         recall_info, created = WordRememberInfos.objects.get_or_create(word=word, user=user)
         recall_info.remember = remember_status
+        recall_info.word_spelling = word_spelling
         recall_info.save()
         conversant_word_list = get_all_conversant_word_list(user)
         if change_catch :
@@ -51,9 +52,11 @@ def get_all_conversant_word_list(user):
     print 'reload cache %s' %TimeUtil.get_now_time()
     conversant_words = WordRememberInfos.objects.filter(user=user, remember=WordRememberInfos.CHOICE_REMEMBER_CONVERSANT)
     all_conversant_word_list = {}
-    for word in conversant_words:
-        all_conversant_word_list[word.word_spelling] = None
+    for info in conversant_words:
+        word_spelling = info.word.spelling
+        all_conversant_word_list[word_spelling] = None
 
+    print all_conversant_word_list['lxml']
     for split_word in StringUtil.SPLIT_STR_LIST:
         all_conversant_word_list[split_word] = None
 

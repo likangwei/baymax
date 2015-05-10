@@ -18,7 +18,7 @@ urlpatterns =[
     url(r'^set_word_status/(?P<words>[\w\,\-]+)/(?P<status>[\d]{1})$', views.get_word_infos, name='set_word_status'),
 ]
 
-#import logging
-#l = logging.getLogger('django.db.backends')
-#l.setLevel(logging.DEBUG)
-#l.addHandler(logging.StreamHandler())
+import logging
+l = logging.getLogger('django.db.backends')
+l.setLevel(logging.DEBUG)
+l.addHandler(logging.StreamHandler())
