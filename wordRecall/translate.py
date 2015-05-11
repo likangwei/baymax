@@ -104,7 +104,7 @@ def modify_bolock_p(p, translate_url,conversant_word_map):
     变更<ｐ>标签的具体实现
     """
     # print lxml.html.tostring(p)
-    # if not p.text.startswith('A fundamental trade-off in dynamic Web sites'):
+    # if not p.text.startswith('is a Python package that parses broken HTML, just like lxm'):
     #     return
     sub_element_list = get_sub_element(p, p, translate_url,conversant_word_map=conversant_word_map)
     p._children = []
@@ -148,9 +148,7 @@ def change_p(html, user, translate_url):
 
     for change_tag in change_list:
         for p in html.xpath(change_tag):
-            if p.text:
-                # print lxml.html.tostring(p)
-                modify_bolock_p(p, translate_url, conversant_word_map)
+            modify_bolock_p(p, translate_url, conversant_word_map)
 
 def change_script_data_main_url(html, tran_page_url):
     scripts = html.xpath(u"//script")
