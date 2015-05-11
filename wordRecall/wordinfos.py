@@ -5,8 +5,10 @@ from models import WordRememberInfos
 from models import Word
 from util import StringUtil
 from django.core.cache import cache
-all_conversant_word_list = None
 from util import TimeUtil
+from models import RequestHistory
+import UrlUtil
+
 KEY = 'all_conversant_word_list'
 
 
@@ -15,6 +17,13 @@ def change_word_status(word_list, user, status):
 
 
 def _change_word_remember_status(word_list, remember_status, user, change_catch=False):
+    """
+    更改用户 单词的状    :param word_list:
+    :param remember_status:
+    :param user:
+    :param change_catch:
+    :return:
+    """
     for word_spelling in word_list:
         word_spelling = StringUtil.change_unicode_2_str(word_spelling)
         word, created = Word.objects.get_or_create(spelling=word_spelling)
@@ -30,25 +39,14 @@ def _change_word_remember_status(word_list, remember_status, user, change_catch=
             conversant_word_list[word_spelling] = None
 
         conversant_word_list['change'] = TimeUtil.get_now_time()
-        set_cache(conversant_word_list)
         print cache.get(KEY)['change']
         print conversant_word_list == cache.get(KEY)
 
-
-def set_cache(data):
-    cache.set(KEY, data, 15 * 60)
 
 def get_all_conversant_word_list(user):
     """
     获取所有的熟单词
     """
-
-    # result = cache.get(KEY)
-    # if result is not None:
-    #     result['change'] = TimeUtil.get_now_time()
-    #     print result['change']
-    #     return result
-    #
     print 'reload cache %s' %TimeUtil.get_now_time()
     conversant_words = WordRememberInfos.objects.filter(user=user, remember=WordRememberInfos.CHOICE_REMEMBER_CONVERSANT)
     all_conversant_word_list = {}
@@ -56,9 +54,25 @@ def get_all_conversant_word_list(user):
         word_spelling = info.word.spelling
         all_conversant_word_list[word_spelling] = None
 
-    print all_conversant_word_list['lxml']
     for split_word in StringUtil.SPLIT_STR_LIST:
         all_conversant_word_list[split_word] = None
 
     # set_cache(all_conversant_word_list)
     return all_conversant_word_list
+
+
+def get_all_request_url_history_url(user):
+    """
+    获取此用户的访问历史记录
+    :return: 返回一个列表  [(tie, raw_url, tran_url, request_number),(),...]
+    """
+    request_url_list = RequestHistory.objects.filter(user=user).order_by('-request_number')
+    result = []
+    for request_url in request_url_list:
+        raw_url = request_url.url_info
+        tran_url = UrlUtil.get_tran_url(raw_url)
+        title = request_url.url.title
+        request_number = request_url.request_number
+        result.append((title, raw_url, tran_url, request_number))
+
+    return result

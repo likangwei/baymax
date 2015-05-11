@@ -157,10 +157,30 @@ def change_script_data_main_url(html, tran_page_url):
         if script.attrib.has_key('data-main'):
             script.attrib['data-main'] = urlparse.urljoin(tran_page_url, script.attrib['data-main'])
 
+from models import RequestUrl, RequestHistory
+from util import lxmlUtil
+
+def add_to_request_history(html_element, tran_page_url, user):
+    """
+    添加到网页访问历史记录
+    :param tran_page_url:
+    :param user:
+    :return:
+    """
+    request_url, created = RequestUrl.objects.get_or_create(url=tran_page_url)
+    if not request_url.title:
+        request_url.title = lxmlUtil.get_title(html_element)
+        request_url.save()
+
+    request_history, created = RequestHistory.objects.get_or_create(url=request_url, url_info=tran_page_url, user=user)
+    request_history.request_number = request_history.request_number + 1
+    request_history.save()
+
 def get_translate_page(tran_page_url, user):
 
     htmlStr = get_html_str(tran_page_url)
     html = lxml.html.fromstring(htmlStr)
+    add_to_request_history(html, tran_page_url, user)
     html.rewrite_links(change_url, base_href=tran_page_url)
     change_script_data_main_url(html, tran_page_url)
     change_p(html, user, tran_page_url)

@@ -86,6 +86,18 @@ class WordRememberInfos(models.Model):
         return '%s_%s' %(self.user.pk, self.word_spelling)
 
 
+class RequestUrl(models.Model):
+    title = models.CharField("标题", max_length=500, default="")
+    url = models.CharField("访问链接", max_length=500)
+
+
+class RequestHistory(models.Model):
+    url = models.ForeignKey(RequestUrl)
+    user = models.ForeignKey(User)
+    url_info = models.CharField("访问链接", max_length=500)
+    request_number = models.IntegerField("请求次数", default=0)
+
+
 
 class RecallInfo(models.Model):
     CHOICES_REMEMBER = []

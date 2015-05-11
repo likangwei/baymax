@@ -18,6 +18,8 @@ urlpatterns =[
     url(r'^set_word_status/(?P<words>[\w\,\-]+)/(?P<status>[\d]{1})$', views.get_word_infos, name='set_word_status'),
 ]
 
+handler404 = 'wordRecall.views.handler404'
+
 import logging
 l = logging.getLogger('django.db.backends')
 l.setLevel(logging.DEBUG)

@@ -8,6 +8,8 @@ from django import forms
 from django.http import HttpResponseRedirect
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.models import User
+from django.shortcuts import render_to_response
+from django.template import RequestContext
 from parser import get_html_word_repeated_info
 from wordinfos import get_all_conversant_word_list
 from wordinfos import change_word_status
@@ -17,10 +19,12 @@ from django.contrib.auth import login as lg
 from django.contrib.auth import authenticate
 from django.contrib.auth import logout
 from django.views.decorators.csrf import csrf_protect
-
+import wordinfos
 import test
 import models
 import translate
+from models import RequestUrl,RequestHistory
+from UrlUtil import get_tran_url
 
 class TransPageForm(forms.Form):
     tran_page = forms.CharField(label='请输入网址：', max_length=100)
@@ -126,7 +130,8 @@ def get_user(request):
 def index(request):
     if request.method == 'GET':
         form = TransPageForm()
-        return render(request, 'recall/index.html', {"form": form, "user":request.user, "HOST": request.get_host()} )
+        request_history = wordinfos.get_all_request_url_history_url(request.user)
+        return render(request, 'recall/index.html', {"form": form, "user":request.user, "history_list":request_history, "HOST": request.get_host()} )
 
 @login_required
 def go_2_page(request):
@@ -134,7 +139,7 @@ def go_2_page(request):
     KEY = 'tran_page'
     if request.method == 'POST':
         trans_url = request.POST[KEY]
-        return __redirect('%s?%s' %(reverse('word:go'), 'tran_page=%s' %trans_url))
+        return __redirect(get_tran_url(trans_url))
 
     elif request.method == 'GET':
         if request.GET.has_key(KEY):
@@ -183,6 +188,19 @@ def translate_word(request, spelling=None):
     return render(request, 'recall/translateword.html', {"cur_word": cur_word, "word_sort_list": word_sort_list, "RecallInfoClz": WordRememberInfos})
 
 
+
+def handler404(request):
+    response = render_to_response('404.html', {},
+                                  context_instance=RequestContext(request))
+    response.status_code = 404
+    return response
+
+
+def handler500(request):
+    response = render_to_response('500.html', {},
+                                  context_instance=RequestContext(request))
+    response.status_code = 500
+    return response
 
 def call(request):
     if request.method:
