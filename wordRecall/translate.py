@@ -8,6 +8,8 @@ from django.core.urlresolvers import reverse
 import urlparse
 from loader import get_html_str
 from wordinfos import get_all_conversant_word_list
+import UrlUtil
+
 
 change_list = ["//p", "//h1", "//h2", "//li", "//strong", "//t"]
 
@@ -16,8 +18,7 @@ def change_url(pre_url):
     for un_change_pattern in un_change_patterns:
         if pre_url.endswith(un_change_pattern):
             return pre_url
-    params = urllib.urlencode({'tran_page': pre_url})
-    return "%s%s" %(reverse('word:page', args=()), "?%s" % (params))
+    return UrlUtil.get_tran_url(pre_url)
 
 
 from util import RegexUtil

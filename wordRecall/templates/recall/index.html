@@ -52,7 +52,7 @@
             <h3>历史记录</h3>
             {% for title,raw_url,tran_url,request_number in history_list%}
                 <p>
-                    <strong>标题：{{ title }}</strong><a href="{{ raw_url }}"> {{raw_url}} </a> <a href="{{ tran_url }}">翻译此页 </a> 历史访问次数 {{ request_number }}
+                    <a href="{{ tran_url }}">翻译此页 </a>  <strong>标题：{{ title }}</strong> <a href="{{ raw_url }}"> 打开原始页面</a>  历史访问次数 {{ request_number }}
                 </p>
             {% endfor %}
 

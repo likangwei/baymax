@@ -31,16 +31,9 @@ def _change_word_remember_status(word_list, remember_status, user, change_catch=
         recall_info.remember = remember_status
         recall_info.word_spelling = word_spelling
         recall_info.save()
-        conversant_word_list = get_all_conversant_word_list(user)
         if change_catch :
-            print 'add 2 cache %s' %word_spelling
-            if conversant_word_list.has_key(word_spelling):
-                print 'has have %s' %word_spelling
-            conversant_word_list[word_spelling] = None
+            pass
 
-        conversant_word_list['change'] = TimeUtil.get_now_time()
-        print cache.get(KEY)['change']
-        print conversant_word_list == cache.get(KEY)
 
 
 def get_all_conversant_word_list(user):
