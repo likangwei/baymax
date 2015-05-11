@@ -38,7 +38,7 @@ INSTALLED_APPS = (
     'django.contrib.staticfiles',
 
     "bootstrapform",
-    'baymax',
+    # 'baymax',
     'wordRecall',
 
 
