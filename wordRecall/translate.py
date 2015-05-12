@@ -49,7 +49,7 @@ def add_to_word_repeated(html_url):
         word.add_repeated(word_repeated_map[word_spelling])
 
 
-def get_sub_element_by_text(p_text, parent, translate_url, conversant_word_map, user):
+def get_sub_element_by_text(p_text, parent, translate_url, conversant_word_map, user=None):
     """
     进行 英文字符处理
     """
@@ -102,9 +102,9 @@ def get_sub_element(current_tag, parent, translate_url, conversant_word_map, **k
     """
     获取block tag的所有子集
     """
-    get_text = kwargs['get_text']
-    get_children = kwargs['get_children']
-    get_tail = kwargs['get_tail']
+    get_text = True
+    get_children = True
+    get_tail = True
 
     result = []
     raw_children = current_tag.getchildren()
@@ -134,7 +134,7 @@ def modify_bolock_p(p, translate_url,conversant_word_map, **kwargs):
     # print lxml.html.tostring(p)
     # if not p.text.startswith('is a Python package that parses broken HTML, just like lxm'):
     #     return
-    sub_element_list = get_sub_element(p, p, translate_url, kwargs)
+    sub_element_list = get_sub_element(p, p, translate_url, conversant_word_map, **kwargs)
     p._children = []
     p.text = p.tail = None
     # p.clear()
