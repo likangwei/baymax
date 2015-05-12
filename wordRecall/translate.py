@@ -98,20 +98,24 @@ def get_sub_element_by_text(p_text, parent, translate_url, conversant_word_map, 
 
     return result
 
-def get_sub_element(current_tag, parent, translate_url, conversant_word_map, get_text=True, get_children=True, get_tail=True, **kwargs):
+def get_sub_element(current_tag, parent, translate_url, conversant_word_map, **kwargs):
     """
     获取block tag的所有子集
     """
+    get_text = kwargs['get_text']
+    get_children = kwargs['get_children']
+    get_tail = kwargs['get_tail']
+
     result = []
     raw_children = current_tag.getchildren()
     if get_text:
         current_tag_text = current_tag.text
         current_tag.text = None
-        result.extend(get_sub_element_by_text(current_tag_text, parent, translate_url, conversant_word_map, kwargs))
+        result.extend(get_sub_element_by_text(current_tag_text, parent, translate_url, conversant_word_map, **kwargs))
 
     if get_children:
         for children in raw_children:
-            children_subs = get_sub_element_by_text(children.tail, parent, translate_url, conversant_word_map, kwargs)
+            children_subs = get_sub_element_by_text(children.tail, parent, translate_url, conversant_word_map, **kwargs)
             children.tail = None
             result.append(children)
             result.extend(children_subs)
@@ -119,7 +123,7 @@ def get_sub_element(current_tag, parent, translate_url, conversant_word_map, get
     if get_tail:
         current_tag_tail = current_tag.tail
         current_tag.tail = None
-        result.extend(get_sub_element_by_text(current_tag_tail, parent, translate_url, conversant_word_map, kwargs))
+        result.extend(get_sub_element_by_text(current_tag_tail, parent, translate_url, conversant_word_map, **kwargs))
     return result
 
 
