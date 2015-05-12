@@ -58,7 +58,7 @@
      {% csrf_token %}
     <a href="#" onClick="select_all('_selected_action', '1');">全选</a> |
     <a href="#" onClick="select_all('_selected_action', '0');">取消全选</a> |
-    <a href="{{ url_frequency_filter_mine }}">过滤掉我的熟词</a> |
+    <a href="{{ url_frequency_filter_mine }}">显示我的所有生词（根据全网词频统计）</a> |
     <br><br>
     <table class="table table-bordered" data-toggle="table" data-url="data1.json" data-cache="false" data-height="299">
         <thead>
@@ -69,6 +69,13 @@
             </tr>
         </thead>
         <tbody>
+            {% if top_word %}
+                <tr>
+                    <td><input name="_selected_action" type="checkbox" value="{{ top_word.id }}">{{ top_word.spelling }}</td>
+                    <th class="field-spelling">{{ top_word.repeated }}</th>
+                    <th class="field-spelling"><a href="http://translate.google.cn/?hl=zh-CN&tab=wT#en/zh-CN/{{ top_word.spelling }}">Google 翻译</a></th>
+                </tr>
+            {% endif %}
             {% for word in words%}
                 <tr>
                     <td><input name="_selected_action" type="checkbox" value="{{ word.id }}">{{ word.spelling }}</td>

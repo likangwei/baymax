@@ -11,6 +11,7 @@ from wordinfos import get_all_conversant_word_list
 import UrlUtil
 from models import Word
 
+#需要进行变更颜色的标签
 change_list = ["//p", "//h1", "//h2", "//li", "//strong", "//t"]
 
 def change_url(pre_url):
@@ -41,7 +42,6 @@ def add_to_word_repeated(html_url):
     :return:
     """
     from parser import get_html_word_repeated_info
-
     word_repeated_map = get_html_word_repeated_info(html_url)
 
     for word_spelling in word_repeated_map:
@@ -193,7 +193,7 @@ def add_script_to_html_element(html_element):
 
 
 
-def change_p(html, user, translate_url, **kwargs):
+def change_all_element(html, user, translate_url, **kwargs):
     """
     变更所有的<ｐ>标签
     """
@@ -239,6 +239,6 @@ def get_translate_page(tran_page_url, user):
     add_to_request_history(html, tran_page_url, user)
     html.rewrite_links(change_url, base_href=tran_page_url)
     change_script_data_main_url(html, tran_page_url)
-    change_p(html, user, tran_page_url)
+    change_all_element(html, user, tran_page_url)
     return lxml.html.tostring(html)
 

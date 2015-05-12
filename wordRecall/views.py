@@ -225,7 +225,7 @@ def translate_word2(request, spelling=None):
     """
     网页上某一生单词的点击事件
     """
-    cur_word = spelling
+
     from_page = request.GET['tran_page']
 
     filter_mine = request.GET.get('filter_mine', 1)
@@ -236,14 +236,14 @@ def translate_word2(request, spelling=None):
 
     page_word_map = get_html_word_repeated_info(from_page)
     word_list = wordinfos.get_all_word_sort_by_repeated(request, filter_mine=filter_mine, include_word_list=page_word_map.keys())
-
+    top_word,created = Word.objects.get_or_create(spelling=spelling)
     pi = Paginator(word_list, limit)
     words = pi.page(page_num)
     url_frequency_filter_mine = UrlUtil.get_frequency_url(filter_mine=1)
 
     next_page_url = UrlUtil.get_frequency_url(filter_mine=filter_mine, limit=limit, page=page_num+1)
     pre_page_url = UrlUtil.get_frequency_url(filter_mine=filter_mine, limit=limit, page=page_num-1)
-    return render(request, 'recall/page_word_info.html', {"words": words, "next_page_url":next_page_url, "pre_page_url":pre_page_url, "url_frequency_filter_mine":url_frequency_filter_mine})
+    return render(request, 'recall/page_word_info.html', {"words": words, "top_word":top_word, "next_page_url":next_page_url, "pre_page_url":pre_page_url, "url_frequency_filter_mine":url_frequency_filter_mine})
 
 
 def handler404(request):
