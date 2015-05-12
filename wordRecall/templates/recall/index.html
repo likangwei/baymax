@@ -56,12 +56,26 @@
                 </p>
             {% endfor %}
 
-
+            <a href="http://baidu.com" onclick="return popitup('popupex.html')">test</a>
+            <a href="popupex.html" onclick="return popitup2('popupex.html')">Link to popup</a>
         </div>
     </div>
 
 </div>
+<script language="javascript" type="text/javascript">
+<!--
+    function popitup(url) {
+        newwindow=window.open(url,'name','height=200,width=150');
+        if (window.focus) {newwindow.focus()}
+        return false;
+    }
+    function popitup2(url) {
+        newwindow=window.open(url,'name','height=200,width=150');
+        return false;
+    }
 
+// -->
+</script>
 <!-- scripts -->
 <script src="http://code.jquery.com/jquery.js"></script>
 <script src="//netdna.bootstrapcdn.com/bootstrap/3.0.2/js/bootstrap.min.js"></script>

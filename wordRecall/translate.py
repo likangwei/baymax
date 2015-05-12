@@ -55,10 +55,13 @@ def get_sub_element_by_text(p_text, parent, translate_url, conversant_word_map):
                     has_add_p_text = True
 
                     cur_u = lxml.etree.SubElement(parent, "a")
-                    cur_u.attrib['href'] = get_translate_word_url(word_lower_case, translate_url)
+                    jump_link = get_translate_word_url(word_lower_case, translate_url)
+                    cur_u.attrib['href'] = jump_link
                     # style="color:#DD4C53"
                     cur_u.attrib['style'] = r"color:#DD4CA0"
                     cur_u.attrib['target'] = r"_blank"
+                    onclick = "return popitup2('%s')" %jump_link
+                    cur_u.attrib['onclick'] = onclick
                     cur_u.text = word
                     cur_u.tail = ''
                     result.append(cur_u)
@@ -140,10 +143,37 @@ def modify_bolock_p(p, translate_url,conversant_word_map):
     # print lxml.html.tostring(p)
 
 
+def add_script_to_html_element(html_element):
+    """
+    添加弹出界面的Script
+    :param html_element:
+    :return:
+    """
+    script_html = """<script language="javascript" type="text/javascript">
+    <!--
+        function popitup(url) {
+            newwindow=window.open(url,'name','height=700,width=900');
+            if (window.focus) {newwindow.focus()}
+            return false;
+        }
+        function popitup2(url) {
+            newwindow=window.open(url,'name','height=700,width=900');
+            return false;
+        }
+
+    // -->
+    </script>"""
+    script_element = lxml.html.fromstring(script_html)
+    html_element.append(script_element)
+
+
+
 def change_p(html, user, translate_url):
     """
     变更所有的<ｐ>标签
     """
+
+    add_script_to_html_element(html)
     conversant_word_map = get_all_conversant_word_list(user)
 
     for change_tag in change_list:
@@ -151,6 +181,7 @@ def change_p(html, user, translate_url):
             modify_bolock_p(p, translate_url, conversant_word_map)
 
 def change_script_data_main_url(html, tran_page_url):
+
     scripts = html.xpath(u"//script")
     for script in scripts:
         if script.attrib.has_key('data-main'):
