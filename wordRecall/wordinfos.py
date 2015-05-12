@@ -69,15 +69,34 @@ def get_all_request_url_history_url(user):
 
     return result
 
-
-def get_all_word_sort_by_repeated(request, filter_mine=False):
+def get_word_id_list_from_spelling(word_list):
     """
-    返回词频排行榜
+    根据单词的拼写，返回其Word.id
+    :param word_list:
     :return:
     """
+    return Word.objects.filter(spelling__in=word_list).values_list('id', flat=True)
+
+def get_all_word_sort_by_repeated(request, filter_mine=False, include_word_list=[], exclude_word_list=[],order_by=None):
+    """
+    返回词频排行榜
+    ::param filter_mine 是否过滤掉当前用户的所有熟单词
+    ::param include_word_list 包含在这些单词里面的所有单词
+    ::param filter_word_list 需要过滤掉的所有单词
+    :return:
+    """
+    if order_by is None:
+        order_by = '-repeated'
+    if include_word_list:
+        include_word_id_list = get_word_id_list_from_spelling(include_word_list)
+
     if filter_mine:
         exclude_word_id_list = WordRememberInfos.objects.filter(user=request.user).values_list('word_id', flat=True)
-        word_queryset = Word.objects.exclude(id__in=exclude_word_id_list).order_by('-repeated')
+
+        if include_word_list:
+            word_queryset = Word.objects.filter(id__in=include_word_id_list).exclude(id__in=exclude_word_id_list).order_by(order_by)
+        else:
+            word_queryset = Word.objects.exclude(id__in=exclude_word_id_list).order_by(order_by)
     else:
-        word_queryset = Word.objects.all().order_by('-repeated')
+        word_queryset = Word.objects.all().order_by(order_by)
     return word_queryset

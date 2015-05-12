@@ -42,7 +42,6 @@ class TransPageForm(forms.Form):
 
 
 class RecallWordForm(ModelForm):
-
     class Meta:
         model = WordRememberInfos
         fields = ['word_spelling', 'weight', 'remember', 'recall_counts', 'repeated', 'remarks']
@@ -81,10 +80,6 @@ def reg(request):
         form = RegForm()
     return render(request, 'recall/reg.html', {"form": form})
 
-def if_user_valid(username, password):
-    user = User.objects.get(username=username, password=password)
-    return user
-
 def login(request):
     """
     登陆
@@ -104,6 +99,9 @@ def login(request):
     return render(request, 'recall/login.html', {"form": form, "action": request.get_full_path()})
 
 def _logout(request):
+    """
+    注销
+    """
     logout(request)
     return __redirect('word:login', if_reverse=True)
 
@@ -157,9 +155,6 @@ def frequency_charts(request):
     pre_page_url = UrlUtil.get_frequency_url(filter_mine=filter_mine, limit=limit, page=page_num-1)
     return render(request, 'recall/frequency.html', {"words": words, "word_list": word_list, "next_page_url":next_page_url, "pre_page_url":pre_page_url, "url_frequency_filter_mine":url_frequency_filter_mine})
 
-
-
-
 @login_required
 def index(request):
     """
@@ -172,6 +167,9 @@ def index(request):
 
 @login_required
 def go_2_page(request):
+    """
+    翻译某网页
+    """
     user = get_user(request)
     KEY = 'tran_page'
     if request.method == 'POST':
@@ -211,7 +209,7 @@ def _get_words(request, filter):
 
 def translate_word(request, spelling=None):
     """
-    翻译单词
+    网页上某一生单词的点击事件
     """
     cur_word = spelling
     from_page = request.GET['tran_page']
@@ -223,6 +221,29 @@ def translate_word(request, spelling=None):
     word_sort_list.sort(cmp=lambda x, y: cmp(y[1], x[1]))
     return render(request, 'recall/translateword.html', {"cur_word": cur_word, "word_sort_list": word_sort_list, "RecallInfoClz": WordRememberInfos})
 
+def translate_word2(request, spelling=None):
+    """
+    网页上某一生单词的点击事件
+    """
+    cur_word = spelling
+    from_page = request.GET['tran_page']
+
+    filter_mine = request.GET.get('filter_mine', 1)
+    page_num = request.GET.get('page', 1)
+    page_num = int(page_num)
+    limit = request.GET.get('limit', 20)
+
+
+    page_word_map = get_html_word_repeated_info(from_page)
+    word_list = wordinfos.get_all_word_sort_by_repeated(request, filter_mine=filter_mine, include_word_list=page_word_map.keys())
+
+    pi = Paginator(word_list, limit)
+    words = pi.page(page_num)
+    url_frequency_filter_mine = UrlUtil.get_frequency_url(filter_mine=1)
+
+    next_page_url = UrlUtil.get_frequency_url(filter_mine=filter_mine, limit=limit, page=page_num+1)
+    pre_page_url = UrlUtil.get_frequency_url(filter_mine=filter_mine, limit=limit, page=page_num-1)
+    return render(request, 'recall/page_word_info.html', {"words": words, "next_page_url":next_page_url, "pre_page_url":pre_page_url, "url_frequency_filter_mine":url_frequency_filter_mine})
 
 
 def handler404(request):
@@ -233,8 +254,7 @@ def handler404(request):
 
 
 def handler500(request):
-    response = render_to_response('500.html', {},
-                                  context_instance=RequestContext(request))
+    response = render_to_response('500.html', {}, context_instance=RequestContext(request))
     response.status_code = 500
     return response
 
