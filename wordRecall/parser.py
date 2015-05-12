@@ -3,8 +3,7 @@ __author__ = 'hanzhao'
 
 from util import StringUtil
 from loader import get_html_element
-
-change_list = ["//p", "//h1", "//h2", "//li"]
+import translate
 
 
 def get_html_word_repeated_info(page_url, hidden_word_list=[]):
@@ -13,7 +12,7 @@ def get_html_word_repeated_info(page_url, hidden_word_list=[]):
     """
     html_element = get_html_element(page_url)
     result = {}
-    for change_tag in change_list:
+    for change_tag in translate.change_list:
         for p in html_element.xpath(change_tag):
             __add_word_repeated_count(p.text, result)
             __add_word_repeated_count(p.tail, result)

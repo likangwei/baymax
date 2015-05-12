@@ -12,11 +12,11 @@ import UrlUtil
 KEY = 'all_conversant_word_list'
 
 
-def change_word_status(word_list, user, status):
-    _change_word_remember_status(word_list, status, user, change_catch=True)
+def change_word_status(word_id_list, user, status):
+    _change_word_remember_status(word_id_list, status, user, change_catch=True)
 
 
-def _change_word_remember_status(word_list, remember_status, user, change_catch=False):
+def _change_word_remember_status(word_id_list, remember_status, user, change_catch=False):
     """
     更改用户 单词的状    :param word_list:
     :param remember_status:
@@ -24,12 +24,11 @@ def _change_word_remember_status(word_list, remember_status, user, change_catch=
     :param change_catch:
     :return:
     """
-    for word_spelling in word_list:
-        word_spelling = StringUtil.change_unicode_2_str(word_spelling)
-        word, created = Word.objects.get_or_create(spelling=word_spelling)
+    for word_id in word_id_list:
+        word, created = Word.objects.get_or_create(pk=word_id)
         recall_info, created = WordRememberInfos.objects.get_or_create(word=word, user=user)
         recall_info.remember = remember_status
-        recall_info.word_spelling = word_spelling
+        recall_info.word_spelling = word.spelling
         recall_info.save()
         if change_catch :
             pass
@@ -69,3 +68,16 @@ def get_all_request_url_history_url(user):
         result.append((title, raw_url, tran_url, request_number))
 
     return result
+
+
+def get_all_word_sort_by_repeated(request, filter_mine=False):
+    """
+    返回词频排行榜
+    :return:
+    """
+    if filter_mine:
+        exclude_word_id_list = WordRememberInfos.objects.filter(user=request.user).values_list('word_id', flat=True)
+        word_queryset = Word.objects.exclude(id__in=exclude_word_id_list).order_by('-repeated')
+    else:
+        word_queryset = Word.objects.all().order_by('-repeated')
+    return word_queryset

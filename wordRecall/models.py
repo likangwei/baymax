@@ -33,6 +33,10 @@ class Word(models.Model):
     type = models.IntegerField("类型", choices=WORD_TYPE_CHOICES, default=WORD_TYPE_COMMON)
     meaning = models.CharField("翻译", max_length=1024*8)
 
+    def add_repeated(self, number=1):
+        self.repeated = self.repeated + number
+        self.save()
+
     def __str__(self):
         return self.spelling
 

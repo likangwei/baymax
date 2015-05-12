@@ -1,29 +1,40 @@
 # -*- coding: utf-8 -*-
 import json
 
-from django.shortcuts import render
-from django.http import HttpResponse
 from django.forms import ModelForm
-from django import forms
-from django.http import HttpResponseRedirect
+
+from django.core.urlresolvers import reverse
+from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
+
+from django.contrib.auth import login as lg
+from django.contrib.auth import authenticate
+from django.contrib.auth import logout
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.models import User
+
+from django.views.decorators.csrf import csrf_protect
+
+from django.http import HttpResponseRedirect
+from django.http import HttpResponse
+
+from django import forms
+
+from django.shortcuts import render
 from django.shortcuts import render_to_response
+
 from django.template import RequestContext
+
 from parser import get_html_word_repeated_info
 from wordinfos import get_all_conversant_word_list
 from wordinfos import change_word_status
 from models import Word, WordRememberInfos
-from django.core.urlresolvers import reverse
-from django.contrib.auth import login as lg
-from django.contrib.auth import authenticate
-from django.contrib.auth import logout
-from django.views.decorators.csrf import csrf_protect
+
 import wordinfos
 import test
 import models
 import translate
 from models import RequestUrl,RequestHistory
+import UrlUtil
 from UrlUtil import get_tran_url
 
 class TransPageForm(forms.Form):
@@ -108,26 +119,52 @@ def __redirect(url, if_reverse=False):
 
 
 @login_required
-def get_word_infos(request, words=None, status=None):
+def set_word_status(request, words=None, status=None):
     """
-    获取要变更状态为熟悉的单词
+    改变单词状态
     """
-    user = get_user(request)
-    print request
-    if words:
-        words = words.split(",")
-        print words
-        change_word_status(words, user, status)
+    status = WordRememberInfos.CHOICE_REMEMBER_CONVERSANT
+    if request.method == "POST":
+        word_id_list = request.POST.getlist('_selected_action')
+        user = get_user(request)
+        change_word_status(word_id_list, user, status)
+
     data = {}
     data['result'] = 'Success'
     return HttpResponse(json.dumps(data), content_type = "application/json")
+
 
 def get_user(request):
     user = request.user
     return user
 
+
+def frequency_charts(request):
+    """
+    词频排行榜
+    """
+    filter_mine = request.GET.get('filter_mine', 1)
+    page_num = request.GET.get('page', 1)
+    page_num = int(page_num)
+    limit = request.GET.get('limit', 20)
+    word_list = wordinfos.get_all_word_sort_by_repeated(request, filter_mine=filter_mine)
+
+    pi = Paginator(word_list, limit)
+    words = pi.page(page_num)
+    url_frequency_filter_mine = UrlUtil.get_frequency_url(filter_mine=1)
+
+    next_page_url = UrlUtil.get_frequency_url(filter_mine=filter_mine, limit=limit, page=page_num+1)
+    pre_page_url = UrlUtil.get_frequency_url(filter_mine=filter_mine, limit=limit, page=page_num-1)
+    return render(request, 'recall/frequency.html', {"words": words, "word_list": word_list, "next_page_url":next_page_url, "pre_page_url":pre_page_url, "url_frequency_filter_mine":url_frequency_filter_mine})
+
+
+
+
 @login_required
 def index(request):
+    """
+    主页面
+    """
     if request.method == 'GET':
         form = TransPageForm()
         request_history = wordinfos.get_all_request_url_history_url(request.user)
@@ -175,7 +212,6 @@ def _get_words(request, filter):
 def translate_word(request, spelling=None):
     """
     翻译单词
-    显示
     """
     cur_word = spelling
     from_page = request.GET['tran_page']

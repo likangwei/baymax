@@ -9,7 +9,7 @@ import urlparse
 from loader import get_html_str
 from wordinfos import get_all_conversant_word_list
 import UrlUtil
-
+from models import Word
 
 change_list = ["//p", "//h1", "//h2", "//li", "//strong", "//t"]
 
@@ -33,7 +33,23 @@ def get_translate_word_url(spelling, translate_url):
     return "%s%s" %(reverse("word:word_info", args=(spelling,)), "?%s" % (params))
 
 
-def get_sub_element_by_text(p_text, parent, translate_url, conversant_word_map):
+def add_to_word_repeated(html_url):
+    """
+    添加到词频
+    :param request:
+    :param word_lower_case:
+    :return:
+    """
+    from parser import get_html_word_repeated_info
+
+    word_repeated_map = get_html_word_repeated_info(html_url)
+
+    for word_spelling in word_repeated_map:
+        word, created = Word.objects.get_or_create(spelling=word_spelling)
+        word.add_repeated(word_repeated_map[word_spelling])
+
+
+def get_sub_element_by_text(p_text, parent, translate_url, conversant_word_map, user):
     """
     进行 英文字符处理
     """
@@ -43,11 +59,16 @@ def get_sub_element_by_text(p_text, parent, translate_url, conversant_word_map):
     cur_u = None
 
     has_add_p_text = False
+
     for word in StringUtil.get_split_words(p_text):
             word_lower_case = word.lower()
             if_is_word = RegexUtil.is_word(word)
 
             if if_is_word:
+
+                #添加到词频记录
+
+
                 if not conversant_word_map.has_key(word_lower_case):
                     #没有在熟词列表内
                     result.append(return_p_text)
@@ -77,7 +98,7 @@ def get_sub_element_by_text(p_text, parent, translate_url, conversant_word_map):
 
     return result
 
-def get_sub_element(current_tag, parent, translate_url, conversant_word_map, get_text=True, get_children=True, get_tail=True):
+def get_sub_element(current_tag, parent, translate_url, conversant_word_map, get_text=True, get_children=True, get_tail=True, **kwargs):
     """
     获取block tag的所有子集
     """
@@ -86,11 +107,11 @@ def get_sub_element(current_tag, parent, translate_url, conversant_word_map, get
     if get_text:
         current_tag_text = current_tag.text
         current_tag.text = None
-        result.extend(get_sub_element_by_text(current_tag_text, parent, translate_url, conversant_word_map))
+        result.extend(get_sub_element_by_text(current_tag_text, parent, translate_url, conversant_word_map, kwargs))
 
     if get_children:
         for children in raw_children:
-            children_subs = get_sub_element_by_text(children.tail, parent, translate_url, conversant_word_map)
+            children_subs = get_sub_element_by_text(children.tail, parent, translate_url, conversant_word_map, kwargs)
             children.tail = None
             result.append(children)
             result.extend(children_subs)
@@ -98,18 +119,18 @@ def get_sub_element(current_tag, parent, translate_url, conversant_word_map, get
     if get_tail:
         current_tag_tail = current_tag.tail
         current_tag.tail = None
-        result.extend(get_sub_element_by_text(current_tag_tail, parent, translate_url, conversant_word_map))
+        result.extend(get_sub_element_by_text(current_tag_tail, parent, translate_url, conversant_word_map, kwargs))
     return result
 
 
-def modify_bolock_p(p, translate_url,conversant_word_map):
+def modify_bolock_p(p, translate_url,conversant_word_map, **kwargs):
     """
     变更<ｐ>标签的具体实现
     """
     # print lxml.html.tostring(p)
     # if not p.text.startswith('is a Python package that parses broken HTML, just like lxm'):
     #     return
-    sub_element_list = get_sub_element(p, p, translate_url,conversant_word_map=conversant_word_map)
+    sub_element_list = get_sub_element(p, p, translate_url, kwargs)
     p._children = []
     p.text = p.tail = None
     # p.clear()
@@ -168,17 +189,18 @@ def add_script_to_html_element(html_element):
 
 
 
-def change_p(html, user, translate_url):
+def change_p(html, user, translate_url, **kwargs):
     """
     变更所有的<ｐ>标签
     """
 
     add_script_to_html_element(html)
     conversant_word_map = get_all_conversant_word_list(user)
-
+    add_to_word_repeated(translate_url)
     for change_tag in change_list:
         for p in html.xpath(change_tag):
-            modify_bolock_p(p, translate_url, conversant_word_map)
+            modify_bolock_p(p, translate_url, conversant_word_map, user=user)
+
 
 def change_script_data_main_url(html, tran_page_url):
 
