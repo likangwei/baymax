@@ -10,7 +10,8 @@ from loader import get_html_str
 from wordinfos import get_all_conversant_word_list
 import UrlUtil
 from models import Word
-
+import json
+import uuid
 #需要进行变更颜色的标签
 change_list = ["//p", "//h1", "//h2", "h3", "//li", "//strong", "//t"]
 
@@ -43,10 +44,13 @@ def add_to_word_repeated(html_url):
     """
     from parser import get_html_word_repeated_info
     word_repeated_map = get_html_word_repeated_info(html_url)
+    fname = 'word_history/%s.json' %str(uuid.uuid1())
 
-    for word_spelling in word_repeated_map:
-        word, created = Word.objects.get_or_create(spelling=word_spelling)
-        word.add_repeated(word_repeated_map[word_spelling])
+    open(fname, 'w').write(json.dumps(word_repeated_map))
+    #
+    # for word_spelling in word_repeated_map:
+    #     word, created = Word.objects.get_or_create(spelling=word_spelling)
+    #     word.add_repeated(word_repeated_map[word_spelling])
 
 
 def get_sub_element_by_text(p_text, parent, translate_url, conversant_word_map, user=None):
