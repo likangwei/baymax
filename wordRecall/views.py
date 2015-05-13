@@ -98,6 +98,7 @@ def login(request):
         form = LoginForm()
     return render(request, 'recall/login.html', {"form": form, "action": request.get_full_path()})
 
+@login_required
 def _logout(request):
     """
     注销
@@ -136,7 +137,7 @@ def get_user(request):
     user = request.user
     return user
 
-
+@login_required
 def frequency_charts(request):
     """
     词频排行榜
@@ -211,6 +212,8 @@ def _get_words(request, filter):
     form = RecallWordForm(instance=recall_word)
     return render(request, 'recall/recall.html', {"form": form, "id":recall_word.pk} )
 
+
+@login_required
 def translate_word(request, spelling=None):
     """
     网页上某一生单词的点击事件
@@ -225,6 +228,8 @@ def translate_word(request, spelling=None):
     word_sort_list.sort(cmp=lambda x, y: cmp(y[1], x[1]))
     return render(request, 'recall/translateword.html', {"cur_word": cur_word, "word_sort_list": word_sort_list, "RecallInfoClz": WordRememberInfos})
 
+
+@login_required
 def translate_word2(request, spelling=None):
     """
     网页上某一生单词的点击事件
