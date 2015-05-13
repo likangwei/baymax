@@ -165,6 +165,10 @@ def index(request):
         request_history = wordinfos.get_all_request_url_history_url(request.user)
         return render(request, 'recall/index.html', {"form": form, "user":request.user, "history_list":request_history, "HOST": request.get_host()} )
 
+
+def contact(request):
+    return render(request, 'recall/contact.html')
+
 @login_required
 def go_2_page(request):
     """

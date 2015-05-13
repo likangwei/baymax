@@ -1,21 +1,23 @@
+{% extends "recall/base.html" %}
 {% load bootstrap %}
-<!DOCTYPE html>
-<html>
-    <head>
-        <meta http-equiv="content-type" content="text/html; charset=utf-8">
-        <meta name="viewport" content="width=device-width, initial-scale=1.0">
-        <link rel="stylesheet" href="//netdna.bootstrapcdn.com/bootstrap/3.0.2/css/bootstrap.min.css">
-        <title>登陆</title>
-        <style type="text/css">
-            .multiple-checkbox ul { /* Used to hide <li> elements in multiple checkbox forms */
-              padding-left: 0px;
-              list-style: none;
-            }
-        </style>
+<!--<!DOCTYPE html>-->
+<!--<html>-->
+    <!--<head>-->
+        <!--<meta http-equiv="content-type" content="text/html; charset=utf-8">-->
+        <!--<meta name="viewport" content="width=device-width, initial-scale=1.0">-->
+        <!--<link rel="stylesheet" href="//netdna.bootstrapcdn.com/bootstrap/3.0.2/css/bootstrap.min.css">-->
+        <!--<title>登陆</title>-->
+        <!--<style type="text/css">-->
+            <!--.multiple-checkbox ul { /* Used to hide <li> elements in multiple checkbox forms */-->
+              <!--padding-left: 0px;-->
+              <!--list-style: none;-->
+            <!--}-->
+        <!--</style>-->
 
-    </head>
-    <body>
-
+    <!--</head>-->
+    <!--<body>-->
+{% block title %} 登陆 {% endblock %}
+{% block content %}
         <div class="container">
 
 
@@ -46,6 +48,6 @@
             </div>
 
         </div>
-
-    </body>
-</html>
+{% endblock %}
+    <!--</body>-->
+<!--</html>-->

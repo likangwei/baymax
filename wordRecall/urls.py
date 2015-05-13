@@ -7,6 +7,7 @@ admin.autodiscover()
 
 urlpatterns =[
     url(r'^$', views.index, name='page'),
+    url(r'^contact/?', views.contact, name='contact'),
     url(r'^go/?', views.go_2_page, name='go'),
     url(r'^call/?', views.call),
     url(r'^reg/?', views.reg, name='reg'),
