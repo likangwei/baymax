@@ -55,10 +55,11 @@
 
 
 <form role="form" id="form_id" name="myform" method="post" action="{% url 'word:set_word_status' %}">
-     {% csrf_token %}
+    {% csrf_token %}
     <a href="#" onClick="select_all('_selected_action', '1');">全选</a> |
     <a href="#" onClick="select_all('_selected_action', '0');">取消全选</a> |
     <a href="{{ url_frequency_filter_mine }}">显示我的所有生词（根据全网词频统计）</a> |
+    <input type="submit" value="标记为熟词"/>
     <br><br>
     <table class="table table-bordered" data-toggle="table" data-url="data1.json" data-cache="false" data-height="299">
         <thead>
@@ -71,7 +72,7 @@
         <tbody>
             {% if top_word %}
                 <tr>
-                    <td><input name="_selected_action" type="checkbox" value="{{ top_word.id }}">{{ top_word.spelling }}</td>
+                    <td><input name="_selected_action" type="checkbox" value="{{ top_word.id }} " checked>{{ top_word.spelling }}</td>
                     <th class="field-spelling">{{ top_word.repeated }}</th>
                     <th class="field-spelling"><a href="http://translate.google.cn/?hl=zh-CN&tab=wT#en/zh-CN/{{ top_word.spelling }}">Google 翻译</a></th>
                 </tr>
