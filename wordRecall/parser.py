@@ -3,7 +3,6 @@ __author__ = 'hanzhao'
 
 from util import StringUtil
 from loader import get_html_element
-import translate
 
 
 def get_html_word_repeated_info(page_url, hidden_word_list=[]):

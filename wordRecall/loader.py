@@ -1,6 +1,7 @@
 __author__ = 'hanzhao'
 import urllib
 import lxml
+import lxml.html
 from util import md5util
 import os
 

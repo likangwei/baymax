@@ -9,9 +9,7 @@ import urlparse
 from loader import get_html_str
 from wordinfos import get_all_conversant_word_list
 import UrlUtil
-from models import Word
-import json
-import uuid
+from tasks import add_all_page_word_to_repeated
 #需要进行变更颜色的标签
 change_list = ["//p", "//h1", "//h2", "h3", "//li", "//strong", "//t"]
 
@@ -42,11 +40,10 @@ def add_to_word_repeated(html_url):
     :param word_lower_case:
     :return:
     """
-    from parser import get_html_word_repeated_info
-    word_repeated_map = get_html_word_repeated_info(html_url)
-    fname = 'word_history/%s.json' %str(uuid.uuid1())
-
-    open(fname, 'w').write(json.dumps(word_repeated_map))
+    from tasks import add_all_page_word_to_repeated
+    add_all_page_word_to_repeated.delay(html_url)
+    # word_repeated_map = get_html_word_repeated_info(html_url)
+    # add_all_page_word_to_repeated.delay(word_repeated_map)
     #
     # for word_spelling in word_repeated_map:
     #     word, created = Word.objects.get_or_create(spelling=word_spelling)
