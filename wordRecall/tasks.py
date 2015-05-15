@@ -7,6 +7,7 @@ from wordRecall.models import Word
 import time
 from wordRecall import parser
 from wordRecall.parser import get_html_word_repeated_info
+
 @shared_task
 def add(x, y):
     time.sleep(10)

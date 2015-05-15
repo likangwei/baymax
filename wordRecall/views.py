@@ -161,7 +161,6 @@ def index(request):
     主页面
     """
     from tasks import add
-    print add.delay(4,5)
     if request.method == 'GET':
         form = TransPageForm()
         request_history = wordinfos.get_all_request_url_history_url(request.user)
