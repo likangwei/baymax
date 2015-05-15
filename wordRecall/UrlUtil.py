@@ -19,7 +19,6 @@ def get_tran_url(raw_url):
         return _get_url('word:go', tran_page=raw_url)
 
 
-
 def get_frequency_url(**kwargs):
     """
     :return: 过滤掉我的熟词的词频链接

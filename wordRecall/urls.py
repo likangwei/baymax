@@ -9,7 +9,7 @@ urlpatterns =[
     url(r'^$', views.index, name='page'),
     url(r'^contact/?', views.contact, name='contact'),
     url(r'^go/?', views.go_2_page, name='go'),
-    url(r'^call/?', views.call),
+    # url(r'^call/?', views.call),
     url(r'^reg/?', views.reg, name='reg'),
     url(r'^login/?', views.login, name='login'),
     url(r'^logout/?', views._logout, name='logout'),
