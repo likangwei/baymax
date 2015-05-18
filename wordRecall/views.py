@@ -54,14 +54,22 @@ class LoginForm(forms.Form):
     password = forms.CharField(label='密码：', max_length=100, widget=forms.PasswordInput())
 
 
-class RegForm(ModelForm):
-    class Meta:
-        model = User
-        fields = ['username', 'email', 'password']
-        widgets = {
-            "password": forms.PasswordInput()
-        }
+class RegForm(forms.Form):
+    username = forms.CharField(label='用户名：', max_length=100)
+    email = forms.CharField(label='邮箱：', max_length=100)
+    password1 = forms.CharField(label='密码：', max_length=100, widget=forms.PasswordInput())
+    password2 = forms.CharField(label='验证密码：', max_length=100, widget=forms.PasswordInput())
 
+    def clean(self):
+        cleaned_data = self.cleaned_data
+        if len(User.objects.filter(username=cleaned_data['username'])) != 0:
+            self.add_error('username', '用户已存在')
+
+        if cleaned_data['password1'] != cleaned_data['password2']:
+            self.add_error('password1', '密码不一致')
+            self.add_error('password2', '密码不一致')
+
+        return super(forms.Form, self).clean()
 
 def reg(request):
     """
@@ -71,9 +79,11 @@ def reg(request):
         form = RegForm(request.POST)
         if form.is_valid():
             username = form.cleaned_data['username']
-            password = form.cleaned_data['password']
+            password = form.cleaned_data['password1']
             email = form.cleaned_data['email']
-            User.objects.create_user(username, email=email, password=password)
+            user = User.objects.create_user(username, email=email, password=password)
+            user = authenticate(username=username, password=password)
+            lg(request, user)
             return __redirect("word:page", if_reverse=True)
 
     else:
@@ -90,11 +100,11 @@ def login(request):
         if form.is_valid():
             username = form.cleaned_data['username']
             password = form.cleaned_data['password']
-            next = request.GET.get('next', default='/')
+            _next = request.GET.get('next', default='/')
             user = authenticate(username=username, password=password)
             if user is not None and user.is_active:
                 lg(request, user)
-                return __redirect(next)
+                return __redirect(_next)
     else:
         form = LoginForm()
     return render(request, 'recall/login.html', {"form": form, "action": request.get_full_path()})

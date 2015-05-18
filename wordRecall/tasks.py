@@ -31,3 +31,4 @@ def add_all_page_word_to_repeated(html_url):
     for word_spelling in word_repeated_map:
         word, created = Word.objects.get_or_create(spelling=word_spelling)
         word.add_repeated(word_repeated_map[word_spelling])
+    print '<' * 30
