@@ -27,6 +27,7 @@ from parser import get_html_word_repeated_info
 from wordinfos import get_all_conversant_word_list
 from wordinfos import change_word_status
 from models import Word, WordRememberInfos
+from translate import get_translate_from_raw_str
 
 import wordinfos
 import models
@@ -70,6 +71,11 @@ class RegForm(forms.Form):
             self.add_error('password2', '密码不一致')
 
         return super(forms.Form, self).clean()
+
+
+class TranslateForm(forms.Form):
+    gt_src = forms.CharField(label='', widget=forms.Textarea)
+
 
 def reg(request):
     """
@@ -267,6 +273,21 @@ def translate_word2(request, spelling=None):
     return render(request, 'recall/page_word_info.html', {"words": words, "top_word": top_word,
                                                           "next_page_url": next_page_url, "pre_page_url": pre_page_url,
                                                           "url_frequency_filter_mine": url_frequency_filter_mine})
+
+@login_required
+def translate(request):
+    tran_result = ""
+    if request.method == "POST":
+        form = TranslateForm(request.POST)
+        if form.is_valid():
+            tran_src = form.cleaned_data['gt_src']
+            tran_result = get_translate_from_raw_str(request, tran_src)
+    else:
+        form = TranslateForm()
+    print tran_result
+    tran_result = 'hehe'
+    return render(request, 'recall/translate.html', {"tran_from": form, "tran_result": tran_result})
+
 
 
 def handler404(request):

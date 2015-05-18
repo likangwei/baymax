@@ -128,7 +128,7 @@ def get_sub_element(current_tag, parent, translate_url, conversant_word_map, **k
     return result
 
 
-def modify_bolock_p(p, translate_url,conversant_word_map, **kwargs):
+def modify_bolock_p(p, translate_url, conversant_word_map, **kwargs):
     """
     变更<ｐ>标签的具体实现
     """
@@ -243,3 +243,11 @@ def get_translate_page(tran_page_url, user):
     change_all_element(html, user, tran_page_url)
     return lxml.html.tostring(html)
 
+
+def get_translate_from_raw_str(request, tran_src):
+    p = lxml.html.fromstring('<p>%s</p>' %tran_src)
+    user = request.user
+    translate_url = ''
+    conversant_word_map = get_all_conversant_word_list(user)
+    modify_bolock_p(p, translate_url, conversant_word_map, user=user)
+    return lxml.html.tostring(p)
