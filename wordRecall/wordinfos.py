@@ -120,7 +120,7 @@ def get_format_meaning(word_spelling):
                 result = result + ' ' * 3 + mean + '\n'
         return result
     except:
-        return 'error'
+        return None
 
 def get_meaning_of_word(word_spelling):
     try:

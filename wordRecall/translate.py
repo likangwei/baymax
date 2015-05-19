@@ -81,10 +81,18 @@ def get_sub_element_by_text(p_text, parent, translate_url, conversant_word_map, 
                     jump_link = get_translate_word_url(word_lower_case, translate_url)
                     cur_u.attrib['href'] = jump_link
                     # style="color:#DD4C53"
-                    cur_u.attrib['style'] = r"color:#DD4CA0"
+
                     cur_u.attrib['target'] = r"_blank"
                     title_list = get_format_meaning(word_lower_case)
-                    cur_u.attrib['title'] = title_list
+
+
+                    if not title_list:
+                        cur_u.attrib['style'] = r"color:#20B2AA"
+                        cur_u.attrib['title'] = u"未找到对应的翻译"
+                    else:
+                        cur_u.attrib['style'] = r"color:#DD4CA0"
+                        cur_u.attrib['title'] = title_list
+
                     onclick = "return popitup2('%s')" %jump_link
                     cur_u.attrib['onclick'] = onclick
                     cur_u.text = word
