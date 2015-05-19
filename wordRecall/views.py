@@ -233,7 +233,7 @@ def _get_words(request, filter):
 
 
 @login_required
-def translate_word(request, spelling=None):
+def translate_word_(request, spelling=None):
     """
     网页上某一生单词的点击事件
     """
@@ -283,7 +283,7 @@ def translate_word2(request, spelling=None):
                                                           "url_frequency_filter_mine": url_frequency_filter_mine})
 
 @login_required
-def translate(request):
+def translate_(request):
     tran_result = ""
     if request.method == "POST":
         form = TranslateForm(request.POST)
