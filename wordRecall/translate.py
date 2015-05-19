@@ -7,8 +7,9 @@ from lxml.html import HtmlElement
 from django.core.urlresolvers import reverse
 import urlparse
 from loader import get_html_str
-from wordinfos import get_all_conversant_word_list
+from wordinfos import get_all_conversant_word_list, get_format_meaning
 import UrlUtil
+
 from tasks import add_all_page_word_to_repeated
 #需要进行变更颜色的标签
 change_list = ["//p", "//h1", "//h2", "h3", "//li", "//strong", "//t"]
@@ -82,6 +83,8 @@ def get_sub_element_by_text(p_text, parent, translate_url, conversant_word_map, 
                     # style="color:#DD4C53"
                     cur_u.attrib['style'] = r"color:#DD4CA0"
                     cur_u.attrib['target'] = r"_blank"
+                    title_list = get_format_meaning(word_lower_case)
+                    cur_u.attrib['title'] = title_list
                     onclick = "return popitup2('%s')" %jump_link
                     cur_u.attrib['onclick'] = onclick
                     cur_u.text = word

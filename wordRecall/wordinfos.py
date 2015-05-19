@@ -8,7 +8,8 @@ from django.core.cache import cache
 from util import TimeUtil
 from models import RequestHistory
 import UrlUtil
-
+import urllib
+import json
 KEY = 'all_conversant_word_list'
 
 
@@ -100,3 +101,35 @@ def get_all_word_sort_by_repeated(request, filter_mine=False, include_word_list=
     else:
         word_queryset = Word.objects.all().order_by(order_by)
     return word_queryset
+
+
+def get_format_meaning(word_spelling):
+    word, created = Word.objects.get_or_create(spelling=word_spelling)
+    if not word.meaning:
+        word.meaning = get_meaning_of_word(word_spelling)
+        word.save()
+    jo = json.loads(word.meaning)
+    try:
+        pts_meaning = jo.get('retData').get('dict_result').get('symbols')[0].get('parts')
+        result = ''
+        for pt in pts_meaning:
+            part = pt.get('part')
+            means = pt.get('means')
+            result = result + part + '\n'
+            for mean in means:
+                result = result + ' ' * 3 + mean + '\n'
+        return result
+    except:
+        return 'error'
+
+def get_meaning_of_word(word_spelling):
+    try:
+        params = urllib.urlencode({'query': word_spelling, 'from': 'en', 'to': 'zh'})
+        f = urllib.urlopen("http://apistore.baidu.com/microservice/dictionary?%s" % params)
+        str = f.read()
+        return str
+    except:
+        return ""
+
+if __name__ == '__main__':
+    get_format_meaning('word')
