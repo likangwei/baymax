@@ -87,7 +87,8 @@ def get_sub_element_by_text(p_text, parent, translate_url, conversant_word_map, 
 
 
                     if not title_list:
-                        cur_u.attrib['style'] = r"color:#20B2AA"
+                        # cur_u.attrib['style'] = r"color:#20B2AA"
+                        cur_u.attrib['style'] = r"color:#FF0000"
                         cur_u.attrib['title'] = u"未找到对应的翻译"
                     else:
                         cur_u.attrib['style'] = r"color:#DD4CA0"
