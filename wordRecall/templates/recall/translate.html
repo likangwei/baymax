@@ -2,6 +2,7 @@
 {% load bootstrap %}
 {% block title%}翻译{% endblock %}
 {% block content%}
+
             <form class="form-horizontal" role="form" method="post" action="{% url 'word:translate' %}" %>
                 {% csrf_token %}
                 {{ tran_from }}

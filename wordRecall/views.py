@@ -37,7 +37,7 @@ from UrlUtil import get_tran_url
 
 
 class TransPageForm(forms.Form):
-    tran_page = forms.CharField(label='请输入网址：', max_length=100)
+    tran_page = forms.CharField(label='请输入网址', max_length=100)
 
 
 class RecallWordForm(ModelForm):
@@ -202,17 +202,27 @@ def go_2_page(request):
     elif request.method == 'GET':
         if key in request.GET:
             trans_url = request.GET[key]
-            return __get_tran_page(trans_url, user)
+            return __get_tran_page(request, trans_url, user)
         else:
             return __redirect("/")
 
 
-def __get_tran_page(trans_url, user):
+def __get_tran_page(request, trans_url, user):
     """
-    获取解析后的结果
+    获取解析某网页的结果
     """
-    print trans_url
-    return HttpResponse(translate.get_translate_page(trans_url, user))
+    tran_page_url = UrlUtil.get_tran_page_url(trans_url)
+    form = TransPageForm(initial={'tran_page': trans_url})
+    return render(request, 'recall/tran_page_result.html', {'tran_page_url': tran_page_url, 'form': form})
+
+
+def translate_p(request):
+    """
+    获取解析某网页的结果, 显示在iframe里面的
+    """
+    if request.method == "GET":
+        trans_url = request.GET['tran_page']
+        return HttpResponse(translate.get_translate_page(trans_url, request.user))
 
 
 @login_required
@@ -284,6 +294,9 @@ def translate_word2(request, spelling=None):
 
 @login_required
 def translate_(request):
+    """
+    翻译某一段文字
+    """
     tran_result = ""
     if request.method == "POST":
         form = TranslateForm(request.POST)
@@ -294,6 +307,7 @@ def translate_(request):
         form = TranslateForm()
     print tran_result
     return render(request, 'recall/translate.html', {"tran_from": form, "tran_result": tran_result})
+
 
 
 

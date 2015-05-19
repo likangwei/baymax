@@ -1,0 +1,26 @@
+<html>
+{% load bootstrap %}
+<head>
+    <title>hehe</title>
+    <!--<link href="static/css/bootstrap.css" rel='stylesheet' type='text/css'/>-->
+</head>
+<body>
+<div>
+    <a href="/">返回首页</a>
+
+    <form class="form-horizontal" role="form" method="post" action="{% url 'word:go' %}" %>
+        {{ form }}
+        {% csrf_token %}
+        <div class="col-sm-offset-2 col-sm-10">
+            <input type="submit" class="btn btn-primary" value="提交"/>
+        </div>
+    </form>
+
+</div>
+
+<div id="contentframe" style="top: 118px; left: 0px;">
+    <iframe src="{{ tran_page_url}}" name="c" frameborder="0"
+            style="height:100%;width:100%;position:absolute;top:100px;bottom:0px;" seamless></iframe>
+</div>
+</body>
+</html>

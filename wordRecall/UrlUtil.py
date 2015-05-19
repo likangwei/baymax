@@ -23,7 +23,18 @@ def get_frequency_url(**kwargs):
     """
     :return: 过滤掉我的熟词的词频链接
     """
-    return _get_url('word:frequency',**kwargs)
+    return _get_url('word:frequency', **kwargs)
+
+
+def get_tran_page_url(raw_url):
+
+    if operator.contains(raw_url, "#"):
+        idx = raw_url.index("#")
+        end_tag = raw_url[idx:]
+        raw_url = raw_url[:idx]
+        return _get_url('word:translate_p', tran_page=raw_url) + end_tag
+    else:
+        return _get_url('word:translate_p', tran_page=raw_url)
 
 
 def _get_url(reverse_str, **kwargs):
@@ -33,3 +44,5 @@ def _get_url(reverse_str, **kwargs):
         return '%s?%s' %(reverse(reverse_str), params)
     else:
         return '%s' %(reverse(reverse_str))
+
+

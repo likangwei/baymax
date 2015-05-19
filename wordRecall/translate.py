@@ -18,7 +18,7 @@ def change_url(pre_url):
     for un_change_pattern in un_change_patterns:
         if pre_url.endswith(un_change_pattern):
             return pre_url
-    return UrlUtil.get_tran_url(pre_url)
+    return UrlUtil.get_tran_page_url(pre_url)
 
 
 from util import RegexUtil
