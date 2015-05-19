@@ -10,5 +10,9 @@
                 </div>
             </form>
 
-            {{ tran_result }}
+            {{ tran_result|safe }}
+
+{% autoescape off %}
+    {{ tran_result }}
+{% endautoescape %}
 {% endblock %}

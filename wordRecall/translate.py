@@ -234,7 +234,6 @@ def add_to_request_history(html_element, tran_page_url, user):
     request_history.save()
 
 def get_translate_page(tran_page_url, user):
-
     htmlStr = get_html_str(tran_page_url)
     html = lxml.html.fromstring(htmlStr)
     add_to_request_history(html, tran_page_url, user)

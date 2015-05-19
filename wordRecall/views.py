@@ -171,6 +171,7 @@ def frequency_charts(request):
                                                      "next_page_url": next_page_url, "pre_page_url": pre_page_url,
                                                      "url_frequency_filter_mine": url_frequency_filter_mine})
 
+
 @login_required
 def index(request):
     """
@@ -237,15 +238,18 @@ def translate_word(request, spelling=None):
     网页上某一生单词的点击事件
     """
     cur_word = spelling
-    from_page = request.GET['tran_page']
+    from_page = request.GET.get('tran_page', None)
     print from_page
     user = get_user(request)
-    hidden_word_list = get_all_conversant_word_list(user)
-    word_map = get_html_word_repeated_info(from_page, hidden_word_list=hidden_word_list)
-    word_sort_list = word_map.items()
-    word_sort_list.sort(cmp=lambda x, y: cmp(y[1], x[1]))
-    return render(request, 'recall/translateword.html', {"cur_word": cur_word, "word_sort_list": word_sort_list,
+    if from_page:
+        hidden_word_list = get_all_conversant_word_list(user)
+        word_map = get_html_word_repeated_info(from_page, hidden_word_list=hidden_word_list)
+        word_sort_list = word_map.items()
+        word_sort_list.sort(cmp=lambda x, y: cmp(y[1], x[1]))
+        return render(request, 'recall/translateword.html', {"cur_word": cur_word, "word_sort_list": word_sort_list,
                                                          "RecallInfoClz": WordRememberInfos})
+    else:
+        return render(request, 'recall/translateword.html', {"cur_word": cur_word, "RecallInfoClz": WordRememberInfos})
 
 
 @login_required
@@ -254,15 +258,19 @@ def translate_word2(request, spelling=None):
     网页上某一生单词的点击事件
     """
 
-    from_page = request.GET['tran_page']
+    from_page = request.GET.get('tran_page', None)
     filter_mine = request.GET.get('filter_mine', 1)
     page_num = request.GET.get('page', 1)
     page_num = int(page_num)
     limit = request.GET.get('limit', 20)
 
-    page_word_map = get_html_word_repeated_info(from_page)
+    if from_page:
+        page_word_map = get_html_word_repeated_info(from_page)
+        include_word_list = page_word_map.keys()
+    else:
+        include_word_list = []
     word_list = wordinfos.get_all_word_sort_by_repeated(request, filter_mine=filter_mine,
-                                                        include_word_list=page_word_map.keys())
+                                                        include_word_list=include_word_list)
     top_word, created = Word.objects.get_or_create(spelling=spelling)
     pi = Paginator(word_list, limit)
     words = pi.page(page_num)
@@ -285,7 +293,6 @@ def translate(request):
     else:
         form = TranslateForm()
     print tran_result
-    tran_result = 'hehe'
     return render(request, 'recall/translate.html', {"tran_from": form, "tran_result": tran_result})
 
 

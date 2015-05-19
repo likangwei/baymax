@@ -33,6 +33,7 @@
                 </div>
             </form>
             <br/><br/><br/>
+            <a href="{% url 'word:translate' %}">翻译英文片段</a>
             <h3>历史记录:</h3>
             {% for title,raw_url,tran_url,request_number in history_list%}
                 <p>

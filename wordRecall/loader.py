@@ -6,6 +6,8 @@ from util import md5util
 import os
 
 def get_html_str(tran_page_url):
+    if not tran_page_url:
+        return ''
     url_md5 = md5util.get_md5_value(tran_page_url)
     html_tmp_file_name = "tmp/%s.html" %url_md5
     print os.path.abspath(html_tmp_file_name)
