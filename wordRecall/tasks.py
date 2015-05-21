@@ -32,3 +32,12 @@ def add_all_page_word_to_repeated(html_url):
         word, created = Word.objects.get_or_create(spelling=word_spelling)
         word.add_repeated(word_repeated_map[word_spelling])
     print '<' * 30
+    add_all_word_meaning()
+
+
+def add_all_word_meaning():
+    from wordRecall.wordinfos import get_meaning_of_word
+    for word in Word.objects.filter(meaning=''):
+        if not word.meaning:
+            word.meaning = get_meaning_of_word(word.spelling)
+            word.save()

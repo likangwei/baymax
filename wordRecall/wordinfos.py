@@ -4,7 +4,6 @@ __author__ = 'hanzhao'
 from models import WordRememberInfos
 from models import Word
 from util import StringUtil
-from django.core.cache import cache
 from util import TimeUtil
 from models import RequestHistory
 import UrlUtil
