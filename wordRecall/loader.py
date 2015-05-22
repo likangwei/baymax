@@ -28,8 +28,8 @@ def get_html_str(tran_page_url):
             open(html_tmp_file_name, 'w').write(html_str)
             return html_str
         except Exception, e:
-            error_msg = 'load url ===>%s error  %s' % (tran_page_url, e.code)
-            return "Load url %s error. %s" %tran_page_url
+            error_msg = '%s ===>  %s' % (tran_page_url, str(e))
+            return error_msg
 
 
 
