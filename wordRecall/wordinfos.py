@@ -58,7 +58,7 @@ def get_all_request_url_history_url(user):
     获取此用户的访问历史记录
     :return: 返回一个列表  [(tie, raw_url, tran_url, request_number),(),...]
     """
-    request_url_list = RequestHistory.objects.filter(user=user).order_by('-request_number')
+    request_url_list = RequestHistory.objects.filter(user=user).order_by('-request_number')[:15]
     result = []
     for request_url in request_url_list:
         raw_url = request_url.url_info
@@ -69,6 +69,7 @@ def get_all_request_url_history_url(user):
 
     return result
 
+
 def get_word_id_list_from_spelling(word_list):
     """
     根据单词的拼写，返回其Word.id
@@ -76,6 +77,7 @@ def get_word_id_list_from_spelling(word_list):
     :return:
     """
     return Word.objects.filter(spelling__in=word_list).values_list('id', flat=True)
+
 
 def get_all_word_sort_by_repeated(request, filter_mine=False, include_word_list=[], exclude_word_list=[],order_by=None):
     """
@@ -120,6 +122,7 @@ def get_format_meaning(word_spelling):
         return result
     except:
         return None
+
 
 def get_meaning_of_word(word_spelling):
     try:
