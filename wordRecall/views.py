@@ -230,6 +230,7 @@ def __get_tran_page(request, trans_url, user):
     """
     获取解析某网页的结果
     """
+    print '>' * 10, trans_url
     tran_page_url = UrlUtil.get_tran_page_url(trans_url)
     form = TransPageForm(initial={'tran_page': trans_url})
     return render(request, 'recall/tran_page_result.html', {'tran_page_url': tran_page_url, 'form': form})
@@ -241,6 +242,7 @@ def translate_p(request):
     """
     if request.method == "GET":
         trans_url = request.GET['tran_page']
+        print '>' * 10, trans_url
         return HttpResponse(translate.get_translate_page(trans_url, request.user))
 
 
