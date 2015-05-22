@@ -119,6 +119,8 @@ def login(request):
             if user is not None and user.is_active:
                 lg(request, user)
                 return __redirect(_next)
+            else:
+                form.add_error('password', '用户名或密码不正确！')
     else:
         form = LoginForm()
     return render(request, 'recall/login.html', {"form": form, "action": request.get_full_path()})
