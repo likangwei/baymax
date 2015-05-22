@@ -6,7 +6,7 @@ import views
 admin.autodiscover()
 
 urlpatterns =[
-    url(r'^$', views.index, name='page'),
+    url(r'^$', views.index, name='index'),
     url(r'^contact/?', views.contact, name='contact'),
     url(r'^go/?', views.go_2_page, name='go'),
     # url(r'^call/?', views.call),
@@ -24,7 +24,7 @@ urlpatterns =[
 
 handler404 = 'wordRecall.views.handler404'
 
-import logging
-l = logging.getLogger('django.db.backends')
-l.setLevel(logging.DEBUG)
-l.addHandler(logging.StreamHandler())
+# import logging
+# l = logging.getLogger('django.db.backends')
+# l.setLevel(logging.DEBUG)
+# l.addHandler(logging.StreamHandler())

@@ -28,7 +28,7 @@
 
             <hr/>
 
-            <form class="form-horizontal" role="form" method="post" action="{% url 'word:go' %}" %>
+            <form class="form-horizontal" role="form" method="post" action="{% url 'word:index' %}" %>
                 {% csrf_token %}
                 {{ form|bootstrap_horizontal }}
                 <div class="col-sm-offset-2 col-sm-10">

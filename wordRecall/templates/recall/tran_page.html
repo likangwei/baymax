@@ -6,8 +6,8 @@
     <title></title>
 </head>
 <body>
-    <a href="{% url 'word:page' %}?tran_page={{ HOST }}static/django_docs/index.html">Django教程</a>
-    <form class="form-horizontal" role="form" method="post" action="{% url "word:page" %}">
+    <a href="{% url 'word:index' %}?tran_page={{ HOST }}static/django_docs/index.html">Django教程</a>
+    <form class="form-horizontal" role="form" method="post" action="{% url "word:index" %}">
         {% csrf_token %}
         {{ form|bootstrap_horizontal }}
         <div class="form-group">

@@ -34,10 +34,18 @@ import models
 import translate
 import UrlUtil
 from UrlUtil import get_tran_url
+from util import RegexUtil
 
 
 class TransPageForm(forms.Form):
     tran_page = forms.CharField(label='请输入网址', max_length=100)
+
+    def clean(self):
+        cleaned_data = self.cleaned_data
+        tran_page = cleaned_data['tran_page']
+        if not RegexUtil.is_url(tran_page):
+            self.add_error('tran_page', '请输入有效的网址')
+
 
 
 class RecallWordForm(ModelForm):
@@ -90,7 +98,7 @@ def reg(request):
             user = User.objects.create_user(username, email=email, password=password)
             user = authenticate(username=username, password=password)
             lg(request, user)
-            return __redirect("word:page", if_reverse=True)
+            return __redirect("word:index", if_reverse=True)
 
     else:
         form = RegForm()
@@ -177,11 +185,18 @@ def index(request):
     """
     主页面
     """
-    if request.method == 'GET':
+    key = 'tran_page'
+    if request.method == 'POST':
+        form = TransPageForm(request.POST)
+        if form.is_valid():
+            trans_url = request.POST[key]
+            return __redirect(get_tran_url(trans_url))
+
+    else :
         form = TransPageForm()
-        request_history = wordinfos.get_all_request_url_history_url(request.user)
-        return render(request, 'recall/index.html', {"form": form, "user": request.user,
-                                                     "history_list": request_history, "HOST": request.get_host()})
+    request_history = wordinfos.get_all_request_url_history_url(request.user)
+    return render(request, 'recall/index.html', {"form": form, "user": request.user,
+                                                 "history_list": request_history, "HOST": request.get_host()})
 
 
 def contact(request):
@@ -195,11 +210,8 @@ def go_2_page(request):
     """
     user = get_user(request)
     key = 'tran_page'
-    if request.method == 'POST':
-        trans_url = request.POST[key]
-        return __redirect(get_tran_url(trans_url))
 
-    elif request.method == 'GET':
+    if request.method == 'GET':
         if key in request.GET:
             trans_url = request.GET[key]
             return __get_tran_page(request, trans_url, user)
