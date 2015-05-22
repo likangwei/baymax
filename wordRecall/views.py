@@ -219,6 +219,11 @@ def go_2_page(request):
             return __get_tran_page(request, trans_url, user)
         else:
             return __redirect("/")
+    elif request.method == 'POST':
+        form = TransPageForm(request.POST)
+        if form.is_valid():
+            trans_url = request.POST[key]
+            return __redirect(get_tran_url(trans_url))
 
 
 def __get_tran_page(request, trans_url, user):
