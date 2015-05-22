@@ -27,9 +27,9 @@ def get_html_str(tran_page_url):
             html_str = r.read()
             open(html_tmp_file_name, 'w').write(html_str)
             return html_str
-        except:
-            print 'load url error ===>%s' % tran_page_url
-            return "Load url %s error." %tran_page_url
+        except Exception, e:
+            error_msg = 'load url ===>%s error  %s' % (tran_page_url, e.code)
+            return "Load url %s error. %s" %tran_page_url
 
 
 
@@ -42,7 +42,10 @@ def get_html_element(tran_page_url):
 if __name__ == '__main__':
 
     import urllib2
-    req = urllib2.Request('https://docs.djangoproject.com/en/1.8/topics/db/models/')
+    req = urllib2.Request('https://docs.djangoproject.com/xxx/1.8/')
     req.add_header('Referer', 'https://docs.djangoproject.com')
-    r = urllib2.urlopen(req)
+    try:
+        r = urllib2.urlopen(req)
+    except Exception,e:
+        print 1
     print r.read()
