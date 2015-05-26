@@ -1,4 +1,4 @@
-__author__ = 'hanzhao'
+__author__ = 'likangwei'
 import urllib
 import lxml
 import lxml.html
@@ -32,7 +32,6 @@ def get_html_str(tran_page_url):
             return error_msg
 
 
-
 def get_html_element(tran_page_url):
     html_str = get_html_str(tran_page_url)
     html_element = lxml.html.fromstring(html_str)
@@ -41,7 +40,6 @@ def get_html_element(tran_page_url):
 
 if __name__ == '__main__':
 
-    import urllib2
     req = urllib2.Request('https://docs.djangoproject.com/xxx/1.8/')
     req.add_header('Referer', 'https://docs.djangoproject.com')
     try:
