@@ -3,6 +3,8 @@ __author__ = 'hanzhao'
 from django.core.urlresolvers import reverse
 from urllib import urlencode
 import operator
+import urllib
+
 def get_tran_url(raw_url):
     """
 
@@ -45,4 +47,14 @@ def _get_url(reverse_str, **kwargs):
     else:
         return '%s' %(reverse(reverse_str))
 
+
+def get_full_path_and_change_request_param(request, change_data):
+    """
+    更改链接参数
+    """
+    for get_param in request.GET:
+        if get_param not in change_data:
+            change_data[get_param] = request.GET.get(get_param)
+    params = urllib.urlencode(change_data)
+    return "%s?%s" % (request.path, params)
 

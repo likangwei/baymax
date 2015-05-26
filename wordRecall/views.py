@@ -264,26 +264,6 @@ def _get_words(request, filter):
 
 
 @login_required
-def translate_word_(request, spelling=None):
-    """
-    网页上某一生单词的点击事件
-    """
-    cur_word = spelling
-    from_page = request.GET.get('tran_page', None)
-    print from_page
-    user = get_user(request)
-    if from_page:
-        hidden_word_list = get_all_conversant_word_list(user)
-        word_map = get_html_word_repeated_info(from_page, hidden_word_list=hidden_word_list)
-        word_sort_list = word_map.items()
-        word_sort_list.sort(cmp=lambda x, y: cmp(y[1], x[1]))
-        return render(request, 'recall/translateword.html', {"cur_word": cur_word, "word_sort_list": word_sort_list,
-                                                         "RecallInfoClz": WordRememberInfos})
-    else:
-        return render(request, 'recall/translateword.html', {"cur_word": cur_word, "RecallInfoClz": WordRememberInfos})
-
-
-@login_required
 def translate_word2(request, spelling=None):
     """
     网页上某一生单词的点击事件
@@ -294,6 +274,7 @@ def translate_word2(request, spelling=None):
     page_num = request.GET.get('page', 1)
     page_num = int(page_num)
     limit = request.GET.get('limit', 20)
+    request.get_full_path()
 
     if from_page:
         page_word_map = get_html_word_repeated_info(from_page)
@@ -307,9 +288,9 @@ def translate_word2(request, spelling=None):
     words = pi.page(page_num)
     url_frequency_filter_mine = UrlUtil.get_frequency_url(filter_mine=1)
 
-    next_page_url = UrlUtil.get_frequency_url(filter_mine=filter_mine, limit=limit, page=page_num+1)
-    pre_page_url = UrlUtil.get_frequency_url(filter_mine=filter_mine, limit=limit, page=page_num-1)
-    return render(request, 'recall/page_word_info.html', {"words": words, "top_word": top_word,
+    next_page_url = UrlUtil.get_full_path_and_change_request_param(request, {"page": page_num+1})
+    pre_page_url = UrlUtil.get_full_path_and_change_request_param(request, {"page": page_num-1})
+    return render(request, 'recall/page_word_info.html', {"pi": pi, "words": words, "top_word": top_word,
                                                           "next_page_url": next_page_url, "pre_page_url": pre_page_url,
                                                           "url_frequency_filter_mine": url_frequency_filter_mine})
 

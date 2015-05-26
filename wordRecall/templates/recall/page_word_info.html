@@ -47,6 +47,7 @@
     <a href="{{ url_frequency_filter_mine }}">显示我的所有生词（根据全网词频统计）</a> |
     <input type="submit" value="标记为熟词"/>
     <br><br>
+    <P>此网页中，您的生单词共计:{{ pi.count }}个</P>
     <table class="table table-bordered" data-toggle="table" data-url="data1.json" data-cache="false" data-height="299">
         <thead>
             <tr>
@@ -78,7 +79,7 @@
     <div class="pagination">
     <span class="step-links">
         {% if words.has_previous %}
-            <a href="?page={{ pre_page_url }}">previous</a>
+            <a href="{{ pre_page_url }}">previous</a>
         {% endif %}
 
         <span class="current">
