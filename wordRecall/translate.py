@@ -11,8 +11,7 @@ from wordinfos import get_all_conversant_word_list, get_format_meaning
 import UrlUtil
 
 from tasks import add_all_page_word_to_repeated
-#需要进行变更颜色的标签
-change_list = ["//p", "//h1", "//h2", "//h3", "//li", "//strong", "//t", "em"]
+from static import change_list
 
 def change_url(pre_url):
     un_change_patterns = ['css', 'png', 'js', 'ico', 'tgz', 'zip', 'rar', 'pdf', 'gif', 'git']

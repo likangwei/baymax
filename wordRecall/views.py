@@ -23,7 +23,7 @@ from django.shortcuts import render_to_response
 
 from django.template import RequestContext
 
-from parser import get_html_word_repeated_info
+from parser import get_html_word_repeated_info_cleaned
 from wordinfos import get_all_conversant_word_list
 from wordinfos import change_word_status
 from models import Word, WordRememberInfos
@@ -277,7 +277,7 @@ def translate_word2(request, spelling=None):
     request.get_full_path()
 
     if from_page:
-        page_word_map = get_html_word_repeated_info(from_page)
+        page_word_map = get_html_word_repeated_info_cleaned(from_page)
         include_word_list = page_word_map.keys()
     else:
         include_word_list = []

@@ -1,8 +1,9 @@
-__author__ = 'hanzhao'
+__author__ = 'likangwei'
 # -*- coding: utf-8 -*-
 
 from util import StringUtil
 from loader import get_html_element
+from static import change_list
 
 
 def get_html_word_repeated_info(page_url, hidden_word_list=[]):
@@ -27,6 +28,25 @@ def get_html_word_repeated_info(page_url, hidden_word_list=[]):
         if result.has_key(hidden_word):
             del result[hidden_word]
     return result
+
+
+def get_html_word_repeated_info_cleaned(page_url, hidden_word_list=[]):
+    """
+    获取网页的词频数据
+    """
+    html_element = get_html_element(page_url)
+
+    result = {}
+    for change_tag in change_list:
+        for p in html_element.xpath(change_tag):
+            __add_word_repeated_count(p.text, result)
+            __add_word_repeated_count(p.tail, result)
+
+    for hidden_word in hidden_word_list:
+        if result.has_key(hidden_word):
+            del result[hidden_word]
+    return result
+
 
 def __add_word_repeated_count(text, result):
     if text:

@@ -16,6 +16,7 @@ def get_html_str(tran_page_url):
     print os.path.abspath(html_tmp_file_name)
 
     if os.path.exists(html_tmp_file_name):
+        print 'reload from cache %s' %tran_page_url
         return open(html_tmp_file_name).read()
     else:
         uss = urlsplit(tran_page_url)
