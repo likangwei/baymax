@@ -273,7 +273,7 @@ def translate_word2(request, spelling=None):
     filter_mine = request.GET.get('filter_mine', 1)
     page_num = request.GET.get('page', 1)
     page_num = int(page_num)
-    limit = request.GET.get('limit', 20)
+    limit = request.GET.get('limit', 2000)
     request.get_full_path()
 
     if from_page:
