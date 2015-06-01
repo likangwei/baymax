@@ -3,15 +3,14 @@
 {% block title%}翻译{% endblock %}
 {% block content%}
 
-            <form class="form-horizontal" role="form" method="post" action="{% url 'word:translate' %}" %>
-                {% csrf_token %}
-                {{ tran_from }}
-                <div class="col-sm-offset-2 col-sm-10">
-                    <input type="submit" class="btn btn-primary" value="翻译"/>
-                </div>
-            </form>
+    <form class="form-horizontal" role="form" method="post" action="{% url 'word:translate' %}" %>
+        {% csrf_token %}
+        {{ tran_from }}
+        <div class="col-sm-offset-2 col-sm-10">
+            <input type="submit" class="btn btn-primary" value="翻译"/>
+        </div>
+    </form>
 
-            {{ tran_result|safe }}
-
+    {{ tran_result|safe }}
 
 {% endblock %}
