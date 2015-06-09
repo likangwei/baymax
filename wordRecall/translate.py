@@ -247,7 +247,7 @@ def add_to_request_history(html_element, tran_page_url, user):
 
 def add_css_js(html):
     # <link rel="stylesheet" href="/static/css/word-recall.css" type="text/css">
-
+    # <script type="text/javascript" src="/static/js/jquery.min.js"></script>
     head_elements = html.xpath("/html/head")
     for head_element in head_elements:
         cur_css = lxml.etree.SubElement(head_element, "link")
@@ -255,6 +255,13 @@ def add_css_js(html):
         cur_css.attrib['href'] = '/static/css/word-recall.css'
         cur_css.attrib['type'] = 'text/css'
         head_element.append(cur_css)
+
+        jquery_js = lxml.etree.SubElement(head_element, "script")
+        jquery_js.attrib['src'] = '/static/js/jquery.min.js'
+        jquery_js.attrib['type'] = 'text/javascript'
+        head_element.append(jquery_js)
+
+
 
     # <script type="text/javascript" src="/static/js/recall-word.js"></script>
     body_elements = html.xpath("/html/body")
@@ -267,13 +274,17 @@ def add_css_js(html):
 def get_translate_page(tran_page_url, user):
     htmlStr = get_html_str(tran_page_url)
     html = lxml.html.fromstring(htmlStr)
-    #添加 css
-    add_css_js(html)
-    add_to_request_history(html, tran_page_url, user)
+
+    #重写链接
     html.rewrite_links(change_url, base_href=tran_page_url)
+
+    add_to_request_history(html, tran_page_url, user)
     change_script_data_main_url(html, tran_page_url)
     #变更所有标签
     change_all_element(html, user, tran_page_url)
+
+    #添加 css
+    add_css_js(html)
     return lxml.html.tostring(html)
 
 
