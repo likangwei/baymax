@@ -76,24 +76,26 @@ def get_sub_element_by_text(p_text, parent, translate_url, conversant_word_map, 
                     return_p_text = ''
                     has_add_p_text = True
 
-                    cur_u = lxml.etree.SubElement(parent, "a")
+                    cur_u = lxml.etree.SubElement(parent, "em")
                     jump_link = get_translate_word_url(word_lower_case, translate_url)
-                    cur_u.attrib['href'] = jump_link
+                    # cur_u.attrib['href'] = jump_link
                     # style="color:#DD4C53"
 
-                    cur_u.attrib['target'] = r"_blank"
+                    # cur_u.attrib['target'] = r"_blank"
                     title_list = get_format_meaning(word_lower_case)
 
+                    cur_u.attrib['class'] = 'recall_word'
+                    cur_u.attrib['value'] =  word_lower_case
 
                     if not title_list:
-                        cur_u.attrib['style'] = r"color:#DD4CA0"
+                        # cur_u.attrib['style'] = r"color:#DD4CA0"
                         cur_u.attrib['title'] = u"未找到对应的翻译"
                     else:
-                        cur_u.attrib['style'] = r"color:#FF0000"
+                        # cur_u.attrib['style'] = r"color:#FF0000"
                         cur_u.attrib['title'] = title_list
 
                     onclick = "return popitup2('%s')" %jump_link
-                    cur_u.attrib['onclick'] = onclick
+                    # cur_u.attrib['onclick'] = onclick
                     cur_u.text = word
                     cur_u.tail = ''
                     result.append(cur_u)
@@ -188,12 +190,12 @@ def add_script_to_html_element(html_element):
     script_html = """<script language="javascript" type="text/javascript">
     <!--
         function popitup(url) {
-            newwindow=window.open(url,'name','height=700,width=900');
+            newwindow=window.open(url,'name','height=700,width=500');
             if (window.focus) {newwindow.focus()}
             return false;
         }
         function popitup2(url) {
-            newwindow=window.open(url,'name','height=700,width=900');
+            newwindow=window.open(url,'name','height=700,width=500');
             return false;
         }
 
@@ -243,12 +245,34 @@ def add_to_request_history(html_element, tran_page_url, user):
     request_history.request_number = request_history.request_number + 1
     request_history.save()
 
+def add_css_js(html):
+    # <link rel="stylesheet" href="/static/css/word-recall.css" type="text/css">
+
+    head_elements = html.xpath("/html/head")
+    for head_element in head_elements:
+        cur_css = lxml.etree.SubElement(head_element, "link")
+        cur_css.attrib['rel'] = 'stylesheet'
+        cur_css.attrib['href'] = '/static/css/word-recall.css'
+        cur_css.attrib['type'] = 'text/css'
+        head_element.append(cur_css)
+
+    # <script type="text/javascript" src="/static/js/recall-word.js"></script>
+    body_elements = html.xpath("/html/body")
+    for body_element in body_elements:
+        cur_js = lxml.etree.SubElement(body_element, "script")
+        cur_js.attrib['src'] = '/static/js/recall-word.js'
+        cur_js.attrib['type'] = 'text/javascript'
+        body_element.append(cur_js)
+
 def get_translate_page(tran_page_url, user):
     htmlStr = get_html_str(tran_page_url)
     html = lxml.html.fromstring(htmlStr)
+    #添加 css
+    add_css_js(html)
     add_to_request_history(html, tran_page_url, user)
     html.rewrite_links(change_url, base_href=tran_page_url)
     change_script_data_main_url(html, tran_page_url)
+    #变更所有标签
     change_all_element(html, user, tran_page_url)
     return lxml.html.tostring(html)
 

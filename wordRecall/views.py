@@ -145,13 +145,28 @@ def set_word_status(request, words=None, status=None):
     """
     改变单词状态
     """
-    status = WordRememberInfos.CHOICE_REMEMBER_CONVERSANT
-    if request.method == "POST":
+    if status is None:
+        status = WordRememberInfos.CHOICE_REMEMBER_CONVERSANT
+    if request.method == "GET":
+
+
+        word, created = Word.objects.get_or_create(spelling=words)
+        wi, created = WordRememberInfos.objects.get_or_create(user=request.user, word=word, word_spelling=words)
+        if status == '0':
+            status = WordRememberInfos.CHOICE_REMEMBER_UNACQUAINTED if wi.remember==WordRememberInfos.CHOICE_REMEMBER_CONVERSANT else WordRememberInfos.CHOICE_REMEMBER_CONVERSANT;
+        wi.remember = status
+        wi.save()
+        status_map = {
+           WordRememberInfos.CHOICE_REMEMBER_CONVERSANT: "old_word",
+           WordRememberInfos.CHOICE_REMEMBER_UNACQUAINTED: "new_word"
+        }
+        data = {'result': 'success', 'toggleClz': status_map[int(wi.remember)]}
+
+    elif request.method == "POST":
         word_id_list = request.POST.getlist('_selected_action')
         user = get_user(request)
         change_word_status(word_id_list, user, status)
-
-    data = {'result': "成功"}
+        data = {'result': "Success"}
     return HttpResponse(json.dumps(data), content_type="application/json")
 
 
@@ -268,7 +283,6 @@ def translate_word2(request, spelling=None):
     """
     网页上某一生单词的点击事件
     """
-
     from_page = request.GET.get('tran_page', None)
     filter_mine = request.GET.get('filter_mine', 1)
     page_num = request.GET.get('page', 1)

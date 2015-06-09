@@ -1,0 +1,14 @@
+.recall_word{
+    background: palevioletred;
+    /*color: #FF0000;*/
+    /*cursor: pointer*/
+}
+
+
+.old_word{
+    background: lawngreen;
+}
+
+.new_word{
+    background: palevioletred;
+}
