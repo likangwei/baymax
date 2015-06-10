@@ -1,5 +1,6 @@
 .tran{
     text-align:left;
+    color: #ffffff;
 }
 .translate_part{
     margin-left: 1px;
@@ -9,6 +10,9 @@
     margin-left: 10px;
 }
 
+.tran_link{
+    color: greenyellow;
+}
 
 .popbox {
   margin:0px auto;
