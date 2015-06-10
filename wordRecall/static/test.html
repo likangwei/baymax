@@ -11,7 +11,23 @@
 </head>
 <body>
 
-<p class="recall_word" value="test">test</p>
+<p class="recall_word" value="test">
+
+</p>
+<p>
+    <span>hehe</span><br/>
+    <span style="margin-left: 15px">hehe</span><br/>
+    <span>hehe</span><br/>
+    <span>hehe</span><br/>
+
+    <span>hehe</span>
+    <span>hehe</span>
+    <span>hehe</span>
+
+
+</p>
+
+
 <script>
 $(document).ready(function(){
     $(".recall_word").click(function(){
@@ -28,6 +44,16 @@ $(document).ready(function(){
         }, "json");
     });
 });
+
+</script>
+
+<div id="google_translate_element"></div>
+<script type="text/javascript">
+function googleTranslateElementInit() {
+  new google.translate.TranslateElement({pageLanguage: 'zh-CN', layout: google.translate.TranslateElement.InlineLayout.SIMPLE}, 'google_translate_element');
+}
+</script>
+<script type="text/javascript" src="//translate.google.com/translate_a/element.js?cb=googleTranslateElementInit">
 
 </script>
 </body>

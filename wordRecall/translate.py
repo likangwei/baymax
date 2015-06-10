@@ -9,6 +9,8 @@ import urlparse
 from loader import get_html_str
 from wordinfos import get_all_conversant_word_list, get_format_meaning
 import UrlUtil
+from django.template import loader
+
 
 from tasks import add_all_page_word_to_repeated
 from static import change_list
@@ -76,7 +78,7 @@ def get_sub_element_by_text(p_text, parent, translate_url, conversant_word_map, 
                     return_p_text = ''
                     has_add_p_text = True
 
-                    cur_u = lxml.etree.SubElement(parent, "em")
+                    cur_u = lxml.etree.SubElement(parent, "a")
                     jump_link = get_translate_word_url(word_lower_case, translate_url)
                     # cur_u.attrib['href'] = jump_link
                     # style="color:#DD4C53"
@@ -89,10 +91,10 @@ def get_sub_element_by_text(p_text, parent, translate_url, conversant_word_map, 
 
                     if not title_list:
                         # cur_u.attrib['style'] = r"color:#DD4CA0"
-                        cur_u.attrib['title'] = u"未找到对应的翻译"
+                        cur_u.attrib['translate'] = u"未找到对应的翻译"
                     else:
                         # cur_u.attrib['style'] = r"color:#FF0000"
-                        cur_u.attrib['title'] = title_list
+                        cur_u.attrib['translate'] = title_list
 
                     onclick = "return popitup2('%s')" %jump_link
                     # cur_u.attrib['onclick'] = onclick
@@ -246,30 +248,32 @@ def add_to_request_history(html_element, tran_page_url, user):
     request_history.save()
 
 def add_css_js(html):
-    # <link rel="stylesheet" href="/static/css/word-recall.css" type="text/css">
-    # <script type="text/javascript" src="/static/js/jquery.min.js"></script>
-    head_elements = html.xpath("/html/head")
-    for head_element in head_elements:
-        cur_css = lxml.etree.SubElement(head_element, "link")
-        cur_css.attrib['rel'] = 'stylesheet'
-        cur_css.attrib['href'] = '/static/css/word-recall.css'
-        cur_css.attrib['type'] = 'text/css'
-        head_element.append(cur_css)
 
-        jquery_js = lxml.etree.SubElement(head_element, "script")
-        jquery_js.attrib['src'] = '/static/js/jquery.min.js'
-        jquery_js.attrib['type'] = 'text/javascript'
-        head_element.append(jquery_js)
+    head_sub_elements = [
+        #css
+        r'<link rel="stylesheet" href="/static/css/word-recall.css" type="text/css">',
+        r'<link rel="stylesheet" href="/static/css/popbox.css" type="text/css" media="screen" charset="utf-8">',
+        #js
+        r'<script type="text/javascript" src="/static/js/jquery.min.js"></script>',
+    ]
 
 
+    body_sub_elements = [
+        #js
+        r'<script type="text/javascript" src="/static/js/recall-word.js"></script>',
+        #html
+        loader.render_to_string('recall/box.html'),
+    ]
 
-    # <script type="text/javascript" src="/static/js/recall-word.js"></script>
-    body_elements = html.xpath("/html/body")
-    for body_element in body_elements:
-        cur_js = lxml.etree.SubElement(body_element, "script")
-        cur_js.attrib['src'] = '/static/js/recall-word.js'
-        cur_js.attrib['type'] = 'text/javascript'
-        body_element.append(cur_js)
+
+    add_elements_map = {'body': body_sub_elements, 'head': head_sub_elements}
+    for add_tag in add_elements_map:
+        element = html.find(add_tag)
+        if element:
+            for raw_html in add_elements_map[add_tag]:
+                element.append(lxml.html.fromstring(raw_html))
+
+
 
 def get_translate_page(tran_page_url, user):
     htmlStr = get_html_str(tran_page_url)

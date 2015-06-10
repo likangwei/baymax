@@ -109,19 +109,20 @@ def get_format_meaning(word_spelling):
     if not word.meaning:
         word.meaning = get_meaning_of_word(word_spelling)
         word.save()
-    jo = json.loads(word.meaning)
-    try:
-        pts_meaning = jo.get('retData').get('dict_result').get('symbols')[0].get('parts')
-        result = ''
-        for pt in pts_meaning:
-            part = pt.get('part')
-            means = pt.get('means')
-            result = result + part + '\n'
-            for mean in means:
-                result = result + ' ' * 3 + mean + '\n'
-        return result
-    except:
-        return None
+    return word.meaning
+    # jo = json.loads(word.meaning)
+    # try:
+    #     pts_meaning = jo.get('retData').get('dict_result').get('symbols')[0].get('parts')
+    #     result = ''
+    #     for pt in pts_meaning:
+    #         part = pt.get('part')
+    #         means = pt.get('means')
+    #         result = result + part + '\n'
+    #         for idx, mean in enumerate(means):
+    #             result = result + str(idx+1) + ': '  + mean + '\n'
+    #     return result
+    # except:
+    #     return None
 
 
 def get_meaning_of_word(word_spelling):
