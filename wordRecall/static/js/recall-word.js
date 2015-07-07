@@ -1,6 +1,8 @@
-var host = "http://127.0.0.1:8000"
-
+var host1 = "http://127.0.0.1:8000";
+var host2 = "http://www.likangwei.com";
+var host = host1;
 var translate_map = {}
+
 
 function getTranslateDivElementHtml(jo){
     //获取某一个单词的解释DIV的HTML
@@ -102,7 +104,9 @@ function run(){
     var curUrl = host + "/get_words/";
     $.get(curUrl,
             {},
-            function(words, status) {
+            function(result, status) {
+                var jo = $.parseJSON(result);
+                words = jo.result;
                 oldWordMap = {};
                 var split_word_list = words.split(",");
                 for(var i=0; i<split_word_list.length; i++){
@@ -118,6 +122,7 @@ function run(){
     ).fail(function(){
             alert("http error");
     });
+
 }
 
 function getOldWords() {

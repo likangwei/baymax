@@ -139,17 +139,53 @@ def _logout(request):
 def get_recall_word(request):
     return _get_words(request, models.CHOICE_REMEMBER_UNACQUAINTED)
 
+def json_response(func):
+    """
+    A decorator thats takes a view response and turns it
+    into json. If a callback is added through GET or POST
+    the response is JSONP.
+    """
+    def decorator(request, *args, **kwargs):
+        objects = func(request, *args, **kwargs)
+        if isinstance(objects, HttpResponse):
+            return objects
+        try:
+            data = json.dumps(objects)
+            if 'callback' in request.REQUEST:
+                # a jsonp response!
+                data = '%s(%s);' % (request.REQUEST['callback'], data)
+                return HttpResponse(data, "text/javascript")
+        except:
+            data = json.dumps(str(objects))
+        return HttpResponse(data, "application/json")
+    return decorator
 
-@login_required
+def jsonp(request):
+    data = json.dumps({"name":1})
+    response = HttpResponse(json.dumps(data), 'application/json')
+    response['Access-Control-Allow-Origin'] = "*"
+    return response
+
+
+@json_response
 def get_words(request, status=None):
     """
     获取所有熟单词，以逗号分隔
     """
-    old_word_list = get_all_conversant_word_list(request.user)
-    result = ''
-    for word in old_word_list:
-        result = result + word + ","
-    return HttpResponse(result)
+    user = get_user(request)
+    if user is None:
+        result = json.dumps({"result": "userName or pwd invalid"})
+        response = HttpResponse(json.dumps(result), 'application/json')
+    else:
+        old_word_list = get_all_conversant_word_list(user)
+        result = ''
+        for word in old_word_list:
+            result = result + word + ","
+        result = json.dumps({"result": result})
+        response = HttpResponse(json.dumps(result), 'application/json')
+
+    response['Access-Control-Allow-Origin'] = "*"
+    return response
 
 
 def get_word_detail(request, words=None):
@@ -157,41 +193,61 @@ def get_word_detail(request, words=None):
     获取某一个单词的详情
     """
     from wordinfos import get_format_meaning
+    response = HttpResponse("%s" % get_format_meaning(words))
+    response['Access-Control-Allow-Origin'] = "*"
+    return response
 
-    return HttpResponse("%s" % get_format_meaning(words))
 
-
-@login_required
+# @login_required
 def set_word_status(request, words=None, status=None):
     """
     改变单词状态
     """
+
     if status is None:
         status = WordRememberInfos.CHOICE_REMEMBER_CONVERSANT
+
     if request.method == "GET":
         word, created = Word.objects.get_or_create(spelling=words)
-        wi, created = WordRememberInfos.objects.get_or_create(user=request.user, word=word, word_spelling=words)
-        if status == '0':
-            status = WordRememberInfos.CHOICE_REMEMBER_UNACQUAINTED if wi.remember==WordRememberInfos.CHOICE_REMEMBER_CONVERSANT else WordRememberInfos.CHOICE_REMEMBER_CONVERSANT;
-        wi.remember = status
-        wi.save()
-        status_map = {
-           WordRememberInfos.CHOICE_REMEMBER_CONVERSANT: "old_word",
-           WordRememberInfos.CHOICE_REMEMBER_UNACQUAINTED: "new_word"
-        }
-        data = {'result': 'success', 'toggleClz': status_map[int(wi.remember)]}
+        user = get_user(request)
+        if user is None:
+            data = {'result': 'user invalid'}
+        else:
+            wi, created = WordRememberInfos.objects.get_or_create(user=user, word=word, word_spelling=words)
+            if status == '0':
+                status = WordRememberInfos.CHOICE_REMEMBER_UNACQUAINTED if wi.remember==WordRememberInfos.CHOICE_REMEMBER_CONVERSANT else WordRememberInfos.CHOICE_REMEMBER_CONVERSANT;
+            wi.remember = status
+            wi.save()
+            status_map = {
+               WordRememberInfos.CHOICE_REMEMBER_CONVERSANT: "old_word",
+               WordRememberInfos.CHOICE_REMEMBER_UNACQUAINTED: "new_word"
+            }
+            data = {'result': 'success', 'toggleClz': status_map[int(wi.remember)]}
 
     elif request.method == "POST":
         word_id_list = request.POST.getlist('_selected_action')
-        user = get_user(request)
-        change_word_status(word_id_list, user, status)
+        change_word_status(word_id_list, request.user, status)
         data = {'result': "Success"}
-    return HttpResponse(json.dumps(data), content_type="application/json")
+
+    data = json.dumps(data)
+    response = HttpResponse(json.dumps(data), "application/json")
+    response['Access-Control-Allow-Origin'] = "*"
+    return response
 
 
 def get_user(request):
-    user = request.user
-    return user
+    user_name = request.GET.get("user", None)
+    pwd = request.GET.get("pwd", None)
+    if user_name is None or pwd is None:
+        return None
+    return get_user_by_pwd(user_name, pwd)
+
+
+def get_user_by_pwd(username, password):
+    user = authenticate(username=username, password=password)
+    if user is not None and user.is_active:
+        return User.objects.get(username=username)
+
 
 
 @login_required
