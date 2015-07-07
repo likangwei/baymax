@@ -68,10 +68,7 @@ def get_sub_element_by_text(p_text, parent, translate_url, conversant_word_map, 
             if_is_word = RegexUtil.is_word(word)
 
             if if_is_word:
-
                 #添加到词频记录
-
-
                 if not conversant_word_map.has_key(word_lower_case):
                     #没有在熟词列表内
                     result.append(return_p_text)
@@ -84,17 +81,17 @@ def get_sub_element_by_text(p_text, parent, translate_url, conversant_word_map, 
                     # style="color:#DD4C53"
 
                     # cur_u.attrib['target'] = r"_blank"
-                    title_list = get_format_meaning(word_lower_case)
+                    # title_list = get_format_meaning(word_lower_case)
 
                     cur_u.attrib['class'] = 'recall_word'
-                    cur_u.attrib['value'] =  word_lower_case
+                    cur_u.attrib['value'] = word_lower_case
 
-                    if not title_list:
+                    # if not title_list:
                         # cur_u.attrib['style'] = r"color:#DD4CA0"
-                        cur_u.attrib['translate'] = u"未找到对应的翻译"
-                    else:
+                        # cur_u.attrib['translate'] = u"未找到对应的翻译"
+                    # else:
                         # cur_u.attrib['style'] = r"color:#FF0000"
-                        cur_u.attrib['translate'] = title_list
+                        # cur_u.attrib['translate'] = title_list
 
                     onclick = "return popitup2('%s')" %jump_link
                     # cur_u.attrib['onclick'] = onclick
@@ -215,7 +212,7 @@ def change_all_element(html, user, translate_url, **kwargs):
 
     add_script_to_html_element(html)
     conversant_word_map = get_all_conversant_word_list(user)
-    add_to_word_repeated(translate_url)
+    # add_to_word_repeated(translate_url)
     for change_tag in change_list:
         for p in html.xpath(change_tag):
             modify_bolock_p(p, translate_url, conversant_word_map, user=user)

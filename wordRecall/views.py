@@ -141,6 +141,27 @@ def get_recall_word(request):
 
 
 @login_required
+def get_words(request, status=None):
+    """
+    获取所有熟单词，以逗号分隔
+    """
+    old_word_list = get_all_conversant_word_list(request.user)
+    result = ''
+    for word in old_word_list:
+        result = result + word + ","
+    return HttpResponse(result)
+
+
+def get_word_detail(request, words=None):
+    """
+    获取某一个单词的详情
+    """
+    from wordinfos import get_format_meaning
+
+    return HttpResponse("%s" % get_format_meaning(words))
+
+
+@login_required
 def set_word_status(request, words=None, status=None):
     """
     改变单词状态
@@ -148,8 +169,6 @@ def set_word_status(request, words=None, status=None):
     if status is None:
         status = WordRememberInfos.CHOICE_REMEMBER_CONVERSANT
     if request.method == "GET":
-
-
         word, created = Word.objects.get_or_create(spelling=words)
         wi, created = WordRememberInfos.objects.get_or_create(user=request.user, word=word, word_spelling=words)
         if status == '0':

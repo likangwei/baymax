@@ -5,6 +5,8 @@ from django.contrib import admin
 import views
 admin.autodiscover()
 
+regex_word = '(?P<words>[\w]+)'
+
 urlpatterns =[
     url(r'^$', views.index, name='index'),
     url(r'^contact/?', views.contact, name='contact'),
@@ -16,6 +18,10 @@ urlpatterns =[
     url(r'^translate/$', views.translate_, name='translate'),
     url(r'^translate_p/?', views.translate_p, name='translate_p'),
     url(r'^recall/?', views.get_recall_word, name='recall'),
+    url(r'^get_words/$', views.get_words, name='get_words'),
+    url(r'^get_words/(?P<words>)/$', views.get_words, name='get_words_info'),
+    url(r'^get_word_detail$', views.get_word_detail, name='get_word_detail'),
+    url(r'^get_word_detail/%s$' % regex_word, views.get_word_detail, name='get_word_detail'),
     url(r'^frequency_charts/?', views.frequency_charts, name='frequency'),
     url(r'^word_info/(?P<spelling>[\w\-]+)/', views.translate_word2, name='word_info'),
     url(r'^set_word_status/$', views.set_word_status, name='set_word_status'),

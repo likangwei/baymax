@@ -45,11 +45,6 @@ def get_all_conversant_word_list(user):
     for info in conversant_words:
         word_spelling = info.word.spelling
         all_conversant_word_list[word_spelling] = None
-
-    for split_word in StringUtil.SPLIT_STR_LIST:
-        all_conversant_word_list[split_word] = None
-
-    # set_cache(all_conversant_word_list)
     return all_conversant_word_list
 
 
