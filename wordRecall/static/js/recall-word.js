@@ -190,7 +190,12 @@ function replaceStr(oSpan){
     addWordListener();
 }
 
+function addBoxDiv(){
+    var body = document.getElementsByTagName("body")
+    alert(body);
+}
 
 $(document).ready(function(){
+    addBoxDiv();
     run();
 });

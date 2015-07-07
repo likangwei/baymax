@@ -139,6 +139,7 @@ def _logout(request):
 def get_recall_word(request):
     return _get_words(request, models.CHOICE_REMEMBER_UNACQUAINTED)
 
+
 def json_response(func):
     """
     A decorator thats takes a view response and turns it
@@ -159,6 +160,7 @@ def json_response(func):
             data = json.dumps(str(objects))
         return HttpResponse(data, "application/json")
     return decorator
+
 
 def jsonp(request):
     data = json.dumps({"name":1})
