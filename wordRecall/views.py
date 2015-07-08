@@ -126,6 +126,8 @@ def login(request):
     return render(request, 'recall/login.html', {"form": form, "action": request.get_full_path()})
 
 
+
+
 @login_required
 def _logout(request):
     """
@@ -140,36 +142,25 @@ def get_recall_word(request):
     return _get_words(request, models.CHOICE_REMEMBER_UNACQUAINTED)
 
 
-def json_response(func):
+def check_user(request):
+    """检查用户
+    :param request:
+    :return:
     """
-    A decorator thats takes a view response and turns it
-    into json. If a callback is added through GET or POST
-    the response is JSONP.
-    """
-    def decorator(request, *args, **kwargs):
-        objects = func(request, *args, **kwargs)
-        if isinstance(objects, HttpResponse):
-            return objects
-        try:
-            data = json.dumps(objects)
-            if 'callback' in request.REQUEST:
-                # a jsonp response!
-                data = '%s(%s);' % (request.REQUEST['callback'], data)
-                return HttpResponse(data, "text/javascript")
-        except:
-            data = json.dumps(str(objects))
-        return HttpResponse(data, "application/json")
-    return decorator
+    user = get_user(request);
 
+    if user is None:
+        result = "fail"
+    else:
+        result = "ok"
 
-def jsonp(request):
-    data = json.dumps({"name":1})
-    response = HttpResponse(json.dumps(data), 'application/json')
+    result = json.dumps({"result": result})
+    response = HttpResponse(json.dumps(result), 'application/json')
     response['Access-Control-Allow-Origin'] = "*"
     return response
 
 
-@json_response
+
 def get_words(request, status=None):
     """
     获取所有熟单词，以逗号分隔
@@ -195,7 +186,8 @@ def get_word_detail(request, words=None):
     获取某一个单词的详情
     """
     from wordinfos import get_format_meaning
-    response = HttpResponse("%s" % get_format_meaning(words))
+    response = HttpResponse("%s" % json.dumps(get_format_meaning(words)))
+
     response['Access-Control-Allow-Origin'] = "*"
     return response
 
