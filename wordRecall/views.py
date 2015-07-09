@@ -167,14 +167,14 @@ def get_words(request, status=None):
     """
     user = get_user(request)
     if user is None:
-        result = json.dumps({"result": "userName or pwd invalid"})
+        result = json.dumps({"status": "fail", "result": "userName or pwd invalid"})
         response = HttpResponse(json.dumps(result), 'application/json')
     else:
         old_word_list = get_all_conversant_word_list(user)
         result = ''
         for word in old_word_list:
             result = result + word + ","
-        result = json.dumps({"result": result})
+        result = json.dumps({"status": "ok", "result": result})
         response = HttpResponse(json.dumps(result), 'application/json')
 
     response['Access-Control-Allow-Origin'] = "*"
