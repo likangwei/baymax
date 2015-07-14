@@ -30,7 +30,7 @@ def _change_word_remember_status(word_id_list, remember_status, user, change_cat
         recall_info.remember = remember_status
         recall_info.word_spelling = word.spelling
         recall_info.save()
-        if change_catch :
+        if change_catch:
             pass
 
 

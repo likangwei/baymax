@@ -180,6 +180,34 @@ def get_words(request, status=None):
     response['Access-Control-Allow-Origin'] = "*"
     return response
 
+from django.views.decorators.csrf import csrf_exempt
+
+@csrf_exempt
+def get_words_meaning(request):
+    user = request.POST.get("user")
+    pwd = request.POST.get("pwd")
+    print user, pwd
+    user = get_user_by_pwd(user, pwd)
+
+    if user is None:
+        response = json.dumps({"status": "fail"})
+    else:
+        word_list = request.POST.get("words").split("#")
+        for spelling in word_list :
+            created, word = Word.objects.get_or_create(spelling=spelling)
+
+        words = Word.objects.filter(spelling__in=word_list);
+        result = []
+        for word in words:
+            meaning = word.get_meaning()
+            if meaning:
+                result.append(word.spelling+"###"+word.get_meaning())
+        result = json.dumps(result)
+        response = json.dumps({"status": "ok", "result": result})
+    response = HttpResponse(json.dumps(response), 'application/json')
+    response['Access-Control-Allow-Origin'] = "*"
+    return response
+
 
 def get_word_detail(request, words=None):
     """
@@ -208,15 +236,14 @@ def set_word_status(request, words=None, status=None):
             data = {'result': 'user invalid'}
         else:
             wi, created = WordRememberInfos.objects.get_or_create(user=user, word=word, word_spelling=words)
-            if status == '0':
-                status = WordRememberInfos.CHOICE_REMEMBER_UNACQUAINTED if wi.remember==WordRememberInfos.CHOICE_REMEMBER_CONVERSANT else WordRememberInfos.CHOICE_REMEMBER_CONVERSANT;
-            wi.remember = status
+
+            status_map = {"old": WordRememberInfos.CHOICE_REMEMBER_CONVERSANT,
+                          "new": WordRememberInfos.CHOICE_REMEMBER_UNACQUAINTED}
+
+            wi.remember = status_map[status]
             wi.save()
-            status_map = {
-               WordRememberInfos.CHOICE_REMEMBER_CONVERSANT: "old_word",
-               WordRememberInfos.CHOICE_REMEMBER_UNACQUAINTED: "new_word"
-            }
-            data = {'result': 'success', 'toggleClz': status_map[int(wi.remember)]}
+
+            data = {'result': 'success', 'status': status}
 
     elif request.method == "POST":
         word_id_list = request.POST.getlist('_selected_action')

@@ -37,6 +37,18 @@ class Word(models.Model):
         self.repeated = self.repeated + number
         self.save()
 
+    def get_meaning(self):
+        if not self.meaning:
+            import urllib
+            try:
+                params = urllib.urlencode({'query': self.spelling, 'from': 'en', 'to': 'zh'})
+                f = urllib.urlopen("http://apistore.baidu.com/microservice/dictionary?%s" % params)
+                self.meaning = f.read()
+                self.save()
+            except:
+                pass
+        return self.meaning
+
     def __str__(self):
         return self.spelling
 
@@ -85,6 +97,8 @@ class WordRememberInfos(models.Model):
         recallInfo.word_recall = self
         recallInfo.recall_time = datetime.datetime.now()
         recallInfo.save()
+
+
 
     def __str__(self):
         return '%s_%s' %(self.user.pk, self.word_spelling)
