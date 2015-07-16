@@ -84,6 +84,7 @@ class WordRememberInfos(models.Model):
     recall_counts = models.IntegerField("记忆次数", default=0);
     repeated = models.IntegerField("复现率", default=0);
     remarks = models.CharField("备注", max_length=100, null=True)
+    change_time = models.DateTimeField("上次修改时间")
 
     def get_repeated(self):
         return self.word.repeated
