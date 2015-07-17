@@ -12,7 +12,7 @@ https://docs.djangoproject.com/en/1.6/ref/settings/
 import os
 
 BASE_DIR = os.path.dirname(os.path.dirname(__file__))
-
+print BASE_DIR
 # celery config
 BROKER_URL = 'amqp://'
 CELERY_ACCEPT_CONTENT = ['application/json']
@@ -86,8 +86,11 @@ DATABASES_SERVER = {
         'HOST': 'rdsg5v30594h2i02977d.mysql.rds.aliyuncs.com'
     }
 }
+if BASE_DIR.startswith("//users/likangwei"):
+    DATABASES = DATABASES_LOCAL
+else:
+    DATABASES = DATABASES_SERVER
 
-DATABASES = DATABASES_LOCAL
 
 # Internationalization
 # https://docs.djangoproject.com/en/1.6/topics/i18n/
