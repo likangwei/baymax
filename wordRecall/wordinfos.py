@@ -1,6 +1,6 @@
 __author__ = 'hanzhao'
 # -*- coding: utf-8 -*-
-
+import datetime
 from models import WordRememberInfos
 from models import Word
 from util import StringUtil
@@ -35,12 +35,43 @@ def _change_word_remember_status(word_id_list, remember_status, user, change_cat
 
 
 
-def get_all_conversant_word_list(user):
+
+def get_all_changed_words(user, fromTime=None, toTime=None):
     """
     获取所有的熟单词
     """
+
+    if fromTime:
+        change_time__range = (fromTime, toTime)
+        conversant_words = WordRememberInfos.objects.filter(
+            user=user,
+            remember=WordRememberInfos.CHOICE_REMEMBER_CONVERSANT
+        ).filter(change_time__range=change_time__range)
+    else:
+        conversant_words = WordRememberInfos.objects.filter(
+            user=user)
+
+    return conversant_words
+
+
+
+def get_all_conversant_word_list(user, fromTime=None, toTime=None):
+    """
+    获取所有的熟单词
+    """
+
     print 'reload cache %s' %TimeUtil.get_now_time()
-    conversant_words = WordRememberInfos.objects.filter(user=user, remember=WordRememberInfos.CHOICE_REMEMBER_CONVERSANT)
+    if fromTime:
+        change_time__range = (fromTime, toTime)
+        conversant_words = WordRememberInfos.objects.filter(
+            user=user,
+            remember=WordRememberInfos.CHOICE_REMEMBER_CONVERSANT
+        ).filter(change_time__range=change_time__range)
+    else:
+        conversant_words = WordRememberInfos.objects.filter(
+            user=user,
+            remember=WordRememberInfos.CHOICE_REMEMBER_CONVERSANT)
+
     all_conversant_word_list = {}
     for info in conversant_words:
         word_spelling = info.word.spelling

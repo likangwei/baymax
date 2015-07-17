@@ -13,7 +13,7 @@ from django.contrib.auth.models import User
 #
 #     def __str__(self):
 #         return self.name
-
+from django.utils import timezone
 WORD_TYPE_COMMON = 0
 WORD_TYPE_INVALID = 500
 
@@ -99,7 +99,9 @@ class WordRememberInfos(models.Model):
         recallInfo.recall_time = datetime.datetime.now()
         recallInfo.save()
 
-
+    def save(self, *args, **kwargs):
+        self.change_time = timezone.now()
+        return super(WordRememberInfos, self).save(*args, **kwargs)
 
     def __str__(self):
         return '%s_%s' %(self.user.pk, self.word_spelling)

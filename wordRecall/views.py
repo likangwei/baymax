@@ -22,9 +22,11 @@ from django.shortcuts import render
 from django.shortcuts import render_to_response
 
 from django.template import RequestContext
+import calendar
 
 from parser import get_html_word_repeated_info_cleaned
 from wordinfos import get_all_conversant_word_list
+from wordinfos import get_all_changed_words
 from wordinfos import change_word_status
 from models import Word, WordRememberInfos
 from translate import get_translate_from_raw_str
@@ -35,6 +37,7 @@ import translate
 import UrlUtil
 from UrlUtil import get_tran_url
 from util import RegexUtil
+from django.utils import timezone
 
 
 class TransPageForm(forms.Form):
@@ -166,15 +169,25 @@ def get_words(request, status=None):
     获取所有熟单词，以逗号分隔
     """
     user = get_user(request)
+    last_get_time = request.GET.get("last_get_timetamp", None)
+    if last_get_time:
+        import datetime
+        import pytz
+        last_get_time = datetime.datetime.fromtimestamp(float(last_get_time), tz=pytz.utc)
     if user is None:
         result = json.dumps({"status": "fail", "result": "userName or pwd invalid"})
         response = HttpResponse(json.dumps(result), 'application/json')
     else:
-        old_word_list = get_all_conversant_word_list(user)
-        result = ''
+        now = timezone.now()
+        datetime.datetime
+        now_tstamp = calendar.timegm(now.timetuple())
+        now_tstamp = "%s.%d" %(now_tstamp, now.microsecond)
+        old_word_list = get_all_changed_words(user, last_get_time, now)
+        result = []
         for word in old_word_list:
-            result = result + word + ","
-        result = json.dumps({"status": "ok", "result": result})
+            cur_data = {"spelling": word.word_spelling, "status": word.remember}
+            result.append(cur_data)
+        result = json.dumps({"status": "ok", "timestamp": now_tstamp, "result": result})
         response = HttpResponse(json.dumps(result), 'application/json')
 
     response['Access-Control-Allow-Origin'] = "*"
