@@ -179,7 +179,6 @@ def get_words(request, status=None):
         response = HttpResponse(json.dumps(result), 'application/json')
     else:
         now = timezone.now()
-        datetime.datetime
         now_tstamp = calendar.timegm(now.timetuple())
         now_tstamp = "%s.%d" %(now_tstamp, now.microsecond)
         old_word_list = get_all_changed_words(user, last_get_time, now)
