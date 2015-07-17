@@ -66,7 +66,7 @@ WSGI_APPLICATION = 'healthPriceless.wsgi.application'
 # Database
 # https://docs.djangoproject.com/en/1.6/ref/settings/#databases
 
-DATABASES = {
+DATABASES_LOCAL = {
     'default': {
         'ENGINE': 'django.db.backends.mysql',
         'NAME': 'baymax',
@@ -75,6 +75,19 @@ DATABASES = {
         'HOST': '127.0.0.1'
     }
 }
+
+
+DATABASES_SERVER = {
+    'default': {
+        'ENGINE': 'django.db.backends.mysql',
+        'NAME': 'baymax',
+        'USER': 'lkw',
+        'PASSWORD': '3632840aa',
+        'HOST': 'rdsg5v30594h2i02977d.mysql.rds.aliyuncs.com'
+    }
+}
+
+DATABASES = DATABASES_SERVER
 
 # Internationalization
 # https://docs.djangoproject.com/en/1.6/topics/i18n/
