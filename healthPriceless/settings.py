@@ -87,7 +87,7 @@ DATABASES_SERVER = {
     }
 }
 
-DATABASES = DATABASES_SERVER
+DATABASES = DATABASES_LOCAL
 
 # Internationalization
 # https://docs.djangoproject.com/en/1.6/topics/i18n/

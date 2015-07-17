@@ -65,6 +65,7 @@ class WordRememberInfos(models.Model):
     word = models.ForeignKey(Word)
     user = models.ForeignKey(User)
 
+
     CHOICES_REMEMBER = [(CHOICE_REMEMBER_CONVERSANT, "熟词,不再复现"),
     (2, "似曾相识，下次还要提问"),
     (CHOICE_REMEMBER_UNACQUAINTED, "生词，未掌握"),
@@ -98,6 +99,9 @@ class WordRememberInfos(models.Model):
         recallInfo.word_recall = self
         recallInfo.recall_time = datetime.datetime.now()
         recallInfo.save()
+
+    def to_dict(self):
+        return {"spelling": self.word_spelling, "status": self.remember}
 
     def save(self, *args, **kwargs):
         self.change_time = timezone.now()

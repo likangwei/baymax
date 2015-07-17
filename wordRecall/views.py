@@ -185,7 +185,7 @@ def get_words(request, status=None):
         old_word_list = get_all_changed_words(user, last_get_time, now)
         result = []
         for word in old_word_list:
-            cur_data = {"spelling": word.word_spelling, "status": word.remember}
+            cur_data = word.to_dict()
             result.append(cur_data)
         result = json.dumps({"status": "ok", "timestamp": now_tstamp, "result": result})
         response = HttpResponse(json.dumps(result), 'application/json')
@@ -249,14 +249,21 @@ def set_word_status(request, words=None, status=None):
             data = {'result': 'user invalid'}
         else:
             wi, created = WordRememberInfos.objects.get_or_create(user=user, word=word, word_spelling=words)
+            change2what = -1
+            if status == "change":
+                if wi.remember == WordRememberInfos.CHOICE_REMEMBER_UNACQUAINTED:
+                    change2what =  WordRememberInfos.CHOICE_REMEMBER_CONVERSANT
+                else:
+                    change2what = WordRememberInfos.CHOICE_REMEMBER_UNACQUAINTED
 
             status_map = {"old": WordRememberInfos.CHOICE_REMEMBER_CONVERSANT,
-                          "new": WordRememberInfos.CHOICE_REMEMBER_UNACQUAINTED}
+                          "new": WordRememberInfos.CHOICE_REMEMBER_UNACQUAINTED,
+                          "change": change2what}
 
             wi.remember = status_map[status]
             wi.save()
 
-            data = {'result': 'success', 'status': status}
+            data = {'result': 'success', 'info': wi.to_dict()}
 
     elif request.method == "POST":
         word_id_list = request.POST.getlist('_selected_action')
