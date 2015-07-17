@@ -44,8 +44,7 @@ def get_all_changed_words(user, fromTime=None, toTime=None):
     if fromTime:
         change_time__range = (fromTime, toTime)
         conversant_words = WordRememberInfos.objects.filter(
-            user=user,
-            remember=WordRememberInfos.CHOICE_REMEMBER_CONVERSANT
+            user=user
         ).filter(change_time__range=change_time__range)
     else:
         conversant_words = WordRememberInfos.objects.filter(
