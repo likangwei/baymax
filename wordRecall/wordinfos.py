@@ -40,7 +40,7 @@ def get_all_changed_words(user, fromTime=None, toTime=None):
     """
     获取所有的熟单词
     """
-
+    print "from %s to %s" % (str(fromTime), str(toTime))
     if fromTime:
         change_time__range = (fromTime, toTime)
         conversant_words = WordRememberInfos.objects.filter(
