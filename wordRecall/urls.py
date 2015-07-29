@@ -29,6 +29,9 @@ urlpatterns =[
     url(r'^set_word_status/$', views.set_word_status, name='set_word_status'),
     url(r'^set_word_status/(?P<words>[\w\,\-]+)/(?P<status>[\w]+)/?',
         views.set_word_status, name='set_word_status'),
+
+        url(r'^sleep',
+        views.get_sleep, name='get_sleep'),
 ]
 
 handler404 = 'wordRecall.views.handler404'

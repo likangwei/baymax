@@ -86,7 +86,7 @@ DATABASES_SERVER = {
         'HOST': 'rdsg5v30594h2i02977d.mysql.rds.aliyuncs.com'
     }
 }
-if BASE_DIR.startswith("//users/likangwei"):
+if BASE_DIR.startswith("/Users/likangwei"):
     DATABASES = DATABASES_LOCAL
 else:
     DATABASES = DATABASES_SERVER

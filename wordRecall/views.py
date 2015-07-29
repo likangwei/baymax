@@ -107,6 +107,10 @@ def reg(request):
         form = RegForm()
     return render(request, 'recall/reg.html', {"form": form})
 
+def get_sleep(request):
+    import time
+    time.sleep(10)
+    return HttpResponse("hello sleep")
 
 def login(request):
     """
