@@ -1,0 +1,16 @@
+.recall_word{
+    background: indianred;
+    color: white;
+}
+
+
+.old_word{
+    color: white;
+    background: lawngreen;
+
+}
+
+.new_word{
+    color: white;
+    background: indianred;
+}
