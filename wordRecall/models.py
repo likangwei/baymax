@@ -2,17 +2,8 @@
 from django.db import models
 import datetime
 from django.contrib.auth.models import User
-# Create your models here.
+import urllib
 
-
-# class User(models.Model):
-#     """主人"""
-#     name = models.CharField('名字',max_length=100)
-#     age = models.IntegerField('年龄')
-#     birthday = models.DateField('生日')
-#
-#     def __str__(self):
-#         return self.name
 from django.utils import timezone
 WORD_TYPE_COMMON = 0
 WORD_TYPE_INVALID = 500
@@ -32,6 +23,7 @@ class Word(models.Model):
     repeated = models.IntegerField("复现率", default=0);
     type = models.IntegerField("类型", choices=WORD_TYPE_CHOICES, default=WORD_TYPE_COMMON)
     meaning = models.CharField("翻译", max_length=1024*8)
+    google_meaning = models.CharField("Google翻译", max_length=1024)
 
     def add_repeated(self, number=1):
         self.repeated = self.repeated + number
@@ -39,7 +31,23 @@ class Word(models.Model):
 
     def get_meaning(self):
         if not self.meaning:
-            import urllib
+            try:
+                params = {
+                    'key': 'AIzaSyBh5ETQW4x_rat4PoOcyuGrTni17xexWlc',
+                     'q': self.spelling,
+                     'target': 'zh-CN',
+                     'source': 'en'
+                }
+                f = urllib.urlopen("https://www.googleapis.com/language/translate/v2?%s" % params)
+                self.meaning = f.read()
+                self.save()
+            except:
+                pass
+        return self.meaning
+
+
+    def get_meaning_from_baidu(self):
+        if not self.meaning:
             try:
                 params = urllib.urlencode({'query': self.spelling, 'from': 'en', 'to': 'zh'})
                 f = urllib.urlopen("http://apistore.baidu.com/microservice/dictionary?%s" % params)
@@ -48,6 +56,7 @@ class Word(models.Model):
             except:
                 pass
         return self.meaning
+
 
     def __str__(self):
         return self.spelling

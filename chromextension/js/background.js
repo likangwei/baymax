@@ -5,6 +5,7 @@ var KEY_MEANING = "KEY_MEANING";
 var last_get_timetamp = 0;
 //host = "http://127.0.0.1:8000";
 host = "http://readdoc.net";
+meanings = {}
 store.set(KEY_HOST, host);
 
 function getHost(){
@@ -121,8 +122,8 @@ chrome.runtime.onMessage.addListener(function(message, sender, sendResponse){
 
     if (message.startsWith("getMeaning")){
         var word = message.split("###")[1];
-        var key = KEY_MEANING + word;
-        response = store.get(key);
+        var key = word;
+        response = meanings[key];
     }
     console.log(message + " send back from background  " + response);
     sendResponse(response);
@@ -161,7 +162,8 @@ function getAllWords(func){
                 var words = jo.result;
 
                 if(jo.result.length > 0){
-                    var msg = "更新了 " + jo.result.length + " 个单词";
+                    wordCount = store.length
+                    var msg = "更新了 " + jo.result.length + " 个单词" ;
                     notify(msg);
                 }
                 
@@ -183,26 +185,31 @@ function getAllMeaning(words){
     var ws = words.split("#");
     words = "";
     for(var i=0; i<ws.length; i++){
-        var key = KEY_MEANING + ws[i];
-        if(store.get(key) == null){
+        var key = ws[i];
+        if(!(key in meanings)){
             words = words + "#" + ws[i];
+        }else{
+
         }
+
     }
+    console.log(ws.toString);
     console.log(words);
     var host = getHost();
-
     var reqUrl = host + "/get_words_meaning";
+    console.log('request url ==>' + reqUrl)
      $.post(reqUrl, {"user": getUser(), "pwd": getPwd(), "words": words},
             function(response){
+            console.log('request url ==>' + response.toString())
             var data = $.parseJSON(response);
             if(data.status == "ok"){
-                var meanings = $.parseJSON(data.result);
-                for(var i=0; i<meanings.length; i++){
-                    var strs = meanings[i].split("###")
-                    var key = KEY_MEANING + strs[0];
-                    store.set(key, strs[1]);
+                var ms = $.parseJSON(data.result);
+                for(var i=0; i<ms.length; i++){
+                    var strs = ms[i].split("###")
+                    meanings[strs[0]] = strs[1]
                 }
             }
+            console.log("此页加载完成。");
     });
 }
 
