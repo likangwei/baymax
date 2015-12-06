@@ -2,12 +2,11 @@ from __future__ import absolute_import
 print "absolute_import", absolute_import
 import healthPriceless.settings
 print healthPriceless.settings.DEBUG
-from celery import shared_task
+# from celery import shared_task
 from wordRecall.models import Word
 from wordRecall.parser import get_html_word_repeated_info_cleaned
 
 
-@shared_task
 def add_all_page_word_to_repeated(html_url):
     print '>' * 30, html_url
     word_repeated_map = get_html_word_repeated_info_cleaned(html_url)
