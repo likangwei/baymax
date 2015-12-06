@@ -61,7 +61,7 @@ function notify(message) {
 
 
 chrome.runtime.onMessage.addListener(function(message, sender, sendResponse){
-    console.log("background get " + message);
+    console.log("后台收到命令:" + message);
     var response = null;
 
     if (message == "getUserInfo"){
@@ -76,7 +76,7 @@ chrome.runtime.onMessage.addListener(function(message, sender, sendResponse){
         }else if(!isLogin()){
             notify("当前未登陆单词变色");
             response = null;
-        }else if (store.get("start###") != false){
+        }else {
             getAllWords(function(rep){});
             response = oldWordMap();
         }
@@ -84,7 +84,6 @@ chrome.runtime.onMessage.addListener(function(message, sender, sendResponse){
 
     if (message == "clear"){
         clear();
-
         response = "ok";
     }
 
@@ -93,7 +92,6 @@ chrome.runtime.onMessage.addListener(function(message, sender, sendResponse){
         store.set("start###", ifStart)
         response = "ok"
     }
-
 
     if (message.startsWith("getClzName")){
         var word = message.split("###")[1];
@@ -125,7 +123,7 @@ chrome.runtime.onMessage.addListener(function(message, sender, sendResponse){
         var key = word;
         response = meanings[key];
     }
-    console.log(message + " send back from background  " + response);
+    console.log("后台收到命令:" + message + "\n 返回数据:" + response);
     sendResponse(response);
 });
 
@@ -183,34 +181,25 @@ function getAllWords(func){
 
 function getAllMeaning(words){
     var ws = words.split("#");
-    words = "";
+    words = [];
     for(var i=0; i<ws.length; i++){
         var key = ws[i];
         if(!(key in meanings)){
-            words = words + "#" + ws[i];
-        }else{
-
+            words.push(key);
         }
 
     }
-    console.log(ws.toString);
-    console.log(words);
     var host = getHost();
     var reqUrl = host + "/get_words_meaning";
     console.log('request url ==>' + reqUrl)
      $.post(reqUrl, {"user": getUser(), "pwd": getPwd(), "words": words},
             function(response){
-            console.log('request url ==>' + response.toString())
-            var data = $.parseJSON(response);
-            if(data.status == "ok"){
-                var ms = $.parseJSON(data.result);
-                for(var i=0; i<ms.length; i++){
-                    var strs = ms[i].split("###")
-                    meanings[strs[0]] = strs[1]
-                }
+            console.log('response ==>' + response.toString())
+            if(response.status == "ok"){
+                meanings = response.result
             }
             console.log("此页加载完成。");
-    });
+    }, 'json');
 }
 
 function changeWord2New(spelling) {

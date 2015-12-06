@@ -1,4 +1,4 @@
-# __author__ = 'hanzhao'
+#
 #
 # from __future__ import absolute_import
 #

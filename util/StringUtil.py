@@ -1,4 +1,4 @@
-__author__ = 'hanzhao'
+
 # -*- coding=utf-8 -*-
 import sys
 reload(sys)
@@ -67,7 +67,6 @@ def change_unicode_2_str(unicode_str):
 
 def get_split_word(lines, split_word, word_only=False, if_check_word=False, lower=False):
     """
-    分词   get_split_words(" a  b \n")　return [' ', 'a', ' ', ' ', 'b', ' ', '\n']
     :param lines:
     :param split_word:
     :return:

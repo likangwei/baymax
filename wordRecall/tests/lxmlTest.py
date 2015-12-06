@@ -1,4 +1,4 @@
-__author__ = 'hanzhao'
+
 
 tag_soup = '<meta><head><title>Hello</head><body onload=crash()>Hi all<p>'
 import urllib

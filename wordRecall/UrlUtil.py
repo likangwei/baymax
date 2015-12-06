@@ -1,4 +1,4 @@
-__author__ = 'hanzhao'
+
 #-*- coding=utf-8 -*-
 from django.core.urlresolvers import reverse
 from urllib import urlencode

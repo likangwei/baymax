@@ -115,7 +115,9 @@ USE_TZ = True
 
 
 STATIC_URL = '/static/'
-STATIC_ROOT = os.path.join(BASE_DIR, 'static')
+STATIC_ROOT = os.path.join(BASE_DIR, 'wordRecall/static')
+print STATIC_ROOT
+
 TEMPLATE_DIRS = (
     os.path.join(BASE_DIR, 'baymax', 'templates'),
     os.path.join(BASE_DIR, 'wordRecall', 'templates'),

@@ -23,26 +23,13 @@ class Word(models.Model):
     repeated = models.IntegerField("复现率", default=0);
     type = models.IntegerField("类型", choices=WORD_TYPE_CHOICES, default=WORD_TYPE_COMMON)
     meaning = models.CharField("翻译", max_length=1024*8)
-    google_meaning = models.CharField("Google翻译", max_length=1024)
+    google_meaning = models.CharField("Google翻译", max_length=1024, default='')
 
     def add_repeated(self, number=1):
         self.repeated = self.repeated + number
         self.save()
 
     def get_meaning(self):
-        if not self.google_meaning:
-            try:
-                params = {
-                    'key': 'AIzaSyBh5ETQW4x_rat4PoOcyuGrTni17xexWlc',
-                     'q': self.spelling,
-                     'target': 'zh-CN',
-                     'source': 'en'
-                }
-                f = urllib.urlopen("https://www.googleapis.com/language/translate/v2?%s" % params)
-                self.meaning = f.read()
-                self.save()
-            except:
-                pass
         return self.google_meaning
 
 

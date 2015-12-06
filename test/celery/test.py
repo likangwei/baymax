@@ -1,4 +1,4 @@
-__author__ = 'hanzhao'
+
 
 
 from tasks import add

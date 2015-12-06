@@ -1,5 +1,6 @@
-__author__ = 'likangwei'
 # -*- coding: utf-8 -*-
+
+__author__ = 'likangwei'
 
 from util import StringUtil
 from loader import get_html_element

@@ -184,7 +184,7 @@ def get_words(request, status=None):
     else:
         now = timezone.now()
         now_tstamp = calendar.timegm(now.timetuple())
-        now_tstamp = "%s.%d" %(now_tstamp, now.microsecond)
+        now_tstamp = "%s.%d" % (now_tstamp, now.microsecond)
         old_word_list = get_all_changed_words(user, last_get_time, now)
         result = []
         for word in old_word_list:
@@ -198,6 +198,35 @@ def get_words(request, status=None):
 
 from django.views.decorators.csrf import csrf_exempt
 
+def get_google_meanings(words):
+    words = list(words)
+    all_count = len(words)
+    start = 0
+    skip = 100
+    import requests
+    while start < all_count:
+        print start, all_count
+        cur_words = words[start:start+skip]
+        start += skip
+        params = {
+            'key': 'AIzaSyBh5ETQW4x_rat4PoOcyuGrTni17xexWlc',
+             'q': [w.spelling for w in cur_words],
+             'target': 'zh-CN',
+             'source': 'en'
+        }
+        response = requests.get('https://www.googleapis.com/language/translate/v2', params)
+        print response.url
+        data = response.json()['data']
+        translations = data['translations']
+        print translations
+        assert len(cur_words) == len(translations)
+        for idx, translate in enumerate(translations):
+            word = cur_words[idx]
+            word.google_meaning = translate['translatedText']
+            word.save()
+
+
+
 @csrf_exempt
 def get_words_meaning(request):
     user = request.POST.get("user")
@@ -208,19 +237,22 @@ def get_words_meaning(request):
     if user is None:
         response = json.dumps({"status": "fail"})
     else:
-        word_list = request.POST.get("words").split("#")
-        for spelling in word_list :
+        word_list = request.POST.getlist("words[]")
+        print word_list
+        for spelling in word_list:
             created, word = Word.objects.get_or_create(spelling=spelling)
 
-        words = Word.objects.filter(spelling__in=word_list);
-        result = []
+        no_meaning_words = Word.objects.filter(spelling__in=word_list, google_meaning='')
+        get_google_meanings(no_meaning_words)
+        words = Word.objects.filter(spelling__in=word_list)
+        result = {}
         for word in words:
-            meaning = word.get_meaning()
-            if meaning:
-                result.append(word.spelling+"###"+word.get_meaning())
-        result = json.dumps(result)
+            result[word.spelling] = word.get_meaning()
+
+        print result
         response = json.dumps({"status": "ok", "result": result})
-    response = HttpResponse(json.dumps(response), 'application/json')
+
+    response = HttpResponse(response, 'application/json')
     response['Access-Control-Allow-Origin'] = "*"
     return response
 

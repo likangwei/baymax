@@ -6,20 +6,16 @@ var request_param = null;
 var BOX_CLASS = "MYBOX_XODKFJS";
 
 //request_param = {}
-function getTranslateDivElementHtml(word_spelling, jo){
+function getTranslateDivElementHtml(word_spelling, response){
     //获取某一个单词的解释DIV的HTML
     var translate_html = '<span id="curWord" class="recall_word" value="' + word_spelling + '">' + word_spelling + '</span></br></br>';
 
     try
     {
-        var parts = jo.retData.dict_result.symbols[0].parts;
+        var parts = [response];
         for (var i = 0; i < parts.length; i ++) {
             var cur_p = parts[i];
-            translate_html = translate_html + '<span class="translate_part">' + cur_p.part + "</span><br/>";
-            var cur_means = cur_p.means;
-            for(var y = 0; y < cur_means.length; y++){
-                translate_html = translate_html +  '<span class="translate_mean">' + (y+1) + "." + cur_means[y] + "</span><br/>";
-            }
+            translate_html = translate_html + '<span class="translate_part">' + cur_p + "</span><br/>";
         }
     }
     catch(err)
@@ -29,10 +25,10 @@ function getTranslateDivElementHtml(word_spelling, jo){
     return translate_html;
 }
 
-function refreshUI(pop, translateJson, word_spelling){
+function refreshUI(pop, response, word_spelling){
     var offset = pop.offset();
     var box = getBox();
-    var translate_html = getTranslateDivElementHtml(word_spelling, translateJson);
+    var translate_html = getTranslateDivElementHtml(word_spelling, response);
     box.find(".tran").html(translate_html);
     $("#curWord").click(recall_word_click);
     var tran_link = "http://translate.google.cn/#en/zh-CN/" + word_spelling;
@@ -74,10 +70,8 @@ function onMouseOver(){
     }else{
         getMeaning(word_spelling, function(response){
             console.log(response);
-            var translateJson = $.parseJSON(response);
-            //var translateJson = result;
-            refreshUI(pop, translateJson, word_spelling);
-            translate_map[word_spelling] = translateJson;
+            refreshUI(pop, response, word_spelling);
+            translate_map[word_spelling] = response;
         });
     }
 

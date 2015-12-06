@@ -1,4 +1,4 @@
-# __author__ = 'hanzhao'
+#
 #
 # from celery import Celery
 # import time
