@@ -30,7 +30,7 @@ class Word(models.Model):
         self.save()
 
     def get_meaning(self):
-        if not self.meaning:
+        if not self.google_meaning:
             try:
                 params = {
                     'key': 'AIzaSyBh5ETQW4x_rat4PoOcyuGrTni17xexWlc',
@@ -43,7 +43,7 @@ class Word(models.Model):
                 self.save()
             except:
                 pass
-        return self.meaning
+        return self.google_meaning
 
 
     def get_meaning_from_baidu(self):
