@@ -28,6 +28,7 @@ function getTranslateDivElementHtml(word_spelling, response){
 function refreshUI(pop, response, word_spelling){
     var offset = pop.offset();
     var box = getBox();
+
     var translate_html = getTranslateDivElementHtml(word_spelling, response);
     box.find(".tran").html(translate_html);
     $("#curWord").click(recall_word_click);
@@ -57,7 +58,7 @@ function refreshUI(pop, response, word_spelling){
         left = offset.left - (box.width()/2) + pop.width()/2 ;
     }
 
-    box.css({'display': 'block', 'top': top, 'left': left });
+    box.css({'display': 'block', 'top': top, 'left': left, 'z-index': 1000 });
 }
 
 function onMouseOver(){
@@ -262,6 +263,7 @@ function addBoxDiv(){
     var body = document.getElementsByTagName("body")[0]
     debugAlert(body);
     var box = document.createElement("div");
+    box.setAttribute('z-index',1000)
     box.className = BOX_CLASS;
     var p = document.createElement("p");
     p.className = "tran";

@@ -196,7 +196,10 @@ function getAllMeaning(words){
             function(response){
             console.log('response ==>' + response.toString())
             if(response.status == "ok"){
-                meanings = response.result
+                for(var k in response.result){
+                    meanings[k] = response.result[k];
+                }
+                
             }
             console.log("此页加载完成。");
     }, 'json');
