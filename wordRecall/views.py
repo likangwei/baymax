@@ -242,12 +242,7 @@ def get_words_meaning(request):
         for spelling in word_list:
             created, word = Word.objects.get_or_create(spelling=spelling)
 
-<<<<<<< HEAD
         no_meaning_words = Word.objects.filter(spelling__in=word_list, google_meaning='')
-        print 'no_meanings', no_meaning_words
-=======
-        no_meaning_words = Word.objects.filter(google_meaning='')
->>>>>>> 7bb88e54c62c59c2d710b625da0448c5cfa09182
         get_google_meanings(no_meaning_words)
         words = Word.objects.filter(spelling__in=word_list)
         result = {}
