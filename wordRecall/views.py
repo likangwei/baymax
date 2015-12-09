@@ -214,7 +214,7 @@ def get_google_meanings(words):
              'target': 'zh-CN',
              'source': 'en'
         }
-        response = requests.get('https://www.googleapis.com/language/translate/v2', params)
+        response = requests.get('https://www.googleapis.com/language/translate/v2', params=params)
         print response.url
         data = response.json()['data']
         translations = data['translations']
@@ -243,6 +243,7 @@ def get_words_meaning(request):
             created, word = Word.objects.get_or_create(spelling=spelling)
 
         no_meaning_words = Word.objects.filter(spelling__in=word_list, google_meaning='')
+        print 'no_meanings', no_meaning_words
         get_google_meanings(no_meaning_words)
         words = Word.objects.filter(spelling__in=word_list)
         result = {}
