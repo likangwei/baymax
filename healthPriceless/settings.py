@@ -10,7 +10,7 @@ https://docs.djangoproject.com/en/1.6/ref/settings/
 
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
 import os
-
+import raven
 BASE_DIR = os.path.dirname(os.path.dirname(__file__))
 print BASE_DIR
 # celery config
@@ -45,9 +45,12 @@ INSTALLED_APPS = (
     "bootstrapform",
     # 'baymax',
     'wordRecall',
-
-
+    'raven.contrib.django.raven_compat',
 )
+RAVEN_CONFIG = {
+    'dsn': 'https://2dec9af7a6324fcbac49412869fb3826:9336ea24c06a4d86bafa718ba3c8d5dd@app.getsentry.com/55984',
+    'release': raven.fetch_git_sha(os.path.dirname(BASE_DIR)),
+}
 
 MIDDLEWARE_CLASSES = (
     'django.contrib.sessions.middleware.SessionMiddleware',
