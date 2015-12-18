@@ -214,7 +214,11 @@ def get_google_meanings(words):
         }
         response = requests.get('https://www.googleapis.com/language/translate/v2', params=params)
         print response.url
-        data = response.json()['data']
+        data = response.json().get("data", None)
+        if not data:
+            print response.json()
+            return
+
         translations = data['translations']
         print translations
         assert len(cur_words) == len(translations)
