@@ -203,7 +203,7 @@ def get_google_meanings(words):
     import requests
     while words:
         cur_words = []
-        while words and sum([len(word.spelling) for word in cur_words]) < 500:
+        while words and sum([len(word.spelling) for word in cur_words]) < 700:
             cur_words.append(words.pop())
 
         params = {

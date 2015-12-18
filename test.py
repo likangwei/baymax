@@ -2,7 +2,11 @@ def test():
     from wordRecall.models import Word
     no_meaning_words = Word.objects.filter(google_meaning='')
     from wordRecall.views import get_google_meanings
-    get_google_meanings(no_meaning_words)
+
+    while no_meaning_words.count() > 0:
+        get_google_meanings(no_meaning_words)
+        no_meaning_words = Word.objects.filter(google_meaning='')
+
 
 if __name__ == '__main__':
     import os
