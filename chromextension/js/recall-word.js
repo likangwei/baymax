@@ -9,7 +9,6 @@ var BOX_CLASS = "MYBOX_XODKFJS";
 function getTranslateDivElementHtml(word_spelling, response){
     //获取某一个单词的解释DIV的HTML
     var translate_html = '<span id="curWord" class="recall_word" value="' + word_spelling + '">' + word_spelling + '</span></br></br>';
-
     try
     {
         var parts = [response];
@@ -32,8 +31,18 @@ function refreshUI(pop, response, word_spelling){
     var translate_html = getTranslateDivElementHtml(word_spelling, response);
     box.find(".tran").html(translate_html);
     $("#curWord").click(recall_word_click);
+
     var tran_link = "http://translate.google.cn/#en/zh-CN/" + word_spelling;
     box.find(".tran_link").attr({'href': tran_link});
+
+    var google_link = "https://www.google.com/?gws_rd=ssl#q=" + word_spelling;
+    box.find(".google_link").attr({'href': google_link});    
+    
+    var baidu_link = "https://www.baidu.com/s?wd=" + word_spelling;
+    box.find(".baidu_link").attr({'href': baidu_link});  
+
+    var wiki_link = "https://zh.wikipedia.org/wiki/" + word_spelling;
+    box.find(".wiki_link").attr({'href': wiki_link});    
 
     var vleft = offset.left - document.body.scrollLeft;
     var isLeft = vleft < (document.documentElement.clientWidth / 4);
@@ -215,8 +224,12 @@ function replaceStr(oSpan){
     while(oldWordMap == null){
         debugAlert("error oldWordMap == null");
     }
-    var exlude_tag_list = {"style": null,
-        "code": null, "localName":null, "textarea": null
+    var exlude_tag_list = {
+        "style": null,
+        "code": null, 
+        "localName":null, 
+        "textarea": null,
+        "script": null,
     }
     if(oSpan.localName in exlude_tag_list){
         return;
@@ -259,21 +272,27 @@ function replaceStr(oSpan){
 
 }
 
+
+
 function addBoxDiv(){
-    var body = document.getElementsByTagName("body")[0]
-    debugAlert(body);
-    var box = document.createElement("div");
-    box.setAttribute('z-index',1000)
-    box.className = BOX_CLASS;
-    var p = document.createElement("p");
-    p.className = "tran";
-    box.appendChild(p);
-    var a = document.createElement("a");
-    a.className = "tran_link";
-    a.innerText = "Google翻译一下";
-    a.setAttribute("target", "_blank");
-    box.appendChild(a);
-    body.appendChild(box);
+
+    var box_html = '   <div z-index="1000" class="MYBOX_XODKFJS" style="display: none; top: 225.984px; left: 891.234px; z-index: 1000;">';
+    box_html += '        <p class="tran">';
+    box_html += '            <span id="curWord" class="recall_word" value="crontab">crontab</span>';
+    box_html += '            <br>';
+    box_html += '            <br>';
+    box_html += '            <span class="translate_part">';
+                    
+    box_html += '            </span>';
+    box_html += '            <br>';
+    box_html += '        </p>';
+    box_html += '        <a class="tran_link jump_link" target="_blank" href=""> Google翻译一下 </a>';
+    box_html += '        <a class="google_link jump_link" target="_blank" href="">  Google搜索  </a>';
+    box_html += '        <a class="baidu_link jump_link" target="_blank" href=""> 百度一下  </a>';
+    box_html += '        <a class="wiki_link jump_link" target="_blank" href=""> WIKI查找 </a>';
+    box_html += '    </div>';
+
+    $("body").append($(box_html));
 
 }
 
@@ -282,7 +301,7 @@ $(document).ready(function(){
 
     function doAfterGetWords(response){
         if(response != null){
-            console.log("get words success");
+            console.log("加载熟词完成");
             run(response);
         }
     }
