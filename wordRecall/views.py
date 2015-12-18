@@ -202,7 +202,7 @@ def get_google_meanings(words):
     words = list(words)
     all_count = len(words)
     start = 0
-    skip = 100
+    skip = 50
     import requests
     while start < all_count:
         print start, all_count
