@@ -1,28 +1,12 @@
-def accepts(*types):
-    def check_accepts(f):
-        print len(types), f.func_code.co_argcount
-        assert len(types) == f.func_code.co_argcount
-        def new_f(*args, **kwds):
-            for (a, t) in zip(args, types):
-                assert isinstance(a, t), \
-                       "arg %r does not match %s" % (a,t)
-            return f(*args, **kwds)
-        new_f.func_name = f.func_name
-        return new_f
-    return check_accepts
+def test():
+    from wordRecall.models import Word
+    no_meaning_words = Word.objects.filter(google_meaning='')
+    from wordRecall.views import get_google_meanings
+    get_google_meanings(no_meaning_words)
 
-def returns(rtype):
-    def check_returns(f):
-        def new_f(*args, **kwds):
-            result = f(*args, **kwds)
-            assert isinstance(result, rtype), \
-                   "return value %r does not match %s" % (result,rtype)
-            return result
-        new_f.func_name = f.func_name
-        return new_f
-    return check_returns
-
-@accepts(int, (int,float))
-@returns((int,float))
-def func(arg1, arg2):
-    return arg1 * arg2
+if __name__ == '__main__':
+    import os
+    from django.core.wsgi import get_wsgi_application
+    os.environ['DJANGO_SETTINGS_MODULE'] = 'healthPriceless.settings'
+    application = get_wsgi_application()
+    test()

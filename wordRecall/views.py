@@ -200,14 +200,12 @@ from django.views.decorators.csrf import csrf_exempt
 
 def get_google_meanings(words):
     words = list(words)
-    all_count = len(words)
-    start = 0
-    skip = 50
     import requests
-    while start < all_count:
-        print start, all_count
-        cur_words = words[start:start+skip]
-        start += skip
+    while words:
+        cur_words = []
+        while words and sum([len(word.spelling) for word in cur_words]) < 500:
+            cur_words.append(words.pop())
+
         params = {
             'key': 'AIzaSyBh5ETQW4x_rat4PoOcyuGrTni17xexWlc',
              'q': [w.spelling for w in cur_words],
@@ -224,7 +222,6 @@ def get_google_meanings(words):
             word = cur_words[idx]
             word.google_meaning = translate['translatedText']
             word.save()
-
 
 
 @csrf_exempt
