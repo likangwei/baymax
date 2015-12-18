@@ -49,7 +49,7 @@ INSTALLED_APPS = (
 )
 RAVEN_CONFIG = {
     'dsn': 'https://2dec9af7a6324fcbac49412869fb3826:9336ea24c06a4d86bafa718ba3c8d5dd@app.getsentry.com/55984',
-    'release': raven.fetch_git_sha(os.path.dirname(BASE_DIR)),
+    'release': raven.fetch_git_sha(BASE_DIR),
 }
 
 MIDDLEWARE_CLASSES = (
