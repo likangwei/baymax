@@ -1,3 +1,4 @@
+import time
 def test():
     from wordRecall.models import Word
     no_meaning_words = Word.objects.filter(google_meaning='')[:500]
@@ -6,6 +7,7 @@ def test():
     while no_meaning_words.count() > 0:
         get_google_meanings(no_meaning_words)
         no_meaning_words = Word.objects.filter(google_meaning='')[:500]
+        time.sleep(1)
 
 
 if __name__ == '__main__':
