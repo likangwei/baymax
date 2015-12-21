@@ -1,6 +1,6 @@
 {
-  "name": "单词变色",
-  "description": "单词变色",
+  "name": "淘生词",
+  "description": "淘生词",
   "version": "2.0",
 
   "permissions": [
@@ -23,7 +23,7 @@
   ],
 
   "browser_action": {
-    "default_title": "单词变色",
+    "default_title": "淘生词",
     "default_popup": "login.html"
 
   },
