@@ -12,7 +12,6 @@ from django.contrib.auth import logout
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.models import User
 
-
 from django.http import HttpResponseRedirect
 from django.http import HttpResponse
 
@@ -199,20 +198,23 @@ def get_words(request, status=None):
 from django.views.decorators.csrf import csrf_exempt
 
 def get_google_meanings(words):
+    """获取google 翻译"""
     words = list(words)
     import requests
     while words:
         cur_words = []
         while words and sum([len(word.spelling) for word in cur_words]) < 700:
             cur_words.append(words.pop())
-
         params = {
             'key': 'AIzaSyBh5ETQW4x_rat4PoOcyuGrTni17xexWlc',
              'q': [w.spelling for w in cur_words],
              'target': 'zh-CN',
              'source': 'en'
         }
-        response = requests.get('https://www.googleapis.com/language/translate/v2', params=params)
+        try:
+            response = requests.get('https://www.googleapis.com/language/translate/v2', params=params)
+        except:
+            break
         print response.url
         data = response.json().get("data", None)
         if not data:
