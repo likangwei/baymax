@@ -18,14 +18,14 @@ class UserViewSet(viewsets.ModelViewSet):
 
     queryset = User.objects.all()
     serializer_class = UserSerializer
-    permission_classes = (IsOwnerOrReadOnly, )
+    permission_classes = (IsAuthenticatedOrReadOnly, IsOwnerOrReadOnly, )
 
 # ViewSets define the view behavior.
 class IgnoreUrlViewSet(viewsets.ModelViewSet):
 
     queryset = IgnoreUrl.objects.all()
     serializer_class = IgnoreSerializer
-    permission_classes = (IsOwnerOrReadOnly,)
+    permission_classes = (IsAuthenticatedOrReadOnly, IsOwnerOrReadOnly,)
 
     def get_queryset(self):
         return IgnoreUrl.objects.filter(user=self.request.user)
