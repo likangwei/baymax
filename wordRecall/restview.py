@@ -28,7 +28,7 @@ class IgnoreUrlViewSet(viewsets.ModelViewSet):
     permission_classes = (IsAuthenticatedOrReadOnly, IsOwnerOrReadOnly,)
 
     def get_queryset(self):
-        return IgnoreUrl.objects.filter(user=self.request.user)
+        return IgnoreUrl.objects.filter(user__id=self.request.user.id)
 
     def perform_create(self, serializer):
         serializer.save(user=self.request.user)
