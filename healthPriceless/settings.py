@@ -15,9 +15,8 @@ BASE_DIR = os.path.dirname(os.path.dirname(__file__))
 print BASE_DIR
 # celery config
 BROKER_URL = 'amqp://'
-# CELERY_ACCEPT_CONTENT = ['application/json']
-# CELERY_TASK_SERIALIZER = 'json'
-# CELERY_RESULT_SERIALIZER = 'json'
+import socket
+IS_SERVER = socket.gethostname() == 'iZ25jidmr1pZ'
 
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/1.6/howto/deployment/checklist/
@@ -46,8 +45,11 @@ INSTALLED_APPS = (
     'rest_framework',
     'corsheaders',
     'wordRecall',
-    'raven.contrib.django.raven_compat',
 )
+
+if IS_SERVER:
+    INSTALLED_APPS += ('raven.contrib.django.raven_compat',)
+
 RAVEN_CONFIG = {
     'dsn': 'https://2dec9af7a6324fcbac49412869fb3826:9336ea24c06a4d86bafa718ba3c8d5dd@app.getsentry.com/55984',
     'release': raven.fetch_git_sha(BASE_DIR),
@@ -55,7 +57,6 @@ RAVEN_CONFIG = {
 
 
 MIDDLEWARE_CLASSES = (
-
     'wordRecall.middleware.DisableCSRFCheck',
     'corsheaders.middleware.CorsMiddleware',
     'django.middleware.common.CommonMiddleware',
