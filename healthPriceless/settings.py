@@ -16,7 +16,7 @@ print BASE_DIR
 # celery config
 BROKER_URL = 'amqp://'
 import socket
-IS_SERVER = socket.gethostname() == 'iZ25jidmr1pZ'
+IS_SERVER = socket.gethostname() in ['iZ25jidmr1pZ']
 
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/1.6/howto/deployment/checklist/
