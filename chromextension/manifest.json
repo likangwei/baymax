@@ -11,7 +11,12 @@
   ],
 
   "background": {
-    "scripts": [ "js/jquery.js", "js/store.js", "js/background.js"]
+    "scripts": [
+      "js/jquery.js",
+      "js/store.js",
+      "js/background.js",
+      "js/ignore.js"
+    ]
   },
 
    "content_scripts": [

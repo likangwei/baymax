@@ -3,8 +3,7 @@ var KEY_PWD = "pwd-ucuaksdf";
 var KEY_HOST = "HOST";
 var KEY_MEANING = "KEY_MEANING";
 var last_get_timetamp = 0;
-//host = "http://127.0.0.1:8000";
-host = "http://readdoc.net";
+host = getHost();
 meanings = {}
 store.set(KEY_HOST, host);
 
@@ -12,15 +11,23 @@ function getHost(){
     return store.get(KEY_HOST);
 }
 
-function getUserInfo(){
-    var host = getHost();
+function getUser(){
     var user = store.get(KEY_USER);
+    return user;
+}
+
+function getPwd(){
     var pwd = store.get(KEY_PWD);
-    var result = null;
+    return pwd;
+}
 
-    result =  host + "###" + user + "###" + pwd;
-
-    return result;
+function getUserInfo(){
+    var rst = {
+        host: getHost(),
+        user: getUser(),
+        pwd: getPwd(),
+    }
+    return rst;
 }
 
 function oldWordMap(){
@@ -59,7 +66,6 @@ function notify(message) {
   });
 }
 
-
 chrome.runtime.onMessage.addListener(function(message, sender, sendResponse){
     console.log("后台收到命令:" + message);
     var response = null;
@@ -69,9 +75,7 @@ chrome.runtime.onMessage.addListener(function(message, sender, sendResponse){
     }
 
     if (message == "getAllWords"){
-        var domain = sender.url.split("/")[2]
-        var not_tran_list = store.get("not_tran");
-        if(not_tran_list!=null && domain in not_tran_list && not_tran_list[domain]==true ){
+        if(is_ignore_url(sender.url)){
             response = null;
         }else if(!isLogin()){
             notify("当前未登陆单词变色");
@@ -133,15 +137,6 @@ function isLogin(){
     return user != null && pwd != null ;
 }
 
-function getUser(){
-    var user = store.get(KEY_USER);
-    return user;
-}
-
-function getPwd(){
-    var pwd = store.get(KEY_PWD);
-    return pwd;
-}
 
 function getAllWords(func){
     //last_get_timetamp = 0;
@@ -206,7 +201,6 @@ function getAllMeaning(words){
 }
 
 function changeWord2New(spelling) {
-
     var change2new = false;
     if(store.get(spelling) != null){
         var curWord = store.get(spelling)
@@ -226,37 +220,19 @@ function changeWord2New(spelling) {
             getAllWords();
     });
     return change2new;
-    
 }
 
 if(getUser() != null && getPwd() != null){
    getAllWords();
-
 }
 
-function if_tran_this_page(infos, tab, iftran){
-// 是否翻译此网页
-    var pageUrl = infos.pageUrl;
-    var notUrl = pageUrl.split("/")[2]
-    var not_tran_list = store.get("not_tran");
-    if (not_tran_list == null){
-        not_tran_list = {};
-    }
-    
-    not_tran_list[notUrl] = !iftran;
-    
-
-    
-    store.set("not_tran", not_tran_list);
-}
 
 function tran_this_page(infos, tab){
-    if_tran_this_page(infos, tab, true);
-
+    dont_ignore_url(infos.pageUrl);
 }
 
 function dont_tran_this_page(infos, tab){
-    if_tran_this_page(infos, tab, false); 
+    ignore_url(infos.pageUrl);
 }
 
 chrome.contextMenus.create(

@@ -1,15 +1,12 @@
-
 var _host = null;
 var _user = null;
 var _pwd = null;
-
 var DEBUG = false;
 
 
 function setUserInfo(host, userName, pwd, func){
     var msg = "setUserInfo" + "###" + host + "###" +userName + "###" + pwd;
     chrome.runtime.sendMessage(msg, function(response){
-
         if(response = "ok"){
             _host = host;
             _user = userName;
@@ -18,10 +15,8 @@ function setUserInfo(host, userName, pwd, func){
         }else{
             func(false);
         }
-
     });
 }
-
 
 function clear_all_data(func){
         chrome.runtime.sendMessage('clear', function(response){
@@ -35,7 +30,6 @@ function clear_all_data(func){
         }
     });
 }
-
 
 function getMeaning(spelling, func){
     var msg = 'getMeaning###' + spelling;
@@ -75,11 +69,10 @@ function getUserInfoFromBackground(func){
             console.log("step to fail");
             func(false);
         }else{
-            var userinfos = response.split("###");
-            _host = userinfos[0];
-            _user = userinfos[1];
-            _pwd = userinfos[2];
-            console.log("step to ok");
+            _host = response.host;
+            _user = response.user;
+            _pwd = response.pwd;
+            console.log("获取用户信息成功");
             func(true);
         }
     });
@@ -106,11 +99,9 @@ function startBak(){
     start(true);
 }
 
-
 function stopBak(){
     start(false)
 }
-
 function getHost(){
     return _host;
 }

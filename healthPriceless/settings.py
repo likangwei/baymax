@@ -41,9 +41,10 @@ INSTALLED_APPS = (
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
-
     "bootstrapform",
     # 'baymax',
+    'rest_framework',
+    'corsheaders',
     'wordRecall',
     'raven.contrib.django.raven_compat',
 )
@@ -52,15 +53,19 @@ RAVEN_CONFIG = {
     'release': raven.fetch_git_sha(BASE_DIR),
 }
 
+
 MIDDLEWARE_CLASSES = (
-    'django.contrib.sessions.middleware.SessionMiddleware',
+
+    'wordRecall.middleware.DisableCSRFCheck',
+    'corsheaders.middleware.CorsMiddleware',
     'django.middleware.common.CommonMiddleware',
-    'django.middleware.csrf.CsrfViewMiddleware',
+    'django.contrib.sessions.middleware.SessionMiddleware',
+    # 'django.middleware.csrf.CsrfViewMiddleware',
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
 )
-
+CORS_ORIGIN_ALLOW_ALL = True
 ROOT_URLCONF = 'healthPriceless.urls'
 
 WSGI_APPLICATION = 'healthPriceless.wsgi.application'
@@ -79,7 +84,6 @@ DATABASES_LOCAL = {
     }
 }
 
-
 DATABASES_SERVER = {
     'default': {
         'ENGINE': 'django.db.backends.mysql',
@@ -89,10 +93,18 @@ DATABASES_SERVER = {
         'HOST': 'rdsg5v30594h2i02977d.mysql.rds.aliyuncs.com'
     }
 }
-if BASE_DIR.startswith("/Users/likangwei"):
-    DATABASES = DATABASES_LOCAL
-else:
-    DATABASES = DATABASES_SERVER
+HOST_MAP = {
+    'default': {
+        'db': DATABASES_LOCAL
+    },
+    'iZ25jidmr1pZ': {
+        'db': DATABASES_SERVER
+    }
+}
+import socket
+host_name = socket.gethostname()
+HOST_DATA = HOST_MAP.get(host_name, HOST_MAP.get("default"))
+DATABASES = HOST_DATA['db']
 
 
 # Internationalization
@@ -131,4 +143,14 @@ CACHES = {
     'default': {
         'BACKEND': 'django.core.cache.backends.locmem.LocMemCache',
     }
+}
+
+
+REST_FRAMEWORK = {
+    # Use Django's standard `django.contrib.auth` permissions,
+    # or allow read-only access for unauthenticated users.
+    'DEFAULT_PERMISSION_CLASSES': [
+        # AllowAny
+        'rest_framework.permissions.DjangoModelPermissionsOrAnonReadOnly'
+    ]
 }

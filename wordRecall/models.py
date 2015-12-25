@@ -13,8 +13,8 @@ WORD_TYPE_CHOICES = [
     (WORD_TYPE_INVALID, "无效"),
 ]
 
-class Word(models.Model):
 
+class Word(models.Model):
     CHOICES_REPEATED = []
     for i in range(11):
         CHOICES_REPEATED.append((i, '%s' %i))
@@ -32,7 +32,6 @@ class Word(models.Model):
     def get_meaning(self):
         return self.google_meaning
 
-
     def get_meaning_from_baidu(self):
         if not self.meaning:
             try:
@@ -44,11 +43,8 @@ class Word(models.Model):
                 pass
         return self.meaning
 
-
     def __str__(self):
         return self.spelling
-
-
 
 CHOICE_REMEMBER_CONVERSANT = 1
 CHOICE_REMEMBER_UNACQUAINTED = 3
@@ -61,19 +57,18 @@ class WordRememberInfos(models.Model):
     word = models.ForeignKey(Word)
     user = models.ForeignKey(User)
 
-
     CHOICES_REMEMBER = [(CHOICE_REMEMBER_CONVERSANT, "熟词,不再复现"),
-    (2, "似曾相识，下次还要提问"),
-    (CHOICE_REMEMBER_UNACQUAINTED, "生词，未掌握"),
-    (4, "未分类"),
-           ]
+                        (2, "似曾相识，下次还要提问"),
+                        (CHOICE_REMEMBER_UNACQUAINTED, "生词，未掌握"),
+                        (4, "未分类"),
+   ]
 
     CHOICES_WEIGHT = [(1, "非常重要"),
         (2, "比较重要"),
         (3, "一般"),
         (4, "不重要"),
         (5, "完全不用记"),
-               ]
+   ]
 
     word_spelling = models.CharField("拼写", max_length=100)
     weight = models.IntegerField("重要度", default=3, choices=CHOICES_WEIGHT)
@@ -104,7 +99,7 @@ class WordRememberInfos(models.Model):
         return super(WordRememberInfos, self).save(*args, **kwargs)
 
     def __str__(self):
-        return '%s_%s' %(self.user.pk, self.word_spelling)
+        return '%s_%s' % (self.user.pk, self.word_spelling)
 
 
 class RequestUrl(models.Model):
@@ -116,8 +111,8 @@ class RequestHistory(models.Model):
     url = models.ForeignKey(RequestUrl)
     user = models.ForeignKey(User)
     url_info = models.CharField("访问链接", max_length=500)
-    request_number = models.IntegerField("请求次数", default=0)
 
+    request_number = models.IntegerField("请求次数", default=0)
 
 
 class RecallInfo(models.Model):
@@ -128,6 +123,11 @@ class RecallInfo(models.Model):
     recall_time = models.DateTimeField()
     remember = models.IntegerField("记住程度", default=0, choices=CHOICES_REMEMBER)
 
-# class WordBrother(models.Model):
-#     raw_word = models.ForeignKey(Word, verbose_name="原生词")
-#     brother_word = models.ForeignKey(Word, verbose_name="相似词")
+
+class IgnoreUrl(models.Model):
+    user = models.ForeignKey(User, related_name='ignore_urls')
+    url = models.CharField(max_length=100, default='', null=True)
+
+    class Meta:
+        unique_together = ('user', 'url')
+

@@ -478,21 +478,15 @@ def translate_(request):
     print tran_result
     return render(request, 'recall/translate.html', {"tran_from": form, "tran_result": tran_result})
 
-
-
-
 def handler404(request):
-    response = render_to_response('404.html', {},
-                                  context_instance=RequestContext(request))
+    response = render_to_response('404.html', {}, context_instance=RequestContext(request))
     response.status_code = 404
     return response
-
 
 def handler500(request):
     response = render_to_response('500.html', {}, context_instance=RequestContext(request))
     response.status_code = 500
     return response
-
 
 def __redirect(url, if_reverse=False):
     if if_reverse:

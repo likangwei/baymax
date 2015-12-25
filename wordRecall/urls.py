@@ -1,13 +1,23 @@
 # -*- coding: utf-8 -*-
 __author__ = 'likang'
-from django.conf.urls import patterns, url
 from django.contrib import admin
 import views
-admin.autodiscover()
-
+from django.conf.urls import url, include
+from rest_framework import routers
+from restview import IgnoreUrlViewSet
+from restview import UserViewSet
+from rest_framework import urls
+from django.views.decorators.csrf import csrf_exempt
+# Routers provide a way of automatically determining the URL conf.
+router = routers.DefaultRouter()
+router.register(r'settings', IgnoreUrlViewSet)
+router.register(r'users', UserViewSet)
 regex_word = '(?P<words>[\w]+)'
-
-urlpatterns =[
+admin.autodiscover()
+# Wire up our API using automatic URL routing.
+# Additionally, we include login URLs for the browsable API.
+urlpatterns = [
+    url(r'^rest/', include(router.urls), name='rest'),
     url(r'^$', views.index, name='index'),
     url(r'^contact/?', views.contact, name='contact'),
     url(r'^go/?', views.go_2_page, name='go'),
@@ -27,16 +37,9 @@ urlpatterns =[
     url(r'^frequency_charts/?', views.frequency_charts, name='frequency'),
     url(r'^word_info/(?P<spelling>[\w\-]+)/', views.translate_word2, name='word_info'),
     url(r'^set_word_status/$', views.set_word_status, name='set_word_status'),
-    url(r'^set_word_status/(?P<words>[\w\,\-]+)/(?P<status>[\w]+)/?',
-        views.set_word_status, name='set_word_status'),
-
-        url(r'^sleep',
-        views.get_sleep, name='get_sleep'),
+    url(r'^set_word_status/(?P<words>[\w\,\-]+)/(?P<status>[\w]+)/?', views.set_word_status, name='set_word_status'),
+    url(r'^sleep', views.get_sleep, name='get_sleep'),
 ]
 
 handler404 = 'wordRecall.views.handler404'
 
-# import logging
-# l = logging.getLogger('django.db.backends')
-# l.setLevel(logging.DEBUG)
-# l.addHandler(logging.StreamHandler())

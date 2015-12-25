@@ -8,7 +8,7 @@ admin.autodiscover()
 urlpatterns = [
     url(r'^', include('wordRecall.urls', namespace='word')),
     url(r'^admin/', include(admin.site.urls)),
-    # url(r'^baymax/', include('baymax.urls', namespace='baymax')),
+    url(r'^api-auth/', include('rest_framework.urls', namespace='rest')),
 
 ]
 urlpatterns += static(settings.STATIC_URL, document_root=settings.STATIC_ROOT)

@@ -1,0 +1,142 @@
+<html>
+<head>
+	<script type="text/javascript" charset="utf-8" src="http://apps.bdimg.com/libs/jquery/2.1.1/jquery.min.js"></script>
+	<script type="text/javascript" charset="utf-8" src="http://0.0.0.0:8877/static/js/store.js"></script>
+</head>
+<body>
+<script>
+        // using jQuery
+    function getCookie(name) {
+        var cookieValue = null;
+        if (document.cookie && document.cookie != '') {
+            var cookies = document.cookie.split(';');
+            for (var i = 0; i < cookies.length; i++) {
+                var cookie = jQuery.trim(cookies[i]);
+                // Does this cookie string begin with the name we want?
+                if (cookie.substring(0, name.length + 1) == (name + '=')) {
+                    cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+                    break;
+                }
+            }
+        }
+        return cookieValue;
+    }
+
+
+    var csrftoken = getCookie('csrftoken');
+    console.log(csrftoken)
+
+    var host = 'http://0.0.0.0:8877';
+    var KEY_IGNORE_URL = "KEY_IGNORE_URL";
+    var username = 'root';
+    var pwd = 'root'
+
+    function get_basic_auth_header(){
+        return "Basic " + btoa(username + ":" + pwd);
+    }
+
+    function get_url_domain(url){
+        if(url != null){
+            return url.split("/")[2];
+        }
+    }
+
+    function set_ignore_urls(data){
+        console.log(data);
+        store.set(KEY_IGNORE_URL, data);
+    }
+
+    function get_ignore_urls(){
+        data = store.get(KEY_IGNORE_URL);
+        if (data == null){
+            sync_ignore_urls();
+        }
+        return data;
+    }
+
+    function get_ignore_objs(url){
+        var rst = []
+        var domain = get_url_domain(url);
+        var igurls = get_ignore_urls();
+        for(var i=0; i<igurls.length; i++){
+            if(igurls[i].url == domain){
+                rst.push(igurls[i]);
+            }
+        }
+        return rst;
+    }
+
+    function get_ignore_url_obj(url){
+        var domain = get_url_domain(url);
+        var igurls = get_ignore_urls();
+        for(var i=0; i<igurls.length; i++){
+            if(igurls[i].url == domain){
+                return igurls[i];
+            }
+        }
+    }
+
+    function is_ignore_url(url){
+        var domain = get_url_domain(url);
+        return get_ignore_url_obj(domain) != null;
+    }
+
+
+
+    function ignore_url(url){
+        url = get_url_domain(url);
+        $.ajax({
+                method: "POST",
+                url: host + "/rest/settings/",
+                data: {'url': url},
+                beforeSend: function( xhr ) {
+                    xhr.setRequestHeader ("Authorization", get_basic_auth_header());
+                    xhr.setRequestHeader("X-CSRFToken", csrftoken);
+                }
+         })
+        .done(function( data ) {
+            console.log(data);
+            sync_ignore_urls();
+        });
+    }
+
+    function delete_ignore_url(url){
+        var obj_list = get_ignore_objs(url);
+        for(var i=0; i<obj_list.length; i++){
+            var obj = obj_list[i];
+            $.ajax({
+                method: "DELETE",
+                url: host + "/rest/settings/" + obj.id + "/",
+                beforeSend: function( xhr ) {
+                    xhr.setRequestHeader ("Authorization", get_basic_auth_header());
+                    xhr.setRequestHeader("X-CSRFToken", csrftoken);
+                }
+                })
+              .done(function() {
+              });
+        }
+        sync_ignore_urls();
+    }
+
+    function sync_ignore_urls(){
+         $.ajax({
+                method: "GET",
+                url: host + "/rest/settings/",
+                beforeSend: function( xhr ) {
+                    xhr.setRequestHeader ("Authorization", get_basic_auth_header());
+                    xhr.setRequestHeader("X-CSRFToken", csrftoken);
+                }
+         })
+        .done(function( data ) {
+            set_ignore_urls(data);
+        });
+    }
+
+    sync_ignore_urls();
+    console.log(get_ignore_urls());
+    ignore_url('http://baidu.com');
+    delete_ignore_url('http://baidu.com');
+    delete_ignore_url('http://');
+</script>
+</body>
+</html>
