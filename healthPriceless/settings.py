@@ -11,11 +11,11 @@ https://docs.djangoproject.com/en/1.6/ref/settings/
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
 import os
 import raven
+import socket
 BASE_DIR = os.path.dirname(os.path.dirname(__file__))
 print BASE_DIR
 # celery config
 BROKER_URL = 'amqp://'
-import socket
 IS_SERVER = socket.gethostname() in ['iZ25jidmr1pZ']
 
 # Quick-start development settings - unsuitable for production
@@ -102,7 +102,6 @@ HOST_MAP = {
         'db': DATABASES_SERVER
     }
 }
-import socket
 host_name = socket.gethostname()
 HOST_DATA = HOST_MAP.get(host_name, HOST_MAP.get("default"))
 DATABASES = HOST_DATA['db']

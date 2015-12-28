@@ -24,7 +24,6 @@ from django.template import RequestContext
 import calendar
 
 from parser import get_html_word_repeated_info_cleaned
-from wordinfos import get_all_conversant_word_list
 from wordinfos import get_all_changed_words
 from wordinfos import change_word_status
 from models import Word, WordRememberInfos
@@ -47,7 +46,6 @@ class TransPageForm(forms.Form):
         tran_page = cleaned_data['tran_page']
         if not RegexUtil.is_url(tran_page):
             self.add_error('tran_page', '请输入有效的网址')
-
 
 
 class RecallWordForm(ModelForm):
@@ -130,8 +128,6 @@ def login(request):
     else:
         form = LoginForm()
     return render(request, 'recall/login.html', {"form": form, "action": request.get_full_path()})
-
-
 
 
 @login_required
@@ -362,12 +358,10 @@ def index(request):
         if form.is_valid():
             trans_url = request.POST[key]
             return __redirect(get_tran_url(trans_url))
-
-    else :
+    else:
         form = TransPageForm()
-    request_history = wordinfos.get_all_request_url_history_url(request.user)
-    return render(request, 'recall/index.html', {"form": form, "user": request.user,
-                                                 "history_list": request_history, "HOST": request.get_host()})
+    # request_history = wordinfos.get_all_request_url_history_url(request.user)
+    return render(request, 'recall/index.html', {"user": request.user, "HOST": request.get_host()})
 
 
 def contact(request):

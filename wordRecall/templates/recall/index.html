@@ -12,7 +12,7 @@
             <h1>欢迎回来，
                 <strong> {{ user }}! </strong>
             </h1>
-            <a href="/static/download/chromeExtension.zip">下载Chrome插件</a>
+            <a href="/static/download/taoshengci.zip">下载Chrome插件</a>
             <br/>
             <p>我们会帮您快速找出生词。</p>
             <p>生词以红色表示出来，鼠标放上去可以显示单词意思.</P>
@@ -21,32 +21,6 @@
         </div>
     </div>
 
-
-    <!-- horizontal form -->
-    <div class="row">
-        <div class="span12">
-            {# <h2>请输入您要翻译的网页</h2>#}
-
-            <hr/>
-
-            <form class="form-horizontal" role="form" method="post" action="{% url 'word:index' %}" %>
-                {% csrf_token %}
-                {{ form|bootstrap_horizontal }}
-                <div class="col-sm-offset-2 col-sm-10">
-                    <input type="submit" class="btn btn-primary" value="提交"/>
-                </div>
-            </form>
-            <br/><br/><br/>
-            <a href="{% url 'word:translate' %}">翻译英文片段</a>
-            <h3>历史记录:</h3>
-            {% for title,raw_url,tran_url,request_number in history_list%}
-                <p>
-                    <a href="{{ tran_url }}">翻译此页 </a>  <strong>{{ title }}</strong> <a href="{{ raw_url }}"> 打开原始页面</a>  历史访问次数 {{ request_number }}
-                </p>
-            {% endfor %}
-
-        </div>
-    </div>
 
 </div>
 <script language="javascript" type="text/javascript">
