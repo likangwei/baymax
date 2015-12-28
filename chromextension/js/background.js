@@ -3,12 +3,12 @@ var KEY_PWD = "pwd-ucuaksdf";
 var KEY_HOST = "HOST";
 var KEY_MEANING = "KEY_MEANING";
 var last_get_timetamp = 0;
-host = getHost();
+host = 'http://readdoc.net'
 meanings = {}
 store.set(KEY_HOST, host);
 
 function getHost(){
-    return store.get(KEY_HOST);
+    return host;
 }
 
 function getUser(){
