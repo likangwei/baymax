@@ -9,35 +9,19 @@
 
     <div class="row">
         <div class="span12">
-            <h1>欢迎回来，
-                <strong> {{ user }}! </strong>
-            </h1>
-            <a href="/static/download/taoshengci.zip">下载Chrome插件</a>
+            <p>欢迎回来，{{ user }}! </p>
+            <strong><a href="/static/download/taoshengci.zip">下载Chrome插件</a></strong>
+            <br/>
             <br/>
             <p>我们会帮您快速找出生词。</p>
-            <p>生词以红色表示出来，鼠标放上去可以显示单词意思.</P>
-            <p>点击生词进去可以加入熟词库，本网站根据单词的词频来排序，推荐您优先记忆词频高的单词 ：）</p>
-            <p>建议输入英文网址，例如：http://lxml.de/ </p>
+            <p>生词变色显示，鼠标放上去可以显示单词意思.</P>
+            <p>点击生词可以加入熟词库.</p>
+            <br>
+            <br>
+            <p>使用方法: 打开chrome浏览器，地址栏中输入 chrome://extensions/ 后回车，将解压出来的crx文件拖到浏览器中即可使用。</p>
         </div>
     </div>
 
 
 </div>
-<script language="javascript" type="text/javascript">
-<!--
-    function popitup(url) {
-        newwindow=window.open(url,'name','height=200,width=150');
-        if (window.focus) {newwindow.focus()}
-        return false;
-    }
-    function popitup2(url) {
-        newwindow=window.open(url,'name','height=200,width=150');
-        return false;
-    }
-
-// -->
-</script>
-<!-- scripts -->
-<script src="http://code.jquery.com/jquery.js"></script>
-<script src="//netdna.bootstrapcdn.com/bootstrap/3.0.2/js/bootstrap.min.js"></script>
 {% endblock %}
