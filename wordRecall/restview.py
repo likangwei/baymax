@@ -31,5 +31,6 @@ class IgnoreUrlViewSet(viewsets.ModelViewSet):
         return IgnoreUrl.objects.filter(user__id=self.request.user.id)
 
     def perform_create(self, serializer):
+        print self.request.user.id
         serializer.save(user=self.request.user)
 

@@ -62,7 +62,7 @@
                 url: host + "/rest/settings/",
                 data: {'url': url},
                 beforeSend: function( xhr ) {
-                    xhr.setRequestHeader ("Authorization", get_basic_auth_header());
+                    xhr.setRequestHeader("Authorization", get_basic_auth_header());
                     xhr.setRequestHeader("X-CSRFToken", csrftoken);
                 }
          })
