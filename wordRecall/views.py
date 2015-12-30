@@ -42,6 +42,7 @@ class TransPageForm(forms.Form):
     tran_page = forms.CharField(label='请输入网址', max_length=100)
 
     def clean(self):
+
         cleaned_data = self.cleaned_data
         tran_page = cleaned_data['tran_page']
         if not RegexUtil.is_url(tran_page):
@@ -70,7 +71,7 @@ class RegForm(forms.Form):
     password2 = forms.CharField(label='验证密码：', max_length=100, widget=forms.PasswordInput())
 
     def clean(self):
-        cleaned_data = self.cleaned_data
+        cleaned_data = super(forms.Form, self).clean()
         if len(User.objects.filter(username=cleaned_data['username'])) != 0:
             self.add_error('username', '用户已存在')
 
