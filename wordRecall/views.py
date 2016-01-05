@@ -348,7 +348,6 @@ def frequency_charts(request):
                                                      "url_frequency_filter_mine": url_frequency_filter_mine})
 
 
-@login_required
 def index(request):
     """
     主页面
