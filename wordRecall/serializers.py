@@ -1,6 +1,7 @@
 __author__ = 'likangwei'
 from rest_framework import serializers
 from models import IgnoreUrl
+from models import Word
 from django.contrib.auth.models import User
 # Serializers define the API representation.
 
@@ -8,6 +9,12 @@ class IgnoreSerializer(serializers.ModelSerializer):
     class Meta:
         model = IgnoreUrl
         fields = ('url', 'id')
+
+
+class WordSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Word
+
 
 class UserSerializer(serializers.ModelSerializer):
 

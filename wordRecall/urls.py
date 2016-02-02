@@ -6,12 +6,14 @@ from django.conf.urls import url, include
 from rest_framework import routers
 from restview import IgnoreUrlViewSet
 from restview import UserViewSet
+from restview import WordViewSet
 from rest_framework import urls
 from django.views.decorators.csrf import csrf_exempt
 # Routers provide a way of automatically determining the URL conf.
 router = routers.DefaultRouter()
 router.register(r'settings', IgnoreUrlViewSet)
 router.register(r'users', UserViewSet)
+router.register(r'words', WordViewSet)
 regex_word = '(?P<words>[\w]+)'
 admin.autodiscover()
 # Wire up our API using automatic URL routing.

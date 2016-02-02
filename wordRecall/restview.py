@@ -2,14 +2,17 @@ __author__ = 'likangwei'
 from django.contrib.auth.models import User
 from rest_framework import viewsets
 from models import IgnoreUrl
+from models import Word
 from serializers import IgnoreSerializer
+from serializers import IgnoreSerializer
+from serializers import WordSerializer
 from serializers import UserSerializer
 from rest_framework.permissions import IsAuthenticatedOrReadOnly
 from permissions import IsOwnerOrReadOnly
 from rest_framework.views import APIView
 from rest_framework.response import Response
 from rest_framework import status
-
+import json
 
 class UserViewSet(viewsets.ModelViewSet):
 
@@ -33,4 +36,19 @@ class IgnoreUrlViewSet(viewsets.ModelViewSet):
     def perform_create(self, serializer):
         print self.request.user.id
         serializer.save(user=self.request.user)
+
+
+class WordViewSet(viewsets.ModelViewSet):
+
+    queryset = Word.objects.all()
+    serializer_class = WordSerializer
+    permission_classes = (IsAuthenticatedOrReadOnly, )
+
+    def get_queryset(self):
+        queryset = self.queryset
+        filter = self.request.GET.get('filter', '{}')
+        if filter:
+            filter = json.loads(filter)
+        queryset = queryset.filter(**filter)
+        return queryset
 
