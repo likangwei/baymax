@@ -242,8 +242,8 @@ def get_words_meaning(request):
         for spelling in word_list:
             created, word = Word.objects.get_or_create(spelling=spelling)
 
-        no_meaning_words = Word.objects.filter(spelling__in=word_list, google_meaning='')
-        get_google_meanings(no_meaning_words)
+        # no_meaning_words = Word.objects.filter(spelling__in=word_list, google_meaning='')
+        # get_google_meanings(no_meaning_words)
         words = Word.objects.filter(spelling__in=word_list)
         result = {}
         for word in words:
