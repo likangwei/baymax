@@ -14,6 +14,7 @@ class MyUserAdmin(UserAdmin):
         return obj.date_joined.strftime('%Y-%m-%d %H:%M:%S')
     view_join_date.short_name = 'datejoin'
     view_join_date.empty_value_display = '???'
+    view_join_date.admin_order_field = 'date_joined'
 
 
 admin.site.unregister(User)
