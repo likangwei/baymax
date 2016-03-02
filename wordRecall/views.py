@@ -65,21 +65,25 @@ class LoginForm(forms.Form):
 
 
 class RegForm(forms.Form):
-    username = forms.CharField(label='用户名：', max_length=100)
+    username = forms.CharField(label='用户名：', max_length=100, required=True)
     email = forms.CharField(label='邮箱：', max_length=100)
     password1 = forms.CharField(label='密码：', max_length=100, widget=forms.PasswordInput())
-    password2 = forms.CharField(label='验证密码：', max_length=100, widget=forms.PasswordInput())
 
     def clean(self):
         cleaned_data = super(forms.Form, self).clean()
-        if len(User.objects.filter(username=cleaned_data['username'])) != 0:
+        username = cleaned_data.get('username', None)
+        password = cleaned_data.get('password1', None)
+
+        if User.objects.filter(username=username).count() != 0:
             self.add_error('username', '用户已存在')
 
-        if cleaned_data['password1'] != cleaned_data['password2']:
-            self.add_error('password1', '密码不一致')
-            self.add_error('password2', '密码不一致')
+        if username is None:
+            self.add_error('username', '用户不能为空')
 
-        return super(forms.Form, self).clean()
+        if password is None:
+            self.add_error('password1', '密码不能为空')
+
+        return cleaned_data
 
 
 class TranslateForm(forms.Form):
