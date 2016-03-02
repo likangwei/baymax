@@ -7,10 +7,17 @@ from models import Word, WordRememberInfos, RecallInfo, IgnoreUrl
 from django.contrib.auth.admin import UserAdmin
 from django.contrib.auth.models import User
 
-UserAdmin.list_display = ('username', 'email', 'first_name', 'last_name', 'is_staff', 'date_joined')
+class MyUserAdmin(UserAdmin):
+    list_display = ('username', 'email', 'first_name', 'last_name', 'is_staff', 'view_join_date')
+
+    def view_join_date(self, obj):
+        return obj.date_joined.strftime('%Y-%m-%d %H:%M:%S')
+    view_join_date.short_name = 'datejoin'
+    view_join_date.empty_value_display = '???'
+
 
 admin.site.unregister(User)
-admin.site.register(User, UserAdmin)
+admin.site.register(User, MyUserAdmin)
 
 
 def make_word_unacquainted(modeladmin, request, queryset):
