@@ -278,7 +278,7 @@ def set_word_status(request, words=None, status=None):
     改变单词状态
     """
     if status is None:
-        status = WordRememberInfos.CHOICE_REMEMBER_CONVERSANT
+        status = WordRememberInfos.REMEMBER_KNOW
 
     if request.method == "GET":
         word, created = Word.objects.get_or_create(spelling=words)
@@ -289,13 +289,13 @@ def set_word_status(request, words=None, status=None):
             wi, created = WordRememberInfos.objects.get_or_create(user=user, word=word, word_spelling=words)
             change2what = -1
             if status == "change":
-                if wi.remember == WordRememberInfos.CHOICE_REMEMBER_UNACQUAINTED:
-                    change2what =  WordRememberInfos.CHOICE_REMEMBER_CONVERSANT
+                if wi.remember == WordRememberInfos.REMEMBER_UNKNOW:
+                    change2what = WordRememberInfos.REMEMBER_KNOW
                 else:
-                    change2what = WordRememberInfos.CHOICE_REMEMBER_UNACQUAINTED
+                    change2what = WordRememberInfos.REMEMBER_UNKNOW
 
-            status_map = {"old": WordRememberInfos.CHOICE_REMEMBER_CONVERSANT,
-                          "new": WordRememberInfos.CHOICE_REMEMBER_UNACQUAINTED,
+            status_map = {"old": WordRememberInfos.REMEMBER_KNOW,
+                          "new": WordRememberInfos.REMEMBER_UNKNOW,
                           "change": change2what}
 
             wi.remember = status_map[status]
