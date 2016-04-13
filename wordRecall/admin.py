@@ -2,7 +2,6 @@
 from django.contrib import admin
 import models
 from models import Word, WordRememberInfos, RecallInfo, IgnoreUrl
-# Register your models here.
 
 from django.contrib.auth.admin import UserAdmin
 from django.contrib.auth.models import User
@@ -22,15 +21,17 @@ admin.site.register(User, MyUserAdmin)
 
 
 def make_word_unacquainted(modeladmin, request, queryset):
-    queryset.update(remember=models.CHOICE_REMEMBER_UNACQUAINTED)
+    queryset.update(remember=models.REMEMBER_UNKNOW)
 make_word_unacquainted.short_description = "置为生词"
 
+
 def make_word_conversant(modeladmin, request, queryset):
-    queryset.update(remember=models.CHOICE_REMEMBER_CONVERSANT)
+    queryset.update(remember=models.REMEMBER_KNOW)
 make_word_conversant.short_description = "置为熟词"
 
+
 def make_word_add_remember_count(modeladmin, request, queryset):
-    queryset.update(remember=models.CHOICE_REMEMBER_CONVERSANT)
+    queryset.update(remember=models.REMEMBER_KNOW)
 make_word_add_remember_count.short_description = "过了一遍"
 
 
@@ -54,6 +55,7 @@ class IgnoreUrlAdmin(admin.ModelAdmin):
     list_display = ('url', 'user')
     list_filter = ['user']
 
+
 class WordAdmin(admin.ModelAdmin):
     inlines = [ ]
     search_fields = ['spelling']
@@ -62,11 +64,23 @@ class WordAdmin(admin.ModelAdmin):
 
 
 class WordRememberAdmin(admin.ModelAdmin):
-    inlines = [RecallInfoInline,]
+    inlines = []
     actions = [make_word_unacquainted, make_word_conversant]
     list_filter = ['remember', 'user']
     search_fields = ['word__spelling']
-    list_display = ['word', 'user', 'weight', 'remember', 'recall_counts', 'repeated']
+    list_display = ['word', 'remember', 'user',]
+
+    def get_queryset(self, request):
+        if request.user.is_superuser:
+            return WordRememberInfos.objects.all()
+        else:
+            return WordRememberInfos.objects.filter(user=request.user)
+
+    def get_list_filter(self, request):
+        if request.user.is_superuser:
+            return ['remember', 'user']
+        else:
+            return ['remember']
 
 admin.site.register(Word, WordAdmin)
 admin.site.register(WordRememberInfos, WordRememberAdmin)

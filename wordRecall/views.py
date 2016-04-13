@@ -146,7 +146,7 @@ def _logout(request):
 
 @login_required
 def get_recall_word(request):
-    return _get_words(request, models.CHOICE_REMEMBER_UNACQUAINTED)
+    return _get_words(request, models.REMEMBER_UNKNOW)
 
 
 def check_user(request):
@@ -277,7 +277,6 @@ def set_word_status(request, words=None, status=None):
     """
     改变单词状态
     """
-
     if status is None:
         status = WordRememberInfos.CHOICE_REMEMBER_CONVERSANT
 

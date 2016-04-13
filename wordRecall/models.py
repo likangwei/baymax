@@ -46,21 +46,19 @@ class Word(models.Model):
     def __str__(self):
         return self.spelling
 
-CHOICE_REMEMBER_CONVERSANT = 1
-CHOICE_REMEMBER_UNACQUAINTED = 3
+REMEMBER_KNOW = 1
+REMEMBER_UNKNOW = 3
 
 class WordRememberInfos(models.Model):
 
-    CHOICE_REMEMBER_CONVERSANT = 1
-    CHOICE_REMEMBER_UNACQUAINTED = 3
+    REMEMBER_KNOW = 1
+    REMEMBER_UNKNOW = 3
 
     word = models.ForeignKey(Word)
     user = models.ForeignKey(User)
 
-    CHOICES_REMEMBER = [(CHOICE_REMEMBER_CONVERSANT, "熟词,不再复现"),
-                        (2, "似曾相识，下次还要提问"),
-                        (CHOICE_REMEMBER_UNACQUAINTED, "生词，未掌握"),
-                        (4, "未分类"),
+    CHOICES_REMEMBER = [(REMEMBER_KNOW, "熟词,不再复现"),
+                        (REMEMBER_UNKNOW, "生词，未掌握"),
    ]
 
     CHOICES_WEIGHT = [(1, "非常重要"),
@@ -101,6 +99,8 @@ class WordRememberInfos(models.Model):
     def __str__(self):
         return '%s_%s' % (self.user.pk, self.word_spelling)
 
+    class Meta(object):
+        verbose_name = '我的单词'
 
 class RequestUrl(models.Model):
     title = models.CharField("标题", max_length=500, default="")
