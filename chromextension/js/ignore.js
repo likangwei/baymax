@@ -4,6 +4,13 @@
     var host = getHost();
     var KEY_IGNORE_URL = "KEY_IGNORE_URL";
     var csrftoken = ''
+
+    function auth_header( xhr ) {
+        xhr.setRequestHeader ("Cookie", "abc");
+        xhr.setRequestHeader ("Authorization", get_basic_auth_header());
+        xhr.setRequestHeader("X-CSRFToken", csrftoken);
+    }
+
     function get_basic_auth_header(){
         return "Basic " + btoa(getUser()  + ":" + getPwd());
     }
@@ -61,10 +68,7 @@
                 method: "POST",
                 url: host + "/rest/settings/",
                 data: {'url': url},
-                beforeSend: function( xhr ) {
-                    xhr.setRequestHeader("Authorization", get_basic_auth_header());
-                    xhr.setRequestHeader("X-CSRFToken", csrftoken);
-                }
+                beforeSend: auth_header
          })
         .done(function( data ) {
             console.log(data);
@@ -79,10 +83,7 @@
             $.ajax({
                 method: "DELETE",
                 url: host + "/rest/settings/" + obj.id + "/",
-                beforeSend: function( xhr ) {
-                    xhr.setRequestHeader ("Authorization", get_basic_auth_header());
-                    xhr.setRequestHeader("X-CSRFToken", csrftoken);
-                }
+                beforeSend: auth_header
                 })
               .done(function() {
               });
@@ -94,10 +95,7 @@
          $.ajax({
                 method: "GET",
                 url: host + "/rest/settings/",
-                beforeSend: function( xhr ) {
-                    xhr.setRequestHeader ("Authorization", get_basic_auth_header());
-                    xhr.setRequestHeader("X-CSRFToken", csrftoken);
-                }
+                beforeSend: auth_header
          })
         .done(function( data ) {
             set_ignore_urls(data);

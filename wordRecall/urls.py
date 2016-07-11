@@ -21,14 +21,16 @@ admin.autodiscover()
 urlpatterns = [
     url(r'^rest/', include(router.urls), name='rest'),
     url(r'^$', views.index, name='index'),
+    url(r'^user$', views.get_user, name='index'),
     url(r'^contact/?', views.contact, name='contact'),
-    url(r'^go/?', views.go_2_page, name='go'),
+    url(r'^download/?', views.download, name='contact'),
+    url(r'^about/?', views.about, name='contact'),
+    url(r'^get-start/?', views.get_start, name='contact'),
     # url(r'^call/?', views.call),
     url(r'^reg/?', views.reg, name='reg'),
     url(r'^login/?', views.login, name='login'),
     url(r'^checkUser/?', views.check_user, name='checkUser'),
     url(r'^logout/?', views._logout, name='logout'),
-    url(r'^translate/$', views.translate_, name='translate'),
     url(r'^get_words_meaning/?$', views.get_words_meaning, name='get_words_meaning'),
     url(r'^translate_p/?', views.translate_p, name='translate_p'),
     url(r'^recall/?', views.get_recall_word, name='recall'),
@@ -40,7 +42,6 @@ urlpatterns = [
     url(r'^word_info/(?P<spelling>[\w\-]+)/', views.translate_word2, name='word_info'),
     url(r'^set_word_status/$', views.set_word_status, name='set_word_status'),
     url(r'^set_word_status/(?P<words>[\w\,\-]+)/(?P<status>[\w]+)/?', views.set_word_status, name='set_word_status'),
-    url(r'^sleep', views.get_sleep, name='get_sleep'),
 ]
 
 handler404 = 'wordRecall.views.handler404'

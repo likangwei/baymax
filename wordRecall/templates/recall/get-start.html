@@ -1,0 +1,36 @@
+{% extends "recall/base.html" %}
+{% load bootstrap %}
+{% block title %}淘生词{% endblock %}
+{% block content %}
+
+
+<div class="container">
+
+      <div class="row">
+        <div class="col-lg-4">
+          <h3>第一步: 注册账号</h3>
+            <p><a target="_blank" href="reg">点此注册</a></p>
+        </div>
+      </div>
+
+      <div class="row">
+        <div class="col-lg-4">
+          <h3>第二步: 下载插件</h3>
+            <p><a target="_blank" href="download">点此下载</a></p>
+        </div>
+      </div>
+
+    <div class="row">
+        <div class="col-lg-8">
+          <h3>第三步: 使用插件登陆并打开网页</h3>
+            <p>插件下载完成后, 点击插件图标进行登陆, 登陆成功后,即可打开英文网站进行使用</p>
+        </div>
+      </div>
+
+    <embed src="http://player.youku.com/player.php/sid/XMTQzNTk0NjAyNA==/v.swf" allowFullScreen="true" quality="high" width="480" height="400" align="middle" allowScriptAccess="always" type="application/x-shockwave-flash"></embed>
+
+</div>
+  <script>
+      $('#start').addClass("active")
+  </script>
+{% endblock %}

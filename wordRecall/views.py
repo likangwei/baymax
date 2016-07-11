@@ -109,10 +109,6 @@ def reg(request):
         form = RegForm()
     return render(request, 'recall/reg.html', {"form": form})
 
-def get_sleep(request):
-    import time
-    time.sleep(10)
-    return HttpResponse("hello sleep")
 
 def login(request):
     """
@@ -367,29 +363,24 @@ def index(request):
     return render(request, 'recall/index.html', {"user": request.user, "HOST": request.get_host()})
 
 
+def get_user(request):
+    return HttpResponse(str(request.user))
+
+
+def get_start(request):
+    return render(request, 'recall/get-start.html')
+
+
 def contact(request):
     return render(request, 'recall/contact.html')
 
 
-@login_required
-def go_2_page(request):
-    """
-    翻译某网页
-    """
-    user = get_user(request)
-    key = 'tran_page'
+def download(request):
+    return render(request, 'recall/download.html')
 
-    if request.method == 'GET':
-        if key in request.GET:
-            trans_url = request.GET[key]
-            return __get_tran_page(request, trans_url, user)
-        else:
-            return __redirect("/")
-    elif request.method == 'POST':
-        form = TransPageForm(request.POST)
-        if form.is_valid():
-            trans_url = request.POST[key]
-            return __redirect(get_tran_url(trans_url))
+
+def about(request):
+    return render(request, 'recall/about.html')
 
 
 def __get_tran_page(request, trans_url, user):
@@ -459,31 +450,6 @@ def translate_word2(request, spelling=None):
                                                           "next_page_url": next_page_url, "pre_page_url": pre_page_url,
                                                           "url_frequency_filter_mine": url_frequency_filter_mine})
 
-@login_required
-def translate_(request):
-    """
-    翻译某一段文字
-    """
-    tran_result = ""
-    if request.method == "POST":
-        form = TranslateForm(request.POST)
-        if form.is_valid():
-            tran_src = form.cleaned_data['gt_src']
-            tran_result = get_translate_from_raw_str(request, tran_src)
-    else:
-        form = TranslateForm()
-    print tran_result
-    return render(request, 'recall/translate.html', {"tran_from": form, "tran_result": tran_result})
-
-def handler404(request):
-    response = render_to_response('404.html', {}, context_instance=RequestContext(request))
-    response.status_code = 404
-    return response
-
-def handler500(request):
-    response = render_to_response('500.html', {}, context_instance=RequestContext(request))
-    response.status_code = 500
-    return response
 
 def __redirect(url, if_reverse=False):
     if if_reverse:

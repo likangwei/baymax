@@ -1,0 +1,30 @@
+{% extends "recall/base.html" %}
+{% load bootstrap %}
+{% block title %}下载安装{% endblock %}
+{% block content %}
+
+
+<div class="container">
+
+<h2>安装插件有以下2种方式:</h2>
+
+    <h3>
+        1. <a href="https://chrome.google.com/webstore/detail/%E6%B7%98%E7%94%9F%E8%AF%8D/gmjfgdghbkcliocpjakipolibhbchcen">Chrome应用商店下载</a> (推荐用此种方式! 原因: 操作简单, 但是需要大家翻墙...)
+    </h3>
+    <br>
+    <br>
+    <br>
+    <h3>
+        2. 如果您没法翻墙, 我们提供另外一种比较麻烦的安装方式(但还是推荐您用第1种方式安装)
+    </h3>
+    <h4>
+        <p>使用方法: 1) 下载插件 <strong><a href="/static/download/taoshengci.zip">下载Chrome插件</a></strong></p>
+        <p>2) 打开chrome浏览器，地址栏中输入 chrome://extensions/ 后回车，将解压出来的crx文件拖到浏览器中即可使用。</p>
+    </h4>
+    <embed src="http://player.youku.com/player.php/sid/XMTQzNTk0NjAyNA==/v.swf" allowFullScreen="true" quality="high" width="480" height="400" align="middle" allowScriptAccess="always" type="application/x-shockwave-flash"></embed>
+
+</div>
+  <script>
+      $('#download').addClass("active")
+  </script>
+{% endblock %}
