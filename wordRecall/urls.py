@@ -21,7 +21,6 @@ admin.autodiscover()
 urlpatterns = [
     url(r'^rest/', include(router.urls), name='rest'),
     url(r'^$', views.index, name='index'),
-    url(r'^user$', views.get_user, name='index'),
     url(r'^contact/?', views.contact, name='contact'),
     url(r'^download/?', views.download, name='contact'),
     url(r'^about/?', views.about, name='contact'),

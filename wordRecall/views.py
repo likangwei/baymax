@@ -163,7 +163,6 @@ def check_user(request):
     return response
 
 
-
 def get_words(request, status=None):
     """
     获取所有熟单词，以逗号分隔
@@ -361,10 +360,6 @@ def index(request):
         form = TransPageForm()
     # request_history = wordinfos.get_all_request_url_history_url(request.user)
     return render(request, 'recall/index.html', {"user": request.user, "HOST": request.get_host()})
-
-
-def get_user(request):
-    return HttpResponse(str(request.user))
 
 
 def get_start(request):
