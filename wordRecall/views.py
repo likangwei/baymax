@@ -35,6 +35,7 @@ MENU_NAME_DOWNLOAD = "下载"
 MENU_NAME_ABOUT = "关于"
 MENU_MANAGE = "我的管理页面"
 
+SIDE_NEW_VERSION = "最新版本2.1   (16年7月30号更新)"
 SIDE_MANAGE_MY_WORDS = "管理我的词库"
 SIDE_MANAGE_URLS = "管理翻译网站"
 SIDE_NAME_SETTING = "设置"
@@ -45,7 +46,7 @@ MENU_SIDEBARS = [
         "url": "/",
         "id": "head_index",
         "sides": [
-
+            {"name": SIDE_NEW_VERSION, "url": "/"},
         ],
     },
     {
@@ -307,7 +308,7 @@ def index(request):
     """
     return render(request, 'recall/index.html', {"user": request.user,
                                                  "HOST": request.get_host(),
-                                                 "menu_info": get_menu_sidebars(MENU_NAME_INDEX)
+                                                 "menu_info": get_menu_sidebars(SIDE_NEW_VERSION)
                                                  })
 
 
