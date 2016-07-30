@@ -1,93 +1,96 @@
 # -*- coding: utf-8 -*-
 import json
-
-from django.forms import ModelForm
-
-from django.core.urlresolvers import reverse
-from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
-
-from django.contrib.auth import login as lg
+from django import forms
 from django.contrib.auth import authenticate
+from django.contrib.auth import login as lg
 from django.contrib.auth import logout
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.models import User
-
+from django.core.urlresolvers import reverse
 from django.http import HttpResponseRedirect
-from django.http import HttpResponse
-
-from django import forms
-
+from django.http import JsonResponse
 from django.shortcuts import render
 from django.shortcuts import render_to_response
-
+from django.template import Context
+from django.template import loader
 from django.template import RequestContext
-import calendar
+from healthPriceless.settings import LOGIN_URL
+from healthPriceless.settings import LOGOUT_URL
+from healthPriceless.settings import CONFIG_URL
+from wordRecall.models import Word
+from wordRecall.models import MyWord
 
-from parser import get_html_word_repeated_info_cleaned
-from wordinfos import get_all_changed_words
-from wordinfos import change_word_status
-from models import Word, WordRememberInfos
-from translate import get_translate_from_raw_str
+from wordRecall.forms import RegForm
+from wordRecall.forms import IgnoreUrlForm
+from wordRecall.forms import UserSettingForm
+from wordRecall.forms import LoginForm
+from wordRecall.forms import AddNewWordsForm
 
-import wordinfos
-import models
-import translate
-import UrlUtil
-from UrlUtil import get_tran_url
-from util import RegexUtil
-from django.utils import timezone
+from django.core.paginator import Paginator
+from django.core.paginator import Page
 
+MENU_NAME_INDEX = "主页"
+MENU_NAME_START = "快速开始"
+MENU_NAME_DOWNLOAD = "下载"
+MENU_NAME_ABOUT = "关于"
+MENU_MANAGE = "我的管理页面"
 
-class TransPageForm(forms.Form):
-    tran_page = forms.CharField(label='请输入网址', max_length=100)
+SIDE_MANAGE_MY_WORDS = "管理我的词库"
+SIDE_MANAGE_URLS = "管理翻译网站"
+SIDE_NAME_SETTING = "设置"
 
-    def clean(self):
+MENU_SIDEBARS = [
+    {
+        "name": MENU_NAME_INDEX,
+        "url": "/",
+        "id": "head_index",
+        "sides": [
 
-        cleaned_data = self.cleaned_data
-        tran_page = cleaned_data['tran_page']
-        if not RegexUtil.is_url(tran_page):
-            self.add_error('tran_page', '请输入有效的网址')
-
-
-class RecallWordForm(ModelForm):
-    class Meta:
-        model = WordRememberInfos
-        fields = ['word_spelling', 'weight', 'remember', 'recall_counts', 'repeated', 'remarks']
-        # fields = '__all__'
-        widgets = {
-            "remember": forms.RadioSelect()
-        }
-
-
-class LoginForm(forms.Form):
-    username = forms.CharField(label='用户名：', max_length=100)
-    password = forms.CharField(label='密码：', max_length=100, widget=forms.PasswordInput())
-
-
-class RegForm(forms.Form):
-    username = forms.CharField(label='用户名：', max_length=100, required=True)
-    email = forms.CharField(label='邮箱：', max_length=100)
-    password1 = forms.CharField(label='密码：', max_length=100, widget=forms.PasswordInput())
-
-    def clean(self):
-        cleaned_data = super(forms.Form, self).clean()
-        username = cleaned_data.get('username', None)
-        password = cleaned_data.get('password1', None)
-
-        if User.objects.filter(username=username).count() != 0:
-            self.add_error('username', '用户已存在')
-
-        if username is None:
-            self.add_error('username', '用户不能为空')
-
-        if password is None:
-            self.add_error('password1', '密码不能为空')
-
-        return cleaned_data
+        ],
+    },
+    {
+        "name": MENU_NAME_START,
+        "url": "/get-start",
+        "sides": [],
+        "id": "head_start",
+    },
+    {
+        "name": MENU_NAME_DOWNLOAD,
+        "url": "/download",
+        "sides": [],
+        "id": "head_download",
+    },
+    {
+        "name": MENU_NAME_ABOUT,
+        "url": "/about",
+        "sides": [],
+        "id": "head_about"
+    },
+    {
+        "name": MENU_MANAGE,
+        "url": "/settings",
+        "sides": [
+            {"name": SIDE_NAME_SETTING, "url": "/settings"},
+            {"name": SIDE_MANAGE_MY_WORDS, "url": "/mywords"},
+            {"name": SIDE_MANAGE_URLS, "url": "/urls"},
+        ],
+        "id": "head_settings"
+    },
+]
 
 
-class TranslateForm(forms.Form):
-    gt_src = forms.CharField(label='', widget=forms.Textarea)
+def get_menu_sidebars(name):
+    from copy import deepcopy
+    rst = deepcopy(MENU_SIDEBARS)
+    for menu in rst:
+        if name == menu['name']:
+            menu['active'] = True
+        for sidebar in menu['sides']:
+            if name == sidebar['name']:
+                sidebar["active"] = True
+                menu['active'] = True
+    print json.dumps(rst, ensure_ascii=False)
+    return json.dumps(rst)
 
 
 def reg(request):
@@ -104,7 +107,6 @@ def reg(request):
             user = authenticate(username=username, password=password)
             lg(request, user)
             return __redirect("word:index", if_reverse=True)
-
     else:
         form = RegForm()
     return render(request, 'recall/reg.html', {"form": form})
@@ -128,7 +130,116 @@ def login(request):
                 form.add_error('password', '用户名或密码不正确！')
     else:
         form = LoginForm()
-    return render(request, 'recall/login.html', {"form": form, "action": request.get_full_path()})
+    return render(request, 'recall/login.html', {"form": form,
+                                                 "action": request.get_full_path()})
+
+
+@login_required
+def settings(request):
+    """
+    登陆
+    """
+    if request.method == "POST":
+        form = UserSettingForm(data=request.POST, instance=request.user.settings)
+        if form.is_valid():
+            form.save()
+            return HttpResponseRedirect(request.path)
+    else:
+        form = UserSettingForm(instance=request.user.settings)
+    return render(request, 'recall/settings.html', {
+        "form": form,
+        "menu_info": get_menu_sidebars(SIDE_NAME_SETTING),
+    })
+
+
+@login_required
+def mywords(request):
+    """
+    登陆
+    """
+    if request.method == "GET":
+        per_page = request.GET.get('count', 20)
+        page = int(request.GET.get('page', '1'))
+        addNewWordForm = AddNewWordsForm(
+            user=request.user,
+            page_num=page,
+            page_count=per_page,
+        )
+        context = addNewWordForm.as_context()
+        context['menu_info'] = get_menu_sidebars(SIDE_MANAGE_MY_WORDS)
+        return render(
+            request,
+            'recall/mywords.html',
+            context,
+            context_instance=RequestContext(request)
+        )
+    elif request.method == "POST":
+        AddNewWordsForm.hand_action(request)
+        return HttpResponseRedirect(request.path)
+
+
+@login_required
+def myurls(request):
+    """
+    登陆
+    """
+    if request.method == "GET":
+        per_page = request.GET.get('count', 20)
+        page = int(request.GET.get('page', '1'))
+        ignore_urls_form = IgnoreUrlForm(
+            user=request.user, page_num=page, page_count=per_page
+        )
+        context = ignore_urls_form.as_context()
+        context['menu_info'] = get_menu_sidebars(SIDE_MANAGE_URLS)
+        return render(
+            request,
+            'recall/myurls.html',
+            context,
+            context_instance=RequestContext(request)
+        )
+    elif request.method == "POST":
+        IgnoreUrlForm.hand_action(request)
+        return HttpResponseRedirect(request.path)
+
+
+
+def template(request):
+    """
+    登陆
+    """
+    from django.template import loader
+    outside_template_str = loader.get_template("box_outside.html").render()
+    inside_template_str = loader.get_template("box_inside.html").render()
+    data = {"outside": outside_template_str, "inside": inside_template_str}
+    return JsonResponse(data)
+
+
+def pop_login(request):
+    """
+    插件的pop界面
+    """
+    if request.GET.get('version', 1.0) < 2.1:
+        warning = "您的淘生词插件版本太低, 请到重新下载!"
+    else:
+        warning = "版本 %s" % 2.1
+
+    if request.user.is_authenticated():
+        body = loader.get_template("pop_has_login.html").render(
+            Context({
+                "user": request.user,
+                "LOGOUT_URL": LOGOUT_URL,
+                "CONFIG_URL": CONFIG_URL,
+                "warning": warning
+            })
+        )
+    else:
+        body = loader.get_template("pop_unlogin.html").render(
+            Context({
+                "LOGIN_URL": LOGIN_URL,
+                "warning": warning
+            }))
+    data = {"success": True, "body": body}
+    return JsonResponse(data)
 
 
 @login_required
@@ -139,59 +250,6 @@ def _logout(request):
     logout(request)
     return __redirect('word:login', if_reverse=True)
 
-
-@login_required
-def get_recall_word(request):
-    return _get_words(request, models.REMEMBER_UNKNOW)
-
-
-def check_user(request):
-    """检查用户
-    :param request:
-    :return:
-    """
-    user = get_user(request);
-
-    if user is None:
-        result = "fail"
-    else:
-        result = "ok"
-
-    result = json.dumps({"result": result})
-    response = HttpResponse(json.dumps(result), 'application/json')
-    response['Access-Control-Allow-Origin'] = "*"
-    return response
-
-
-def get_words(request, status=None):
-    """
-    获取所有熟单词，以逗号分隔
-    """
-    user = get_user(request)
-    last_get_time = request.GET.get("last_get_timetamp", None)
-    if last_get_time:
-        import datetime
-        import pytz
-        last_get_time = datetime.datetime.fromtimestamp(float(last_get_time), tz=pytz.utc)
-    if user is None:
-        result = json.dumps({"status": "fail", "result": "userName or pwd invalid"})
-        response = HttpResponse(json.dumps(result), 'application/json')
-    else:
-        now = timezone.now()
-        now_tstamp = calendar.timegm(now.timetuple())
-        now_tstamp = "%s.%d" % (now_tstamp, now.microsecond)
-        old_word_list = get_all_changed_words(user, last_get_time, now)
-        result = []
-        for word in old_word_list:
-            cur_data = word.to_dict()
-            result.append(cur_data)
-        result = json.dumps({"status": "ok", "timestamp": now_tstamp, "result": result})
-        response = HttpResponse(json.dumps(result), 'application/json')
-
-    response['Access-Control-Allow-Origin'] = "*"
-    return response
-
-from django.views.decorators.csrf import csrf_exempt
 
 def get_google_meanings(words):
     """获取google 翻译"""
@@ -226,95 +284,15 @@ def get_google_meanings(words):
             word.save()
 
 
-@csrf_exempt
-def get_words_meaning(request):
-    user = request.POST.get("user")
-    pwd = request.POST.get("pwd")
-    print user, pwd
-    user = get_user_by_pwd(user, pwd)
-
-    if user is None:
-        response = json.dumps({"status": "fail"})
-    else:
-        word_list = request.POST.getlist("words[]")
-        print word_list
-        for spelling in word_list:
-            created, word = Word.objects.get_or_create(spelling=spelling)
-
-        # no_meaning_words = Word.objects.filter(spelling__in=word_list, google_meaning='')
-        # get_google_meanings(no_meaning_words)
-        words = Word.objects.filter(spelling__in=word_list)
-        result = {}
-        for word in words:
-            result[word.spelling] = word.get_meaning()
-
-        print result
-        response = json.dumps({"status": "ok", "result": result})
-
-    response = HttpResponse(response, 'application/json')
-    response['Access-Control-Allow-Origin'] = "*"
-    return response
-
-
-def get_word_detail(request, words=None):
-    """
-    获取某一个单词的详情
-    """
-    from wordinfos import get_format_meaning
-    response = HttpResponse("%s" % json.dumps(get_format_meaning(words)))
-
-    response['Access-Control-Allow-Origin'] = "*"
-    return response
-
-
-# @login_required
-def set_word_status(request, words=None, status=None):
-    """
-    改变单词状态
-    """
-    if status is None:
-        status = WordRememberInfos.REMEMBER_KNOW
-
-    if request.method == "GET":
-        word, created = Word.objects.get_or_create(spelling=words)
-        user = get_user(request)
-        if user is None:
-            data = {'result': 'user invalid'}
-        else:
-            wi, created = WordRememberInfos.objects.get_or_create(user=user, word=word, word_spelling=words)
-            change2what = -1
-            if status == "change":
-                if wi.remember == WordRememberInfos.REMEMBER_UNKNOW:
-                    change2what = WordRememberInfos.REMEMBER_KNOW
-                else:
-                    change2what = WordRememberInfos.REMEMBER_UNKNOW
-
-            status_map = {"old": WordRememberInfos.REMEMBER_KNOW,
-                          "new": WordRememberInfos.REMEMBER_UNKNOW,
-                          "change": change2what}
-
-            wi.remember = status_map[status]
-            wi.save()
-
-            data = {'result': 'success', 'info': wi.to_dict()}
-
-    elif request.method == "POST":
-        word_id_list = request.POST.getlist('_selected_action')
-        change_word_status(word_id_list, request.user, status)
-        data = {'result': "Success"}
-
-    data = json.dumps(data)
-    response = HttpResponse(json.dumps(data), "application/json")
-    response['Access-Control-Allow-Origin'] = "*"
-    return response
-
-
 def get_user(request):
-    user_name = request.GET.get("user", None)
-    pwd = request.GET.get("pwd", None)
-    if user_name is None or pwd is None:
-        return None
-    return get_user_by_pwd(user_name, pwd)
+    if request.user.is_authenticated():
+        return request.user
+    else:
+        user_name = request.GET.get("user", None)
+        pwd = request.GET.get("pwd", None)
+        if user_name is None or pwd is None:
+            return None
+        return get_user_by_pwd(user_name, pwd)
 
 
 def get_user_by_pwd(username, password):
@@ -323,47 +301,20 @@ def get_user_by_pwd(username, password):
         return User.objects.get(username=username)
 
 
-
-@login_required
-def frequency_charts(request):
-    """
-    词频排行榜
-    """
-    filter_mine = request.GET.get('filter_mine', 1)
-    page_num = request.GET.get('page', 1)
-    page_num = int(page_num)
-    limit = request.GET.get('limit', 20)
-    word_list = wordinfos.get_all_word_sort_by_repeated(request, filter_mine=filter_mine)
-
-    pi = Paginator(word_list, limit)
-    words = pi.page(page_num)
-    url_frequency_filter_mine = UrlUtil.get_frequency_url(filter_mine=1)
-
-    next_page_url = UrlUtil.get_frequency_url(filter_mine=filter_mine, limit=limit, page=page_num+1)
-    pre_page_url = UrlUtil.get_frequency_url(filter_mine=filter_mine, limit=limit, page=page_num-1)
-    return render(request, 'recall/frequency.html', {"words": words, "word_list": word_list,
-                                                     "next_page_url": next_page_url, "pre_page_url": pre_page_url,
-                                                     "url_frequency_filter_mine": url_frequency_filter_mine})
-
-
 def index(request):
     """
     主页面
     """
-    key = 'tran_page'
-    if request.method == 'POST':
-        form = TransPageForm(request.POST)
-        if form.is_valid():
-            trans_url = request.POST[key]
-            return __redirect(get_tran_url(trans_url))
-    else:
-        form = TransPageForm()
-    # request_history = wordinfos.get_all_request_url_history_url(request.user)
-    return render(request, 'recall/index.html', {"user": request.user, "HOST": request.get_host()})
+    return render(request, 'recall/index.html', {"user": request.user,
+                                                 "HOST": request.get_host(),
+                                                 "menu_info": get_menu_sidebars(MENU_NAME_INDEX)
+                                                 })
 
 
 def get_start(request):
-    return render(request, 'recall/get-start.html')
+    return render(request, 'recall/get-start.html', {
+        "menu_info": get_menu_sidebars(MENU_NAME_START)
+    })
 
 
 def contact(request):
@@ -371,79 +322,15 @@ def contact(request):
 
 
 def download(request):
-    return render(request, 'recall/download.html')
+    return render(request, 'recall/download.html', {
+        "menu_info": get_menu_sidebars(MENU_NAME_DOWNLOAD)
+    })
 
 
 def about(request):
-    return render(request, 'recall/about.html')
-
-
-def __get_tran_page(request, trans_url, user):
-    """
-    获取解析某网页的结果
-    """
-    print '>' * 10, trans_url
-    tran_page_url = UrlUtil.get_tran_page_url(trans_url)
-    form = TransPageForm(initial={'tran_page': trans_url})
-    return render(request, 'recall/tran_page_result.html', {'tran_page_url': tran_page_url, 'form': form})
-
-
-def translate_p(request):
-    """
-    获取解析某网页的结果, 显示在iframe里面的
-    """
-    if request.method == "GET":
-        trans_url = request.GET['tran_page']
-        print '>' * 10, trans_url
-        return HttpResponse(translate.get_translate_page(trans_url, request.user))
-
-
-@login_required
-def _get_words(request, filter):
-    if request.method == 'POST':
-        recall_id = request.POST['xid']
-        recall_word = WordRememberInfos.objects.get(pk=recall_id)
-        form = RecallWordForm(request.POST, instance=recall_word)
-        if form.is_valid():
-            if request.POST['commitType'] == '1':
-                recall_word.remember = 1
-            recall_word.recall_once()
-            form.save()
-
-    recall_word = WordRememberInfos.objects.filter(remember=filter).order_by('-word__repeated')[0]
-    form = RecallWordForm(instance=recall_word)
-    return render(request, 'recall/recall.html', {"form": form, "id": recall_word.pk} )
-
-
-@login_required
-def translate_word2(request, spelling=None):
-    """
-    网页上某一生单词的点击事件
-    """
-    from_page = request.GET.get('tran_page', None)
-    filter_mine = request.GET.get('filter_mine', 1)
-    page_num = request.GET.get('page', 1)
-    page_num = int(page_num)
-    limit = request.GET.get('limit', 2000)
-    request.get_full_path()
-
-    if from_page:
-        page_word_map = get_html_word_repeated_info_cleaned(from_page)
-        include_word_list = page_word_map.keys()
-    else:
-        include_word_list = []
-    word_list = wordinfos.get_all_word_sort_by_repeated(request, filter_mine=filter_mine,
-                                                        include_word_list=include_word_list)
-    top_word, created = Word.objects.get_or_create(spelling=spelling)
-    pi = Paginator(word_list, limit)
-    words = pi.page(page_num)
-    url_frequency_filter_mine = UrlUtil.get_frequency_url(filter_mine=1)
-
-    next_page_url = UrlUtil.get_full_path_and_change_request_param(request, {"page": page_num+1})
-    pre_page_url = UrlUtil.get_full_path_and_change_request_param(request, {"page": page_num-1})
-    return render(request, 'recall/page_word_info.html', {"pi": pi, "words": words, "top_word": top_word,
-                                                          "next_page_url": next_page_url, "pre_page_url": pre_page_url,
-                                                          "url_frequency_filter_mine": url_frequency_filter_mine})
+    return render(request, 'recall/about.html', {
+        "menu_info": get_menu_sidebars(MENU_NAME_ABOUT)
+    })
 
 
 def __redirect(url, if_reverse=False):

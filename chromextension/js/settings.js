@@ -1,3 +1,29 @@
-/**
- * Created by likangwei on 16/7/20.
- */
+host = 'http://readdoc.net';
+
+host = 'http://127.0.0.1:8000';
+
+var VERSION = 2.1;
+
+var IGNORE_TYPE = {
+    AUTO_TRAN: 0,
+    DONT_TRAN: 1
+}
+
+
+var ACTION_STATUS = {
+    "RUNNING": 0,
+    "FINISH": 1,
+}
+
+var ACTIONS = {
+    GET_ALL_WORDS: "GET_ALL_WORDS",
+    GET_USER_INFO: "GET_USER_INFO",
+    GET_MEANINGS: "GET_MEANINGS",
+    GET_TEMPLATE: "GET_TEMPLATE",
+    GET_POP_WINDOW: "GET_POP_WINDOW",
+    WAIT_RESULT: "WAIT_RESULT",
+    RESTART: "RESTART",
+    GET_MY_WORD: "GET_MY_WORD",
+    CHANGE_MYWORD_STATUS: "CHANGE_MYWORD_STATUS",
+    GET_ONE_MEANING: "GET_ONE_MEANING"
+};

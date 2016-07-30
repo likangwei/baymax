@@ -1,0 +1,46 @@
+<nav class="navbar navbar-fixed-top navbar-inverse">
+  <div class="container">
+    <div class="navbar-header">
+      <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar" aria-expanded="false" aria-controls="navbar">
+        <span class="sr-only">Toggle navigation</span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+      </button>
+      <a class="navbar-brand" href="/">淘生词</a>
+    </div>
+    <div id="navbar" class="collapse navbar-collapse">
+      <ul id="head_menu" class="nav navbar-nav">
+      </ul>
+        <ul>
+            <p>likangwei</p>
+        </ul>
+
+    </div>
+  </div>
+</nav>
+
+<script>
+    {% if menu_info %}
+    var menuinfos = {{ menu_info|safe }};
+    {% else %}
+    var menuinfos = [
+        {"url": "/", "id": "head_index", "sides": [], "name": "主页"},
+        {"url": "/get-start", "sides": [], "id": "head_start", "name": "快速开始"},
+        {"url": "/download", "sides": [], "id": "head_download", "name": "下载"},
+        {"url": "/about", "sides": [], "id": "head_about", "name": "关于"},
+        {"url": "/settings", "sides": [], "id": "head_settings", "name": "我的管理页面"}
+    ];
+    {% endif %}
+    var li_html = "";
+    for(var j=0; j < menuinfos.length; j++){
+        var menuinfo = menuinfos[j];
+        var clz = "";
+        if("active" in menuinfo){
+            clz = "active";
+        }
+        li_html += '<li class="' + clz + '"><a href="' + menuinfo['url'] + '"> ' + menuinfo['name'] + '</a></li>';
+    }
+    $("#head_menu").html(li_html);
+</script>
+

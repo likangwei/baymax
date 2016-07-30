@@ -13,7 +13,9 @@ import os
 import raven
 import socket
 BASE_DIR = os.path.dirname(os.path.dirname(__file__))
-print BASE_DIR
+CONFIG_FILE = os.path.join(BASE_DIR, "config.json")
+import json
+config = json.load(open(CONFIG_FILE))
 # celery config
 BROKER_URL = 'amqp://'
 IS_SERVER = socket.gethostname() in ['iZ25jidmr1pZ']
@@ -47,13 +49,12 @@ INSTALLED_APPS = (
     'wordRecall',
 )
 
-if IS_SERVER:
+if config['sentry']['enable']:
     INSTALLED_APPS += ('raven.contrib.django.raven_compat',)
-
-RAVEN_CONFIG = {
-    'dsn': 'https://2dec9af7a6324fcbac49412869fb3826:9336ea24c06a4d86bafa718ba3c8d5dd@app.getsentry.com/55984',
-    'release': raven.fetch_git_sha(BASE_DIR),
-}
+    RAVEN_CONFIG = {
+        'dsn': config['sentry']['dsn'],
+        'release': raven.fetch_git_sha(BASE_DIR),
+    }
 
 
 MIDDLEWARE_CLASSES = (
@@ -66,49 +67,14 @@ MIDDLEWARE_CLASSES = (
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
 )
+
 CORS_ORIGIN_ALLOW_ALL = True
 ROOT_URLCONF = 'healthPriceless.urls'
 
 WSGI_APPLICATION = 'healthPriceless.wsgi.application'
 
-
-# Database
-# https://docs.djangoproject.com/en/1.6/ref/settings/#databases
-
-DATABASES_LOCAL = {
-    'default': {
-        'ENGINE': 'django.db.backends.mysql',
-        'NAME': 'baymax',
-        'USER': 'root',
-        'PASSWORD': 'root',
-        'HOST': '127.0.0.1'
-    }
-}
-
-DATABASES_SERVER = {
-    'default': {
-        'ENGINE': 'django.db.backends.mysql',
-        'NAME': 'baymax',
-        'USER': 'lkw',
-        'PASSWORD': '3632840aa',
-        'HOST': 'rdsg5v30594h2i02977d.mysql.rds.aliyuncs.com'
-    }
-}
-HOST_MAP = {
-    'default': {
-        'db': DATABASES_LOCAL
-    },
-    'iZ25jidmr1pZ': {
-        'db': DATABASES_SERVER
-    }
-}
-host_name = socket.gethostname()
-HOST_DATA = HOST_MAP.get(host_name, HOST_MAP.get("default"))
-DATABASES = HOST_DATA['db']
-
-
-# Internationalization
-# https://docs.djangoproject.com/en/1.6/topics/i18n/
+DATABASES = config['db']
+HOST = config['host']
 
 LANGUAGE_CODE = 'zh-CN'
 
@@ -126,19 +92,17 @@ USE_TZ = True
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/1.6/howto/static-files/
 
-
-
-
 STATIC_URL = '/static/'
 STATIC_ROOT = os.path.join(BASE_DIR, 'wordRecall/static')
-print STATIC_ROOT
 
 TEMPLATE_DIRS = (
     os.path.join(BASE_DIR, 'baymax', 'templates'),
     os.path.join(BASE_DIR, 'wordRecall', 'templates'),
     os.path.join(BASE_DIR,  'templates'),
 )
-LOGIN_URL = '/login'
+LOGIN_URL = 'http://{HOST}/login'.format(**locals())
+LOGOUT_URL = 'http://{HOST}/logout'.format(**locals())
+CONFIG_URL = 'http://{HOST}/mywords'.format(**locals())
 CACHES = {
     'default': {
         'BACKEND': 'django.core.cache.backends.locmem.LocMemCache',

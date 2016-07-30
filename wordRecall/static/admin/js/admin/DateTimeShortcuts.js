@@ -174,7 +174,6 @@ var DateTimeShortcuts = {
         else {
             // since style's width is in em, it'd be tough to calculate
             // px value of it. let's use an estimated px for now
-            // TODO: IE returns wrong value for findPosX when in rtl mode
             //       (it returns as it was left aligned), needs to be fixed.
             clock_box.style.left = findPosX(clock_link) - 110 + 'px';
         }
@@ -308,7 +307,6 @@ var DateTimeShortcuts = {
         else {
             // since style's width is in em, it'd be tough to calculate
             // px value of it. let's use an estimated px for now
-            // TODO: IE returns wrong value for findPosX when in rtl mode
             //       (it returns as it was left aligned), needs to be fixed.
             cal_box.style.left = findPosX(cal_link) - 180 + 'px';
         }
