@@ -241,7 +241,7 @@ function changeWordStatus(spelling, timestamp){
 
 
 function check_has_login(){
-    $.getJSON(host + "/rest/users", {}, function (response) {
+    $.getJSON(host + "/rest/users/", {}, function (response) {
     if(response.length == 1){
         userinfo = response[0];
         if_has_login = true;
