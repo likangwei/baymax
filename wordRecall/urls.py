@@ -5,6 +5,7 @@ import views
 from django.conf.urls import url, include
 from rest_framework import routers
 from restview import IgnoreUrlViewSet
+from restview import MyWordViewSet
 from restview import UserViewSet
 from restview import WordViewSet
 from rest_framework import urls
@@ -14,6 +15,7 @@ router = routers.DefaultRouter()
 router.register(r'settings', IgnoreUrlViewSet)
 router.register(r'users', UserViewSet)
 router.register(r'words', WordViewSet)
+router.register(r'mywords', MyWordViewSet)
 regex_word = '(?P<words>[\w]+)'
 admin.autodiscover()
 # Wire up our API using automatic URL routing.
@@ -22,25 +24,17 @@ urlpatterns = [
     url(r'^rest/', include(router.urls), name='rest'),
     url(r'^$', views.index, name='index'),
     url(r'^contact/?', views.contact, name='contact'),
-    url(r'^download/?', views.download, name='contact'),
-    url(r'^about/?', views.about, name='contact'),
-    url(r'^get-start/?', views.get_start, name='contact'),
-    # url(r'^call/?', views.call),
+    url(r'^settings/?', views.settings, name='settings'),
+    url(r'^mywords/?', views.mywords, name='mywords'),
+    url(r'^urls/?', views.myurls, name='mywords'),
+    url(r'^download/?', views.download, name='download'),
+    url(r'^about/?', views.about, name='about'),
+    url(r'^get-start/?', views.get_start, name='start'),
     url(r'^reg/?', views.reg, name='reg'),
     url(r'^login/?', views.login, name='login'),
-    url(r'^checkUser/?', views.check_user, name='checkUser'),
+    url(r'^template/?', views.template, name='template'),
+    url(r'^pop_login/?', views.pop_login, name='pop_login'),
     url(r'^logout/?', views._logout, name='logout'),
-    url(r'^get_words_meaning/?$', views.get_words_meaning, name='get_words_meaning'),
-    url(r'^translate_p/?', views.translate_p, name='translate_p'),
-    url(r'^recall/?', views.get_recall_word, name='recall'),
-    url(r'^get_words/?', views.get_words, name='get_words'),
-    url(r'^get_words/(?P<words>)/$', views.get_words, name='get_words_info'),
-    url(r'^get_word_detail$', views.get_word_detail, name='get_word_detail'),
-    url(r'^get_word_detail/%s$' % regex_word, views.get_word_detail, name='get_word_detail'),
-    url(r'^frequency_charts/?', views.frequency_charts, name='frequency'),
-    url(r'^word_info/(?P<spelling>[\w\-]+)/', views.translate_word2, name='word_info'),
-    url(r'^set_word_status/$', views.set_word_status, name='set_word_status'),
-    url(r'^set_word_status/(?P<words>[\w\,\-]+)/(?P<status>[\w]+)/?', views.set_word_status, name='set_word_status'),
 ]
 
 handler404 = 'wordRecall.views.handler404'

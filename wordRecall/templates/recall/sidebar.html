@@ -1,0 +1,27 @@
+<div class="col-xs-6 col-sm-3 sidebar-offcanvas" id="sidebar">
+    <div id="sidebar_div" class="list-group">
+    </div>
+</div>
+<script>
+    {% if menu_info %}
+    var menuinfos = {{ menu_info|safe }};
+    {% else %}
+    var menuinfos = [];
+    {% endif %}
+    for(var j=0; j < menuinfos.length; j++){
+        var menuinfo = menuinfos[j];
+        if("active" in menuinfo){
+            var sides = menuinfo['sides'];
+            var side_html = '';
+            for(var i=0; i < sides.length; i++){
+                var clz = 'list-group-item';
+                var sideinfo = sides[i];
+                if('active' in sideinfo && sideinfo['active']){
+                    clz = "list-group-item active";
+                }
+                side_html += '<a href="'+ sideinfo['url'] +'" class="' + clz + '">' + sideinfo['name'] + '</a>'
+            }
+            $("#sidebar_div").html(side_html);
+        }
+    }
+</script>

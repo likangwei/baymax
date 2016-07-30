@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 import datetime
-from models import WordRememberInfos
+from models import MyWord
 from models import Word
 from util import StringUtil
 from util import TimeUtil
@@ -25,7 +25,7 @@ def _change_word_remember_status(word_id_list, remember_status, user, change_cat
     """
     for word_id in word_id_list:
         word, created = Word.objects.get_or_create(pk=word_id)
-        recall_info, created = WordRememberInfos.objects.get_or_create(word=word, user=user)
+        recall_info, created = MyWord.objects.get_or_create(word=word, user=user)
         recall_info.remember = remember_status
         recall_info.word_spelling = word.spelling
         recall_info.save()
@@ -42,11 +42,11 @@ def get_all_changed_words(user, fromTime=None, toTime=None):
     print "from %s to %s" % (str(fromTime), str(toTime))
     if fromTime:
         change_time__range = (fromTime, toTime)
-        conversant_words = WordRememberInfos.objects.filter(
+        conversant_words = MyWord.objects.filter(
             user=user
         ).filter(change_time__range=change_time__range)
     else:
-        conversant_words = WordRememberInfos.objects.filter(
+        conversant_words = MyWord.objects.filter(
             user=user)
 
     return conversant_words
@@ -61,14 +61,14 @@ def get_all_conversant_word_list(user, fromTime=None, toTime=None):
     print 'reload cache %s' %TimeUtil.get_now_time()
     if fromTime:
         change_time__range = (fromTime, toTime)
-        conversant_words = WordRememberInfos.objects.filter(
+        conversant_words = MyWord.objects.filter(
             user=user,
-            remember=WordRememberInfos.REMEMBER_KNOW
+            remember=MyWord.REMEMBER_KNOW
         ).filter(change_time__range=change_time__range)
     else:
-        conversant_words = WordRememberInfos.objects.filter(
+        conversant_words = MyWord.objects.filter(
             user=user,
-            remember=WordRememberInfos.REMEMBER_KNOW)
+            remember=MyWord.REMEMBER_KNOW)
 
     all_conversant_word_list = {}
     for info in conversant_words:
@@ -117,7 +117,7 @@ def get_all_word_sort_by_repeated(request, filter_mine=False, include_word_list=
         include_word_id_list = get_word_id_list_from_spelling(include_word_list)
 
     if filter_mine:
-        exclude_word_id_list = WordRememberInfos.objects.filter(user=request.user).values_list('word_id', flat=True)
+        exclude_word_id_list = MyWord.objects.filter(user=request.user).values_list('word_id', flat=True)
 
         if include_word_list:
             word_queryset = Word.objects.filter(id__in=include_word_id_list).exclude(id__in=exclude_word_id_list).order_by(order_by)

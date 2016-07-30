@@ -9,7 +9,6 @@ def is_word(text):
 
 
 def is_email(text):
-    #todo
     return False
 
 

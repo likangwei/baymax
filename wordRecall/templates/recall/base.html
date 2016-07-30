@@ -8,22 +8,17 @@
     <meta name="description" content="">
     <meta name="author" content="">
     <link rel="icon" href="../../favicon.ico">
-
     <title> {% block title %} 淘生词 {% endblock %} </title>
 
-    <!-- Bootstrap core CSS -->
-    <link href="static/css/bootstrap.min.css" rel="stylesheet">
-
-    <!-- IE10 viewport hack for Surface/desktop Windows 8 bug -->
-    <link href="static/assets/css/ie10-viewport-bug-workaround.css" rel="stylesheet">
-
-    <!-- Custom styles for this template -->
-    <link href="static/css/justified-nav.css" rel="stylesheet">
+    <link href="/static/css/bootstrap.min.css" rel="stylesheet">
+    <link href="/static/assets/css/ie10-viewport-bug-workaround.css" rel="stylesheet">
+    <link href="/static/css/justified-nav.css" rel="stylesheet">
+    <link href="/static/css/offcanvas.css" rel="stylesheet">
 
     <!-- Just for debugging purposes. Don't actually copy these 2 lines! -->
     <!--[if lt IE 9]><script src="../../assets/js/ie8-responsive-file-warning.js"></script><![endif]-->
-    <script src="static/assets/js/ie-emulation-modes-warning.js"></script>
-    <script src="static/js/jquery.min.js"></script>
+    <script src="/static/assets/js/ie-emulation-modes-warning.js"></script>
+    <script src="/static/js/jquery.min.js"></script>
 
     <!-- HTML5 shim and Respond.js for IE8 support of HTML5 elements and media queries -->
     <!--[if lt IE 9]>
@@ -33,27 +28,28 @@
   </head>
 
   <body>
+    {% include "recall/head.html" %}
+
 
     <div class="container">
-      <!-- The justified navigation menu is meant for single line per list item.
-           Multiple lines will require custom code not provided by Bootstrap. -->
-      <div class="masthead">
-        <h3 class="text-muted">淘生词</h3>
-        <nav>
-          <ul class="nav nav-justified">
-            <li id="index" ><a href="/">主页</a></li>
-            <li id="start"><a href="get-start">快速开始</a></li>
-            <li id="download"><a href="download">下载</a></li>
-            <li id="about"><a href="about">关于</a></li>
-            <li id="contact"><a href="contact">与我联系</a></li>
-          </ul>
-        </nav>
-      </div>
-    {% block content %} content... {% endblock %}
-      <!-- Jumbotron -->
 
-    <!-- IE10 viewport hack for Surface/desktop Windows 8 bug -->
-    <script src="static/assets/js/ie10-viewport-bug-workaround.js"></script>
+        <!-- Example row of columns -->
+    <div class="row row-offcanvas row-offcanvas-right">
+    <div class="col-xs-12 col-sm-9">
+      <p class="pull-right visible-xs">
+        <button type="button" class="btn btn-primary btn-xs" data-toggle="offcanvas">Toggle nav</button>
+      </p>
+    {% block content %}
 
-  </body>
+    {% endblock %}
+    </div><!--/.col-xs-12.col-sm-9-->
+    {% include "recall/sidebar.html" %}
+    </div><!--/row-->
+
+
+      <footer class="footer">
+        <p>&copy; 2016 淘生词, Inc.</p>
+      </footer>
+    </div><!--/.container-->
+
 </html>

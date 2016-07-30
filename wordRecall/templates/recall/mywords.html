@@ -1,0 +1,9 @@
+{% extends "recall/base.html" %}
+{% block title %}管理我的词库{% endblock %}
+{% load bootstrap %}
+{% block content %}
+    <div>
+        <strong>此页展示了大家都认识的单词, 但您还未置为熟词, 开始过滤熟词吧!</strong>
+    </div>
+{% include "checkboxform.html" %}
+{% endblock %}

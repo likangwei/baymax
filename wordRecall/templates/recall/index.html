@@ -3,41 +3,31 @@
 {% block title %}淘生词{% endblock %}
 {% block content %}
 
-<div class="jumbotron">
+      <div class="jumbotron">
         <h1>轻松读文档!</h1>
-        <p class="lead">淘生词是一款Chrome插件, 词库来源于Google翻译。 它可以根据每个人的生词情况, 定制化显示网页, 将网页中出现的生词进行变色显示. 如果您将鼠标放到生词上即可显示词意. 也可以通过点击生词来快速添加至熟词列表! </p>
+        <p>淘生词是一款Chrome插件, 词库来源于Google翻译。 它可以根据每个人的生词情况, 定制化显示网页, 将网页中出现的生词进行变色显示. 如果您将鼠标放到生词上即可显示词意. 也可以通过点击生词来快速添加至熟词列表! </p>
         <p><a class="btn btn-lg btn-success" href="get-start" role="button">快速开始!</a></p>
       </div>
-
-      <!-- Example row of columns -->
       <div class="row">
-        <div class="col-lg-4">
+        <div class="col-xs-6 col-lg-4">
           <h2>生词变色</h2>
-          <p class="text-d    <h4>
-        使用方法: 打开chrome浏览器，地址栏中输入 chrome://extensions/ 后回车，将解压出来的crx文件拖到浏览器中即可使用。</p>
-    </h4>anger">淘生词可以自动将生词变为红色显示。</p>
-{#          <p>Donec id elit non mi porta gravida at eget metus. Fusce dapibus, tellus ac cursus commodo, tortor mauris condimentum nibh, ut fermentum massa justo sit amet risus. Etiam porta sem malesuada magna mollis euismod. Donec sed odio dui. </p>#}
-{#          <p><a class="btn btn-primary" href="#" role="button">View details &raquo;</a></p>#}
-        </div>
-        <div class="col-lg-4">
+          <p>淘生词可以自动将生词变为红色显示。</p>
+          <p><a class="btn btn-default" href="#" role="button">View details &raquo;</a></p>
+        </div><!--/.col-xs-6.col-lg-4-->
+        <div class="col-xs-6 col-lg-4">
           <h2>个人词库</h2>
           <p>每个用户都会有自己的单词库, 更个性化的展示页面.</p>
-{#          <p><a class="btn btn-primary" href="#" role="button">View details &raquo;</a></p>#}
-       </div>
-        <div class="col-lg-4">
+          <p><a class="btn btn-default" href="#" role="button">View details &raquo;</a></p>
+        </div><!--/.col-xs-6.col-lg-4-->
+        <div class="col-xs-6 col-lg-4">
           <h2>快速添加生词</h2>
           <p>轻轻点击一下生词, 即可将其加到熟词库, 并变为绿色</p>
-{#          <p><a class="btn btn-primary" href="#" role="button">View details &raquo;</a></p>#}
-        </div>
-      </div>
-
-      <!-- Site footer -->
-      <footer class="footer">
-        <p>&copy; 2016 淘生词, Inc.</p>
-      </footer>
-
-    </div> <!-- /container -->
-  <script>
-      $('#index').addClass("active")
-  </script>
+          <p><a class="btn btn-default" href="#" role="button">View details &raquo;</a></p>
+        </div><!--/.col-xs-6.col-lg-4-->
+      </div><!--/row-->
+    <div class="col-xs-12 col-sm-9">
+      <p class="pull-right visible-xs">
+        <button type="button" class="btn btn-primary btn-xs" data-toggle="offcanvas">Toggle nav</button>
+      </p>
+    </div><!--/.col-xs-12.col-sm-9-->
 {% endblock %}

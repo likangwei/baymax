@@ -1,0 +1,15 @@
+<div class="pagination">
+    <span class="step-links">
+        页码
+        {% for i in page_range %}
+            {% if i == pg.number %}
+                <strong>{{ i }}</strong>
+            {% else %}
+                <a href="?page={{ i }}">{{ i }}</a>
+            {% endif %}
+        {% endfor %}
+        <span class="current">
+            Page {{ page.number }} of {{ paginator.num_pages }}.
+        </span>
+    </span>
+</div>

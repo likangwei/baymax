@@ -18,6 +18,7 @@ function setUserInfo(host, userName, pwd, func){
     });
 }
 
+
 function clear_all_data(func){
         chrome.runtime.sendMessage('clear', function(response){
         console.log("config.js==>" + response);
@@ -31,33 +32,9 @@ function clear_all_data(func){
     });
 }
 
-function getMeaning(spelling, func){
-    var msg = 'getMeaning###' + spelling;
-    chrome.runtime.sendMessage(msg, func);
-}
-
-function refreshWordMeaning(allNewWord) {
-    var str = '';
-    var iter = allNewWord.values();
-    var next = iter.next();
-
-    while(next.value != null){
-        str = str + next.value + "#";
-        next = iter.next();
-    }
-
-    var msg = 'refreshWordMeaning###' + str;
-    console.log(msg);
-    chrome.runtime.sendMessage(msg, function(response){
-        console.log("config.js==>" + response);
-    });
-}
 
 function getAllWordsFromBak(func){
-    var msg = 'getAllWords';
-    console.log(msg);
-    chrome.runtime.sendMessage(msg, function(response){
-        console.log("config.js==>" + response);
+    chrome.runtime.sendMessage(ACTIONS.GET_ALL_WORDS, function(response){
         func(response);
     });
 }
@@ -78,13 +55,6 @@ function getUserInfoFromBackground(func){
     });
 }
 
-function getClassNameAfterClick(text, func) {
-    var msg = "getClzName" + "###" + text;
-    chrome.runtime.sendMessage(msg , function(response){
-        console.log("config.js==>" + response);
-        func(response);
-    });
-}
 
 function start(ifStart){
     var msg = "start###" + ifStart;
