@@ -174,13 +174,7 @@ function getAllMyWords(){
 }
 
 
-function getAllMeaning(words){
-    var need_to_get = [];
-    for (var i=0; i < words.length; i++){
-        if(!(words[i] in meanings)){
-            need_to_get.push(words[i]);
-        }
-    }
+function getMeaningFromHttp(need_to_get){
     var reqUrl = host + "/rest/words/";
     if(need_to_get.length != 0){
         $.get(reqUrl, {"filter": JSON.stringify({"spelling__in": need_to_get})},
@@ -192,6 +186,22 @@ function getAllMeaning(words){
             console.log("获取词义成功!");
          }, 'json');
     }
+
+}
+
+
+function getAllMeaning(words){
+    var need_to_get = [];
+    for (var i=0; i < words.length; i++){
+        if(!(words[i] in meanings)){
+            need_to_get.push(words[i]);
+        }
+        if(need_to_get.length > 500){
+            getMeaningFromHttp(need_to_get);
+            need_to_get = [];
+        }
+    }
+    getMeaningFromHttp(need_to_get);
 }
 
 function change_to_know_word(spelling, timestamp){
