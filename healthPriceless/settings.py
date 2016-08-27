@@ -17,7 +17,6 @@ CONFIG_FILE = os.path.join(BASE_DIR, "config.json")
 import json
 config = json.load(open(CONFIG_FILE))
 # celery config
-BROKER_URL = 'amqp://'
 IS_SERVER = socket.gethostname() in ['iZ25jidmr1pZ']
 
 # Quick-start development settings - unsuitable for production

@@ -47,10 +47,8 @@ class WordRememberAdmin(admin.ModelAdmin):
 
     def __init__(self, *args, **kwargs):
         super(WordRememberAdmin, self).__init__(*args, **kwargs)
-        print 'to here'
         self.actions.append(make_word_unacquainted)
         self.actions.append(make_word_conversant)
-        print admin.ModelAdmin.actions
 
 
 class RecallInfoInline(admin.TabularInline):
