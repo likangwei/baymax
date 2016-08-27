@@ -58,7 +58,7 @@ class WordViewSet(viewsets.ModelViewSet):
             words = filter.get('spelling__in')
             checkout_new_word_and_add(words)
         queryset = queryset.filter(**filter)
-        return queryset
+        return queryset.exclude(google_meaning=None)
 
 
 class MyWordViewSet(viewsets.ModelViewSet):
