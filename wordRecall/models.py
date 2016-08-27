@@ -14,7 +14,7 @@ class Word(models.Model):
     spelling = models.CharField("拼写", unique=True, max_length=100, null=False)
     repeated = models.IntegerField("置为熟词的用户数", default=0);
     meaning = models.CharField("翻译", max_length=1024)
-    google_meaning = models.CharField("Google翻译", max_length=1024, default='')
+    google_meaning = models.CharField("Google翻译", max_length=1024, default=None, null=True)
 
     def add_repeated(self, number=1):
         self.repeated = self.repeated + number
