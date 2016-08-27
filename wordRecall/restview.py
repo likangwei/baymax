@@ -14,6 +14,8 @@ from permissions import IsOwnerOrReadOnly
 from rest_framework.views import APIView
 from rest_framework.response import Response
 from rest_framework import status
+from wordRecall.tasks import checkout_new_word_and_add
+
 import json
 
 
@@ -51,6 +53,10 @@ class WordViewSet(viewsets.ModelViewSet):
         filter = self.request.GET.get('filter', '{}')
         if filter:
             filter = json.loads(filter)
+        print filter
+        if filter.get('spelling__in', None) is not None:
+            words = filter.get('spelling__in')
+            checkout_new_word_and_add(words)
         queryset = queryset.filter(**filter)
         return queryset
 

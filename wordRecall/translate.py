@@ -7,12 +7,9 @@ from lxml.html import HtmlElement
 from django.core.urlresolvers import reverse
 import urlparse
 from loader import get_html_str
-from wordinfos import get_all_conversant_word_list, get_format_meaning
+from wordinfos import get_all_conversant_word_list
 import UrlUtil
 from django.template import loader
-
-
-from tasks import add_all_page_word_to_repeated
 from static import change_list
 
 def change_url(pre_url):
@@ -33,23 +30,6 @@ def get_translate_word_url(spelling, translate_url):
 
     params = urllib.urlencode({'tran_page': translate_url})
     return "%s%s" %(reverse("word:word_info", args=(spelling,)), "?%s" % (params))
-
-
-def add_to_word_repeated(html_url):
-    """
-    添加到词频
-    :param request:
-    :param word_lower_case:
-    :return:
-    """
-    from tasks import add_all_page_word_to_repeated
-    add_all_page_word_to_repeated.delay(html_url)
-    # word_repeated_map = get_html_word_repeated_info(html_url)
-    # add_all_page_word_to_repeated.delay(word_repeated_map)
-    #
-    # for word_spelling in word_repeated_map:
-    #     word, created = Word.objects.get_or_create(spelling=word_spelling)
-    #     word.add_repeated(word_repeated_map[word_spelling])
 
 
 def get_sub_element_by_text(p_text, parent, translate_url, conversant_word_map, user=None):
@@ -109,6 +89,7 @@ def get_sub_element_by_text(p_text, parent, translate_url, conversant_word_map, 
         result.append(return_p_text)
 
     return result
+
 
 def get_sub_element(current_tag, parent, translate_url, conversant_word_map, **kwargs):
     """
