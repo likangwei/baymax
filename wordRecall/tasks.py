@@ -4,8 +4,6 @@ from wordRecall.models import Word
 from celery import shared_task
 
 current_words = {}
-for word in Word.objects.all():
-    current_words[word.spelling] = None
 
 @shared_task
 def checkout_new_word_and_add(words):
