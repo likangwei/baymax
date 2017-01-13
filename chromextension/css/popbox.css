@@ -27,17 +27,12 @@
   /*width: 350px;*/
 }
 
+.hide {
+    display: none;
+}
 
-
-    .MYBOX_XODKFJS {
-      display:block;
-      display:none;
-      background:#668B8B;
-      border:solid 1px #BBBBBB;
-      border-radius:5px;
-      box-shadow:0px 0px 15px #999;
-      position:absolute;
-      width: 350px;
-    }
+.show {
+    display: block;
+}
 
 

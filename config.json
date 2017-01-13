@@ -1,0 +1,16 @@
+{
+  "host": "127.0.0.1:8000",
+  "db": {
+    "default": {
+        "ENGINE": "django.db.backends.mysql",
+        "NAME": "baymax",
+        "USER": "root",
+        "PASSWORD": "root",
+        "HOST": "127.0.0.1"
+    }
+  },
+  "sentry": {
+    "enable": false,
+    "dsn": "https://2dec9af7a6324fcbac49412869fb3826:9336ea24c06a4d86bafa718ba3c8d5dd@app.getsentry.com/55984"
+  }
+}

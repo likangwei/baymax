@@ -323,7 +323,6 @@
                             return obj;
                         }
                         else {
-                            // TODO: try by numerical index                    
                         }
                     break;
                     case 'array': 

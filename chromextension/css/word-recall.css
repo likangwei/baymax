@@ -3,14 +3,12 @@
     color: white;
 }
 
-
 .old_word{
     color: white;
     background: lawngreen;
-
 }
 
 .new_word{
+    background: #616161;
     color: white;
-    background: indianred;
 }

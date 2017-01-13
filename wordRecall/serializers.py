@@ -1,31 +1,42 @@
 __author__ = 'likangwei'
 from rest_framework import serializers
-from models import IgnoreUrl
-from models import Word
 from django.contrib.auth.models import User
-# Serializers define the API representation.
+
+from models import IgnoreUrl
+from models import MyWord
+from models import Word
+from models import UserSetting
+
 
 class IgnoreSerializer(serializers.ModelSerializer):
     class Meta:
         model = IgnoreUrl
-        fields = ('url', 'id')
+        fields = ('url', 'type', 'id')
+
+
+class SettingSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = UserSetting
+        fields = ('auto_change_page',)
+
+
+class MyWordsSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = MyWord
+        fields = ('id', 'spelling',)
 
 
 class WordSerializer(serializers.ModelSerializer):
     class Meta:
         model = Word
+        fields = ('id', 'spelling', 'google_meaning')
 
 
 class UserSerializer(serializers.ModelSerializer):
 
-    # ignore_urls = serializers.HyperlinkedRelatedField(
-    #     many=True,
-    #     read_only=True,
-    #     view_name='word:ignoreurl-detail'
-    # )
-    # ignore_urls = serializers.PrimaryKeyRelatedField(many=True, read_only=True)
     ignore_urls = IgnoreSerializer(many=True, read_only=True)
+    settings = SettingSerializer(many=False, read_only=True)
+
     class Meta:
         model = User
-        fields = ('id', 'username', 'ignore_urls')
-        # extra_kwargs = {'password': {'write_only': True}}
+        fields = ('id', 'username', 'ignore_urls', "is_valid", 'settings', "errors")

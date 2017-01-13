@@ -1,7 +1,11 @@
 # -*- coding: utf-8 -*-
 from django.contrib import admin
 import models
-from models import Word, WordRememberInfos, RecallInfo, IgnoreUrl
+from models import MyWord
+from models import RecallInfo
+from models import IgnoreUrl
+from models import Word
+from models import UserSetting
 
 from django.contrib.auth.admin import UserAdmin
 from django.contrib.auth.models import User
@@ -34,12 +38,25 @@ def make_word_add_remember_count(modeladmin, request, queryset):
     queryset.update(remember=models.REMEMBER_KNOW)
 make_word_add_remember_count.short_description = "过了一遍"
 
+admin.ModelAdmin.actions = [make_word_unacquainted, make_word_conversant]
+class WordRememberAdmin(admin.ModelAdmin):
+    inlines = []
+    list_filter = ['user']
+    search_fields = ['word__spelling']
+    list_display = ['word', 'user']
+
+    def __init__(self, *args, **kwargs):
+        super(WordRememberAdmin, self).__init__(*args, **kwargs)
+        self.actions.append(make_word_unacquainted)
+        self.actions.append(make_word_conversant)
+
 
 class RecallInfoInline(admin.TabularInline):
     model = RecallInfo
 
 
 class CommonAdmin(admin.ModelAdmin):
+
     inlines = []
 
 
@@ -57,32 +74,16 @@ class IgnoreUrlAdmin(admin.ModelAdmin):
 
 
 class WordAdmin(admin.ModelAdmin):
-    inlines = [ ]
-    search_fields = ['spelling']
-    list_display = ['spelling', 'repeated', 'type']
-    list_filter = ['type']
-
-
-class WordRememberAdmin(admin.ModelAdmin):
     inlines = []
-    actions = [make_word_unacquainted, make_word_conversant]
-    list_filter = ['remember', 'user']
-    search_fields = ['word__spelling']
-    list_display = ['word', 'remember', 'user',]
+    search_fields = ['spelling']
+    list_display = ['spelling', 'repeated']
 
-    def get_queryset(self, request):
-        if request.user.is_superuser:
-            return WordRememberInfos.objects.all()
-        else:
-            return WordRememberInfos.objects.filter(user=request.user)
 
-    def get_list_filter(self, request):
-        if request.user.is_superuser:
-            return ['remember', 'user']
-        else:
-            return ['remember']
+
+
 
 admin.site.register(Word, WordAdmin)
-admin.site.register(WordRememberInfos, WordRememberAdmin)
+admin.site.register(MyWord, WordRememberAdmin)
 admin.site.register(RecallInfo, CommonAdmin)
 admin.site.register(IgnoreUrl, IgnoreUrlAdmin)
+admin.site.register(UserSetting)

@@ -1,0 +1,57 @@
+{% include "recall/pages.html" %}
+<form role="form" id="form_id" name="myform" method="post">
+    {% csrf_token %}
+
+    {% for mtd, name in actions %}
+        <input type="submit" name="_actionName" value="{{ name}}"/>
+    {% endfor %}
+
+    <br><br>
+    <table class="table table-bordered" data-toggle="table" data-url="data1.json" data-cache="false" data-height="299">
+        <thead>
+            <tr>
+                <th><input id="checkAll" type="checkbox"></th>
+                {% for th in ths %}
+                    <th>{{ th }}</th>
+                {% endfor %}
+            </tr>
+        </thead>
+        <tbody>
+            {% for tr in trs %}
+            <tr class="wordTr" id="tr_{{ word.id }}">
+                {% for td in tr %}
+                    <td>{{ td|safe }}</td>
+                {% endfor %}
+            </tr>
+            {% endfor %}
+
+        </tbody>
+    </table>
+    {% for mtd, name in actions %}
+        <input type="submit" name="_actionName" value="{{ name}}"/>
+    {% endfor %}
+
+</form>
+
+
+{% include "recall/pages.html" %}
+<script type="text/javascript">
+
+    $("#checkAll").click(function () {
+        $(".wordSelect").prop("checked", this.checked);
+        if(this.checked){
+            $(".wordTr").addClass("active");
+        }else{
+            $(".wordTr").removeClass("active");
+        }
+        $(".wordSelect").prop("checked", this.checked);
+    });
+    $(".wordSelect").change(function () {
+        if(this.checked){
+            $("#tr_" + this.value).addClass("active");
+        }else{
+            $("#tr_" + this.value).removeClass("active");
+        }
+    });
+
+</script>
