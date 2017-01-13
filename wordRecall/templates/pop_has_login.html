@@ -3,12 +3,7 @@
     <div>
         <p>您已经登陆. {{ user.username }},  <a target="_blank" href="{{ LOGOUT_URL }}">注销</a>,         <a target="_blank" href="{{ CONFIG_URL }}">管理我的词库</a></p>
         <p>加作者微信</p>
-<<<<<<< HEAD
         <img src="http://readdoc.net/static/wechat.jpg" style="width: 150px; height: 200px" />
-=======
-        <img src="/static/wechat.jpg" style="width: 150px; height: 200px" />
->>>>>>> 557d63a6cb57b956d5000ee9f0108e0d2615741a
-
     </div>
     <div>
         {% for warning in user.errors %}
