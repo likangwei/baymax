@@ -2,8 +2,8 @@
 <div class="container" id="content" style="width:300px; height:200px; border:1px solid #000;">
     <div>
         <p>您已经登陆. {{ user.username }},  <a target="_blank" href="{{ LOGOUT_URL }}">注销</a>,         <a target="_blank" href="{{ CONFIG_URL }}">管理我的词库</a></p>
-        <p>加作者微信</p>
-        <img src="http://readdoc.net/static/wechat.jpg" style="width: 150px; height: 200px" />
+        <p>打赏作者</p>
+        <img src="http://readdoc.net/static/wechatpay.jpg" style="width: 150px; height: 200px" />
     </div>
     <div>
         {% for warning in user.errors %}
