@@ -1,7 +1,7 @@
-django-bootstrap-form
+django-bootstrap-form==3.2
 requests==2.8.1
 django==1.8.1
 raven
 djangorestframework==3.3.2
-django-cors-headers
+django-cors-headers==1.1.0
 
