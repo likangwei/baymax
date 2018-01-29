@@ -225,14 +225,13 @@ def pop_login(request):
         warning = "版本 %s" % 2.1
 
     if request.user.is_authenticated():
-        body = loader.get_template("pop_has_login.html").render(
-            Context({
+        context = Context({
                 "user": request.user,
                 "LOGOUT_URL": LOGOUT_URL,
                 "CONFIG_URL": CONFIG_URL,
                 "warning": warning
             })
-        )
+        body = loader.get_template("pop_has_login.html").render(context)
     else:
         body = loader.get_template("pop_unlogin.html").render(
             Context({
