@@ -10,11 +10,10 @@ var relation_lines = {}
 //request_param = {}
 function getTranslateDivElementHtml(word_spelling, response){
     //获取某一个单词的解释DIV的HTML
-    var template = Handlebars.compile(template_dict["inside"]);
+
     response["spelling"] = word_spelling;
     let lines = relation_lines[word_spelling]
-    
-    let content = [window.location.href]
+    let content = [response["google_meaning"], window.location.href]
     let count = 0
     lines.forEach(function(line){
       count = count + 1
@@ -25,13 +24,20 @@ function getTranslateDivElementHtml(word_spelling, response){
     content = encodeURIComponent(content)
     let url = "http://memoryplus.likangwei.com/knowledges?title=" + word_spelling + "&content=" + content
     let link = [
-      "<a href='", url, "'>", "添加到Mem++", "</a>"
+      "<a target='_blank' href='", url, "'>", "添加到Mem++", "</a>"
     ].join("")
-    console.log(link)
-    response["custom"] = link
-    var html = template(response);
-    console.log(html)
-    return html;
+    console.log(response)
+    html = [
+      "<div>",
+      "  <div>",
+      word_spelling,
+      response["google_meaning"],
+      "   </div>",
+      link,
+      "</div>",
+    ]
+
+    return html.join("\n");
 }
 
 function refreshUI(wordDom, response, word_spelling){
