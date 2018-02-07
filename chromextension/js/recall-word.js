@@ -5,13 +5,32 @@ var request_param = null;
 var template_dict = null;
 var real_hide_tag = true;
 
+var relation_lines = {}
 
 //request_param = {}
 function getTranslateDivElementHtml(word_spelling, response){
     //获取某一个单词的解释DIV的HTML
     var template = Handlebars.compile(template_dict["inside"]);
     response["spelling"] = word_spelling;
+    let lines = relation_lines[word_spelling]
+    
+    let content = [window.location.href]
+    let count = 0
+    lines.forEach(function(line){
+      count = count + 1
+      content.push("\n" + count + ". " + line)
+    })
+    content = content.join("\n")
+    console.log(content)
+    content = encodeURIComponent(content)
+    let url = "http://memoryplus.likangwei.com/knowledges?title=" + word_spelling + "&content=" + content
+    let link = [
+      "<a href='", url, "'>", "添加到Mem++", "</a>"
+    ].join("")
+    console.log(link)
+    response["custom"] = link
     var html = template(response);
+    console.log(html)
     return html;
 }
 
@@ -45,7 +64,11 @@ function refreshUI(wordDom, response, word_spelling){
 }
 
 function getMeaning(spelling, func){
-    var msg = {"action": ACTIONS.GET_ONE_MEANING, "body": {"spelling": spelling}};
+    console.log(relation_lines[spelling])
+    var msg = {
+      "action": ACTIONS.GET_ONE_MEANING,
+      "body": {"spelling": spelling}
+    };
     chrome.runtime.sendMessage(msg, func);
 }
 
@@ -217,10 +240,15 @@ function build_tao_dom(oSpan){
         var text = textElement.nodeValue;
         textElement.nodeValue = "";
         var words = text.split(/([a-zA-Z]+)/g);
-
+        
         for(var y=0; y<words.length; y++){
-
             var curWord = words[y];
+
+            if (relation_lines[curWord] == null){
+                relation_lines[curWord] = new Set()
+            }
+            relation_lines[curWord].add(text)
+        
             var isNew = isNewWord(curWord);
             if(isNew){
                 add2NewWordMap(curWord.toLowerCase());
